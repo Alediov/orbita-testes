@@ -22,6 +22,14 @@ acabavam; aqui os executores padrão não têm limite.
 
 - `tools/mercado/`: copy trading (detalhes no `LEIA-ME.md` de lá). Workflow `mercado.yml`, ramo `mercado`.
 - `tools/papel/`: as outras formas, no formato comum de `tools/papel/FORMATO.md`. Workflow `papel.yml`, ramo `papel`.
+- `tools/papel/apostas.py` (+ `odds.py`, `falso_apostas.py`, `teste_apostas.py`): **Apostas de valor** (pedido do Alediov,
+  03/11/2026; só futebol, só no papel, como ele fazia na Betano antes da suspensão das bets): odd justa = Pinnacle sem a
+  margem (método da potência), aposta quando a casa comum paga ≥ 3/5/8% a mais, Kelly ¼, favoritos, azarões, a aposta
+  grátis de R$ 5 por semana e "sem filtro" como referência; contas em R$ fictícios (1.000). Teste no passado pelas
+  planilhas gratuitas do football-data (Bet365 no lugar da Betano; Brasileirão só no fechamento); ao vivo pela OddsPapi
+  (gratuita, 250 pedidos/mês, chave SÓ no segredo `ODDSPAPI_KEY` deste repositório, passado como variável de ambiente
+  no `papel.yml`; nunca em arquivo nem no log) e os placares pela ESPN. Os nomes dos campos das fontes foram escritos sem
+  acesso a elas daqui: a 1ª rodada real registra a estrutura no log para conferir.
 - Os exemplos que o app usa sem rede ficam no repositório do app (`tools/mercado/exemplos/`); refazer aqui e copiar
   para lá quando o formato mudar.
 - Os dois workflows religam os agendamentos pela API a cada rodada (num repositório público o GitHub os desliga

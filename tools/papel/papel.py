@@ -36,7 +36,7 @@ sys.path.insert(0, AQUI)  # antes do mercado: os dois têm um falso.py
 import hl  # noqa: E402
 from conta import DIA, dia_de  # noqa: E402
 
-FORMAS = ["cofres", "funding", "robos"]
+FORMAS = ["cofres", "funding", "robos", "apostas"]
 V = 1
 CDI_ANO = 0.149
 REF_DIAS = 400

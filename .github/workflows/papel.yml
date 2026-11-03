@@ -41,6 +41,9 @@ jobs:
           elif git fetch -q --depth=1 origin papel; then git archive FETCH_HEAD | tar -x -C dados; else echo "ramo papel ainda não existe"; fi
           ls -la dados
       - name: Rodada
+        env:
+          # chave GRATUITA da OddsPapi (apostas no papel, ao vivo); sem ela, só o teste no passado. Nunca vai para arquivo.
+          ODDSPAPI_KEY: ${{ secrets.ODDSPAPI_KEY }}
         run: python3 -I tools/papel/papel.py --dados dados --prazo 24 ${{ inputs.formas && format('--formas {0}', inputs.formas) || '' }}
       - name: Guardar no ramo papel
         if: always()

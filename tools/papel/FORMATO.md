@@ -159,3 +159,29 @@ recomeça ou converte.
 
 `python3 tools/papel/falso.py <pasta>` roda as formas num mercado de mentira (semente fixa) e grava o mesmo conjunto
 de arquivos com `"exemplo": true`; o app (repositório odonto-quest) usa a cópia em `tools/mercado/exemplos/papel/`.
+
+## Apostas de valor (`apostas.json`)
+
+Futebol, só no papel (`apostas.py`). Diferenças das outras formas:
+
+- **Moeda**: as contas são em **R$ fictícios** (1.000 = saldo fictício, como a banca da Betano); `config.moeda` = "R$".
+  As contas têm o mesmo formato (`inicio`, `serie`, `retorno`…); `taxas` = 0 (a margem já está na odd) e `ops` = apostas
+  liquidadas. `historico` traz também `nota` (a casa do teste é a Bet365, no lugar da Betano).
+- **Versões** (`grupo` "Valor", "Aposta grátis" ou "Referência"; `alav` sempre 1): `valor3` (padrão), `valor5`, `valor8`,
+  `kelly`, `favoritos`, `azaroes`, `gratis`, `semfiltro`. A `gratis` só soma o que ganha com uma aposta grátis de R$ 5 por
+  semana: o patrimônio é 1.000 + os ganhos (nunca cai).
+- **extra**: `apostas` (liquidadas), `acerto` (fração ganha), `roi` (resultado ÷ valor apostado), `oddMedia`,
+  `clvMedio` (média de odd pega × chance justa da Pinnacle no fechamento − 1; null sem fechamento), `clvPositivo` (fração
+  das apostas com CLV > 0), `piorSequencia` (derrotas seguidas), `fonteSoft` (a casa comum: "Betano", "Betano
+  (internacional)" ou "Bet365 (no lugar da Betano)"), `anuladas` (sem placar em 10 dias; o valor voltou) e, na `gratis`,
+  `ganhoGratis` (R$ ganhos com as apostas grátis).
+- **itens**: as apostas no papel esperando o placar: `{ "jogo": "Flamengo × Vasco", "liga", "inicio" (ms),
+  "selecao": "Flamengo vence" | "empate" | "mais de 2,5 gols"…, "odd", "justa" (odd justa = 1 ÷ chance), "valor"
+  (fração), "casa", "versoes": ["valor3", …] }`. A aposta ao vivo é reconstruída depois do jogo pelo histórico de preços
+  (o preço de 6 h antes), então não há "próximas apostas".
+- **config**: `aoVivo` ("ligado" ou "falta a chave gratuita da OddsPapi"), `fonteSoft`, `softDescartadas`, `orcamento`
+  { `mes`, `usados`, `limite` 250, `paraEm` 225, `maxPorDia`, `cotaHoje`, `puladosPeloLimite`, `semOdds` },
+  `campeonatosAoVivo`, `historico` { `jogos`, `temporadas`, `porLiga`, `justaPinnacle`, `fechamentoPinnacle`,
+  `casaBet365`, `comGols`, `fonte` } e `pedidosRodada` (por fonte: csv, oddspapi, espn).
+- **eventos** (tipos `ganhou`, `perdeu`, `anulou`, `resumo`, `aviso`): até 3 apostas da versão padrão por dia de jogo, a
+  aposta grátis de cada semana, um resumo semanal por versão (com o CLV) e os avisos da forma (`versao` null).
