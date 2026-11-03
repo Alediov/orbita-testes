@@ -1,0 +1,67 @@
+# Testes de mercado do Órbita: cópia de carteiras da Hyperliquid NO PAPEL (saldo fictício; nenhuma ordem, nenhuma
+# conta, nenhuma chave; só a API pública de leitura). Roteiro em tools/mercado/LEIA-ME.md; plano em
+# docs/plano-testes-mercado.md. Grava estado.json, resumo.json (o app Órbita lê, Finanças → Testes) e log.txt no ramo
+# órfão `mercado`, sempre num commit único (sem histórico, para o ramo não crescer; nunca mesclado na main).
+#
+# Repositório público desde 03/11/2026 (veio do repositório privado do app, onde os minutos gratuitos do Actions
+# acabavam): aqui os executores padrão não têm limite de minutos. Mesmo assim, a cada 2 h basta: a cópia usa as velas
+# do horário de cada operação, então a frequência da coleta não muda o resultado (e o GitHub atrasa ou pula horários
+# agendados; a rodada seguinte alcança o tempo perdido).
+#
+# Num repositório público, o GitHub desliga os agendamentos depois de 60 dias sem atividade: o último passo religa
+# os workflows pela API (o próprio GITHUB_TOKEN, permissão `actions: write`), o que zera essa contagem.
+name: Testes de mercado (Hyperliquid, no papel)
+on:
+  schedule:
+    - cron: "17 */2 * * *"
+  workflow_dispatch:
+    inputs:
+      escolher:
+        description: "Refazer a escolha das carteiras agora (sim/não)"
+        default: "não"
+      recomecar:
+        description: "Recomeçar do zero, sem o estado anterior (sim/não)"
+        default: "não"
+permissions:
+  contents: write
+  actions: write
+concurrency:
+  group: mercado
+  cancel-in-progress: false
+jobs:
+  mercado:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: tools/mercado
+      - name: Estado anterior (ramo mercado)
+        run: |
+          mkdir -p dados
+          if [ "${{ inputs.recomecar }}" = "sim" ]; then echo "recomeçando do zero"
+          elif git fetch -q --depth=1 origin mercado; then git archive FETCH_HEAD | tar -x -C dados; else echo "ramo mercado ainda não existe"; fi
+          ls -la dados
+      - name: Rodada
+        run: python3 -I tools/mercado/mercado.py --dados dados --prazo 14 ${{ inputs.escolher == 'sim' && '--escolher' || '' }}
+      - name: Guardar no ramo mercado
+        if: always()
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd dados
+          [ -f resumo.json ] || { echo "sem resumo"; exit 0; }
+          git init -q
+          git checkout -q -b mercado
+          git config user.name "Órbita (testes no papel)"
+          git config user.email "actions@users.noreply.github.com"
+          git add estado.json resumo.json log.txt
+          git commit -q -m "Testes de mercado: rodada de $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -q -f "https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git" mercado
+      - name: Manter os agendamentos ligados
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for w in mercado.yml papel.yml; do gh api -X PUT "repos/${GITHUB_REPOSITORY}/actions/workflows/$w/enable" >/dev/null 2>&1 && echo "ligado: $w" || echo "não deu para religar $w (ainda não existe?)"; done

@@ -1,0 +1,10 @@
+[
+  ["day", {"accountValueHistory": [[1741886630493, "0.0"], [1741895270493, "0.0"]], "pnlHistory": [[1741886630493, "0.0"]], "vlm": "0.0"}],
+  ["week", {"accountValueHistory": [[1741290000000, "10000.0"], [1741800000000, "10350.5"]], "pnlHistory": [], "vlm": "0.0"}],
+  ["month", {"accountValueHistory": [[1739300000000, "9000.0"], [1741800000000, "10350.5"]], "pnlHistory": [], "vlm": "0.0"}],
+  ["allTime", {"accountValueHistory": [[1730000000000, "5000.0"]], "pnlHistory": [], "vlm": "0.0"}],
+  ["perpDay", {"accountValueHistory": [], "pnlHistory": [], "vlm": "0.0"}],
+  ["perpWeek", {"accountValueHistory": [[1741290000000, "9800.0"], [1741800000000, "10100.0"]], "pnlHistory": [], "vlm": "0.0"}],
+  ["perpMonth", {"accountValueHistory": [[1739300000000, "8800.0"], [1741800000000, "10100.0"]], "pnlHistory": [], "vlm": "0.0"}],
+  ["perpAllTime", {"accountValueHistory": [[1730000000000, "4900.0"]], "pnlHistory": [], "vlm": "0.0"}]
+]

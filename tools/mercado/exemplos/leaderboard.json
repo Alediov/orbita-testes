@@ -1,0 +1,4 @@
+{"leaderboardRows": [
+  {"ethAddress": "0x1111111111111111111111111111111111111111", "accountValue": "152340.12", "windowPerformances": [["day", {"pnl": "812.5", "roi": "0.0053", "vlm": "250000.0"}], ["week", {"pnl": "4100.0", "roi": "0.027", "vlm": "1800000.0"}], ["month", {"pnl": "15200.0", "roi": "0.11", "vlm": "7400000.0"}], ["allTime", {"pnl": "220000.0", "roi": "1.9", "vlm": "90000000.0"}]], "prize": 0, "displayName": null},
+  {"ethAddress": "0xdfc24b077bc1425ad1dea75bcb6f8158e10df303", "accountValue": "400000000.0", "windowPerformances": [["day", {"pnl": "1.0", "roi": "0.0", "vlm": "1.0"}], ["week", {"pnl": "1.0", "roi": "0.0", "vlm": "1.0"}], ["month", {"pnl": "1000000.0", "roi": "0.003", "vlm": "90000000000.0"}], ["allTime", {"pnl": "60000000.0", "roi": "0.2", "vlm": "900000000000.0"}]], "prize": 0, "displayName": "Hyperliquidity Provider (HLP)"}
+]}
