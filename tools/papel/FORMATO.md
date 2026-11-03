@@ -124,6 +124,10 @@ Lista própria da forma (opcional). Nos **cofres**: os cofres seguidos e os fixa
   "desde": 1762000000000, "aoVivo": {conta}, "historico": {conta}, "saiu": null }
 ```
 
+No **funding**, `itens` traz uma linha por moeda: `{ "moeda", "par" (o par à vista, "@142"), "alavMax", "fundingAgora",
+"media3d", "hl", "binance", "bybit" }` (taxas ao ano, fração: 0,11 = 11% a.a.; `binance`/`bybit` podem ser null). As
+versões do funding têm `grupo` ("1×" ou "3×").
+
 E `candidatos` (só nos cofres): os que passaram na regra e os maiores abertos, para ele escolher quais fixar
 (no máximo 40): `{ "endereco", "nome", "tvl", "apr", "idadeDias", "lucroMes", "lucroTotal", "piorQueda", "comissao",
 "passou": true, "motivo": "…" }`.
