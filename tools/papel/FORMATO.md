@@ -124,6 +124,15 @@ Lista própria da forma (opcional). Nos **cofres**: os cofres seguidos e os fixa
   "desde": 1762000000000, "aoVivo": {conta}, "historico": {conta}, "saiu": null }
 ```
 
+E `candidatos` (só nos cofres): os que passaram na regra e os maiores abertos, para ele escolher quais fixar
+(no máximo 40): `{ "endereco", "nome", "tvl", "apr", "idadeDias", "lucroMes", "lucroTotal", "piorQueda", "comissao",
+"passou": true, "motivo": "…" }`.
+
+**Cofres fixados à mão**: `config/cofres-fixos.json` na `main` deste repositório, `{ "fixos": [{ "endereco": "0x…",
+"em": "AAAA-MM-DD" }] }`. O app grava esse arquivo pela API de conteúdo do GitHub (com o token do app, se ele tiver
+acesso a este repositório); a rodada lê o arquivo do checkout. Cofre fixado vira um item com `"fixo": true` e entra
+na versão "Os que você fixou" (partes iguais), e não sai pela regra.
+
 ### extra (o que o app conhece)
 
 - funding: `recebido`, `pago` (US$ de financiamento), `base` (diferença média entre à vista e perpétuo, fração),
