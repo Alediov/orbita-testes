@@ -96,7 +96,7 @@ class ClientePapelFalso(*_mixins, _Comum, _base.ClienteFalso):
                 m.preparar(self)
 
 
-def gerar_exemplos(pasta_saida, pasta_trabalho, rodadas=28, cada_h=6, primeira=None):
+def gerar_exemplos(pasta_saida, pasta_trabalho, rodadas=100, cada_h=6, primeira=None):
     """Roda `rodadas` seguidas (a cada `cada_h` horas) e copia o resultado final para `pasta_saida`."""
     import papel
     shutil.rmtree(pasta_trabalho, ignore_errors=True)
