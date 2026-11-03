@@ -23,6 +23,9 @@ from collections import Counter
 UA = "orbita-testes/1"
 URL_ODDSPAPI = "https://api.oddspapi.io/v4"
 REPETIR = (429, 500, 502, 503, 504)
+# A OddsPapi gratuita recusa (429) um pedido logo depois do outro: na 1ª rodada real (03/11/2026) todo /fixtures seguido
+# levou 429 e só passou depois de 5 s, gastando um pedido do mês a mais cada. Então um pedido a cada PAUSA_ODDSPAPI s.
+PAUSA_ODDSPAPI = 6.0
 
 
 class Erro(Exception):
@@ -47,6 +50,7 @@ class Cliente:
         self.tentativas, self.prazo, self.dormir, self.log = tentativas, prazo, dormir, log
         self.pedidos = 0
         self.contagem = Counter()
+        self._ultimo_odds = None  # time.monotonic() do último pedido à OddsPapi
 
     def _limpar(self, texto):
         texto = str(texto)
@@ -65,7 +69,7 @@ class Cliente:
                     return r.read()
             except urllib.error.HTTPError as e:
                 if e.code in REPETIR and k < tentativas - 1:
-                    s = min(60, 5 * 2 ** k)
+                    s = min(60, 5 * 2 ** k) if not (e.code == 429 and tipo == "oddspapi") else PAUSA_ODDSPAPI * 2
                     self.log(f"  HTTP {e.code} em {rotulo}; espera {s}s")
                     self.dormir(s)
                     continue
@@ -98,8 +102,14 @@ class Cliente:
         consulta = {k: v for k, v in params.items() if v is not None}
         consulta["apiKey"] = self.chave
         url = f"{URL_ODDSPAPI}{caminho}?{urllib.parse.urlencode(consulta)}"
+        if self._ultimo_odds is not None:
+            falta = PAUSA_ODDSPAPI - (time.monotonic() - self._ultimo_odds)
+            if falta > 0:
+                self.dormir(falta)
         try:
             dados = self._baixar(url, "oddspapi", f"OddsPapi {caminho}", tentativas=2)
             return json.loads(dados.decode("utf-8", errors="replace"))
         except ValueError:
             raise Erro(f"JSON inválido em OddsPapi {caminho}") from None
+        finally:
+            self._ultimo_odds = time.monotonic()
