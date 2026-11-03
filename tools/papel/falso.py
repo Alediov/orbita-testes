@@ -35,8 +35,59 @@ for _n in ("falso_cofres", "falso_funding", "falso_robos", "falso_looping", "fal
         pass
 
 
-class ClientePapelFalso(*_mixins, _base.ClienteFalso):
-    """O cliente do copy trading com os métodos das formas. `agora` começa 32 dias depois do início do mundo."""
+# O à vista de mentira (comum a todas as formas): os pares "@N" da Hyperliquid, com o preço do perpétuo do Mundo
+# um pouco abaixo (a base), como UBTC, UETH e USOL (embrulhados pela ponte) e o HYPE nativo.
+SPOT = {"@142": ("UBTC", "BTC"), "@151": ("UETH", "ETH"), "@156": ("USOL", "SOL"), "@107": ("HYPE", "HYPE")}
+BASE_SPOT = 0.0004  # o à vista 0,04% abaixo do perpétuo
+
+
+class _Comum:
+    """À vista, contextos e funding previsto, no formato da API."""
+
+    def velas(self, moeda, intervalo, ini, fim):
+        if moeda in SPOT:
+            out = _base.ClienteFalso.velas(self, SPOT[moeda][1], intervalo, ini, fim)
+            k = 1 - BASE_SPOT
+            for c in out:
+                for x in "ohlc":
+                    c[x] = f"{float(c[x]) * k:.6g}"
+                c["s"] = moeda
+            return out
+        return _base.ClienteFalso.velas(self, moeda, intervalo, ini, fim)
+
+    def spot_meta_e_contextos(self):
+        self._contar("spotMetaAndAssetCtxs")
+        tokens = [{"name": "USDC", "index": 0, "szDecimals": 8}] + [
+            {"name": t, "index": i + 1, "szDecimals": 5} for i, (t, _) in enumerate(SPOT.values())]
+        universo = [{"name": "PURR/USDC", "tokens": [99, 0], "index": 0, "isCanonical": True}] + [
+            {"name": par, "tokens": [i + 1, 0], "index": int(par[1:]), "isCanonical": False} for i, par in enumerate(SPOT)]
+        ctxs = [{"markPx": "1", "midPx": "1", "dayNtlVlm": "0"}] + [
+            {"markPx": f"{self.mundo.px(m, self.agora) * (1 - BASE_SPOT):.6g}", "midPx": f"{self.mundo.px(m, self.agora) * (1 - BASE_SPOT):.6g}",
+             "dayNtlVlm": "5000000", "coin": par} for par, (_, m) in SPOT.items()]
+        return [{"tokens": tokens, "universe": universo}, ctxs]
+
+    def _taxa(self, m):
+        f = [r for t, r in self.mundo.funding[m] if t <= self.agora]
+        return f[-1] if f else 0.0
+
+    def meta_e_contextos(self):
+        self._contar("metaAndAssetCtxs")
+        meta = {"universe": [{"name": m, "szDecimals": 4, "maxLeverage": v} for m, v in _base.MAX_LEV.items()]}
+        ctxs = [{"funding": f"{self._taxa(m):.8f}", "markPx": f"{self.mundo.px(m, self.agora):.6g}",
+                 "oraclePx": f"{self.mundo.px(m, self.agora):.6g}", "openInterest": "1000", "premium": "0.0"} for m in _base.MAX_LEV]
+        return [meta, ctxs]
+
+    def funding_previsto(self):
+        self._contar("predictedFundings")
+        prox = (self.agora // HORA + 1) * HORA
+        return [[m, [["HlPerp", {"fundingRate": f"{self._taxa(m):.8f}", "nextFundingTime": prox, "fundingIntervalHours": 1}],
+                     ["BinPerp", {"fundingRate": f"{self._taxa(m) * 8:.8f}", "nextFundingTime": prox, "fundingIntervalHours": 8}]]]
+                for m in _base.MAX_LEV]
+
+
+class ClientePapelFalso(*_mixins, _Comum, _base.ClienteFalso):
+    """O cliente do copy trading com o comum e os métodos das formas. `agora` começa 32 dias depois do início do
+    mundo (20/09/2026 + 32 dias); o mundo tem 60 dias de preços."""
 
     def __init__(self, mundo=None, agora=None):
         _base.ClienteFalso.__init__(self, mundo, agora)
