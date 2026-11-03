@@ -1,0 +1,62 @@
+# Testes de mercado do Órbita, as outras formas (cofres da Hyperliquid, funding, robôs de grade e DCA…), NO PAPEL:
+# contas fictícias de US$ 1.000, nenhuma ordem, nenhuma conta, nenhuma chave; só APIs públicas de leitura. Plano em
+# docs/plano-testes-mercado-2.md; formato em tools/papel/FORMATO.md. Grava indice.json, <forma>.json (o app Órbita lê,
+# Finanças → Testes), estado.json e log.txt no ramo órfão `papel`, sempre num commit único (sem histórico).
+#
+# A cada 6 h basta: as simulações andam pelos históricos (velas, funding, pontos dos cofres), então um horário pulado
+# pelo GitHub é alcançado na rodada seguinte e não muda o resultado.
+name: Testes de mercado (outras formas, no papel)
+on:
+  schedule:
+    - cron: "23 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      formas:
+        description: "Formas (separadas por vírgula; vazio = todas)"
+        default: ""
+      recomecar:
+        description: "Recomeçar do zero, sem o estado anterior (sim/não)"
+        default: "não"
+permissions:
+  contents: write
+  actions: write
+concurrency:
+  group: papel
+  cancel-in-progress: false
+jobs:
+  papel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: tools
+      - name: Estado anterior (ramo papel)
+        run: |
+          mkdir -p dados
+          if [ "${{ inputs.recomecar }}" = "sim" ]; then echo "recomeçando do zero"
+          elif git fetch -q --depth=1 origin papel; then git archive FETCH_HEAD | tar -x -C dados; else echo "ramo papel ainda não existe"; fi
+          ls -la dados
+      - name: Rodada
+        run: python3 -I tools/papel/papel.py --dados dados --prazo 24 ${{ inputs.formas && format('--formas {0}', inputs.formas) || '' }}
+      - name: Guardar no ramo papel
+        if: always()
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd dados
+          [ -f indice.json ] || { echo "sem índice"; exit 0; }
+          git init -q
+          git checkout -q -b papel
+          git config user.name "Órbita (testes no papel)"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Outras formas: rodada de $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -q -f "https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git" papel
+      - name: Manter os agendamentos ligados
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for w in mercado.yml papel.yml; do gh api -X PUT "repos/${GITHUB_REPOSITORY}/actions/workflows/$w/enable" >/dev/null 2>&1 && echo "ligado: $w" || echo "não deu para religar $w"; done

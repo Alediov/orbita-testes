@@ -23,6 +23,7 @@ import urllib.request
 
 URL_INFO = "https://api.hyperliquid.xyz/info"
 URL_RANKING = "https://stats-data.hyperliquid.xyz/Mainnet/leaderboard"
+URL_COFRES = "https://stats-data.hyperliquid.xyz/Mainnet/vaults"  # todos os cofres (~14 MB; não documentado, o site usa)
 PESO = {"clearinghouseState": 2, "userRole": 60}
 EXTRA_POR = {"userFills": 20, "userFillsByTime": 20, "fundingHistory": 20, "candleSnapshot": 60}
 INTERVALO_MS = {"1m": 60_000, "5m": 300_000, "15m": 900_000, "1h": 3_600_000, "1d": 86_400_000}
@@ -168,6 +169,34 @@ class Cliente:
                 break
             a = ult + 1
         return [out[k] for k in sorted(out)]
+
+    # ------------------------------------------------------------------ pedidos das outras formas (tools/papel)
+    def cofres(self):
+        """Todos os cofres: [{"summary": {"name", "vaultAddress", "leader", "tvl", "isClosed", "relationship",
+        "createTimeMillis"}, "apr", "pnls": [["day"|"week"|"month"|"allTime", [pnl…]]]}] (o arquivo do site)."""
+        r = self._pedir(URL_COFRES, None, 20)
+        return r if isinstance(r, list) else []
+
+    def cofre(self, endereco, user=None):
+        """vaultDetails: name, leader, description, portfolio ([[janela, {accountValueHistory, pnlHistory, vlm}]]),
+        apr, followerState, leaderFraction, leaderCommission, followers, maxDistributable, maxWithdrawable,
+        isClosed, relationship, allowDeposits, alwaysCloseOnWithdraw."""
+        corpo = {"type": "vaultDetails", "vaultAddress": endereco}
+        if user:
+            corpo["user"] = user
+        return self.info(corpo)
+
+    def meta_e_contextos(self):
+        """metaAndAssetCtxs: [meta, [ctx por moeda: funding, openInterest, markPx, oraclePx, premium…]]."""
+        return self.info({"type": "metaAndAssetCtxs"})
+
+    def spot_meta_e_contextos(self):
+        """spotMetaAndAssetCtxs: [{"tokens": […], "universe": [{"name": "@142", "tokens": [i, j], "index"}]}, [ctx…]]."""
+        return self.info({"type": "spotMetaAndAssetCtxs"})
+
+    def funding_previsto(self):
+        """predictedFundings: [[moeda, [[corretora, {fundingRate, nextFundingTime, fundingIntervalHours}]…]]]."""
+        return self.info({"type": "predictedFundings"})
 
 
 def intervalo_para(ini, fim, agora):
