@@ -143,6 +143,10 @@ na versão "Os que você fixou" (partes iguais), e não sai pela regra.
   `fundingAno` (taxa média anualizada no período), `moeda` (a da posição agora, no rodízio), `dentro` (true/false na
   seletiva);
 - robôs: `comprado` (US$ na moeda agora), `caixa` (US$), `degrausExecutados`, `precoMedio`, `foraDaGrade` (true/false);
+  Nas versões no perpétuo (grade neutra, DCA com proteção 3×), `comprado` tem sinal (negativo = vendido) e `caixa` é o
+  patrimônio inteiro; `fundingPago` (US$) e, no DCA com proteção, `ciclos` (fechados). `degrausExecutados` conta as
+  ordens da grade, as compras do DCA ou, no DCA com proteção, as compras de proteção. As versões têm `grupo` ("Grade"
+  ou "DCA");
 - cofres: `cofres` (quantos na versão), `travadoAte` (ms; não dá para sair antes), `comissaoPaga` (US$).
 
 ## estado.json
