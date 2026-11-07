@@ -64,12 +64,14 @@ def main():
         t0 = cli.agora
         for k in range(6):
             cli.agora = t0 + k * 6 * falso.HORA
-            ind = papel.rodada(cli, pasta, cli.agora, exemplo=True, buscar_cdi=False, log=papel.Log(quieto=True))
+            ind = papel.rodada(cli, pasta, cli.agora, formas=papel.FORMAS + papel.FORMAS_A_PARTE, exemplo=True,
+                               buscar_cdi=False, log=papel.Log(quieto=True))
         for nome, f in ind["formas"].items():
             assert f["ok"], f"{nome}: {f.get('erro')}"
             with open(os.path.join(pasta, f["arquivo"])) as fh:
                 conferir_forma(json.load(fh), nome)
         assert ind["ref"]["btc"] and ind["ref"]["cdi"], "sem referências"
+        assert set(ind["formas"]) == set(papel.FORMAS + papel.FORMAS_A_PARTE), sorted(ind["formas"])
         print(f"rodada completa: {sorted(ind['formas'])}")
     finally:
         shutil.rmtree(pasta, ignore_errors=True)

@@ -97,14 +97,17 @@ class ClientePapelFalso(*_mixins, _Comum, _base.ClienteFalso):
 
 
 def gerar_exemplos(pasta_saida, pasta_trabalho, rodadas=100, cada_h=6, primeira=None):
-    """Roda `rodadas` seguidas (a cada `cada_h` horas) e copia o resultado final para `pasta_saida`."""
+    """Roda `rodadas` seguidas (a cada `cada_h` horas) e copia o resultado final para `pasta_saida`. Os memecoins (job
+    próprio, 2 vezes por dia) rodam junto, a cada 2 rodadas."""
     import papel
     shutil.rmtree(pasta_trabalho, ignore_errors=True)
     cli = ClientePapelFalso()
     t = primeira or cli.agora
     for k in range(rodadas + 1):
         cli.agora = t + k * cada_h * HORA
-        papel.rodada(cli, pasta_trabalho, cli.agora, exemplo=True, buscar_cdi=False, log=papel.Log(quieto=k < rodadas))
+        formas = papel.FORMAS + (papel.FORMAS_A_PARTE if k % 2 == 0 or k == rodadas else [])
+        papel.rodada(cli, pasta_trabalho, cli.agora, formas=formas, exemplo=True, buscar_cdi=False,
+                     log=papel.Log(quieto=k < rodadas))
     os.makedirs(pasta_saida, exist_ok=True)
     for f in os.listdir(pasta_saida):
         if f.endswith(".json"):

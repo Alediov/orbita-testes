@@ -3,8 +3,8 @@
 O workflow `papel.yml` roda `tools/papel/papel.py` a cada 6 h e grava, num commit único do ramo órfão `papel`:
 
 - `indice.json`: o que existe e quando cada forma rodou (o app lê primeiro e só baixa a forma que mudou);
-- `<forma>.json`: um por forma (`cofres.json`, `funding.json`, `robos.json`; depois `looping.json`, `opcoes.json`,
-  `pools.json`, `memes.json`);
+- `<forma>.json`: um por forma (`cofres.json`, `funding.json`, `robos.json`, `apostas.json`, `looping.json`,
+  `opcoes.json`, `pools.json`; e `memes.json`, gravado pelo job próprio `memes.yml`, 2 vezes por dia, no mesmo ramo);
 - `estado.json`: o que a próxima rodada precisa (o app não lê);
 - `log.txt`: as últimas rodadas.
 
@@ -185,3 +185,81 @@ Futebol, só no papel (`apostas.py`). Diferenças das outras formas:
   `casaBet365`, `comGols`, `fonte` } e `pedidosRodada` (por fonte: csv, oddspapi, espn).
 - **eventos** (tipos `ganhou`, `perdeu`, `anulou`, `resumo`, `aviso`): até 3 apostas da versão padrão por dia de jogo, a
   aposta grátis de cada semana, um resumo semanal por versão (com o CLV) e os avisos da forma (`versao` null).
+
+## Looping (`looping.json`)
+
+Aave v3 na Base (`looping.py`): juros diários do GraphQL do Aave (`supplyAPYHistory`/`borrowAPYHistory`, 365 dias), o
+staking do Lido pela DefiLlama, limites de liquidação pelo `getReserveData` (RPC) e o e-mode pelo GraphQL; o ether pelas
+velas da HL (1 h ao vivo, 1 dia no teste no passado, que é `aproximado: true`).
+
+- **Versões** (`grupo` "wstETH × ETH", "ETH × USDC" ou "Referência"; `alav` até 6): `wst3` (padrão), `wst6`, `eth15`, `eth2`,
+  `eth2def` (desalavanca quando o fator de saúde cai a 1,3), `usdc` (só depositar).
+- **As versões wstETH são medidas em ether**: a conta é convertida em dólar pelo preço do ether no dia em que começou
+  (`extra.precoRef`), para mostrar só o laço (staking contra juro); o valor em dólar de verdade vai em `extra.emDolar`.
+- **extra**: `hf` (fator de saúde; null sem dívida), `alavAgora`, `rendeAno` (o que a conta rende agora ao ano, fração),
+  `ganhoJuros`/`custoJuros` (US$ acumulados), `defesas`, `garantia`/`divida` (símbolos), `precoLiquidacao` (ETH × USDC),
+  `emDolar`/`precoRef` (wstETH).
+- **itens**: uma linha por moeda: `{ "ativo", "deposito", "emprestimo", "staking", "lt", "bonus", "nota" }` (taxas ao ano).
+- **config**: `rede`, `protocolo`, `pool`, `alavMax`, `emode` { `lt`, `bonus`, `ltv`, `nome` }, `fontesParametros`,
+  `custos` { `troca`, `deslize`, `relampago`, `gas` }, `stakingFonte`.
+
+## Opções (`opcoes.json`)
+
+Venda de opções de BTC e ETH na Deribit pública (`opcoes.py`): ao vivo, toda sexta depois do vencimento das 08h UTC,
+vende pela melhor oferta de compra da cadeia; marca pela `mark_price`; no vencimento paga pelo preço de entrega. **O ao
+vivo de cada versão só começa na 1ª sexta depois de ela nascer** (antes, `aoVivo: null` e `config.aoVivoComeca` = ms da
+sexta). Teste no passado (180 dias, `aproximado: true`): Black-Scholes com o DVOL (ou a volatilidade realizada,
+`config.ivHistorico` "dvol" | "realizada").
+
+- **Versões** (`grupo` "BTC" ou "ETH"; `alav` 1): `put15` (padrão), `put30`, `call15`, `strangle`, `putmes`, `putstop`
+  (recompra se a put passar de 3 vezes o prêmio), `eth_put15`, `eth_call15`.
+- **extra**: `premios`, `pagos` (US$), `vendas`, `dentro` (venceram com prejuízo), `semValor`, `recompras`, `emAberto`
+  (texto curto: "Put 70.000 · vence 13/11"), `naMoeda` (US$ na moeda, nas cobertas), `moeda`.
+- **itens**: as opções vendidas em aberto: `{ "versao", "instrumento", "moeda", "tipo", "strike", "vence" (ms), "delta",
+  "premio" (US$ recebidos), "marca" (US$ que custaria recomprar), "vendidaEm" }`.
+- **config**: `moedas`, `fonte`, `precos` (índice de agora), `taxas`, `ivHistorico`, `deltaAlvo`, `aoVivoComeca`.
+
+## Pools (`pools.json`)
+
+Uniswap v3 WETH/USDC 0,05% na Base (`pools.py`): cada troca do pool pelo RPC público (eventos `Swap`); a taxa e o valor
+da posição saem exatos pela matemática do v3. O "teste no passado" (`aproximado: false`) começa 28 dias antes do ao vivo
+(o RPC gratuito não guarda mais) e depois anda junto com ele; na 1ª vez pode levar algumas rodadas para alcançar
+(`config.passado`).
+
+- **Versões** (`grupo` "Reposiciona", "Parada" ou "Referência"; `alav` 1): `r1`, `r1h`, `r3`, `r3h` (padrão), `r10h`,
+  `cheia`, `r3fixa`, `segurar` (50/50 parado, sem pool). "ao sair" reposiciona na troca em que o preço sai da faixa;
+  "1 h fora" depois de 1 h fora.
+- **extra**: `taxasGanhas` (US$ de taxa do pool ganhos), `gasPago`, `reposicoes`, `precoEth`, `noEther`/`noDolar` (US$ em
+  cada moeda agora, com as taxas não coletadas), `perdaImp` (US$, ≤ 0: a realizada nos reposicionamentos + a de agora,
+  contra segurar o que foi posto), `dentro`, `dentroFrac` (fração do tempo dentro da faixa), `faixa` [mín., máx.] (US$
+  por ETH).
+- **config**: `rede`, `protocolo`, `pool`, `par`, `taxaPool`, `precoEth`, `gasWei` (mediana medida), `custoReposicionar`
+  (US$ de gás de um reposicionamento), `trocasLidas` { `vivo`, `hist` }, `passado` { `alcancou`, `faltamDias` },
+  `volume24h` (o nosso) e `conferencia` { `fonte`: "GeckoTerminal", `volume24h`, `tvl` } (ou null).
+- **eventos**: `abriu`; um `reequilibrou` por dia com reposicionamentos (o resumo do dia); na `r3fixa`, `saiu` depois de
+  1 h fora da faixa e `entrou` quando volta.
+
+## Memecoins (`memes.json`)
+
+O observatório do pump.fun (`memes.py`, job `memes.yml`, 2 vezes por dia): uma amostra sorteada de 24 lançamentos a cada
+rodada, analisada 24 h depois. **Os nomes dos tokens não aparecem** (só o endereço encurtado). `historico` é sempre null.
+
+- **Versões** (`grupo` "Regras" ou "Referência"; `alav` 1; US$ 10 por token): `min1` (padrão), `min5`, `momento`,
+  `graduacao`, `min1rc` (só tokens sem risco alto no RugCheck), `segura` (segura ~24 h). A conta é marcada uma vez por
+  amostra analisada (no fim das 24 h dela); só aposta o que a conta tem (`extra.semDinheiro` = apostas que não couberam).
+- **extra**: `apostas`, `ganhas`, `acerto`, `roi` (resultado ÷ apostado), `resultado` (US$), `apostado`, `dobrou` e `stop`
+  (saídas pelo dobro e pelo −50%), `melhor`/`pior` (US$ de uma aposta).
+- **observatorio**: `{ "tudo": {contagens}, "semana": {contagens dos últimos 8 dias}, "desde" (ms), "amostras",
+  "esperando" (tokens aguardando as 24 h), "proxima" (ms da próxima análise), "regras": [{ "id", "nome", "apostas",
+  "acerto", "roi", "resultado", "melhor", "pior", "dobrou", "stop" }], "lancamentosPorMin", "lancamentosPorDia" }`.
+  Contagens: `tokens`, `dobraram` (máxima ≥ 2× o lançamento), `dezVezes`, `graduaram`, `golpes` (queda > 90% em até 5 min
+  na 1ª hora), `morreram` (sem negociação depois do 1º minuto ou < 10% do lançamento em ~24 h, sem ter graduado),
+  `semNegocios`, `semVelas` (tinham par, mas as velas não vieram), `rugcheckAlto`, `rugcheckSem`, `criadorGrande`
+  (criador comprou ≥ 10% na criação), `medianaX24` (preço de ~24 h ÷ o do lançamento, dos que negociaram; pode ser null),
+  `vivos24h`.
+- **itens**: os últimos 40 tokens analisados: `{ "mint" ("AbCd…pump"), "lancado" (ms), "maxX", "x24" (null sem
+  negócios), "graduou", "golpe", "morreu", "rugcheck" ("alto" | "ok" | null), "criadorGrande" }`.
+- **config**: `rede`, `plataforma`, `aposta`, `amostra`, `ouvirSegundos`, `taxas` { `curva`, `amm`, `deslizeAmm`,
+  `redeSol` }, `prioridade` (mediana medida, micro-lamports por unidade), `saida` { `alta`, `baixa`, `minutos` },
+  `observatorio: true`.
+- **eventos** (`resumo`, `aviso`): o resumo de cada amostra (o da forma, `versao` null) e o da versão padrão.

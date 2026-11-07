@@ -64,4 +64,4 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          for w in mercado.yml papel.yml; do gh api -X PUT "repos/${GITHUB_REPOSITORY}/actions/workflows/$w/enable" >/dev/null 2>&1 && echo "ligado: $w" || echo "não deu para religar $w (ainda não existe?)"; done
+          for w in mercado.yml papel.yml memes.yml; do gh api -X PUT "repos/${GITHUB_REPOSITORY}/actions/workflows/$w/enable" >/dev/null 2>&1 && echo "ligado: $w" || echo "não deu para religar $w (ainda não existe?)"; done

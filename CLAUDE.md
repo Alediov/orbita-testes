@@ -30,10 +30,23 @@ acabavam; aqui os executores padrão não têm limite.
   (gratuita, 250 pedidos/mês, chave SÓ no segredo `ODDSPAPI_KEY` deste repositório, passado como variável de ambiente
   no `papel.yml`; nunca em arquivo nem no log) e os placares pela ESPN. Os nomes dos campos das fontes foram escritos sem
   acesso a elas daqui: a 1ª rodada real registra a estrutura no log para conferir.
-- Os exemplos que o app usa sem rede ficam no repositório do app (`tools/mercado/exemplos/`); refazer aqui e copiar
-  para lá quando o formato mudar.
-- Os dois workflows religam os agendamentos pela API a cada rodada (num repositório público o GitHub os desliga
-  depois de 60 dias sem atividade).
+- **Fases 2 a 4** (07/11/2026): `looping.py` (Aave v3 na Base: wstETH × ETH 3×/6× medidos em ether, ETH × USDC 1,5×/2×,
+  2× com defesa, só USDC), `opcoes.py` (venda de puts e calls na Deribit pública; o ao vivo começa na 1ª sexta; o
+  passado pelo DVOL, "aproximado"), `pools.py` (Uniswap v3 WETH/USDC 0,05% na Base troca a troca pelo RPC público
+  `base-rpc.publicnode.com`: faixas ±1/±3/±10%, cheia, sem reposicionar e segurar 50/50; o passado são os 28 dias antes
+  do começo, o máximo que o RPC grátis guarda) e `memes.py` (observatório do pump.fun: amostra sorteada de 24
+  lançamentos pelo websocket do PumpPortal, analisada 24 h depois pela DexScreener, GeckoTerminal e RugCheck; job
+  próprio `memes.yml`, 2 vezes por dia, no mesmo ramo `papel`; nomes dos tokens nunca guardados). As fontes fora da
+  Hyperliquid passam por `rede.py` (freio por fonte; `ws.py` é o websocket mínimo, só biblioteca padrão), e cada uma
+  registra no log a estrutura da 1ª resposta de verdade (os nomes dos campos foram escritos sem acesso daqui: conferir
+  no log da 1ª rodada). Mercado de mentira em `falso_looping.py`, `falso_opcoes.py`, `falso_pools.py` (também o RPC da
+  Base e o `getReserveData` do Aave) e `falso_memes.py`; testes `teste_looping.py`, `teste_opcoes.py`, `teste_pools.py`,
+  `teste_memes.py` (todos por `python3 tools/papel/teste_papel.py`). `papel.FORMAS` (o papel.yml) não inclui os memes
+  (`FORMAS_A_PARTE`).
+- Os exemplos que o app usa sem rede ficam no repositório do app (`tools/mercado/exemplos/`); refazer aqui
+  (`python3 tools/papel/falso.py`) e copiar para lá (`tools/mercado/exemplos/papel/`) quando o formato mudar.
+- Os três workflows (`mercado.yml`, `papel.yml`, `memes.yml`) religam os agendamentos pela API a cada rodada (num
+  repositório público o GitHub os desliga depois de 60 dias sem atividade).
 
 ## Commits
 

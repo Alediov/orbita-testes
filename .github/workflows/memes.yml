@@ -1,0 +1,54 @@
+# Testes de mercado do Órbita: o observatório de memecoins do pump.fun (tools/papel/memes.py), NO PAPEL: nenhuma
+# carteira, nenhuma ordem, nenhuma chave; só fontes públicas e gratuitas (PumpPortal, DexScreener, GeckoTerminal,
+# RugCheck, RPC público da Solana). Job próprio, 2 vezes por dia (plano: "Minutos do Actions"): ouve os lançamentos por
+# 3 min, sorteia uma amostra e analisa as amostras de 24 h atrás com o freio do GeckoTerminal. Grava memes.json no
+# mesmo ramo órfão `papel` das outras formas (mesmo grupo de concorrência do papel.yml: um espera o outro).
+name: Testes de mercado (memecoins, observatório no papel)
+on:
+  schedule:
+    - cron: "41 3,15 * * *"
+  workflow_dispatch: {}
+permissions:
+  contents: write
+  actions: write
+concurrency:
+  group: papel
+  cancel-in-progress: false
+jobs:
+  memes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            tools
+            config
+      - name: Estado anterior (ramo papel)
+        run: |
+          mkdir -p dados
+          if git fetch -q --depth=1 origin papel; then git archive FETCH_HEAD | tar -x -C dados; else echo "ramo papel ainda não existe"; fi
+          ls -la dados
+      - name: Rodada
+        run: python3 -I tools/papel/papel.py --dados dados --prazo 25 --formas memes
+      - name: Guardar no ramo papel
+        if: always()
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd dados
+          [ -f indice.json ] || { echo "sem índice"; exit 0; }
+          git init -q
+          git checkout -q -b papel
+          git config user.name "Órbita (testes no papel)"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Memecoins: rodada de $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -q -f "https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git" papel
+      - name: Manter os agendamentos ligados
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for w in mercado.yml papel.yml memes.yml; do gh api -X PUT "repos/${GITHUB_REPOSITORY}/actions/workflows/$w/enable" >/dev/null 2>&1 && echo "ligado: $w" || echo "não deu para religar $w"; done

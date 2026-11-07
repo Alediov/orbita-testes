@@ -1,4 +1,4 @@
-# Testes de mercado do Órbita, as outras formas (cofres da Hyperliquid, funding, robôs de grade e DCA…), NO PAPEL:
+# Testes de mercado do Órbita, as outras formas (cofres, funding, robôs, apostas, looping, opções e pools), NO PAPEL:
 # contas fictícias de US$ 1.000, nenhuma ordem, nenhuma conta, nenhuma chave; só APIs públicas de leitura. Plano em
 # docs/plano-testes-mercado-2.md; formato em tools/papel/FORMATO.md. Grava indice.json, <forma>.json (o app Órbita lê,
 # Finanças → Testes), estado.json e log.txt no ramo órfão `papel`, sempre num commit único (sem histórico).
@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
     inputs:
       formas:
-        description: "Formas (separadas por vírgula; vazio = todas)"
+        description: "Formas (separadas por vírgula; vazio = todas menos memes, que tem o memes.yml)"
         default: ""
       recomecar:
         description: "Recomeçar do zero, sem o estado anterior (sim/não)"
@@ -64,4 +64,4 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          for w in mercado.yml papel.yml; do gh api -X PUT "repos/${GITHUB_REPOSITORY}/actions/workflows/$w/enable" >/dev/null 2>&1 && echo "ligado: $w" || echo "não deu para religar $w"; done
+          for w in mercado.yml papel.yml memes.yml; do gh api -X PUT "repos/${GITHUB_REPOSITORY}/actions/workflows/$w/enable" >/dev/null 2>&1 && echo "ligado: $w" || echo "não deu para religar $w"; done

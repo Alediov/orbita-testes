@@ -3,7 +3,8 @@ resultados: tools/papel/FORMATO.md). Roda no GitHub Actions (`.github/workflows/
 órfão `papel`: indice.json, <forma>.json, estado.json e log.txt. Nenhuma ordem, nenhuma conta, nenhuma chave: só APIs
 públicas de leitura.
 
-Cada forma é um módulo desta pasta (`cofres.py`, `funding.py`, `robos.py`…) com:
+Cada forma é um módulo desta pasta (`cofres.py`, `funding.py`, `robos.py`, `apostas.py`, `looping.py`, `opcoes.py`,
+`pools.py`, `memes.py`) com:
 
     NOME = "Funding"          # o nome curto (chip do app)
     VERSAO = 1                # mudar o formato do estado da forma: subir (o estado antigo vai para ctx.antigo)
@@ -12,6 +13,8 @@ Cada forma é um módulo desta pasta (`cofres.py`, `funding.py`, `robos.py`…) 
 `ctx` tem: `cli` (hl.Cliente ou o falso), `agora` (ms), `est` (o estado da forma, dict, mudado no lugar), `antigo`
 (o estado de uma VERSAO anterior, ou None), `log(texto)`, `restante()` (segundos até o prazo da rodada),
 `exemplo` (True no mercado de mentira) e `ref` (as referências já buscadas: {"btc": {dia: preço}, "cdi": {dia: taxa}}).
+As formas que leem outras fontes além da Hyperliquid (Deribit, Aave, RPC da Base, PumpPortal…) usam `rede.py`
+(`rede.fonte_de(ctx, "<método>")`: o cliente falso quando ele tem o método, senão um `rede.Cliente`).
 Uma forma que levanta exceção fica `ok: false` no índice e mantém o <forma>.json da rodada anterior; as outras seguem.
 
 Uso: python3 tools/papel/papel.py --dados <pasta do ramo> [--formas cofres,funding] [--prazo 20] [--exemplos]
@@ -36,7 +39,9 @@ sys.path.insert(0, AQUI)  # antes do mercado: os dois têm um falso.py
 import hl  # noqa: E402
 from conta import DIA, dia_de  # noqa: E402
 
-FORMAS = ["cofres", "funding", "robos", "apostas"]
+FORMAS = ["cofres", "funding", "robos", "apostas", "looping", "opcoes", "pools"]
+# as que só rodam quando pedidas (`--formas`): os memecoins têm o job próprio, 2 vezes por dia (`memes.yml`)
+FORMAS_A_PARTE = ["memes"]
 V = 1
 CDI_ANO = 0.149
 REF_DIAS = 400
