@@ -101,7 +101,7 @@ class Falso:
         self._contar("gecko", 1)
         if caminho.startswith("/networks/base/pools/"):
             return {"data": {"id": "base_" + PL.POOL.lower(), "type": "pool",
-                             "attributes": {"volume_usd": {"h24": "151000000.5"}, "reserve_in_usd": "30500000.1",
+                             "attributes": {"volume_usd": {"h24": "23500000.5"}, "reserve_in_usd": "30500000.1",
                                             "base_token_price_usd": f"{self.mundo.px('ETH', self.agora):.2f}"}}}
         if hasattr(self, "_gecko_memes"):
             return self._gecko_memes(caminho)
