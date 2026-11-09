@@ -211,6 +211,27 @@ Futebol, só no papel (`apostas.py`). Diferenças das outras formas:
   `casaBet365`, `comGols`, `fonte` } e `pedidosRodada` (por fonte: csv, oddspapi, espn).
 - **eventos** (tipos `ganhou`, `perdeu`, `anulou`, `resumo`, `aviso`): até 3 apostas da versão padrão por dia de jogo, a
   aposta grátis de cada semana, um resumo semanal por versão (com o CLV) e os avisos da forma (`versao` null).
+- **Seguir o BDM** (versão `bdm`, `grupo` "Seguir palpites", desde 09/11/2026): os palpites do programa diário "Bom Dia
+  Mercado" do Theo Borges, lidos de `config/bdm/<data>.json` deste repositório (publicados pelo repositório do app,
+  `tools/ideias/bdm.py` de lá; a transcrição NUNCA vem para cá). Arquivo:
+  `{ "versao": 1, "data": "AAAA-MM-DD", "video": { "id", "publicado" }, "palpites": [{ "id": "<vídeo>-N", "mandante",
+  "visitante", "competicao", "inicio" ("AAAA-MM-DDTHH:MM:00-03:00" ou só a data), "mercado" ("1x2" | "dupla" | "dnb" |
+  "ou" | "ah" | "btts" | "cartoes" | "escanteios" | "outro"), "linha" (número ou null), "selecao" ("mandante" |
+  "empate" | "visitante" | "1x" | "12" | "x2" | "mais" | "menos" | "sim" | "nao" | null), "oddCitada" (1,01 a 50 ou
+  null), "fora" (plano condicional/ao vivo), "motivo" ("ao_vivo" | "condicional" | "cartoes" | "sem_jogo" | "outro" |
+  null) }] }`. A conta aposta R$ 20 fixos (2% da banca inicial) em cada palpite de **1X2** ou de **mais/menos de 2,5
+  gols** (os mercados que o teste já precifica; os outros ficam "fora do teste" com o nome do mercado no motivo) cujo
+  jogo está nos campeonatos acompanhados (times em qualquer ordem; início ±3 h, ou o dia), na odd da casa comum do 1º
+  preço a partir da hora em que a rodada VIU o palpite e antes do início (reconstruída depois do jogo pelo mesmo
+  /historical-odds; os jogos com palpite vão primeiro na fila do limite do dia). Só ao vivo: `historico` null e
+  `soAoVivo: true`. Um push em `config/bdm/**` roda o papel.yml só com as apostas. O `extra` dela tem também
+  `palpitesVistos`, `noTeste` (viraram aposta), `cobertura` (noTeste ÷ vistos), `esperando`, `fora` [{ `motivo`, `n` }]
+  (plano para o ao vivo, mercado fora do teste: …, jogo fora dos campeonatos acompanhados, visto depois do início do
+  jogo, sem odds antes do jogo, limite gratuito da OddsPapi, sem saldo na conta), `oddCitadaMedia` e `oddPegaMedia` (nas
+  apostas com odd citada), `ultimos` (até 12: { `jogo`, `competicao`, `inicio`, `dia`, `mercado`, `selecao`,
+  `oddCitada`, `odd`, `situacao` esperando | apostado | liquidado | anulado | fora, `motivo`, `resultado` (R$),
+  `placar`, `clv` }) e `desde`. Os eventos dela (`versao` "bdm") trazem cada aposta liquidada com a odd citada.
+  `config.bdm` { `aposta`, `mercados`, `fonte`, `desde` }.
 
 ## Looping (`looping.json`)
 

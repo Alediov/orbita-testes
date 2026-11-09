@@ -13,7 +13,11 @@ Os mesmos formatos das fontes de verdade (os que `apostas.py` lê):
 - `oddspapi(caminho, **params)`: /sports, /tournaments, /fixtures e /historical-odds da OddsPapi v4 (o formato que
   supomos: mercado 101 = 1X2 com resultados 101/102/103, histórico em players → "0" → [{createdAt, price}]); a Betano
   do Brasil (betano.bet.br) vem VAZIA por padrão (`betano_br_vazia`), como enquanto as apostas estão suspensas;
-- `json_url(url)`: o placar da ESPN (events → competitions → competitors com homeAway e score).
+- `json_url(url)`: o placar da ESPN (events → competitions → competitors com homeAway e score);
+- `bdm()`: os arquivos de config/bdm/ (os palpites do "Bom Dia Mercado" que o repositório do app publica), um por dia,
+  publicados às 11h UTC, com palpites de jogos do mundo de mentira: 1X2 (um deles com os times trocados, como a IA pode
+  escrever), mais/menos de 2,5 gols, mercados fora do teste (ambas marcam, handicap), um plano para o ao vivo
+  (`fora`) e um jogo de um campeonato que o teste não acompanha.
 
 `Falso` é o mixin (o cliente falso das formas o herda); `Avulsa(cli)` é a mesma coisa sozinha, usada quando o cliente
 não tem o mixin (o horário vem de `cli.agora`).
@@ -359,6 +363,19 @@ class Falso:
                              "team": {"displayName": ESPN.get(j["fora"], j["fora"])}}]}]})
         return {"events": evs}
 
+    # ------------------------------------------------------------------ BDM (config/bdm/)
+    def bdm(self):
+        hoje = dt.datetime.fromtimestamp(self.agora / 1000, dt.timezone.utc).date()
+        out = []
+        for k in range(10, -1, -1):
+            d = hoje - dt.timedelta(days=k)
+            if _ms_dia(d, BDM_PUBLICA_H) > self.agora:
+                continue
+            x = bdm_do_dia(self.futebol, d)
+            if x:
+                out.append(x)
+        return out
+
     # ------------------------------------------------------------------ OddsPapi
     def oddspapi(self, caminho, **params):
         if not getattr(self, "chave", None):
@@ -398,6 +415,58 @@ class Falso:
                     livros[c] = historico_livro(j, c, self.agora)
             return {"fixtureId": j["id"], "bookmakers": livros}
         raise odds.Erro(f"HTTP 404 em OddsPapi {caminho}", 404)
+
+
+# ---------------------------------------------------------------------------------------------------- BDM
+BDM_PUBLICA_H = 11  # UTC (8h em Brasília)
+COMPETICAO = {"bra": "Brasileirão", "eng": "Premier League", "esp": "La Liga", "ita": "Série A", "ger": "Bundesliga",
+              "fra": "Ligue 1", "lib": "Libertadores"}
+
+
+def _iso_br(ms):
+    return dt.datetime.fromtimestamp(ms / 1000 - 3 * 3600, dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:00-03:00")
+
+
+def bdm_do_dia(fut, d: dt.date):
+    """O arquivo de config/bdm/<d>.json do mundo de mentira (None se não há jogos para palpitar)."""
+    pub = _ms_dia(d, BDM_PUBLICA_H)
+    jogos = []
+    for liga in ("bra", "eng", "esp", "ita", "ger", "fra", "lib"):
+        jogos += fut.entre(liga, pub + HORA, _ms_dia(d + dt.timedelta(days=1), 6))
+    jogos.sort(key=lambda j: (j["inicio"], j["id"]))
+    if not jogos:
+        return None
+    video = f"bdm{d:%y%m%d}FK"
+    out, n = [], 0
+
+    def add(**k):
+        nonlocal n
+        n += 1
+        out.append({"id": f"{video}-{n}", **k})
+
+    def citada(j, mk, i):
+        return odds_de(j, "betano", 8)[mk][i]
+
+    for k, j in enumerate(jogos[:2]):
+        i = 0 if j["p1x2"][0] >= j["p1x2"][2] else 2
+        trocar = k == 1 and d.day % 2 == 0  # a IA escreveu o visitante primeiro
+        m, v = (j["fora"], j["casa"]) if trocar else (j["casa"], j["fora"])
+        sel = "mandante" if (i == 0) != trocar else "visitante"
+        add(mandante=m, visitante=v, competicao=COMPETICAO[j["liga"]], inicio=_iso_br(j["inicio"]), mercado="1x2",
+            linha=None, selecao=sel, oddCitada=citada(j, "1x2", i), fora=False, motivo=None)
+    if len(jogos) > 2:
+        j = jogos[2]
+        i = 0 if j["pou"][0] > 0.5 else 1
+        add(mandante=j["casa"], visitante=j["fora"], competicao=COMPETICAO[j["liga"]], inicio=_iso_br(j["inicio"])[:10],
+            mercado="ou", linha=2.5, selecao=["mais", "menos"][i], oddCitada=citada(j, "ou", i), fora=False, motivo=None)
+    j = jogos[-1]
+    add(mandante=j["casa"], visitante=j["fora"], competicao=COMPETICAO[j["liga"]], inicio=_iso_br(j["inicio"]),
+        mercado="btts", linha=None, selecao="sim", oddCitada=1.8, fora=False, motivo=None)
+    add(mandante=j["casa"], visitante=j["fora"], competicao=COMPETICAO[j["liga"]], inicio=_iso_br(j["inicio"]),
+        mercado="ou", linha=1.5, selecao="mais", oddCitada=None, fora=True, motivo="ao_vivo")
+    add(mandante="Ajax", visitante="PSV", competicao="Eredivisie", inicio=_iso_br(pub + 6 * HORA), mercado="1x2",
+        linha=None, selecao="visitante", oddCitada=2.4, fora=False, motivo=None)
+    return {"versao": 1, "data": d.isoformat(), "video": {"id": video, "publicado": _iso(pub)}, "palpites": out}
 
 
 class Avulsa(Falso):

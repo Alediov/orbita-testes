@@ -6,9 +6,17 @@
 # A cada 6 h basta: as simulações andam pelos históricos (velas, funding, pontos dos cofres), então um horário pulado
 # pelo GitHub é alcançado na rodada seguinte e não muda o resultado.
 name: Testes de mercado (outras formas, no papel)
+#
+# Seguir o BDM (apostas): o repositório do app publica os palpites do dia em config/bdm/<data>.json (por um token com
+# acesso a este repositório, então o push dispara workflows); cada push desses roda SÓ as apostas, para a rodada ver
+# o palpite logo (a odd da conta é a da hora em que a rodada o viu). Não gasta mais da OddsPapi: as odds de cada jogo
+# continuam sendo um /historical-odds só, depois do jogo.
 on:
   schedule:
     - cron: "23 */6 * * *"
+  push:
+    branches: [main]
+    paths: ["config/bdm/**"]
   workflow_dispatch:
     inputs:
       formas:
@@ -44,7 +52,7 @@ jobs:
         env:
           # chave GRATUITA da OddsPapi (apostas no papel, ao vivo); sem ela, só o teste no passado. Nunca vai para arquivo.
           ODDSPAPI_KEY: ${{ secrets.ODDSPAPI_KEY }}
-        run: python3 -I tools/papel/papel.py --dados dados --prazo 24 ${{ inputs.formas && format('--formas {0}', inputs.formas) || '' }}
+        run: python3 -I tools/papel/papel.py --dados dados --prazo 24 ${{ github.event_name == 'push' && '--formas apostas' || (inputs.formas && format('--formas {0}', inputs.formas) || '') }}
       - name: Guardar no ramo papel
         if: always()
         env:

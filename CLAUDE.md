@@ -67,6 +67,14 @@ acabavam; aqui os executores padrão não têm limite.
   (6) **Memecoins** (`VERSAO` 2, recomeçou): o PumpPortal manda lançamentos de outras plataformas (filtro `pool` "pump")
   e a DexScreener não lista os tokens pequenos (GeckoTerminal confere; nenhum dos dois = "sem dados", fora das apostas).
   Detalhes no `tools/papel/FORMATO.md`.
+- **Seguir o BDM** (pedido do Alediov, 09/11/2026; só esta conta, nenhum mercado novo): versão `bdm` das apostas, que
+  segue os palpites do programa diário "Bom Dia Mercado" do Theo Borges. O repositório PRIVADO extrai os palpites da
+  transcrição (que o celular baixa; `tools/ideias/bdm.py` + `ideias-bdm.yml` de lá, com a IA gratuita do filtro) e
+  publica aqui SÓ os campos do palpite em `config/bdm/<data>.json` (jogo, campeonato, início, mercado, seleção, odd
+  citada, id e data do vídeo; nunca o texto). R$ 20 fixos por palpite de 1X2 ou mais/menos de 2,5 gols, na odd da hora
+  em que a rodada viu o palpite (antes do jogo), liquidado pela ESPN, CLV contra o fechamento; o resto conta como "fora
+  do teste" com o motivo. Só ao vivo. Um push em `config/bdm/**` roda o papel.yml só com as apostas. Formato e regras no
+  `tools/papel/FORMATO.md`; teste em `teste_apostas.py` (`teste_bdm_*`).
 - Os exemplos que o app usa sem rede ficam no repositório do app (`tools/mercado/exemplos/`); refazer aqui
   (`python3 tools/papel/falso.py`) e copiar para lá (`tools/mercado/exemplos/papel/`) quando o formato mudar.
 - Os workflows (`mercado.yml`, `papel.yml`, `memes.yml`, `ideias.yml`) religam os agendamentos pela API a cada rodada (num

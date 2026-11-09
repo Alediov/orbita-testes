@@ -267,11 +267,13 @@ def teste_rodadas():
         # formato
         assert d["padrao"] == "valor3" and d["nome"] == "Apostas de valor"
         ids = [v["id"] for v in d["versoes"]]
-        assert ids == ["valor3", "valor5", "valor8", "kelly", "favoritos", "azaroes", "gratis", "semfiltro"]
+        assert ids == ["valor3", "valor5", "valor8", "kelly", "favoritos", "azaroes", "gratis", "semfiltro", "bdm"]
         riscos = {v["id"]: v["risco"] for v in d["versoes"]}
         assert riscos["azaroes"] == riscos["kelly"] == "alto" and riscos["gratis"] == "baixo" and riscos["valor3"] == "médio"
-        assert {v["grupo"] for v in d["versoes"]} == {"Valor", "Referência", "Aposta grátis"}
-        for v in d["versoes"]:
+        assert {v["grupo"] for v in d["versoes"]} == {"Valor", "Referência", "Aposta grátis", "Seguir palpites"}
+        bdm = d["versoes"][-1]
+        assert bdm["historico"] is None and bdm["soAoVivo"] and bdm["aoVivo"]["extra"]["palpitesVistos"] > 0
+        for v in d["versoes"][:-1]:
             for nome in ("aoVivo", "historico"):
                 c = v[nome]
                 assert c and c["serie"][0][1] == 1000.0, (v["id"], nome)
@@ -282,7 +284,7 @@ def teste_rodadas():
             dias = [x for x, _ in h["serie"]]
             assert len(dias) == len(set(dias)) and dias == sorted(dias)
             assert len(dias) > 400  # um ponto por dia desde 2024
-        hv = {v["id"]: v["historico"]["extra"] for v in d["versoes"]}
+        hv = {v["id"]: v["historico"]["extra"] for v in d["versoes"] if v["historico"]}
         assert hv["valor3"]["apostas"] >= hv["valor5"]["apostas"] >= hv["valor8"]["apostas"] > 0
         assert hv["semfiltro"]["clvMedio"] < 0 < hv["valor3"]["clvMedio"]
         assert hv["valor3"]["fonteSoft"] == "Bet365 (no lugar da Betano)" and "ganhoGratis" in hv["gratis"]
@@ -326,7 +328,7 @@ def teste_sem_chave_e_falhas():
         assert ind["formas"]["apostas"]["ok"]
         d = _forma(pasta)
         conferir_forma(d, "apostas")
-        assert all(v["aoVivo"] is None and v["historico"] for v in d["versoes"])
+        assert all(v["aoVivo"] is None and (v["historico"] or v.get("soAoVivo")) for v in d["versoes"])
         assert d["config"]["aoVivo"] == "falta a chave gratuita da OddsPapi" and "OddsPapi" in d["avisos"][0]
         assert cli.contagem["oddspapi"] == 0 and d["itens"] == []
         # a chave chega depois: o ao vivo começa
@@ -431,6 +433,114 @@ def teste_formato_estranho():
         shutil.rmtree(pasta, ignore_errors=True)
 
 
+# ------------------------------------------------------------------------------------------- Seguir o BDM
+def _pk(**k):
+    base = {"id": "v1-1", "mandante": "Flamengo", "visitante": "Vasco", "competicao": "Brasileirão",
+            "inicio": "2026-11-09T21:30:00-03:00", "mercado": "1x2", "linha": None, "selecao": "mandante",
+            "oddCitada": 1.85, "fora": False, "motivo": None}
+    base.update(k)
+    return A.palpite_bdm(base, "2026-11-09", "v1")
+
+
+def teste_bdm_palpites():
+    pk = _pk()
+    assert pk["i"] == A._ms("2026-11-10T00:30:00Z") and pk["dia"] == "2026-11-09" and pk["oc"] == 1.85
+    assert A.precificavel(pk) == (True, None)
+    assert A.texto_selecao(pk) == "Flamengo vence" and A.nome_mercado(pk) == "Resultado (1X2)"
+    # só 1X2 e mais/menos de 2,5 gols são precificados; o resto fica fora com o mercado no motivo
+    assert A.precificavel(_pk(mercado="ou", linha=2.5, selecao="mais"))[0]
+    ok, m = A.precificavel(_pk(mercado="ou", linha=1.5, selecao="mais"))
+    assert not ok and m == "mercado fora do teste: Mais/menos de 1,5 gols", m
+    ok, m = A.precificavel(_pk(mercado="ah", linha=-1.5, selecao="visitante"))
+    assert not ok and "Handicap asiático" in m
+    assert A.texto_selecao(_pk(mercado="ah", linha=-1.5, selecao="visitante")) == "Vasco −1,5 (handicap)"
+    assert A.precificavel(_pk(mercado="cartoes", linha=4.5, selecao="mais", fora=True, motivo="cartoes")) == (False, "cartões")
+    assert A.precificavel(_pk(fora=True, motivo="ao_vivo")) == (False, "plano para o ao vivo")
+    # campos estranhos: mercado desconhecido some, seleção inválida vira None, odd fora de 1,01–50 vira None
+    assert _pk(mercado="gols do Pedro") is None
+    assert _pk(selecao="talvez")["sel"] is None and _pk(oddCitada=80)["oc"] is None and _pk(oddCitada="1,9")["oc"] == 1.9
+    assert _pk(inicio="2026-11-10")["i"] is None and _pk(inicio="2026-11-10")["dia"] == "2026-11-10"
+    # o jogo: times em qualquer ordem, início ±3 h; sem hora, o dia (ou o seguinte, depois da meia-noite)
+    fx = [{"id": "a", "c": "Vasco da Gama", "f": "CR Flamengo", "i": A._ms("2026-11-10T00:00:00Z")},
+          {"id": "b", "c": "Flamengo", "f": "Vasco", "i": A._ms("2026-11-20T00:00:00Z")}]
+    f, inv = A.achar_jogo(pk, fx)
+    assert f["id"] == "a" and inv
+    assert A.indice_bdm(pk, inv) == 2 and A.indice_bdm(_pk(selecao="empate"), True) == 1
+    assert A.indice_bdm(_pk(mercado="ou", linha=2.5, selecao="menos"), True) == 1
+    assert A.achar_jogo(_pk(inicio="2026-11-09"), fx)[0]["id"] == "a"  # 21h de 09/11 em Brasília
+    assert A.achar_jogo(_pk(inicio="2026-11-12"), fx)[0] is None
+    # a odd: o 1º momento a partir de quando o palpite foi visto, antes do início
+    hs = [(100, 2.0), (200, 2.1), (300, 2.2)]
+    ph = [[(50, 1.9)], [(50, 3.5)], [(250, 4.0)]]
+    assert A.preco_bdm(hs, ph, 150, 400) == (250, 2.1, [1.9, 3.5, 4.0])
+    assert A.preco_bdm(hs, ph, 150, 240) is None
+
+
+def teste_bdm_arquivos():
+    pasta = tempfile.mkdtemp(prefix="bdm-")
+    try:
+        for d, conteudo in (("2026-11-09", {"versao": 1, "data": "2026-11-09", "video": {"id": "x"}, "palpites": []}),
+                            ("2026-10-01", {"versao": 1, "data": "2026-10-01", "palpites": []}),
+                            ("2026-11-08", "não é json")):
+            with open(os.path.join(pasta, d + ".json"), "w") as f:
+                f.write(conteudo if isinstance(conteudo, str) else json.dumps(conteudo))
+        with open(os.path.join(pasta, "LEIA-ME.md"), "w") as f:
+            f.write("x")
+        lidos = A.ler_bdm(pasta, A._ms("2026-11-09T15:00:00Z"))
+        assert [x["data"] for x in lidos] == ["2026-11-09"], lidos  # o velho e o quebrado ficam de fora
+        assert A.ler_bdm(os.path.join(pasta, "nao-existe")) == []
+    finally:
+        shutil.rmtree(pasta, ignore_errors=True)
+
+
+def teste_bdm_rodadas():
+    """A conta Seguir o BDM nas rodadas: cada palpite vira aposta, fica fora (com o motivo) ou espera; a odd é a da
+    hora em que a rodada viu o palpite, sem pedido a mais à OddsPapi."""
+    pasta = tempfile.mkdtemp(prefix="apostas-")
+    try:
+        cli = Cli()
+        t0 = cli.agora
+        for k in range(40):
+            cli.agora = t0 + k * 6 * HORA
+            rodar(cli, pasta)
+        d = _forma(pasta)
+        V = _estado(pasta)["vivo"]
+        v = next(x for x in d["versoes"] if x["id"] == "bdm")
+        e = v["aoVivo"]["extra"]
+        assert v["nome"] == "Seguir o BDM" and v["historico"] is None and v["soAoVivo"]
+        assert e["palpitesVistos"] > 20 and 0 < e["noTeste"] < e["palpitesVistos"]
+        assert e["cobertura"] == round(e["noTeste"] / e["palpitesVistos"], 4)
+        assert e["noTeste"] + e["esperando"] + sum(f["n"] for f in e["fora"]) >= e["palpitesVistos"]
+        motivos = {f["motivo"] for f in e["fora"]}
+        assert {"plano para o ao vivo", "mercado fora do teste: Ambas marcam",
+                "jogo fora dos campeonatos acompanhados"} <= motivos, motivos
+        assert e["apostas"] > 5 and e["acerto"] is not None and e["clvMedio"] is not None and e["piorSequencia"] >= 1
+        assert e["oddCitadaMedia"] and e["oddPegaMedia"] and 0 < len(e["ultimos"]) <= A.BDM_ULTIMOS
+        # cada aposta: R$ 20, a odd da casa no 1º preço a partir da hora em que foi visto, antes do início
+        B = V["bdm"]
+        feitas = [p for p in B["p"].values() if p.get("o")]
+        assert feitas
+        for p in feitas:
+            assert p["visto"] < p["i"]
+        assert all(x["st"] == 20.0 for x in V["contas"]["bdm"]["abertas"])
+        assert not any(p["st"] == "esperando" and (p["i"] or 0) + 2 * DIA < cli.agora for p in B["p"].values())
+        # palpite com os times trocados pela IA virou a aposta certa (o lado do time, não a posição)
+        trocados = [p for p in feitas if p.get("inv")]
+        assert trocados
+        for p in trocados:
+            lado = p["v"] if p["sel"] == "visitante" else p["m"]
+            f = V["fx"].get(p["fx"])
+            if f:
+                i = A.indice_bdm(p, True)
+                assert A.mesmo_time(lado, f["c"] if i == 0 else f["f"]), (p, f)
+        assert any(ev["versao"] == "bdm" and "odd citada" in ev["texto"] for ev in d["eventos"])
+        # nenhum pedido a mais: um /historical-odds por jogo, com ou sem palpite
+        hist = sum(1 for f in V["fx"].values() if f["st"] in ("feito", "semOdds"))
+        assert cli.contagem["oddspapi"] <= hist + 60, (cli.contagem, hist)
+    finally:
+        shutil.rmtree(pasta, ignore_errors=True)
+
+
 def teste_avulsa():
     """Sem o mixin (o falso.py de hoje), os exemplos usam a fonte avulsa."""
     pasta = tempfile.mkdtemp(prefix="apostas-")
@@ -454,5 +564,8 @@ if __name__ == "__main__":
     teste_sem_chave_e_falhas()
     teste_lista_vazia_404()
     teste_formato_estranho()
+    teste_bdm_palpites()
+    teste_bdm_arquivos()
+    teste_bdm_rodadas()
     teste_avulsa()
     print("ok")

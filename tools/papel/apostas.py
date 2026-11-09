@@ -23,6 +23,15 @@ Fontes (`odds.py`): o teste no passado usa as planilhas do football-data.co.uk (
 por jogo terminado (o histórico de preços da Pinnacle e da Betano do começo ao fechamento, de onde se reconstrói a
 aposta de 6 h antes, sem olhar o futuro) e alguns `/fixtures`; os placares vêm da OddsPapi, se trouxer, ou da ESPN.
 Sem a chave, o ao vivo não roda (`aoVivo` null) e só o teste no passado aparece.
+
+"Seguir o BDM" (versão `bdm`, pedido do Alediov, 09/11/2026): os palpites do programa diário "Bom Dia Mercado" do
+Theo Borges (YouTube), extraídos no repositório privado do app (tools/ideias/bdm.py) e publicados aqui em
+`config/bdm/<data>.json` SÓ com os campos do palpite (jogo, campeonato, início, mercado, seleção, odd citada, o id e a
+data do vídeo; nunca o texto da transcrição). A conta aposta R$ 20 fixos (2% da banca inicial) em cada palpite que o
+teste sabe precificar (1X2 e mais/menos de 2,5 gols, os mesmos mercados das outras versões; os outros contam como
+"fora do teste"), na odd da casa comum da hora em que a rodada VIU o palpite (antes do início do jogo; reconstruída
+depois do jogo pelo mesmo /historical-odds das outras versões, sem pedido a mais à OddsPapi). Só ao vivo (`historico`
+null): não há teste no passado.
 """
 from __future__ import annotations
 
@@ -30,6 +39,7 @@ import copy
 import csv
 import datetime as dt
 import io
+import json
 import math
 import os
 import re
@@ -37,6 +47,8 @@ import unicodedata
 
 import odds
 from conta import CAPITAL, DIA, FUSO_MS, HORA, Curva, Eventos, dia_de, num_br, pct_br
+
+AQUI = os.path.dirname(os.path.abspath(__file__))
 
 try:  # o falso da Hyperliquid levanta hl.Erro quando um pedido "falha" nos testes
     import hl
@@ -111,6 +123,26 @@ VAZIOS_PARA_DESCARTAR = 5
 RETESTAR = 14 * DIA
 SEM_PINNACLE_PAUSA = 6       # jogos seguidos sem a Pinnacle: pausa o ao vivo 3 dias (formato inesperado?)
 ESPN_MAX = 30                # pedidos ao placar da ESPN por rodada
+
+# ---------------------------------------------------------------------------------------------------- Seguir o BDM
+PASTA_BDM = os.path.join(AQUI, "..", "..", "config", "bdm")
+BDM_APOSTA = 0.02            # da banca inicial (R$ 20), fixa
+BDM_LER_DIAS = 10            # arquivos dos últimos 10 dias
+BDM_GUARDAR_DIAS = 30        # palpites guardados no estado (os números ficam nos contadores)
+BDM_ULTIMOS = 12             # palpites mostrados no app
+BDM_MERCADOS = {             # mercado → (nome, seleções aceitas)
+    "1x2": ("Resultado (1X2)", ("mandante", "empate", "visitante")),
+    "dupla": ("Dupla chance", ("1x", "12", "x2")),
+    "dnb": ("Empate anula", ("mandante", "visitante")),
+    "ou": ("Mais/menos gols", ("mais", "menos")),
+    "ah": ("Handicap asiático", ("mandante", "visitante")),
+    "btts": ("Ambas marcam", ("sim", "nao")),
+    "cartoes": ("Cartões", ("mais", "menos", "mandante", "visitante")),
+    "escanteios": ("Escanteios", ("mais", "menos", "mandante", "visitante")),
+    "outro": ("Outro mercado", ()),
+}
+BDM_MOTIVOS = {"ao_vivo": "plano para o ao vivo", "condicional": "palpite condicional", "cartoes": "cartões",
+               "sem_jogo": "sem jogo definido", "outro": "fora do plano"}
 URL_ESPN = "https://site.api.espn.com/apis/site/v2/sports/soccer/{liga}/scoreboard?dates={dia}"
 
 # ---------------------------------------------------------------------------------------------------- versões
@@ -133,7 +165,11 @@ VERSOES = [
      "o valor não volta, só o lucro (a conta mostra 1.000 + o que ganhou)."),
     ("semfiltro", "Sem filtro", "Referência", "médio", {"tipo": "casa", "faixa": (1.01, 1000.0), "stake": "fixo"},
      "Referência: aposta R$ 10 no time da casa em todo jogo, sem olhar valor; mostra a margem da casa comendo a banca."),
+    ("bdm", "Seguir o BDM", "Seguir palpites", "médio", {"tipo": "bdm", "stake": "bdm"},
+     "Aposta R$ 20 (2% da banca inicial) em cada palpite do Bom Dia Mercado, do Theo Borges, que o teste sabe "
+     "precificar (1X2 e mais/menos de 2,5 gols), na odd da hora em que o palpite apareceu. Só ao vivo."),
 ]
+SO_AO_VIVO = {"bdm"}
 PADRAO = "valor3"
 
 FRASE = ("Aposta (no papel) quando a odd da casa paga mais do que a chance real do jogo vale; a chance real vem das "
@@ -174,6 +210,9 @@ AVISOS = [
     "só para ver como o método se sairia.",
     "O ao vivo segue poucos jogos por dia por causa do limite gratuito da OddsPapi; as médias do ao vivo demoram mais "
     "para firmar que as do teste no passado.",
+    "Seguir o BDM: os palpites são lidos de uma transcrição automática do vídeo por uma IA, que pode errar o jogo, o "
+    "mercado ou a odd; o papel aposta só no que dá para conferir (o jogo achado num dos campeonatos acompanhados, antes "
+    "do início, no 1X2 ou no mais/menos de 2,5 gols) e mostra quantos palpites ficaram de fora e por quê.",
 ]
 
 
@@ -304,7 +343,9 @@ class Conta:
 
     # ------------------------------------------------------------------ decidir
     def _stake(self, odd, p):
-        if self.regra.get("stake") == "kelly":
+        if self.regra.get("stake") == "bdm":
+            st = round(BDM_APOSTA * self.curva.capital, 2)
+        elif self.regra.get("stake") == "kelly":
             f = min(KELLY_FRACAO * kelly(odd, p), KELLY_MAX)
             st = round(f * self.caixa, 2)
         else:
@@ -323,7 +364,7 @@ class Conta:
                 if st:
                     out.append(nova_aposta(j, "1x2", 0, st))
             return out
-        if r["tipo"] != "valor":
+        if r["tipo"] != "valor":  # "gratis" e "bdm" apostam por fora (gratis_da_semana, Vivo.bdm_apostar)
             return out
         for mk in ("1x2", "ou"):
             m = j["mk"].get(mk)
@@ -659,7 +700,7 @@ def preencher(curva, ate):
 def simular_passado(jogos, ini, fim):
     """Todas as versões nos jogos do passado (contas novas). Devolve id → conta (resumo)."""
     jogos = sorted(jogos, key=lambda j: j["inicio"])
-    contas = {cfg[0]: Conta(cfg, ini) for cfg in VERSOES}
+    contas = {cfg[0]: Conta(cfg, ini) for cfg in VERSOES if cfg[0] not in SO_AO_VIVO}
     for c in contas.values():
         c.curva.marcar(ini, c.curva.capital)
     for j in jogos:
@@ -1016,6 +1057,164 @@ def jogos_espn(r):
     return out
 
 
+# ---------------------------------------------------------------------------------------------------- Seguir o BDM
+def _texto_curto(x, n=60):
+    x = re.sub(r"\s+", " ", str(x or "")).strip()
+    return x[:n] if x else None
+
+
+def palpite_bdm(pk, dia, video):
+    """Um palpite de config/bdm/<dia>.json conferido e no formato do estado (None se não der para usar)."""
+    if not isinstance(pk, dict):
+        return None
+    pid = _texto_curto(pk.get("id"), 40)
+    m, v = _texto_curto(pk.get("mandante")), _texto_curto(pk.get("visitante"))
+    mk = str(pk.get("mercado") or "").strip().lower()
+    if not pid or mk not in BDM_MERCADOS:
+        return None
+    sel = str(pk.get("selecao") or "").strip().lower() or None
+    if sel is not None and sel not in BDM_MERCADOS[mk][1]:
+        sel = None
+    oc = _f(pk.get("oddCitada"))
+    ini = _ms(pk.get("inicio")) if pk.get("inicio") and "T" in str(pk.get("inicio")) else None
+    d = str(pk.get("inicio") or dia)[:10]
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", d):
+        d = dia
+    return {"id": pid, "m": m, "v": v, "comp": _texto_curto(pk.get("competicao")), "i": ini, "dia": d, "mk": mk,
+            "ln": _f(pk.get("linha")), "sel": sel, "oc": round(oc, 3) if oc and 1.01 <= oc <= 50 else None,
+            "vid": video, "fora": bool(pk.get("fora")), "motivo": pk.get("motivo")}
+
+
+def ler_bdm(pasta=None, agora=None):
+    """Os arquivos dos últimos BDM_LER_DIAS dias de config/bdm/ (lista de {"data", "video", "palpites"})."""
+    pasta = pasta or PASTA_BDM
+    try:
+        nomes = sorted(n for n in os.listdir(pasta) if re.fullmatch(r"\d{4}-\d{2}-\d{2}\.json", n))
+    except OSError:
+        return []
+    if agora:
+        corte = dia_de(agora - BDM_LER_DIAS * DIA)
+        nomes = [n for n in nomes if n[:10] >= corte]
+    out = []
+    for n in nomes:
+        try:
+            with open(os.path.join(pasta, n), encoding="utf-8") as f:
+                d = json.load(f)
+        except (OSError, ValueError):
+            continue
+        if isinstance(d, dict) and isinstance(d.get("palpites"), list):
+            out.append(d)
+    return out
+
+
+def nome_mercado(pk):
+    nome = BDM_MERCADOS.get(pk["mk"], ("?",))[0]
+    if pk["mk"] == "ou" and pk.get("ln") is not None:
+        nome = f"Mais/menos de {num_br(pk['ln'], 1)} gols"
+    elif pk.get("ln") is not None and pk["mk"] in ("ah", "cartoes", "escanteios"):
+        nome += f" ({num_br(pk['ln'], 1)})"
+    return nome
+
+
+def texto_selecao(pk):
+    """A seleção do palpite em português ("Flamengo vence", "mais de 2,5 gols"…)."""
+    sel, mk = pk.get("sel"), pk["mk"]
+    m, v = pk.get("m") or "mandante", pk.get("v") or "visitante"
+    if not sel:
+        return nome_mercado(pk)
+    lado = {"mandante": m, "visitante": v}.get(sel)
+    if mk == "1x2":
+        return "empate" if sel == "empate" else f"{lado} vence"
+    if mk == "dupla":
+        return {"1x": f"{m} ou empate", "12": f"{m} ou {v}", "x2": f"empate ou {v}"}[sel]
+    if mk == "dnb":
+        return f"{lado} (empate anula)"
+    if mk == "btts":
+        return "ambas marcam" if sel == "sim" else "não ambas marcam"
+    ln = f" {num_br(pk['ln'], 1)}" if pk.get("ln") is not None else ""
+    if mk == "ah" and pk.get("ln") is not None:
+        x = pk["ln"]
+        return f"{lado} {'+' if x > 0 else '−' if x < 0 else ''}{num_br(abs(x), 1)} (handicap)"
+    unid = {"ou": "gols", "cartoes": "cartões", "escanteios": "escanteios"}.get(mk, "")
+    if sel in ("mais", "menos"):
+        return f"{sel} de{ln} {unid}".replace("  ", " ")
+    return f"{lado}: {unid}{ln}"
+
+
+def precificavel(pk):
+    """(True, None) se o teste sabe precificar o palpite; senão (False, motivo)."""
+    if pk["fora"]:
+        return False, BDM_MOTIVOS.get(str(pk.get("motivo") or ""), "fora do plano")
+    if not pk.get("m") or not pk.get("v"):
+        return False, "sem jogo definido"
+    if pk["mk"] == "1x2" and pk.get("sel"):
+        return True, None
+    if pk["mk"] == "ou" and pk.get("sel") in ("mais", "menos") and pk.get("ln") == 2.5:
+        return True, None
+    return False, f"mercado fora do teste: {nome_mercado(pk)}"
+
+
+def achar_jogo(pk, fxs):
+    """(fixture, invertido) entre os jogos acompanhados: os dois times batem (em qualquer ordem) e o início também
+    (±3 h se o palpite tem a hora; senão o mesmo dia de Brasília ou o seguinte, para os jogos depois da meia-noite)."""
+    melhor = None
+    for f in fxs:
+        if pk.get("i") is not None:
+            if abs(f["i"] - pk["i"]) > 3 * HORA:
+                continue
+        else:
+            d = dia_de(f["i"])
+            prox = (dt.date.fromisoformat(pk["dia"]) + dt.timedelta(days=1)).isoformat()
+            if d not in (pk["dia"], prox):
+                continue
+        if mesmo_time(pk["m"], f["c"]) and mesmo_time(pk["v"], f["f"]):
+            return f, False
+        if mesmo_time(pk["m"], f["f"]) and mesmo_time(pk["v"], f["c"]):
+            melhor = melhor or (f, True)
+    return melhor or (None, False)
+
+
+def indice_bdm(pk, inv):
+    if pk["mk"] == "ou":
+        return 0 if pk["sel"] == "mais" else 1
+    i = {"mandante": 0, "empate": 1, "visitante": 2}[pk["sel"]]
+    return 2 - i if inv else i
+
+
+def preco_bdm(hs, ph, t, ini):
+    """(instante, odd da casa, odds da Pinnacle) no 1º momento a partir de `t` (antes do início) em que as duas casas
+    têm preço; None se não houver."""
+    momentos = sorted({t} | {ts for h in [hs, *ph] for ts, _ in h or [] if t < ts < ini})
+    for x in momentos:
+        o = preco_em(hs, x)
+        po = [preco_em(h, x) for h in ph]
+        if o and all(po):
+            return x, o, po
+    return None
+
+
+def resumo_bdm(B, conta=None):
+    """Os números próprios da conta Seguir o BDM (vão no `extra` dela)."""
+    c = B.get("cont") or {}
+    vistos, no = int(c.get("vistos", 0)), int(c.get("noTeste", 0))
+    ps = sorted((B.get("p") or {}).values(), key=lambda x: (x.get("i") or _ms(x["dia"] + "T12:00:00-03:00") or 0, x["id"]))
+    ap = [x for x in ps if x.get("o")]
+    ultimos = []
+    for x in reversed(ps[-BDM_ULTIMOS:]):
+        ultimos.append({"jogo": f"{x.get('m') or '?'} × {x.get('v') or '?'}", "competicao": x.get("comp"),
+                        "inicio": x.get("i"), "dia": x["dia"], "mercado": nome_mercado(x), "selecao": texto_selecao(x),
+                        "oddCitada": x.get("oc"), "odd": x.get("o"), "situacao": x.get("st"),
+                        "motivo": x.get("motivo") if x.get("st") == "fora" else None,
+                        "resultado": x.get("r"), "placar": x.get("pl"), "clv": x.get("clv")})
+    fora = sorted(((m, n) for m, n in (c.get("fora") or {}).items()), key=lambda kv: -kv[1])
+    cit = [x for x in ap if x.get("oc")]
+    return {"palpitesVistos": vistos, "noTeste": no, "cobertura": round(no / vistos, 4) if vistos else None,
+            "esperando": sum(1 for x in ps if x.get("st") in ("esperando", "apostado")),
+            "fora": [{"motivo": m, "n": n} for m, n in fora],
+            "oddCitadaMedia": round(sum(x["oc"] for x in cit) / len(cit), 3) if cit else None,
+            "oddPegaMedia": round(sum(x["o"] for x in cit) / len(cit), 3) if cit else None,
+            "ultimos": ultimos, "desde": B.get("desde")}
+
 # ---------------------------------------------------------------------------------------------------- OddsPapi: orçamento
 class Esgotado(Exception):
     pass
@@ -1075,9 +1274,9 @@ def _iso(ms, so_dia=False):
 class Vivo:
     """O acompanhamento ao vivo pela OddsPapi (só com a chave)."""
 
-    def __init__(self, fonte, V, agora, contas, ev, evdia, log, erros):
+    def __init__(self, fonte, V, agora, contas, ev, evdia, log, erros, bdm_dias=()):
         self.fonte, self.V, self.agora, self.contas, self.ev, self.evdia = fonte, V, agora, contas, ev, evdia
-        self.log, self.erros = log, erros
+        self.log, self.erros, self.bdm_dias = log, erros, list(bdm_dias or [])
         self.orc = Orcamento(fonte, V, agora)
         for k, pad in (("fx", {}), ("fxEm", {}), ("fxAte", {}), ("fxVazio", {}), ("porDia", {}), ("gratis", {}),
                        ("soft", {"vazios": {}, "descartadas": {}, "usada": None}), ("pulados", 0), ("semOdds", 0)):
@@ -1236,7 +1435,8 @@ class Vivo:
         for f in prontos:
             dias.setdefault(dia_de(f["i"]), []).append(f)
         for d in sorted(dias):
-            lista = sorted(dias[d], key=lambda f: (PRIORIDADE.get(f["l"], 99), f["i"]))
+            # os jogos com palpite do BDM primeiro (o limite do dia pode não chegar a todos)
+            lista = sorted(dias[d], key=lambda f: (0 if f.get("bdm") else 1, PRIORIDADE.get(f["l"], 99), f["i"]))
             for f in lista:
                 feitos = int(V["porDia"].get(d, 0))
                 if feitos >= self.orc.cota_do_dia(ativas):
@@ -1279,6 +1479,8 @@ class Vivo:
                     f["st"] = "semOdds"
                     continue
                 V["soft"]["usada"] = usada
+                if f.get("bdm"):
+                    self.bdm_apostar(f, pin, dados[usada], NOME_SOFT[usada])
                 j = jogo_vivo(f, pin, dados[usada], NOME_SOFT[usada])
                 if not j:
                     V["semOdds"] = int(V.get("semOdds", 0)) + 1
@@ -1355,6 +1557,8 @@ class Vivo:
             t = max(ap["i"] + 2 * HORA, c.curva.t)
             if pl:
                 res = c.liquidar(ap, pl, t, self.ev)
+                if c.id == "bdm":
+                    self._bdm_liquidou(ap, res, pl, t)
                 if c.id == PADRAO or c.gratis:
                     d = dia_de(ap["i"])
                     if c.gratis or self.evdia.get(d, 0) < EV_POR_DIA:
@@ -1363,6 +1567,9 @@ class Vivo:
                         self.ev.add(t, "ganhou" if res > 0 else "perdeu", texto_aposta(ap, res, pl, c.gratis), c.id)
             elif ap["i"] < self.agora - ANULAR_DIAS * DIA:
                 c.liquidar(ap, None, t, self.ev, anular=True)
+                pk = (self.V.get("bdm") or {}).get("p", {}).get(ap.get("pk") or "")
+                if c.id == "bdm" and pk:
+                    pk["st"] = "anulado"
 
     def limpar(self):
         V = self.V
@@ -1373,11 +1580,148 @@ class Vivo:
         d0 = dia_de(self.agora - 40 * DIA)
         for d in [d for d in V["porDia"] if d < d0]:
             del V["porDia"][d]
+        B = V.get("bdm")
+        if B:
+            d1 = dia_de(self.agora - BDM_GUARDAR_DIAS * DIA)
+            for k in [k for k, pk in B["p"].items() if pk["dia"] < d1 and pk.get("st") not in ("esperando", "apostado")]:
+                del B["p"][k]
+            B["ignorados"] = B.get("ignorados", [])[-300:]
+
+    # ------------------------------------------------------------------ Seguir o BDM
+    def _bdm(self):
+        B = self.V.setdefault("bdm", {})
+        B.setdefault("p", {})
+        B.setdefault("cont", {"vistos": 0, "noTeste": 0, "fora": {}})
+        B.setdefault("ignorados", [])
+        return B
+
+    def _bdm_fora(self, pk, motivo):
+        pk["st"], pk["motivo"] = "fora", motivo
+        f = self._bdm()["cont"]["fora"]
+        f[motivo] = f.get(motivo, 0) + 1
+
+    def bdm_ver(self):
+        """Os palpites novos de config/bdm/: guarda com a hora em que a rodada os viu e separa o que fica fora."""
+        if "bdm" not in self.contas:
+            return
+        B = self._bdm()
+        comeco = "desde" not in B
+        B.setdefault("desde", self.agora)
+        ign = set(B["ignorados"])
+        for arq in self.bdm_dias:
+            dia = str(arq.get("data") or "")[:10]
+            if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", dia):
+                continue
+            video = _texto_curto((arq.get("video") or {}).get("id"), 20)
+            for bruto in arq["palpites"]:
+                pk = palpite_bdm(bruto, dia, video)
+                if not pk or pk["id"] in B["p"] or pk["id"] in ign:
+                    continue
+                fim = pk["i"] if pk["i"] is not None else _ms(pk["dia"] + "T23:59:00-03:00")
+                if comeco and fim <= self.agora or fim < self.agora - BDM_LER_DIAS * DIA:
+                    # palpites de antes de a conta existir (1ª rodada) ou velhos: não contam
+                    B["ignorados"].append(pk["id"])
+                    ign.add(pk["id"])
+                    continue
+                pk["visto"], pk["st"] = self.agora, "esperando"
+                B["p"][pk["id"]] = pk
+                B["cont"]["vistos"] += 1
+                ok, motivo = precificavel(pk)
+                if not ok:
+                    self._bdm_fora(pk, motivo)
+                elif pk["i"] is not None and pk["i"] <= self.agora:
+                    self._bdm_fora(pk, "visto depois do início do jogo")
+
+    def bdm_casar(self):
+        """Liga cada palpite que espera a um jogo acompanhado (V["fx"]) e marca o jogo, para ir primeiro na fila."""
+        B = self.V.get("bdm")
+        if not B:
+            return
+        fxs = list(self.V["fx"].values())
+        for pk in B["p"].values():
+            if pk.get("st") != "esperando" or pk.get("fx"):
+                continue
+            f, inv = achar_jogo(pk, fxs)
+            if not f:
+                continue
+            if f["i"] <= pk["visto"]:
+                self._bdm_fora(pk, "visto depois do início do jogo")
+                continue
+            pk["fx"], pk["inv"], pk["i"] = f["id"], inv, f["i"]
+            f["bdm"] = True
+
+    def bdm_apostar(self, f, pin, soft, rotulo):
+        """As apostas da conta Seguir o BDM no jogo `f` (já terminado), na odd da hora em que o palpite foi visto."""
+        B = self.V.get("bdm")
+        c = self.contas.get("bdm")
+        if not B or not c:
+            return
+        for pk in B["p"].values():
+            if pk.get("fx") != f["id"] or pk.get("st") != "esperando":
+                continue
+            mk = pk["mk"]
+            ph, sh = pin.get(mk), soft.get(mk)
+            if not ph or not sh:
+                self._bdm_fora(pk, "sem odds desse mercado")
+                continue
+            i = indice_bdm(pk, pk.get("inv"))
+            x = preco_bdm(sh[i], ph, pk["visto"], f["i"])
+            p = sem_margem(x[2]) if x else None
+            if not p:
+                self._bdm_fora(pk, "sem odds antes do jogo")
+                continue
+            t, o, _po = x
+            st = c._stake(o, p[i])
+            if not st:
+                self._bdm_fora(pk, "sem saldo na conta")
+                continue
+            fo = [preco_em(h, f["i"]) for h in ph]
+            pf = sem_margem(fo) if all(fo) else None
+            ap = {"j": f["id"], "jogo": f"{f['c']} × {f['f']}", "l": f["l"], "i": f["i"], "mk": mk, "s": i,
+                  "sel": nome_sel(f["c"], f["f"], mk, i), "o": round(o, 3), "p": round(p[i], 5),
+                  "v": round(valor(o, p[i]), 5), "st": st, "c": rotulo, "g": False,
+                  "clv": round(clv(o, pf[i]), 5) if pf else None, "oc": pk.get("oc"), "pk": pk["id"], "t": t}
+            c.abrir(ap)
+            pk.update(st="apostado", o=ap["o"], clv=ap["clv"])
+            B["cont"]["noTeste"] += 1
+
+    def _bdm_liquidou(self, ap, res, pl, t):
+        pk = (self.V.get("bdm") or {}).get("p", {}).get(ap.get("pk") or "")
+        if pk:
+            pk.update(st="liquidado", r=round(res, 2), pl=list(pl))
+        liga = NOME_LIGA.get(ap["l"], "")
+        cit = f" (odd citada no vídeo: {odd_txt(ap['oc'])})" if ap.get("oc") else ""
+        txt = (f"Seguir o BDM — {ap['jogo']}{f' ({liga})' if liga else ''}: {ap['sel']} a {odd_txt(ap['o'])} na "
+               f"{ap['c']}{cit}. {'Ganhou' if res > 0 else 'Perdeu'}: {reais(res, True)} ({pl[0]} × {pl[1]}).")
+        self.ev.add(t, "ganhou" if res > 0 else "perdeu", txt, "bdm")
+
+    def bdm_fechar(self):
+        """Os palpites que não vão mais virar aposta saem de "esperando" com o motivo."""
+        B = self.V.get("bdm")
+        if not B:
+            return
+        for pk in B["p"].values():
+            if pk.get("st") != "esperando":
+                continue
+            if pk.get("fx"):
+                f = self.V["fx"].get(pk["fx"])
+                if not f:
+                    self._bdm_fora(pk, "jogo saiu da lista")
+                elif f.get("st") == "pulado":
+                    self._bdm_fora(pk, "limite gratuito da OddsPapi")
+                elif f.get("st") not in ("novo",):
+                    self._bdm_fora(pk, "sem odds antes do jogo")
+                continue
+            ini = pk["i"] if pk["i"] is not None else _ms(pk["dia"] + "T23:59:00-03:00") + DIA
+            if ini + FIM_JOGO < self.agora:
+                self._bdm_fora(pk, "jogo fora dos campeonatos acompanhados")
 
     def rodar(self):
         try:
+            self.bdm_ver()
             self.torneios()
             self.jogos()
+            self.bdm_casar()
             self.processar()
         except Esgotado:
             self.log(f"  apostas: limite do mês da OddsPapi alcançado ({self.V.get('usados')} de {ORCAMENTO_MES}); "
@@ -1397,6 +1741,7 @@ class Vivo:
             self.log(f"  apostas: ao vivo: {type(e).__name__}: {e}")
         self.gratis_da_semana()
         self.liquidar()
+        self.bdm_fechar()
         self.limpar()
 
 
@@ -1411,6 +1756,14 @@ def fonte_de(ctx):
         import falso_apostas
         return falso_apostas.Avulsa(cli)
     return odds.Cliente(chave=os.environ.get("ODDSPAPI_KEY") or None, log=ctx.log)
+
+
+def arquivos_bdm(fonte, agora):
+    """Os arquivos do BDM: os do mercado de mentira (exemplos e testes) ou os de config/bdm/ (o checkout da main)."""
+    f = getattr(fonte, "bdm", None)
+    if callable(f):
+        return [d for d in f() if isinstance(d, dict) and isinstance(d.get("palpites"), list)]
+    return ler_bdm(agora=agora)
 
 
 def itens_pendentes(contas):
@@ -1468,16 +1821,21 @@ def rodar(ctx):
     if tem_chave:
         V.setdefault("inicio", agora)
         guard = V.setdefault("contas", {})
-        contas = {cfg[0]: Conta(cfg, int(V["inicio"]), guard.get(cfg[0])) for cfg in VERSOES}
+        # uma versão nova (como a bdm, em 09/11/2026) começa na rodada em que aparece
+        contas = {cfg[0]: Conta(cfg, int(V["inicio"]) if not guard or cfg[0] in guard else agora, guard.get(cfg[0]))
+                  for cfg in VERSOES}
         if not guard:
             ev.add(agora, "aviso", "Começou o acompanhamento ao vivo pela OddsPapi: até 8 jogos por dia, "
                                    "começando pelo Brasileirão.", None)
-        vivo = Vivo(fonte, V, agora, contas, ev, evdia, log, erros)
+        bdm_dias = arquivos_bdm(fonte, agora)
+        vivo = Vivo(fonte, V, agora, contas, ev, evdia, log, erros, bdm_dias)
         vivo.rodar()
         for c in contas.values():
             c.virar(agora, ev)
             c.marcar(agora)
             c.extra(NOME_SOFT.get(V["soft"].get("usada") or "", None))
+            if c.id == "bdm":
+                c.curva.extra.update(resumo_bdm(V.get("bdm") or {}))
             guard[c.id] = c.para_json()
         V.pop("semChave", None)
     else:
@@ -1487,6 +1845,8 @@ def rodar(ctx):
             contas = {cfg[0]: Conta(cfg, int(V.get("inicio") or agora), V["contas"].get(cfg[0])) for cfg in VERSOES}
             for c in contas.values():
                 c.extra()
+                if c.id == "bdm":
+                    c.curva.extra.update(resumo_bdm(V.get("bdm") or {}))
     d0 = dia_de(agora - 10 * DIA)
     for d in [d for d in evdia if d < d0]:
         del evdia[d]
@@ -1497,8 +1857,11 @@ def rodar(ctx):
     for cfg in VERSOES:
         vid, nome, grupo, risco, _regra, frase = cfg
         conta = contas[vid].curva.resumo() if contas and vid in contas else None
-        versoes.append({"id": vid, "nome": nome, "frase": frase, "risco": risco, "alav": 1, "grupo": grupo,
-                        "aoVivo": conta, "historico": hv.get(vid)})
+        v = {"id": vid, "nome": nome, "frase": frase, "risco": risco, "alav": 1, "grupo": grupo,
+             "aoVivo": conta, "historico": None if vid in SO_AO_VIVO else hv.get(vid)}
+        if vid in SO_AO_VIVO:
+            v["soAoVivo"] = True
+        versoes.append(v)
     est["eventos"] = ev.para_json()
     usada = (V.get("soft") or {}).get("usada")
     S = V.get("soft") or {}
@@ -1527,6 +1890,9 @@ def rodar(ctx):
         "historico": (hist or {}).get("info"),
         "pedidosRodada": {k: v - cont0.get(k, 0) for k, v in (getattr(fonte, "contagem", None) or {}).items()
                           if v - cont0.get(k, 0)},
+        "bdm": {"aposta": round(BDM_APOSTA * CAPITAL, 2), "mercados": ["1X2", "mais/menos de 2,5 gols"],
+                "fonte": "config/bdm/<data>.json (palpites extraídos no repositório do app)",
+                "desde": (V.get("bdm") or {}).get("desde")},
     }
     avisos = list(AVISOS)
     if not tem_chave:
