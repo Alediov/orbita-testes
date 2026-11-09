@@ -308,9 +308,8 @@ def historico_livro(j, livro, agora):
                                   for t, o in precos]}}
     return {"bookmakerIsActive": True, "markets": {
         "101": {"outcomes": {"101": hist("1x2", 0), "102": hist("1x2", 1), "103": hist("1x2", 2)}},
-        "1010": {"marketName": "Over/Under", "handicap": 2.5,
-                 "outcomes": {"1010": {"outcomeName": "Over", **hist("ou", 0)},
-                              "1011": {"outcomeName": "Under", **hist("ou", 1)}}},
+        # como na resposta de verdade (log de 05/11/2026): sem o nome do mercado nem do resultado, só os ids
+        "1010": {"outcomes": {"1010": hist("ou", 0), "1011": hist("ou", 1)}},
     }}
 
 

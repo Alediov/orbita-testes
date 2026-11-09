@@ -170,6 +170,7 @@ def teste_leitura_oddspapi():
                                                 "betano.bet.br": {}, "betano": FA.historico_livro(jw, "betano", agora)}}
     pin = A.mercados(A._no_da_casa(r, "pinnacle"))
     so = A.mercados(A._no_da_casa(r, "betano"))
+    # o mais/menos de 2,5 gols vem pelo id 1010, sem o nome do mercado (como na resposta de verdade)
     assert set(pin) == {"1x2", "ou"} and not A.mercados(A._no_da_casa(r, "betano.bet.br"))
     assert len(pin["1x2"][0]) == len(FA.MOMENTOS)
     fx = {"id": jw["id"], "l": "eng", "c": jw["casa"], "f": jw["fora"], "i": jw["inicio"]}
@@ -387,6 +388,29 @@ class CliSemPinnacle(Cli):
         return r
 
 
+class CliLib404(Cli):
+    """A OddsPapi respondendo 404 na lista de jogos da Libertadores (sem jogos no período, como em 09/11/2026)."""
+
+    def oddspapi(self, caminho, **p):
+        if caminho == "/fixtures" and str(p.get("tournamentId")) == "384":
+            self.contagem["oddspapi"] += 1
+            raise odds.Erro("HTTP 404 em OddsPapi /fixtures", 404)
+        return FA.Falso.oddspapi(self, caminho, **p)
+
+
+def teste_lista_vazia_404():
+    pasta = tempfile.mkdtemp(prefix="apostas-")
+    try:
+        cli = CliLib404()
+        assert rodar(cli, pasta)["formas"]["apostas"]["ok"]
+        d = _forma(pasta)
+        assert not any("Libertadores" in e for e in d["rodada"]["erros"]), d["rodada"]["erros"]
+        V = _estado(pasta)["vivo"]
+        assert V["fxVazio"].get("lib") is True
+    finally:
+        shutil.rmtree(pasta, ignore_errors=True)
+
+
 def teste_formato_estranho():
     pasta = tempfile.mkdtemp(prefix="apostas-")
     try:
@@ -428,6 +452,7 @@ if __name__ == "__main__":
     teste_orcamento()
     teste_rodadas()
     teste_sem_chave_e_falhas()
+    teste_lista_vazia_404()
     teste_formato_estranho()
     teste_avulsa()
     print("ok")
