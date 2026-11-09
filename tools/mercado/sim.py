@@ -31,6 +31,10 @@ Variantes (pedidos do Alediov, 02/11/2026, 19h08; `variante` da conta, chave "3x
   (`MARGEM_FIXA`) × a alavancagem da conta (até a máxima do ativo); quando a carteira reduz ou fecha, a cópia reduz ou
   fecha na mesma proporção; virada de lado: fecha e abre com a margem fixa; sem caixa para os US$ 50, não abre. Não
   depende do patrimônio da carteira.
+- "p20"/"p25"/"p30" PARAR DE COPIAR (09/11/2026, pedido do Alediov: "parar de copiar quem afunda"): copia como a
+  proporcional, mas confere o patrimônio da cópia DE HORA EM HORA (e a cada operação); quando ele fica 20, 25 ou 30%
+  abaixo do melhor momento da cópia, fecha tudo (a mercado: taxa cheia e deslize) e larga a carteira para sempre (o
+  dinheiro fica parado). Conferir de hora em hora quer dizer que a saída pode vir um pouco depois do limite exato.
 
 Tudo em milissegundos UTC. Puro: os preços e o financiamento chegam prontos (`Mercado`).
 """
@@ -48,6 +52,7 @@ ORDEM_MINIMA = 10.0     # US$
 FRACAO_MAX = 50.0       # teto da fração posição/patrimônio da carteira (patrimônio quase zero dá números absurdos)
 AGRUPAR_MS = 60_000     # execuções da mesma moeda em até 60 s viram uma operação só
 DIA_MS = 86_400_000
+HORA_MS = 3_600_000
 FUSO_MS = -3 * 3_600_000  # o dia da série é o dia de Brasília
 
 
@@ -189,11 +194,18 @@ class Patrimonio:
         return self.v[i] if self.t[i] - T < T - self.t[i - 1] else self.v[i - 1]
 
 
+def limite_parada(variante: str):
+    """"p25" → 0,25 (a queda do topo que faz largar a carteira); outras versões → None."""
+    if variante[:1] == "p" and variante[1:].isdigit():
+        return int(variante[1:]) / 100
+    return None
+
+
 class Conta:
     def __init__(self, alav: int, atraso_ms: int, capital: float = 1000.0, inicio: int = 0, variante: str = "",
                  moedas=None):
         self.alav, self.atraso, self.capital = alav, atraso_ms, capital
-        self.variante = variante or ""   # "", "s", "l", "m", "a2"/"a3" (amplificada), "f" (entrada fixa)
+        self.variante = variante or ""   # "", "s", "l", "m", "a2"/"a3" (amplificada), "f" (entrada fixa), "p25"…
         self.moedas = list(moedas) if moedas is not None else None
         self.bloqueadas: list[str] = []  # "s": moedas de onde saiu, até a carteira abrir de novo
         self.saidas = {"tempo": 0, "stop": 0}
@@ -212,13 +224,14 @@ class Conta:
         self.pior_queda = 0.0
         self.quebrada = False
         self.sem_preco = 0
+        self.parada = None  # "pNN": {em, queda, patrimonio} quando largou a carteira
 
     # ------------------------------------------------------------------ estado (JSON)
     def para_json(self):
         return {k: getattr(self, k) for k in ("alav", "atraso", "capital", "caixa", "pos", "t", "taxas", "funding", "ops",
                                               "fechamentos", "acertos", "liquidacoes", "ultimas", "serie", "pico",
                                               "pior_queda", "quebrada", "sem_preco", "variante", "moedas", "bloqueadas",
-                                              "saidas", "inicio", "sem_caixa", "ganhos", "perdas")}
+                                              "saidas", "inicio", "sem_caixa", "ganhos", "perdas", "parada")}
 
     @classmethod
     def de_json(cls, d):
@@ -263,12 +276,36 @@ class Conta:
     # ------------------------------------------------------------------ o tempo passa
     def avancar(self, merc: Mercado, T: int):
         """Leva a conta até T: financiamento, liquidações e o patrimônio do fim de cada dia (série)."""
+        lim = limite_parada(self.variante)
         while self.t < T:
             b = min(T, fim_do_dia(self.t))
+            if lim and not self.parada:  # "pNN": de hora em hora
+                b = min(b, (self.t // HORA_MS + 1) * HORA_MS)
             self._ate(merc, b)
             self.t = b
+            if lim and not self.parada:
+                self._conferir_parada(merc, b, lim)
             if b == fim_do_dia(b - 1) and b <= T:  # virou o dia
                 self.serie[dia_de(b - 1)] = round(self._anotar(merc, b - 1), 2)
+
+    def _conferir_parada(self, merc, T, lim):
+        """"pNN": o patrimônio ficou `lim` abaixo do melhor momento → fecha tudo e larga a carteira."""
+        v = self.patrimonio(merc, T)
+        self.pico = max(self.pico, v)
+        if self.pico <= 0 or v >= self.pico * (1 - lim):
+            return False
+        for m in list(self.pos):
+            px = merc.preco(m, T) or self.pos[m]["entrada"]
+            self._negociar(merc, m, -self.pos[m]["szi"], px, T, forcar_fechar=True)
+            if self.ultimas:
+                self.ultimas[-1]["tipo"] = "parou"
+        depois = self.patrimonio(merc, T)
+        self.pior_queda = max(self.pior_queda, 1 - min(v, depois) / self.pico)
+        self.parada = {"em": T, "queda": round(1 - depois / self.pico, 4), "patrimonio": round(depois, 2)}
+        if not self.ultimas or self.ultimas[-1].get("tipo") != "parou":
+            self._guardar_ultima({"em": T, "moeda": "", "tipo": "parou", "lado": "", "tam": 0, "px": 0,
+                                  "res": 0})
+        return True
 
     def _ate(self, merc: Mercado, T: int):
         for m in list(self.pos):
@@ -347,10 +384,12 @@ class Conta:
     # ------------------------------------------------------------------ copiar uma operação
     def copiar(self, merc: Mercado, op: dict, eq_carteira: float | None):
         """Ajusta a posição na moeda da operação para a mesma fração do patrimônio da carteira."""
-        if self.quebrada:
+        if self.quebrada or self.parada:
             return
         T = op["t"] + self.atraso
         self.avancar(merc, T)
+        if self.parada:  # largou a carteira no caminho
+            return
         m = op["moeda"]
         if self.variante == "m" and self.moedas is not None and m not in self.moedas:
             return
@@ -510,6 +549,7 @@ class Conta:
             **({"saidas": self.saidas, "fora": self.bloqueadas} if self.variante == "s" else {}),
             **({"moedas": self.moedas} if self.variante == "m" else {}),
             **({"semCaixa": self.sem_caixa} if self.variante == "f" else {}),
+            **({"parou": self.parada, "limite": limite_parada(self.variante)} if limite_parada(self.variante) else {}),
         }
 
 

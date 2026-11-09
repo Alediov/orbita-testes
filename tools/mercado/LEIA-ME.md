@@ -17,10 +17,38 @@ Só simulação: nenhuma ordem, nenhuma conta, nenhuma chave. Só a API pública
   triplo de uma carteira que já põe 100% bateria no teto quase sempre e as duas versões dariam o mesmo que a de 3×), e
   `f` **entrada fixa** (cada abertura ou aumento dela usa US$ 50 de margem × a alavancagem; redução e fechamento na
   mesma proporção que ela; virar de lado fecha e abre com a margem fixa; sem caixa, não entra e conta `semCaixa`), com
-  2×, 5× e 10×. São **34 contas por carteira** (8 + 12 + 8 + 6). Cada conta conta também os ganhos e as perdas dos
+  2×, 5× e 10×. Eram **34 contas por carteira** (8 + 12 + 8 + 6) até 09/11/2026; agora 18 (ver a revisão abaixo). Cada conta conta também os ganhos e as perdas dos
   fechamentos (`gm`, `pm` no resumo: ganho médio e perda média; as contas de antes de 19h50 contam só daí em diante).
   Desde 09/11/2026 cada conta do `aoVivo` no `resumo.json` traz também `metricas` (CDI no mesmo período, excesso, ao
   mês, Sharpe contra o CDI…), as mesmas das outras formas (`tools/papel/conta.py`, formato em `tools/papel/FORMATO.md`).
+- **Revisão de 09/11/2026** (pedido do Alediov, com os dados de 02 a 09/11: o teste de antes dava +37% em média contra
+  ~+1% ao vivo, o 10× quebrava, o atraso de 5 min dava quase igual ao de 1 min, robôs +4% × pessoas −5% ao vivo):
+  - **Enxugar** (`combos()`, 34 → **18 contas por carteira**): saiu o 10× (também nas versões ×2, ×3 e fixa) e o atraso de
+    5 min, menos o controle `3x5`; todas as versões só com 1 min. `enxugar(est)` tira do estado as contas que saíram; as
+    que ficam seguem com o histórico. `config.combos` no resumo diz quais existem (o app aguenta o resumo antigo).
+  - **Parar de copiar quem afunda** (`p20`, `p25`, `p30` em sim.py, `limite_parada`): como a proporcional, mas confere o
+    patrimônio da cópia de hora em hora e, 20/25/30% abaixo do melhor momento da cópia, fecha tudo a mercado e larga a
+    carteira para sempre (`parou` {em, queda, patrimonio} no resumo, operação "parou" nas últimas). 25% é o padrão
+    (3× e 5×); 20% e 30% só com 3×.
+  - **Carteiras de carteiras** (`agregadas.py`, refeitas do zero a cada rodada pelo `banco` do estado: a série 3× · 1 min
+    de toda carteira que já foi seguida, com o começo, o fim e o selo): **As 5 melhores** (toda semana as 5 de maior % ao
+    mês ao vivo, com 7+ dias), **Só robôs** e **Só pessoas** (selo de agora), partes iguais, troca semanal com 0,15% de
+    custo por dólar que sai ou entra. Nasceram com a história desde 02/11/2026 (menos as carteiras que saíram antes de o
+    banco existir). E o **Consenso**: uma conta de 3× e 1 min que só fica numa moeda com 2+ carteiras do mesmo lado (e mais
+    que do outro), 30% da conta por moeda (sim.Conta). Tudo em `agregadas` no resumo, com `metricas`.
+  - **Teste fora da amostra** (`passado.py`, `passado` no resumo, "aproximado"): a regra de escolha aplicada aos dados de
+    60 a 30 dias atrás e a cópia simulada nos 30 dias seguintes, que ela não viu. O ranking público só tem o "agora",
+    então o ranking de T0 é refeito pelo `portfolio` desde o começo de cada candidata (conta e lucro em T0) e pelas
+    execuções (volume); universo = as linhas do ranking de hoje com volume total ≥ US$ 10 mil (o volume só cresce),
+    amostra sorteada de até 3.000; mesmos filtros, risco e nota; 30 escolhidas (as 60 primeiras aprovadas pela nota do
+    ranking, as 30 de maior nota). Anda aos poucos nas sobras das rodadas (até 7 min por rodada; fases pre → fino →
+    copia → pronto) e refaz a cada 7 dias (`rodadas`). Limitações: viés de sobrevivência (quem sumiu do ranking não
+    entra), histórico espaçado do `portfolio` (o ponto mais perto de T0, até 5 dias), só as 10.000 execuções mais
+    recentes de cada carteira na API, velas de 1 h na escolha e de 15 min na cópia, selo e cofre de hoje. O teste de
+    antes de cada carteira (`historico`) ficou, renomeado no app "no período da escolha (otimista)", e o resultado traz
+    o `previsto` (a média desse teste nas escolhidas) para comparar.
+  - **Risco reavaliado**: as carteiras sem `risco`/`nota` (escolhidas antes da medida) vêm primeiro em `atualizar_perfis`
+    (`reavaliar_risco`: execuções dos últimos 30 dias e o `portfolio`; só alerta, nunca sai por isso).
 - `carteiras.py`: o ranking, os filtros (`CRITERIOS`), as medidas (operações por dia, tempo médio de posição, fração
   passiva…), os motivos de cada escolha, a `nota_escolha` (teste no histórico + fração com ordem limite − alertas), as
   `moedas_boas` (pelas execuções de ANTES da cópia, `MIN_OPS_MOEDA` ordens com resultado e lucro) e o `risco` contra o
@@ -69,7 +97,8 @@ Só simulação: nenhuma ordem, nenhuma conta, nenhuma chave. Só a API pública
 
 ## Rodar
 
-- Testes (sem rede): `python3 tools/mercado/teste_mercado.py` e, das contas do app, `node tools/mercado/teste_app.mjs` (o % ao mês e ao ano, a faixa, o semáforo, os gráficos, o ranking dos jeitos e a linha do tempo)
+- Testes (sem rede): `python3 tools/mercado/teste_mercado.py` (no mundo de mentira, o teste fora da amostra usa 14 + 14
+  dias: `passado.JANELA = 14`) e, das contas do app, `node tools/mercado/teste_app.mjs` (o % ao mês e ao ano, a faixa, o semáforo, os gráficos, o ranking dos jeitos e a linha do tempo)
 - Uma rodada no mercado de mentira: `python3 tools/mercado/mercado.py --dados /tmp/m --exemplos`
 - De verdade: o workflow "Testes de mercado (Hyperliquid, no papel)" (`.github/workflows/mercado.yml`), a cada 2 h e à
   mão (com "Refazer a escolha"). Grava `estado.json`, `resumo.json` e `log.txt` no ramo órfão `mercado` (commit único,

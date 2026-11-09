@@ -220,7 +220,7 @@ def motivos(l, md, hist=None):
     if md.get("passivoPct"):
         m.append(f"Ordens limite em {md['passivoPct'] * 100:.0f}% do volume")
     if hist is not None:
-        m.append(f"Teste no histórico (3× e 1 min): {pct(hist)}")
+        m.append(f"Teste no período da escolha (3× e 1 min): {pct(hist)}")
     return m
 
 

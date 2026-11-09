@@ -87,6 +87,14 @@ acabavam; aqui os executores padrão não têm limite.
   seguem a oscilação diária medida em cada um (estreita/média/larga = 1/3/8 vezes). O ao vivo de todos vem primeiro e os
   passados se revezam entre as rodadas. Seletores e o tópico do Swap pelo keccak de `keccak.py` (Python puro). Saída
   `pools[]` com volume, liquidez, giro, taxas ao ano e o gauge (FORMATO.md, "Pools").
+- **Copy trading revisto** (pedido do Alediov, 09/11/2026, pelos dados reais de 02 a 09/11; detalhes no
+  `tools/mercado/LEIA-ME.md`): 18 contas por carteira (sem 10×; 5 min só no controle `3x5`); versões `p20`/`p25`/`p30`
+  que largam a carteira quando a cópia cai 20/25/30% do topo; `agregadas.py` (As 5 melhores, Só robôs, Só pessoas,
+  refeitas pelo `banco` de séries, e o Consenso, 2+ carteiras do mesmo lado) em `agregadas` no resumo; `passado.py`, o
+  teste FORA DA AMOSTRA (a regra aplicada aos dados de 60 a 30 dias atrás, a cópia nos 30 seguintes; ranking de T0
+  refeito pelo `portfolio`; aos poucos, refeito a cada 7 dias; "aproximado") em `passado`; e o risco reavaliado nas
+  carteiras que estavam sem ele. O teste de antes de cada carteira continua (`historico`): é o "período da escolha",
+  otimista.
 - Os exemplos que o app usa sem rede ficam no repositório do app (`tools/mercado/exemplos/`); refazer aqui
   (`python3 tools/papel/falso.py`) e copiar para lá (`tools/mercado/exemplos/papel/`) quando o formato mudar.
 - Os workflows (`mercado.yml`, `papel.yml`, `memes.yml`, `ideias.yml`) religam os agendamentos pela API a cada rodada (num

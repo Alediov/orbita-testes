@@ -5,12 +5,15 @@ conta, nenhuma chave). Roda no GitHub Actions (`.github/workflows/mercado.yml`) 
 
 Uma rodada:
 1. ao vivo: para cada carteira seguida, as execuções novas desde o cursor (até agora − 8 min, para as velas de 1 min do
-   atraso de 5 min já existirem); as velas e o financiamento das moedas envolvidas; cada uma das 8 contas fictícias
-   (1×, 3×, 5×, 10× × atraso de 1 e 5 min) copia e anda até o fim da janela (sim.py), mais as 12 das versões (saídas
-   de segurança, ordem limite e moedas boas, com 3× e 5×);
-2. uma vez por semana (ou com menos de 20 carteiras): a escolha (carteiras.py), com o teste no histórico das candidatas
-   (as execuções dos últimos 30 dias, velas de 15 min); as que já estão sendo seguidas ficam pelo menos 4 semanas;
-3. as referências: comprar e segurar bitcoin (velas diárias) e o CDI (série 12 do Banco Central; sem ela, a taxa fixa).
+   atraso de 5 min já existirem); as velas e o financiamento das moedas envolvidas; cada uma das 18 contas fictícias
+   (`combos()`: 1×, 3× e 5× com 1 min, o controle 3× com 5 min e as versões, todas com 1 min) copia e anda até o fim da
+   janela (sim.py); e a conta do Consenso (agregadas.py), que só entra quando 2+ carteiras estão do mesmo lado;
+2. uma vez por semana (ou com menos de 20 carteiras): a escolha (carteiras.py), com o teste no período da escolha das
+   candidatas (as execuções dos últimos 30 dias, velas de 15 min); as que já estão sendo seguidas ficam pelo menos 4
+   semanas;
+3. os perfis e a reavaliação do risco (aos poucos), as carteiras de carteiras (As 5 melhores, Só robôs, Só pessoas) e,
+   com o tempo que sobrar, o teste no passado fora da amostra (passado.py, em várias rodadas);
+4. as referências: comprar e segurar bitcoin (velas diárias) e o CDI (série 12 do Banco Central; sem ela, a taxa fixa).
 
 Uso: python3 tools/mercado/mercado.py --dados <pasta do ramo> [--escolher] [--exemplos] [--agora <ms>]
 """
@@ -28,9 +31,11 @@ import urllib.request
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
+import agregadas as AG  # noqa: E402
 import carteiras as K  # noqa: E402
 import hl  # noqa: E402
 import imitador as IM  # noqa: E402
+import passado as PS  # noqa: E402
 import perfil as PF  # noqa: E402
 from sim import (Conta, Mercado, Patrimonio, Velas, dia_de, operacoes_da_carteira, simular)  # noqa: E402
 
@@ -47,8 +52,8 @@ except ImportError:  # pragma: no cover (checkout sem tools/papel)
 MIN = 60_000
 HORA = 3_600_000
 DIA = 86_400_000
-ALAVANCAGENS = (1, 3, 5, 10)
-ATRASOS_MIN = (1, 5)
+ALAVANCAGENS = (1, 3, 5)   # 09/11/2026: o 10× saiu (quebrava: −16% a −20% em média, 2 a 4 liquidadas por carteira)
+ATRASOS_MIN = (1, 5)       # o de 5 min ficou só no controle 3× (CONTROLE_ATRASO): dava quase igual ao de 1 min
 PADRAO = "3x1"
 CAPITAL = 1000.0
 ALVO = 30          # carteiras seguidas
@@ -58,7 +63,8 @@ FICA_SEMANAS = 4
 JANELA_HIST = 30   # dias do teste no histórico
 CDI_ANO = 0.149
 VERSAO = 1
-HIST_VERSAO = 2  # o teste no histórico com as versões de 19h43 (amplificada e entrada fixa)
+HIST_VERSAO = 3  # o teste no período da escolha com as versões de 09/11/2026 (parar ao cair 20/25/30%)
+CONTROLE_ATRASO = "3x5"  # o único com 5 min de atraso, para ver se o atraso pesa
 PERFIS_POR_RODADA = 3  # perfis (com o imitador) refeitos por rodada; cada carteira no máximo 1× por dia
 
 
@@ -66,17 +72,36 @@ PERFIS_POR_RODADA = 3  # perfis (com o imitador) refeitos por rodada; cada carte
 # sempre ("3x1"…). 02/11/2026, 19h08: "s" saídas de segurança, "l" ordem limite (melhor caso), "m" só as moedas boas,
 # com 3× e 5×. 19h43: "a2"/"a3" amplificada (a fração dela × 2 e × 3) com 5× e 10× (com 3× de conta, × 3 bateria no
 # teto quase sempre e ficaria igual a × 2) e "f" entrada fixa (US$ 50 de margem por operação nova) com 2×, 5× e 10×.
-VARIANTES = {"s": (3, 5), "l": (3, 5), "m": (3, 5), "a2": (5, 10), "a3": (5, 10), "f": (2, 5, 10)}
+# 09/11/2026 (enxugar, pedido do Alediov): sem 10× e todas as versões só com 1 min; "p20"/"p25"/"p30" param de copiar
+# quem afunda (largam a carteira quando a cópia cai 20/25/30% do topo).
+VARIANTES = {"s": (3, 5), "l": (3, 5), "m": (3, 5), "a2": (5,), "a3": (5,), "f": (2, 5), "p20": (3,), "p25": (3, 5),
+             "p30": (3,)}
 ALAV_VARIANTES = (3, 5)
 NOME_VARIANTE = {"": "todas as operações", "s": "saídas de segurança", "l": "ordem limite", "m": "só as moedas boas",
-                 "a2": "amplificada × 2", "a3": "amplificada × 3", "f": "entrada fixa de US$ 50"}
+                 "a2": "amplificada × 2", "a3": "amplificada × 3", "f": "entrada fixa de US$ 50",
+                 "p20": "para ao cair 20%", "p25": "para ao cair 25%", "p30": "para ao cair 30%"}
 
 
 def combos(variantes=True):
-    out = [f"{a}x{d}" for a in ALAVANCAGENS for d in ATRASOS_MIN]
+    out = [f"{a}x1" for a in ALAVANCAGENS] + [CONTROLE_ATRASO]
     if variantes:
-        out += [f"{a}x{d}{v}" for v, alavs in VARIANTES.items() for a in alavs for d in ATRASOS_MIN]
+        out += [f"{a}x1{v}" for v, alavs in VARIANTES.items() for a in alavs]
     return out
+
+
+def enxugar(est):
+    """As contas que saíram em 09/11/2026 (10×, 5 min fora do controle) somem do estado; as que ficam seguem iguais."""
+    ks = set(combos())
+    n = 0
+    for c in est["carteiras"].values():
+        for campo in ("contas", "resumo", "historico"):
+            d = c.get(campo)
+            if isinstance(d, dict):
+                fora = [k for k in d if k not in ks]
+                for k in fora:
+                    del d[k]
+                n += len(fora)
+    return n
 
 
 def partes_chave(chave):
@@ -191,7 +216,7 @@ def valor_conta(estado):
 def estado_novo():
     return {"v": VERSAO, "inicio": None, "ultimaEscolha": None, "tentouEscolha": None, "maxLev": {}, "carteiras": {},
             "encerradas": [], "rodadas": [], "btc": {}, "cdi": {}, "funil": None, "recusadas": {},
-            "recusaMotivo": {}, "analisadasSemana": {}}
+            "recusaMotivo": {}, "analisadasSemana": {}, "banco": {}, "consenso": None, "passado": None}
 
 
 def carregar(pasta):
@@ -238,6 +263,9 @@ def ao_vivo(cli, est, fim_ops, ate, agora, log, prazo):
         for ct in contas:
             for m in ct.pos:
                 precisa.setdefault(m, set()).add(ct.t)
+    cons = AG.consenso_conta(est, fim_ops)
+    for m in cons.pos:
+        precisa.setdefault(m, set()).add(cons.t)
     pr = Precos(cli, log, agora)
     for m, ts in sorted(precisa.items()):
         if time.monotonic() > prazo:
@@ -255,19 +283,25 @@ def ao_vivo(cli, est, fim_ops, ate, agora, log, prazo):
         c["resumo"] = {k: x.resumo(merc, ate) for k, x in contas.items()}
         n += len(ops)
     # carteiras sem nada novo (ou que não deu para ler): o resumo continua com o último cálculo
+    try:
+        AG.consenso_rodada(est, cons, novas, merc, ate)
+    except Exception as er:  # noqa: BLE001
+        log(f"  consenso: {er}")
+        log(traceback.format_exc())
     return n, pr.erros
 
 
 # ---------------------------------------------------------------------------------------------- escolha
-def teste_historico(cli, log, l, fills, eq, agora, ate, cache, max_lev, prazo):
-    """A cópia nos 30 dias antes (velas de 15 min). Sem a variante "m": as moedas boas saem deste mesmo período."""
+def teste_historico(cli, log, l, fills, eq, agora, ate, cache, max_lev, prazo, intervalo="15m"):
+    """A cópia nos 30 dias antes (velas de 15 min; o teste fora da amostra usa 1 h). Sem a variante "m": as moedas boas
+    saem deste mesmo período. É o "período da escolha": otimista, porque a carteira foi escolhida por ter ido bem nele."""
     ini = agora - JANELA_HIST * DIA
     ops = [o for o in operacoes_da_carteira(fills) if ini <= o["t"] <= ate - 5 * MIN]
     if not ops:
         return None
     for m in sorted({o["moeda"] for o in ops}):
         if m not in cache.velas and time.monotonic() < prazo:
-            cache.garantir(m, ini - DIA, ate, "15m")
+            cache.garantir(m, ini - DIA, ate, intervalo)
     merc = cache.mercado(max_lev)
     contas = {k: nova_conta(k, ops[0]["t"] - 1) for k in combos() if not k.endswith("m")}
     simular(ops, Patrimonio(eq or [(agora, l["conta"])]), merc, list(contas.values()), ate)
@@ -277,7 +311,8 @@ def teste_historico(cli, log, l, fills, eq, agora, ate, cache, max_lev, prazo):
         out[k] = {"retorno": r["retorno"], "piorQueda": r["piorQueda"], "ops": r["ops"], "acerto": r["acerto"],
                   "gm": r.get("gm"), "pm": r.get("pm"),
                   "nLiq": r["nLiq"], "taxas": r["taxas"], "funding": r["funding"], "serie": r["serie"],
-                  "de": ops[0]["t"], "ate": ate, "resolucao": "15m", **({"saidas": r["saidas"]} if "saidas" in r else {})}
+                  "de": ops[0]["t"], "ate": ate, "resolucao": intervalo, **({"saidas": r["saidas"]} if "saidas" in r else {}),
+                  **({"parou": r["parou"]} if r.get("parou") else {})}
     return out
 
 
@@ -299,11 +334,13 @@ def calcular_perfil(fills, eq, merc, ini, fim, serie_copia=None):
 def atualizar_perfis(cli, est, agora, log, prazo, maximo=PERFIS_POR_RODADA):
     """Refaz o perfil das carteiras seguidas sem perfil ou com ele há mais de 1 dia (as mais antigas primeiro), pelas
     execuções dos últimos 30 dias, enquanto houver tempo. O imitador anda junto: no máximo 1× por dia por carteira."""
-    velhas = sorted((c.get("perfilEm") or 0, e) for e, c in est["carteiras"].items()
-                    if not c.get("perfil") or (c.get("perfil") or {}).get("v") != PF.VERSAO or agora - (c.get("perfilEm") or 0) >= DIA)
+    # sem risco (as escolhidas antes de 02/11/2026, 19h08) vêm primeiro: a reavaliação do risco anda junto (09/11/2026)
+    velhas = sorted((c.get("risco") is not None, c.get("perfilEm") or 0, e) for e, c in est["carteiras"].items()
+                    if not c.get("perfil") or (c.get("perfil") or {}).get("v") != PF.VERSAO
+                    or agora - (c.get("perfilEm") or 0) >= DIA or c.get("risco") is None)
     feitas = 0
     cache = Precos(cli, log, agora)
-    for _, e in velhas[:maximo]:
+    for _, _, e in velhas[:maximo]:
         if time.monotonic() > prazo:
             break
         c = est["carteiras"][e]
@@ -317,6 +354,11 @@ def atualizar_perfis(cli, est, agora, log, prazo, maximo=PERFIS_POR_RODADA):
             log(f"  {curto(e)}: perfil: {er}")
             continue
         serie = ((c.get("resumo") or {}).get(PADRAO) or {}).get("serie") or ((c.get("historico") or {}).get(PADRAO) or {}).get("serie")
+        if c.get("risco") is None:
+            try:
+                reavaliar_risco(cli, c, fills, cache, agora, log)
+            except (hl.Erro, Exception) as er:  # noqa: BLE001
+                log(f"  {curto(e)}: risco: {er}")
         try:
             c["perfil"] = calcular_perfil(fills, c.get("eq"), cache.mercado(est["maxLev"]), ini, agora, serie)
             c["perfilEm"] = agora
@@ -326,6 +368,22 @@ def atualizar_perfis(cli, est, agora, log, prazo, maximo=PERFIS_POR_RODADA):
     if feitas:
         log(f"  perfis refeitos: {feitas}")
     return feitas
+
+
+def reavaliar_risco(cli, c, fills, cache, agora, log):
+    """As carteiras escolhidas antes da medida de risco: o risco pelas execuções dos últimos 30 dias (as do perfil) e a
+    nota com o teste no período da escolha. Só ganha o alerta, nunca sai por isso (como as já seguidas na escolha)."""
+    pf = cli.portfolio(c["endereco"])
+    conta = (c.get("ranking") or {}).get("conta") or (c.get("eq") or [[0, 0]])[-1][1] or 0
+    rk = K.risco(fills, conta, pnl_do_portfolio(pf), cache.velas, agora)
+    if rk["recusa"]:
+        rk["alertas"].insert(0, rk["recusa"])
+    rk["recusa"] = None
+    rk["reavaliado"] = agora
+    c["risco"] = rk
+    hist3 = ((c.get("historico") or {}).get(PADRAO) or {}).get("retorno")
+    c["nota"] = K.nota_escolha(hist3, (c.get("medidas") or {}).get("passivoPct"), rk["alertas"])
+    log(f"  {curto(c['endereco'])}: risco reavaliado ({len(rk['alertas'])} alertas), nota {c['nota']}")
 
 
 def escolher(cli, est, agora, inicio_vivo, log, prazo):
@@ -519,7 +577,20 @@ def quarentena(est, maximo=30):
                                        for e, t in lista[:maximo]]}
 
 
+def selo_de(c):
+    return PF.selo(c["perfil"]["robo"]["nota"]) if c.get("perfil") else K.selo(c.get("medidas"))
+
+
 def montar_resumo(est, agora, fonte_cdi, cdi_ano, exemplo=False, rodada=None):
+    taxa_cdi = cdi_ano_da_serie(est["cdi"], cdi_ano)
+
+    def metricas_de(conta):
+        if not metricas or not conta or not conta.get("serie"):
+            return None
+        try:
+            return metricas(conta, est["cdi"], taxa_cdi)
+        except (TypeError, ValueError, ZeroDivisionError, OverflowError):
+            return None
     cart = []
     for e, c in est["carteiras"].items():
         l, md = c.get("ranking") or {}, c.get("medidas") or {}
@@ -536,7 +607,7 @@ def montar_resumo(est, agora, fonte_cdi, cdi_ano, exemplo=False, rodada=None):
             "moedasBoas": c.get("moedasBoas"), "alertas": (c.get("risco") or {}).get("alertas") or [],
             "risco": {k: v for k, v in (c.get("risco") or {}).items() if k not in ("alertas", "recusa")} or None,
             "nota": c.get("nota"), "perfil": c.get("perfil"),
-            "selo": PF.selo(c["perfil"]["robo"]["nota"]) if c.get("perfil") else K.selo(md),
+            "selo": selo_de(c),
         })
     chave = lambda x: (x["aoVivo"].get(PADRAO) or {}).get("retorno", 0)  # noqa: E731
     cart.sort(key=chave, reverse=True)
@@ -545,6 +616,7 @@ def montar_resumo(est, agora, fonte_cdi, cdi_ano, exemplo=False, rodada=None):
         "v": VERSAO, "exemplo": exemplo, "geradoEm": iso(agora), "agora": agora, "inicio": est["inicio"],
         "proximaEscolha": (est["ultimaEscolha"] or agora) + 7 * DIA,
         "config": {"capital": CAPITAL, "alavancagens": list(ALAVANCAGENS), "atrasos": list(ATRASOS_MIN),
+                   "combos": combos(), "controleAtraso": CONTROLE_ATRASO,
                    "variantes": {v: {"nome": NOME_VARIANTE[v], "alavancagens": list(a)} for v, a in VARIANTES.items()},
                    "margemFixa": 50,
                    "saidas": {"dias": 3, "stop": 0.05}, "taxaLivro": 0.00015, "minOpsMoeda": K.MIN_OPS_MOEDA, "analisar": ANALISAR,
@@ -556,12 +628,14 @@ def montar_resumo(est, agora, fonte_cdi, cdi_ano, exemplo=False, rodada=None):
         "ranking": [c["endereco"] for c in cart],
         "carteiras": cart, "encerradas": [{**x, "curto": curto(x["endereco"])} for x in est["encerradas"][-20:]],
         "quarentena": quarentena(est), "funil": est.get("funil"), "rodada": rodada,
+        "agregadas": AG.resumo_agregadas(est, agora, metricas_de),
+        "passado": PS.resumo(est, metricas_de),
     }
 
 
 # ---------------------------------------------------------------------------------------------- rodada
 def rodada(cli, pasta, agora=None, forcar_escolha=False, exemplo=False, prazo_min=13.0, cdi_ano=CDI_ANO,
-           buscar_cdi=True, log=None):
+           buscar_cdi=True, log=None, passado_min=7.0):
     log = log or Log()
     t0 = time.monotonic()
     prazo = t0 + prazo_min * 60
@@ -570,6 +644,9 @@ def rodada(cli, pasta, agora=None, forcar_escolha=False, exemplo=False, prazo_mi
     fim_ops = ate - max(ATRASOS_MIN) * MIN  # operação + o maior atraso cabe na janela
     est = carregar(pasta)
     log(f"rodada {iso(agora)} · {len(est['carteiras'])} carteiras seguidas")
+    tirou = enxugar(est)
+    if tirou:
+        log(f"  contas que saíram (10×, 5 min fora do controle): {tirou}")
     erros = []
     if not est["maxLev"] or forcar_escolha or not est["ultimaEscolha"] or agora - est["ultimaEscolha"] >= 7 * DIA:
         try:
@@ -592,6 +669,17 @@ def rodada(cli, pasta, agora=None, forcar_escolha=False, exemplo=False, prazo_mi
             atualizar_perfis(cli, est, agora, log, prazo - 3 * 60)
         except Exception as e:  # noqa: BLE001
             erros.append(f"perfis: {e}")
+            log(traceback.format_exc())
+    try:
+        AG.atualizar(est, agora, selo_de)
+    except Exception as e:  # noqa: BLE001
+        erros.append(f"agregadas: {e}")
+        log(traceback.format_exc())
+    if time.monotonic() < prazo - 3 * 60:
+        try:
+            PS.avancar(cli, est, agora, log, min(prazo - 3 * 60, time.monotonic() + passado_min * 60), sys.modules[__name__])
+        except Exception as e:  # noqa: BLE001
+            erros.append(f"passado: {e}")
             log(traceback.format_exc())
     fonte = referencias(cli, est, agora, log, cdi_ano, buscar_cdi)
     info = {"em": agora, "pedidos": cli.pedidos, "peso": cli.peso, "segundos": round(time.monotonic() - t0, 1),

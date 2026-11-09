@@ -9,8 +9,10 @@ import tempfile
 AQUI = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, AQUI)
 
+import agregadas as AG  # noqa: E402
 import carteiras as K  # noqa: E402
 import falso  # noqa: E402
+import passado as PS  # noqa: E402
 import hl  # noqa: E402
 import mercado  # noqa: E402
 from sim import (MARGEM_FIXA, STOP_CONTA, TAXA_LIVRO, TAXA_TOMADOR, TEMPO_MAX_MS, Conta, Mercado, Patrimonio, Velas, deslize,  # noqa: E402
@@ -305,6 +307,48 @@ reg = {"endereco": "0x" + "1" * 40, "conta": 100_000.0, "nome": None, "dia": {"p
 aposta = {**reg, "mes": {**reg["mes"], "vlm": 2e5}}
 ok(K.nota_ranking(reg) > K.nota_ranking(aposta) and K.pre_filtro([aposta])[0][1] is None, "quem negocia com regularidade (3× a 100×) vem antes, sem recusar as outras")
 
+# ------------------------------------------------------------------ parar de copiar quem afunda (09/11/2026)
+queda40 = lambda t: 50_000.0 if t < T + HORA else 50_000.0 * (1 - 0.40 * min(1, (t - T - HORA) / (10 * HORA)))  # noqa: E731
+m40 = Mercado({"BTC": velas_de(queda40, T - HORA, T + 2 * DIA)}, {}, {"BTC": 40})
+cp = Conta(3, MIN, 1000.0, T - 1, "p25")
+cp.copiar(m40, op(T, "BTC", 1.0, 50_000.0), 100_000.0)  # 50% da conta comprada a 3×: −40% no preço ≈ −20% na conta
+cp.avancar(m40, T + DIA)
+ok(not cp.parada and cp.liquidacoes, "a 25% a perda de ~17% da conta (a garantia liquidada) não para")
+cp2 = Conta(3, MIN, 1000.0, T - 1, "p20")
+cp2.copiar(m40, op(T, "BTC", 2.0, 50_000.0), 100_000.0)  # 100%: −40% no preço ≈ −40% na conta
+cp2.avancar(m40, T + DIA)
+ok(cp2.parada and not cp2.pos and 0.2 <= cp2.parada["queda"] < 0.27, f"para ao cair 20% do topo, conferido de hora em hora: {cp2.parada}")
+ok(cp2.parada["em"] % HORA == 0 and cp2.ultimas[-1]["tipo"] == "parou", "a saída é numa hora cheia e vira 'parou'")
+cp2.copiar(m40, op(T + DIA + HORA, "BTC", 1.0, 30_000.0), 100_000.0)
+ok(not cp2.pos, "depois de parar, não copia mais")
+rp = cp2.resumo(m40, T + DIA + 2 * HORA)
+ok(rp["parou"] and rp["limite"] == 0.2, "o resumo diz que parou e o limite")
+ok(Conta.de_json(json.loads(json.dumps(cp2.para_json()))).parada == cp2.parada, "a parada vai e volta pelo JSON")
+# enxugar: as contas de 10× e de 5 min (menos o controle) somem; as outras ficam como estão
+ee = {"carteiras": {"x": {"contas": {"10x1": 1, "3x1": 2, "5x5": 3, "3x5": 4, "10x5a3": 5}, "resumo": {"10x1": 1, "3x1": 2}, "historico": None}}}
+ok(mercado.enxugar(ee) == 4 and ee["carteiras"]["x"]["contas"] == {"3x1": 2, "3x5": 4}, f"enxugar: {ee}")
+# carteiras de carteiras: duas carteiras, uma dobra e outra cai pela metade; as 5 melhores (aqui 1) trocam com custo
+d0 = int(__import__("datetime").datetime(2026, 11, 1, 15).timestamp() * 1000)
+dias = [mercado.dia_de(d0 + i * DIA) for i in range(20)]
+banco = {"a": {"desde": d0, "serie": {d: 1000 * (1 + 0.05 * i) for i, d in enumerate(dias)}, "selo": "robo", "ate": None},
+         "b": {"desde": d0, "serie": {d: 1000 * (1 - 0.02 * i) for i, d in enumerate(dias)}, "selo": "humano", "ate": None}}
+rob = AG.agregada(banco, dias[-1], "robos")
+ok(rob["n"] == 1 and rob["trocas"][0]["dia"] == dias[0] and abs(rob["serie"][-1][1] - (1000 - 1.5) * banco["a"]["serie"][dias[-1]] / 1000) < 0.05,
+   f"Só robôs segue a carteira robô, com o custo da entrada: {rob['serie'][-1]}")
+top = AG.agregada(banco, dias[-1], "top5")
+ok(top["trocas"][0]["dia"] == dias[7] and top["n"] == 2, f"As 5 melhores começa com 7 dias de dados: {top['trocas'][0]}")
+banco["b"]["ate"] = d0 + 10 * DIA
+hum = AG.agregada(banco, dias[-1], "humanos")
+ok(hum["serie"][-1][1] == hum["serie"][10][1] or hum["n"] == 0, "a carteira que saiu vira dinheiro parado até a troca")
+# o "ranking de T0" pelo histórico desde o começo
+pnl = [(d0, 0.0), (d0 + 10 * DIA, 500.0), (d0 + 30 * DIA, 2000.0)]
+ok(PS.lucro_em(pnl, d0 - DIA) == 0 and PS.lucro_em(pnl, d0 + 30 * DIA) == 2000 and PS.perto(pnl, d0 + 20 * DIA) is None,
+   "lucro em T0: antes de existir é 0; longe de qualquer ponto, nada")
+l0 = PS.linha_em("0x" + "a" * 40, None, 20_000.0, pnl, d0 + 30 * DIA)
+ok(l0["mes"]["pnl"] == 2000 - 0 and l0["total"]["pnl"] == 2000, f"linha de T0: {l0['mes']}")
+ok(PS.media([[["2026-11-02", 1100.0]], [["2026-11-03", 800.0]]], "2026-11-01", "2026-11-03")
+   == [["2026-11-01", 1000.0], ["2026-11-02", 1050.0], ["2026-11-03", 950.0]], "média das cópias, US$ 1.000 antes do 1º ponto")
+
 # ------------------------------------------------------------------ escolha e rodadas (mercado de mentira)
 mundo = falso.Mundo()
 cli = falso.ClienteFalso(mundo)
@@ -315,6 +359,7 @@ md_ten = K.medidas(cli.execucoes(falso.endereco(1)), agora)
 ok(K.filtro_fino(md_ten, "user") is None, f"o de tendência passa: {md_ten}")
 ok(K.filtro_fino(md_ten, "vault") == "é um cofre", "cofre pelo userRole")
 pasta = tempfile.mkdtemp()
+PS.JANELA = 14  # o mundo de mentira tem 32 dias antes de "agora": 14 + 14 cabem
 try:
     r1, e1 = mercado.rodada(cli, pasta, agora, exemplo=True, buscar_cdi=False, log=mercado.Log(quieto=True))
     seg = set(e1["carteiras"])
@@ -333,8 +378,12 @@ try:
     ok(all(c["cursor"] == cli.agora - 8 * MIN for c in e2["carteiras"].values()), "o cursor anda até agora − 8 min")
     nops = sum(c["aoVivo"]["3x1"]["ops"] for c in r2["carteiras"])
     ok(nops > 0, f"operações copiadas ao vivo em 22 h: {nops}")
-    ok(len(r2["carteiras"][0]["aoVivo"]) == 34, f"34 contas por carteira: {len(r2['carteiras'][0]['aoVivo'])}")
-    ok(all(k in r2["carteiras"][0]["historico"] for k in ("5x1a2", "10x1a3", "2x1f", "10x5f")), "as versões novas no teste no histórico")
+    ok(len(r2["carteiras"][0]["aoVivo"]) == 18 and set(r2["carteiras"][0]["aoVivo"]) == set(mercado.combos()),
+       f"18 contas por carteira: {sorted(r2['carteiras'][0]['aoVivo'])}")
+    ok(not any(k.startswith("10x") or (k.endswith("x5") is False and "x5" in k and k != "3x5") for k in mercado.combos()),
+       f"sem 10× e só o 3× com 5 min: {mercado.combos()}")
+    ok(all(k in r2["carteiras"][0]["historico"] for k in ("5x1a2", "5x1a3", "2x1f", "3x1p25", "5x1p25")), "as versões no teste do período da escolha")
+    ok(r2["config"]["combos"] == mercado.combos() and r2["config"]["controleAtraso"] == "3x5", "o resumo diz as contas que existem")
     ok(e1["funil"]["semana"] == e1["funil"]["analisadas"], "o funil conta as analisadas na semana")
     q = r1["quarentena"]
     ok(q["n"] == len(e1["recusadas"]) and q["lista"] and all(x["ate"] > agora and x["motivo"] for x in q["lista"])
@@ -367,10 +416,32 @@ try:
     cli.agora += 2 * HORA
     rv, ev2 = mercado.rodada(cli, pasta, cli.agora, exemplo=True, buscar_cdi=False, log=mercado.Log(quieto=True))
     cv = ev2["carteiras"][c0["endereco"]]
-    ok(len(cv["contas"]) == 34 and cv["moedasBoas"] is not None and cv["contas"]["3x1s"]["inicio"] == c0["cursor"], "contas novas para as carteiras já seguidas")
+    ok(len(cv["contas"]) == 18 and cv["moedasBoas"] is not None and cv["contas"]["3x1s"]["inicio"] == c0["cursor"], "contas novas para as carteiras já seguidas")
     ok(r2["ranking"] == [c["endereco"] for c in r2["carteiras"]], "ranking pelo resultado ao vivo com 3× e 1 min")
+    # risco vazio (carteiras de antes da medida): reavaliado aos poucos, só com alerta
+    with open(os.path.join(pasta, "estado.json")) as f:
+        ev = json.load(f)
+    alvo_r = next(iter(ev["carteiras"]))
+    ev["carteiras"][alvo_r]["risco"] = None
+    ev["carteiras"][alvo_r]["nota"] = None
+    with open(os.path.join(pasta, "estado.json"), "w") as f:
+        json.dump(ev, f)
+    cli.agora += 2 * HORA
+    rr, er_ = mercado.rodada(cli, pasta, cli.agora, exemplo=True, buscar_cdi=False, log=mercado.Log(quieto=True))
+    cr = er_["carteiras"][alvo_r]
+    ok(cr["risco"] and cr["risco"].get("reavaliado") and cr["risco"]["recusa"] is None and cr["nota"] is not None,
+       f"risco e nota reavaliados: {cr['risco']}, {cr['nota']}")
     ok(len(r2["referencias"]["btc"]) > 30 and r2["referencias"]["cdi"][-1][1] > 1, "referências: bitcoin e CDI")
     ok(not any(escolhas), "a escolha não se repete no mesmo dia (com menos de 20 seguidas, tenta de novo 1× por dia)")
+    # o teste fora da amostra (no mundo de mentira com janela de 14 dias)
+    ps = rv["passado"]
+    ok(ps and ps["aproximado"] and ps["resultado"] and ps["resultado"]["funil"]["olhadas"] == ps["resultado"]["amostra"],
+       f"o teste fora da amostra fica pronto no mundo de mentira: {ps and ps.get('andamento')}")
+    rs = ps["resultado"]
+    ok(rs["de"] == rs["ate"] - PS.JANELA * DIA and "3x1" in rs["contas"] and rs["contas"]["3x1"]["metricas"] is not None
+       and rs["n"] == len(rs["carteiras"]) and rs["n"] >= 1, f"resultado: {rs['n']} escolhidas, {list(rs['contas'])[:4]}")
+    ok(rs["contas"]["3x1"]["serie"][0][0] >= mercado.dia_de(rs["de"]), "a cópia só anda depois de T0")
+    ok(ps["rodadas"] and ps["rodadas"][-1]["retorno"] == rs["contas"]["3x1"]["retorno"], "rodadas do teste fora da amostra")
     # falha de rede nas velas: a rodada termina e conta o erro
     cli.falhar = {"candleSnapshot"}
     cli.agora += 2 * HORA
@@ -381,6 +452,18 @@ try:
     cli.agora = agora + 7 * DIA + HORA
     r4, e4 = mercado.rodada(cli, pasta, cli.agora, exemplo=True, buscar_cdi=False, log=mercado.Log(quieto=True))
     ok(r4["rodada"]["escolha"] and set(e4["carteiras"]) == seg, "a escolha da semana mantém as seguidas há menos de 4 semanas")
+    cli.agora = agora + 9 * DIA
+    r5, e5 = mercado.rodada(cli, pasta, cli.agora, exemplo=True, buscar_cdi=False, log=mercado.Log(quieto=True))
+    # carteiras de carteiras e o consenso (09/11/2026)
+    ag = r5["agregadas"]
+    ok(set(ag) >= {"top5", "robos", "consenso"}, f"as contas novas no resumo: {sorted(ag)}")
+    t5 = ag["top5"]
+    ok(t5["n"] <= AG.TOP and t5["serie"][0][1] <= 1000 and t5["metricas"] and t5["nTrocas"] >= 1 and t5["trocas"][0]["n"] >= 1,
+       f"As 5 melhores: {t5['n']} carteiras, {t5['nTrocas']} trocas")
+    ok(ag["robos"]["n"] >= 1 and all(x in t5 for x in ("nome", "regra", "retorno", "piorQueda", "inicio")), "Só robôs")
+    co = ag["consenso"]
+    ok(co["metricas"] is not None and "consensoAgora" in co and co["inicio"] and isinstance(co["ops"], int), f"Consenso: {co['ops']} operações")
+    ok(set(e5["banco"]) >= set(e5["carteiras"]) and all(b["serie"] for b in e5["banco"].values()), "o banco guarda a série de todas")
     tam = os.path.getsize(os.path.join(pasta, "resumo.json")) + os.path.getsize(os.path.join(pasta, "estado.json"))
     ok(tam < 2_000_000, f"arquivos pequenos: {tam // 1024} KB")
     with open(os.path.join(pasta, "resumo.json")) as f:

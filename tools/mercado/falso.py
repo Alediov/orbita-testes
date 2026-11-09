@@ -254,7 +254,11 @@ class ClienteFalso:
         c0 = eq[0][1] if eq else 0
         mes = {"accountValueHistory": [[t, f"{v:.2f}"] for t, v in eq[::6]], "pnlHistory": [[t, f"{v - c0:.2f}"] for t, v in eq[::6]], "vlm": "0"}
         sem = {"accountValueHistory": [[t, f"{v:.2f}"] for t, v in eq if t >= self.agora - 7 * DIA], "pnlHistory": [], "vlm": "0"}
-        return [["day", sem], ["week", sem], ["month", mes], ["allTime", mes], ["perpDay", sem], ["perpWeek", sem], ["perpMonth", mes], ["perpAllTime", mes]]
+        # desde o começo: um ponto por dia (como o da API, espaçado), o lucro acumulado a partir de 0
+        tudo = [(t, v) for t, v in self.mundo.carteiras[user]["eq"] if t <= self.agora][::24]
+        a0 = tudo[0][1] if tudo else 0
+        sempre = {"accountValueHistory": [[t, f"{v:.2f}"] for t, v in tudo], "pnlHistory": [[t, f"{v - a0:.2f}"] for t, v in tudo], "vlm": "0"}
+        return [["day", sem], ["week", sem], ["month", mes], ["allTime", sempre], ["perpDay", sem], ["perpWeek", sem], ["perpMonth", mes], ["perpAllTime", sempre]]
 
     def execucoes(self, user):
         self._contar("userFills")
@@ -298,6 +302,8 @@ def gerar_exemplo(destino, pasta, rodadas=48, cada_h=6):
     import shutil
 
     import mercado
+    import passado
+    passado.JANELA = 14  # o mundo de mentira tem 32 dias antes de "agora": 14 + 14 para o teste fora da amostra
     shutil.rmtree(pasta, ignore_errors=True)
     cli = ClienteFalso()
     t = cli.agora
