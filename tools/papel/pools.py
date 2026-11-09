@@ -75,10 +75,16 @@ FORA_ESPERA = HORA
 GAS_GUARDAR = 60
 INICIO_BLOCOS = 300                    # o ao vivo começa ~10 min antes da 1ª rodada (para pôr no preço de agora)
 VOL_HORAS = 48
+HORA_CONFERIR = 12                     # "dia": a hora (Brasília) em que a pessoa olha a pool
+REINVESTIR_DIAS = 7                    # "dia": a cada quantos dias põe as taxas de volta
+GAS_REINVESTIR = 0.6                   # coletar + aumentar a liquidez: ~60% do gás de um reposicionamento
 PARAMS_REFAZER = 7 * DIA
 
 # (id, nome, largura da faixa (fração, None = cheia), regra, risco, frase)
-#   regra: "sai" = reposiciona assim que o preço sai; "hora" = depois de 1 h fora; "nunca"; "segurar" = sem pool
+#   regra: "sai" = reposiciona assim que o preço sai; "hora" = depois de 1 h fora; "nunca"; "segurar" = sem pool;
+#   "dia" = o jeito de quem cuida da pool à mão (ensinado em canais brasileiros de pools, como o do Marinho, com o
+#   Revert ou o Krystal): confere uma vez por dia (`HORA_CONFERIR`, Brasília), só reposiciona se estiver fora nessa hora e
+#   toda semana põe as taxas ganhas de volta na posição, na mesma faixa (`REINVESTIR_DIAS`)
 VERSOES = [
     ("r1", "±1% · ao sair", 0.01, "sai", "alto",
      "Faixa de 1% para cada lado do preço; quando o preço sai, tira, troca e põe de novo em volta do preço novo."),
@@ -90,6 +96,11 @@ VERSOES = [
      "Faixa de 3% para cada lado; reposiciona depois de 1 hora fora."),
     ("r10h", "±10% · 1 h fora", 0.10, "hora", "médio",
      "Faixa larga, de 10% para cada lado: ganha menos por dólar e sai pouco; reposiciona depois de 1 hora fora."),
+    ("dia10", "±10% · 1×/dia · reinveste", 0.10, "dia", "médio",
+     "Como quem cuida da pool à mão: faixa de 10% para cada lado, olha uma vez por dia (meio-dia) e só reposiciona se "
+     "estiver fora; toda semana põe as taxas ganhas de volta na posição."),
+    ("dia5", "±5% · 1×/dia · reinveste", 0.05, "dia", "médio",
+     "O mesmo cuidado à mão (uma olhada por dia, taxas de volta toda semana) com uma faixa de 5% para cada lado."),
     ("cheia", "Faixa cheia", None, "nunca", "médio",
      "A faixa inteira, como nos pools antigos (v2): nunca sai, ganha bem menos por dólar e não precisa reposicionar."),
     ("r3fixa", "±3% sem reposicionar", 0.03, "nunca", "médio",
@@ -214,11 +225,15 @@ class Conta:
         self.acc = {k: float(a.get(k, 0.0)) for k in ("taxas", "gas", "repos", "pi", "dentro", "total", "diaRepos")}
         self.dia = e.get("dia")          # o dia (índice, Brasília) da última troca, para o resumo dos reposicionamentos
         self.aviso_fora = bool(e.get("avisoFora"))
+        self.olhou = e.get("olhou")      # "dia": o último dia (índice, Brasília) em que conferiu
+        self.reinvestiu = e.get("reinvestiu")  # "dia": o dia da última vez que pôs as taxas de volta
+        self.acc.setdefault("reinv", float(a.get("reinv", 0.0)))
 
     def para_json(self):
         return {"curva": self.curva.para_json(), "L": self.L, "sa": self.sa, "sb": self.sb, "fx": self.fx, "fy": self.fy,
                 "x": self.x, "y": self.y, "dep": self.dep, "montada": self.montada, "fora": self.fora, "t": self.t,
-                "marca": self.marca, "s": self.s, "acc": self.acc, "dia": self.dia, "avisoFora": self.aviso_fora}
+                "marca": self.marca, "s": self.s, "acc": self.acc, "dia": self.dia, "avisoFora": self.aviso_fora,
+                "olhou": self.olhou, "reinvestiu": self.reinvestiu}
 
     def _ev(self, ev, t, tipo, texto):
         if ev is not None:
@@ -303,11 +318,54 @@ class Conta:
         self.acc["diaRepos"] += 1
         self.fora = None
 
+    def reinvestir(self, t, s, gas_wei):
+        """Põe as taxas não coletadas de volta na posição, na MESMA faixa (coleta, troca o que precisa e aumenta a
+        liquidez). Não faz nada se as taxas não pagam pelo menos 5 vezes o gás."""
+        P = preco_de(s)
+        Vf = self.fx * P + self.fy
+        gas = custo_gas(gas_wei, P) * GAS_REINVESTIR
+        if Vf < 5 * gas:
+            return False
+        x1, y1 = quantias(1.0, s, self.sa, self.sb)
+        u = x1 * P + y1
+        if u <= 0:
+            return False
+        c = TAXA_POOL + DESLIZE
+        L = (Vf - gas) / u
+        L = max(0.0, (Vf - gas - c * abs(self.fx * P - L * x1 * P)) / u)
+        x, y = quantias(L, s, self.sa, self.sb)
+        self.L += L
+        self.fx = self.fy = 0.0
+        if self.dep:
+            self.dep = [self.dep[0] + x, self.dep[1] + y]
+        self.curva.operou(Vf - (x * P + y), 1)
+        self.acc["gas"] += gas
+        self.acc["reinv"] += 1
+        return True
+
+    def olhar(self, t, s, gas_wei, ev):
+        """"dia": a olhada do dia (na 1ª troca depois de HORA_CONFERIR, Brasília)."""
+        d = (t + FUSO_MS) // DIA
+        if self.olhou == d or (t + FUSO_MS) % DIA < HORA_CONFERIR * HORA:
+            return
+        self.olhou = d
+        if not self.dentro(s):
+            self.reposicionar(t, s, gas_wei)
+        if self.reinvestiu is None:
+            self.reinvestiu = d
+        elif d - self.reinvestiu >= REINVESTIR_DIAS:
+            if self.reinvestir(t, s, gas_wei):
+                self._ev(ev, t, "reequilibrou", f"Pôs de volta na posição as taxas da semana (até agora "
+                                                f"{moeda_br(self.acc['taxas'])} ganhos no total).")
+            self.reinvestiu = d
+
     # ------------------------------------------------------------------ cada troca
     def troca(self, t, s0, s1, gas_wei, ev=None):
         """O preço andou de √P = s0 (a troca anterior, ou None) para s1 no instante t."""
         if not self.montada:
             self.montar(t, s1, gas_wei, ev)
+            if self.regra == "dia":
+                self.olhou = (t + FUSO_MS) // DIA  # pôr a posição conta como a olhada do dia
             self.t, self.s, self.marca = t, s1, t
             self.curva.marcar(t, self.valor(s1))
             return
@@ -343,6 +401,8 @@ class Conta:
                     moeda = "dólar" if s1 > self.sb else "ether"
                     self._ev(ev, t, "saiu", f"O ether ficou {lado} da faixa por 1 hora ({moeda_br(preco_de(s1), 0)}): a "
                                             f"posição parou de ganhar e está toda em {moeda}.")
+            if self.regra == "dia":
+                self.olhar(t, s1, gas_wei, ev)
         self.t, self.s = t, s1
         if t // MARCA_MS != self.marca // MARCA_MS:
             self.marcar(t)
@@ -374,7 +434,7 @@ class Conta:
         P = preco_de(s)
         tot = self.acc["total"]
         e = {"taxasGanhas": round(self.acc["taxas"], 4), "gasPago": round(self.acc["gas"], 4),
-             "reposicoes": int(self.acc["repos"]), "precoEth": round(P, 2),
+             "reposicoes": int(self.acc["repos"]), "precoEth": round(P, 2), "reinvestimentos": int(self.acc.get("reinv", 0)),
              "noEther": round((x + self.fx) * P, 2), "noDolar": round(y + self.fy, 2)}
         if self.regra != "segurar":
             e["perdaImp"] = round(self.acc["pi"] + self.perda_imp(s), 4)
@@ -548,6 +608,12 @@ def rodar(ctx):
         novo = "vivo" not in est
         vivo = Grupo("vivo", agora, est.get("vivo"))
         hist = Grupo("hist", agora - HIST_DIAS * DIA, est.get("hist"))
+        novas = [c[0] for c in VERSOES if not novo and c[0] not in ((est.get("hist") or {}).get("contas") or {})]
+        if novas:
+            # uma versão nova não tem passado: o teste no passado recomeça para todas, 28 dias antes de agora
+            hist = Grupo("hist", agora - HIST_DIAS * DIA)
+            hist.bloco = topo - HIST_DIAS * BLOCOS_DIA
+            log(f"  pools: versões novas ({', '.join(novas)}); o teste no passado recomeça 28 dias antes de agora")
         if novo:
             vivo.bloco = topo - INICIO_BLOCOS  # uns minutos antes, para o ao vivo já começar com o preço de agora
             hist.bloco = topo - HIST_DIAS * BLOCOS_DIA
@@ -622,7 +688,8 @@ def rodar(ctx):
                                        nota=(f"Desde {HIST_DIAS} dias antes do começo, troca a troca como o ao vivo"
                                              + ("" if alcancou else "; ainda lendo o passado (continua nas próximas rodadas)") + "."))
             versoes.append({"id": vid, "nome": nome, "frase": frase, "risco": risco, "alav": 1,
-                            "grupo": "Referência" if regra == "segurar" else ("Reposiciona" if regra in ("sai", "hora") else "Parada"),
+                            "grupo": "Referência" if regra == "segurar" else ("Reposiciona" if regra in ("sai", "hora") else
+                                                                    "À mão" if regra == "dia" else "Parada"),
                             "aoVivo": cv.curva.resumo() if cv.montada else None, "historico": hres})
         s = vivo.s
         nosso = volume_24h(est, agora)
