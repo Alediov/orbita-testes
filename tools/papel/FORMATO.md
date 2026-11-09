@@ -30,6 +30,9 @@ comparar. Datas: `ms` = milissegundos UTC; `dia` = "AAAA-MM-DD" no horário de B
 `ok: false` = a forma falhou nesta rodada; o `<forma>.json` continua sendo o da última rodada boa (o `agora` dela).
 `ref.btc` = fechamento diário do bitcoin (velas de 1 dia da Hyperliquid); `ref.cdi` = índice acumulado do CDI
 (série 12 do Banco Central), 1,0 no primeiro dia; os dois desde 400 dias atrás, para o app comparar qualquer período.
+`ref.cdiAno` = a taxa ao ano dos últimos 20 dias úteis da série (desde 09/11/2026; antes era fixa em 14,9%), usada
+depois do último dia publicado; `ref.cdiFonte` = "bcb" quando a série veio nesta rodada (o BC às vezes responde 304 ou
+cai: a rodada tenta 3 vezes e, se não der, fica com os dias já guardados).
 
 ## <forma>.json
 
@@ -94,7 +97,23 @@ O mesmo formato que as contas do copy trading (o app usa as mesmas contas de `te
 - `liquidacoes`: [{ "em": ms, "moeda": "BTC", "perda": 312.5 }] e `nLiq` (o total; a lista guarda as últimas 50);
 - `extra`: números próprios da forma (o app mostra os que conhece; ver abaixo).
 - Opcionais, como no copy trading: `acerto` (fração de operações fechadas com lucro), `gm`/`pm` (ganho e perda
-  médios em US$).
+  médios em US$); `aproximado: true` também no `aoVivo` quando o próprio ao vivo é uma estimativa (funding entre
+  corretoras).
+- `metricas` (desde 09/11/2026, em TODA conta com série: versões, itens dos cofres e, no `resumo.json` do copy trading,
+  cada conta do `aoVivo`): os mesmos números para decidir em todas as formas, calculados em `conta.metricas` pela série
+  diária e pelo CDI do Banco Central no MESMO período (dias sem ponto repetem o valor anterior):
+
+  ```json
+  { "dias": 21, "retorno": 0.0123, "cdi": 0.0109, "excesso": 0.0014, "venceCdi": true,
+    "aoMes": 0.0176, "aoAno": null, "volAno": 0.083, "sharpe": 0.41, "retornoPorQueda": null,
+    "piorDia": -0.0071, "diasPositivos": 0.57 }
+  ```
+
+  `cdi` = o CDI acumulado do início ao último ponto; `excesso` = (1 + retorno) ÷ (1 + cdi) − 1; `aoMes` só com 7 dias
+  ou mais e `aoAno` só com 30 (antes disso, null: extrapolar engana); `volAno` = desvio dos retornos diários × √365;
+  `sharpe` = (retorno diário médio − CDI do dia) ÷ desvio × √365, só com 14 dias ou mais e limitado a ±10 (abaixo de 0: o CDI rendeu
+  mais com menos risco); `retornoPorQueda` = `aoAno` ÷ `piorQueda` (a "Calmar"), só com 30 dias e queda ≥ 0,5%. Nas
+  apostas os valores estão em R$, e nas versões wstETH do looping, em ether: os números são frações, então valem igual.
 
 `aoVivo` começa quando a versão foi criada e anda a cada rodada (a rodada "alcança" o tempo perdido pelos
 históricos: um horário pulado pelo GitHub não muda o resultado). `historico` é o teste no passado, refeito de tempos
@@ -141,7 +160,11 @@ na versão "Os que você fixou" (partes iguais), e não sai pela regra.
 
 - funding: `recebido`, `pago` (US$ de financiamento), `base` (diferença média entre à vista e perpétuo, fração),
   `fundingAno` (taxa média anualizada no período), `moeda` (a da posição agora, no rodízio), `dentro` (true/false na
-  seletiva);
+  seletiva). A versão **`entre`** (entre corretoras, desde 09/11/2026; `grupo` "Entre corretoras", `aproximado: true`
+  na versão e no `aoVivo`, `historico` sempre null) traz também `longo` e `curto` (o nome da corretora de cada perna:
+  "Hyperliquid", "Binance" ou "Bybit"; null fora), `diferencaAno` (a diferença das taxas previstas agora, fração ao
+  ano; igual a `fundingAno`), `montagens` e `leituras`; `base` é null. `config.entre` = { `entra`, `sai`, `troca`,
+  `taxas`, `ponte` };
 - robôs: `comprado` (US$ na moeda agora), `caixa` (US$), `degrausExecutados`, `precoMedio`, `foraDaGrade` (true/false);
   Nas versões no perpétuo (grade neutra, DCA com proteção 3×), `comprado` tem sinal (negativo = vendido) e `caixa` é o
   patrimônio inteiro; `fundingPago` (US$) e, no DCA com proteção, `ciclos` (fechados). `degrausExecutados` conta as
@@ -164,6 +187,9 @@ de arquivos com `"exemplo": true`; o app (repositório odonto-quest) usa a cópi
 
 Futebol, só no papel (`apostas.py`). Diferenças das outras formas:
 
+- **Mercados**: o 1X2 (mercado 101 da OddsPapi) e o mais/menos de 2,5 gols (mercado 1010; até 09/11/2026 o ao vivo não
+  lia este, porque a resposta não traz o nome do mercado). Um 404 na lista de jogos de um campeonato = sem jogos no
+  período (não é erro).
 - **Moeda**: as contas são em **R$ fictícios** (1.000 = saldo fictício, como a banca da Betano); `config.moeda` = "R$".
   As contas têm o mesmo formato (`inicio`, `serie`, `retorno`…); `taxas` = 0 (a margem já está na odd) e `ops` = apostas
   liquidadas. `historico` traz também `nota` (a casa do teste é a Bet365, no lugar da Betano).
@@ -193,7 +219,9 @@ staking do Lido pela DefiLlama, limites de liquidação pelo `getReserveData` (R
 velas da HL (1 h ao vivo, 1 dia no teste no passado, que é `aproximado: true`).
 
 - **Versões** (`grupo` "wstETH × ETH", "ETH × USDC" ou "Referência"; `alav` até 6): `wst3` (padrão), `wst6`, `eth15`, `eth2`,
-  `eth2def` (desalavanca quando o fator de saúde cai a 1,3), `usdc` (só depositar).
+  `eth2def` (desalavanca quando o fator de saúde cai a 1,3), e as réguas (desde 09/11/2026, `grupo` "Referência"):
+  `wst1` (só wstETH, sem empréstimo: o staking sozinho, medido em ether), `eth1` (só ether, sem empréstimo: o preço
+  sozinho) e `usdc` (só depositar). Cada laço se compara com a régua do mesmo tipo.
 - **As versões wstETH são medidas em ether**: a conta é convertida em dólar pelo preço do ether no dia em que começou
   (`extra.precoRef`), para mostrar só o laço (staking contra juro); o valor em dólar de verdade vai em `extra.emDolar`.
 - **extra**: `hf` (fator de saúde; null sem dívida), `alavAgora`, `rendeAno` (o que a conta rende agora ao ano, fração),
@@ -226,10 +254,14 @@ da posição saem exatos pela matemática do v3. O "teste no passado" (`aproxima
 (o RPC gratuito não guarda mais) e depois anda junto com ele; na 1ª vez pode levar algumas rodadas para alcançar
 (`config.passado`).
 
-- **Versões** (`grupo` "Reposiciona", "Parada" ou "Referência"; `alav` 1): `r1`, `r1h`, `r3`, `r3h` (padrão), `r10h`,
-  `cheia`, `r3fixa`, `segurar` (50/50 parado, sem pool). "ao sair" reposiciona na troca em que o preço sai da faixa;
-  "1 h fora" depois de 1 h fora.
-- **extra**: `taxasGanhas` (US$ de taxa do pool ganhos), `gasPago`, `reposicoes`, `precoEth`, `noEther`/`noDolar` (US$ em
+- **Versões** (`grupo` "Reposiciona", "À mão", "Parada" ou "Referência"; `alav` 1): `r1`, `r1h`, `r3`, `r3h` (padrão),
+  `r10h`, `dia10`, `dia5`, `cheia`, `r3fixa`, `segurar` (50/50 parado, sem pool). "ao sair" reposiciona na troca em que
+  o preço sai da faixa; "1 h fora" depois de 1 h fora. **"À mão"** (desde 09/11/2026: o jeito de quem cuida da pool
+  pelo celular, como ensinam os canais brasileiros de pools): olha uma vez por dia ao meio-dia (Brasília), só
+  reposiciona se estiver fora nessa hora e a cada 7 dias põe as taxas ganhas de volta na posição, na mesma faixa
+  (`extra.reinvestimentos`). Uma versão nova faz o teste no passado recomeçar para todas (28 dias antes da rodada em
+  que ela nasceu).
+- **extra**: `taxasGanhas` (US$ de taxa do pool ganhos), `gasPago`, `reposicoes`, `reinvestimentos`, `precoEth`, `noEther`/`noDolar` (US$ em
   cada moeda agora, com as taxas não coletadas), `perdaImp` (US$, ≤ 0: a realizada nos reposicionamentos + a de agora,
   contra segurar o que foi posto), `dentro`, `dentroFrac` (fração do tempo dentro da faixa), `faixa` [mín., máx.] (US$
   por ETH).
@@ -243,6 +275,11 @@ da posição saem exatos pela matemática do v3. O "teste no passado" (`aproxima
 
 O observatório do pump.fun (`memes.py`, job `memes.yml`, 2 vezes por dia): uma amostra sorteada de 24 lançamentos a cada
 rodada, analisada 24 h depois. **Os nomes dos tokens não aparecem** (só o endereço encurtado). `historico` é sempre null.
+**Recomeçou do zero em 09/11/2026** (`VERSAO` 2): a 1ª rodada real mostrou lançamentos de outras plataformas no
+PumpPortal (curva diferente; um deles saiu "28.904×" por erro de unidade) e que a DexScreener não lista a maioria dos
+tokens pequenos (viravam "sem negócios"). Agora a amostra é só do pump.fun (`pool` "pump"), quem falta na DexScreener é
+procurado no GeckoTerminal, e o que nenhum dos dois responde fica "sem dados" (fora das apostas e das contagens de morto
+e vivo).
 
 - **Versões** (`grupo` "Regras" ou "Referência"; `alav` 1; US$ 10 por token): `min1` (padrão), `min5`, `momento`,
   `graduacao`, `min1rc` (só tokens sem risco alto no RugCheck), `segura` (segura ~24 h). A conta é marcada uma vez por
@@ -256,9 +293,11 @@ rodada, analisada 24 h depois. **Os nomes dos tokens não aparecem** (só o ende
   na 1ª hora), `morreram` (sem negociação depois do 1º minuto ou < 10% do lançamento em ~24 h, sem ter graduado),
   `semNegocios`, `semVelas` (tinham par, mas as velas não vieram), `rugcheckAlto`, `rugcheckSem`, `criadorGrande`
   (criador comprou ≥ 10% na criação), `medianaX24` (preço de ~24 h ÷ o do lançamento, dos que negociaram; pode ser null),
-  `vivos24h`.
+  `vivos24h`, `semDados` (nem a DexScreener nem o GeckoTerminal responderam: não se sabe; desde 09/11/2026). No
+  `observatorio`, também `outrasPlataformas` (lançamentos de outras plataformas que o PumpPortal mandou e ficaram fora).
 - **itens**: os últimos 40 tokens analisados: `{ "mint" ("AbCd…pump"), "lancado" (ms), "maxX", "x24" (null sem
-  negócios), "graduou", "golpe", "morreu", "rugcheck" ("alto" | "ok" | null), "criadorGrande" }`.
+  negócios ou sem dados), "graduou", "golpe", "morreu", "rugcheck" ("alto" | "ok" | null), "criadorGrande",
+  "semDados" }`.
 - **config**: `rede`, `plataforma`, `aposta`, `amostra`, `ouvirSegundos`, `taxas` { `curva`, `amm`, `deslizeAmm`,
   `redeSol` }, `prioridade` (mediana medida, micro-lamports por unidade), `saida` { `alta`, `baixa`, `minutos` },
   `observatorio: true`.
