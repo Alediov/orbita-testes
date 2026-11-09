@@ -112,6 +112,13 @@ acabavam; aqui os executores padrão não têm limite.
   empate em dias); `foraDaAmostra` (walk-forward semanal dos limites da seletiva e do rodízio numa grade pequena,
   aproximado) e `observatorio` (as 5 moedas fora da lista com o maior financiamento de 7 dias, volume ≥ US$ 5 mi; sem
   conta). O teste no passado é refeito pelo `HIST_V`.
+- **Robôs revistos** (pedido do Alediov, 09/11/2026; detalhes no `tools/papel/FORMATO.md`, "robôs"): réguas `segbtc`
+  (só segurar BTC, também o "tudo no dia 1" do DCA) e `segeth` (`grupo` "Referência"); grade neutra com saída
+  (`gsaida1`/`gsaida3`: fecha com o preço 1 degrau além da grade ou a conta −15% do topo, remonta depois de 24 h com
+  menos de 4% de vai e vem; evento com `motivo`); grade pela oscilação (`gvol2`/`gvol4`: largura = k × oscilação diária
+  de 7 dias, recentrada toda segunda); grade neutra 1× em SOL e HYPE; DCA com o caixa na Aave (`dcaC`, os custos do
+  `funding.py`); `extra.porDentro` em toda conta e `historico.janelas` (30 dias a cada 7, contra o CDI do mesmo
+  período). Moeda sem velas: `semDados`. O teste no passado é refeito pelo `HIST_V`.
 - Os exemplos que o app usa sem rede ficam no repositório do app (`tools/mercado/exemplos/`); refazer aqui
   (`python3 tools/papel/falso.py`) e copiar para lá (`tools/mercado/exemplos/papel/`) quando o formato mudar.
 - Os workflows (`mercado.yml`, `papel.yml`, `memes.yml`, `ideias.yml`) religam os agendamentos pela API a cada rodada (num

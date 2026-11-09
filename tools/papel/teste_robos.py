@@ -170,7 +170,10 @@ def conferir_conta(c, onde, capital_inicio=False):
     if c["serie"]:
         assert abs(c["serie"][-1][1] / 1000 - 1 - c["retorno"]) < 0.01, onde
     if "extra" in c:
-        assert {"comprado", "caixa", "degrausExecutados", "precoMedio", "foraDaGrade"} <= set(c["extra"]), onde
+        assert {"comprado", "caixa", "degrausExecutados", "precoMedio", "foraDaGrade", "porDentro"} <= set(c["extra"]), onde
+        pd = c["extra"]["porDentro"]
+        soma = pd["pares"] + pd["financiamento"] + pd["juros"] - pd["custos"] - pd["liquidacoes"] + pd["preco"]
+        assert abs(soma - pd["resultado"]) < 0.01, (onde, pd)
     if c.get("acerto") is not None:
         assert 0 <= c["acerto"] <= 1
 
@@ -181,7 +184,8 @@ def conferir_forma(d):
         assert k in d, f"falta {k}"
     assert d["forma"] == "robos" and d["nome"] == "Robôs"
     ids = [v["id"] for v in d["versoes"]]
-    assert ids == ["gbtc10", "geth10", "gbtc20r", "gneutra1", "gneutra3", "dca", "dcaqueda", "dcam1", "dcam3"]
+    assert ids == ["gbtc10", "geth10", "gbtc20r", "gneutra1", "gneutra3", "dca", "dcaqueda", "dcam1", "dcam3",
+                   "gsaida1", "gsaida3", "gvol2", "gvol4", "gsol1", "ghype1", "dcaC", "segbtc", "segeth"]
     assert d["padrao"] in ids
     for v in d["versoes"]:
         assert v["risco"] in RISCOS and v["nome"] and v["frase"] and 1 <= v["alav"] <= 3
@@ -189,6 +193,10 @@ def conferir_forma(d):
         conferir_conta(v["historico"], v["id"] + "/historico")
         if v["historico"]:
             assert v["historico"]["aproximado"] is False and v["historico"]["de"] <= v["historico"]["ate"]
+            j = v["historico"].get("janelas")
+            if j:
+                assert 0 <= j["venceCdi"] <= j["n"] and j["pior"]["retorno"] <= j["mediana"] <= j["melhor"]["retorno"]
+    assert [v["id"] for v in d["versoes"] if v["grupo"] == "Referência"] == ["segbtc", "segeth"]
     ems = [e["em"] for e in d["eventos"]]
     assert ems == sorted(ems, reverse=True) and len(ems) <= 300
     for e in d["eventos"]:
@@ -274,6 +282,187 @@ def teste_tempo_do_historico():
     print(f"  teste no passado de ~59 dias: {s:.1f} s (180 dias ≈ {s * 3:.0f} s)")
 
 
+# ---------------------------------------------------------------------- revisão de 09/11/2026
+def teste_regua_segurar():
+    r = robos.Robo(cfg_de("segbtc"))
+    s = r.novo(0)
+    r.vela(s, vela(0, 100, 100, 100, 100, HORA))
+    q = 1000 / (100 * 1.0005 * 1.0007)
+    assert perto(s["moeda"], q) and s["caixa"] < 1e-6
+    r.vela(s, vela(HORA, 100, 130, 90, 120, HORA))
+    assert perto(r.patrimonio(s, 120), q * 120) and s["buf"]["ops"] == 1
+    pd = r.por_dentro(s, 120)
+    assert pd["pares"] == 0 and perto(pd["resultado"], q * 120 - 1000, 1e-4)
+    assert perto(pd["preco"] - pd["custos"], pd["resultado"], 1e-4)
+    assert next(c for c in robos.VERSOES if c["id"] == "segeth")["grupo"] == "Referência"
+
+
+def teste_por_dentro_par():
+    """Um par fechado da grade: pares = q × (100 − 99) bruto; o resto (taxas, deslize) separado."""
+    r = robos.Robo(cfg_de("gneutra1"))
+    s = r.novo(0)
+    r.vela(s, vela(0, 100, 100, 100, 100))
+    q = s["q"]
+    r.vela(s, vela(MIN, 100, 100, 98.98, 99.5))
+    r.vela(s, vela(2 * MIN, 99.5, 100.02, 99.4, 100))
+    pd = r.por_dentro(s, 100)
+    assert perto(pd["pares"], q * 1.0), (pd, q)
+    assert abs(pd["taxas"] - (q * 99 * 0.00015 + q * 100 * 0.00015)) < 1e-4
+    assert pd["deslize"] == 0
+    soma = pd["pares"] + pd["financiamento"] + pd["juros"] - pd["custos"] - pd["liquidacoes"] + pd["preco"]
+    assert perto(soma, pd["resultado"], 1e-6)
+    assert abs(pd["preco"]) < 1e-6  # sem posição aberta
+
+
+def _subir_horas(r, s, t0, precos):
+    """Uma vela de 1 h por preço, abrindo no fechamento da anterior (o caminho passa pelos degraus)."""
+    t = t0
+    for p in precos:
+        o = s.get("px") or p
+        r.vela(s, vela(t, o, max(o, p), min(o, p), p, HORA))
+        s["px"] = p
+        t += HORA
+    return t
+
+
+def teste_grade_saida():
+    r = robos.Robo(cfg_de("gsaida1"))
+    s = r.novo(0)
+    t = _subir_horas(r, s, 0, [100] * 3)
+    assert s["L"][-1] == 110.00000000000001 or perto(s["L"][-1], 110)
+    # passa um degrau (1) além da borda de cima: fecha tudo e para
+    t = _subir_horas(r, s, t, [104, 108, 110.5, 111.2])
+    assert s["parada"] and s["parada"]["motivo"] == "grade" and abs(s["p"]) < 1e-12
+    ev = [x for x in s["buf"]["ev"] if x[1] == "saiu"]
+    assert ev and ev[-1][3] == "grade"
+    assert r.ordens(s) == []
+    # ainda balançando (> 4% em 24 h): não volta
+    t = _subir_horas(r, s, t, [111, 116, 110] * 8)
+    assert s["parada"]
+    # 24 h calmas: remonta em volta do preço
+    t = _subir_horas(r, s, t, [112] * 26)
+    assert not s["parada"] and perto(s["centro"], 112) and s["remontes"] == 1
+    assert r.extra(s)["remontes"] == 1 and r.extra(s)["parada"] is False
+    # o stop de 15% do topo (3×): uma queda forte dentro da grade, com a conta comprada
+    r3 = robos.Robo(cfg_de("gsaida3"))
+    s3 = r3.novo(0)
+    t = _subir_horas(r3, s3, 0, [100] * 2)
+    t = _subir_horas(r3, s3, t, [97, 94, 92, 91])
+    assert not s3.get("parada")  # ~11% abaixo: ainda dentro
+    eq = r3.patrimonio(s3, 91)
+    assert 0.08 < 1 - eq / s3["picoG"] < 0.15, eq
+    s3["picoG"] = eq / 0.84  # como se o melhor momento tivesse sido 16% acima de agora
+    t = _subir_horas(r3, s3, t, [91])
+    assert s3["parada"] and s3["parada"]["motivo"] == "stop", s3.get("parada")
+    assert abs(s3["p"]) < 1e-12
+    assert r3.patrimonio(s3, 91) > 0
+
+
+def teste_grade_oscilacao():
+    r = robos.Robo(cfg_de("gvol2"))
+    s = r.novo(0)
+    # 7 dias de retornos de hora em hora de ±0,5% alternados: oscilação diária ≈ 0,5% × √24 ≈ 2,45%
+    velas, p = [], 100.0
+    for i in range(7 * 24):
+        p *= 1.005 if i % 2 == 0 else 1 / 1.005
+        velas.append(vela(-7 * DIA + i * HORA, p, p, p, p, HORA))
+    r.aquecer(s, velas)
+    vd = r.vol_dia(s, 0)
+    assert 0.023 < vd < 0.026, vd
+    r.vela(s, vela(0, 100, 100, 100, 100, HORA))
+    assert perto(s["faixa"], 2 * vd, 1e-3) and perto(s["L"][0], 100 * (1 - s["faixa"]))
+    # segunda-feira (Brasília): mede de novo e recentra, pagando a troca
+    t = 0
+    seg = next(x for x in range(DIA, 8 * DIA, HORA) if robos.semana_de(x) != robos.semana_de(0))
+    while t < seg:
+        t += HORA
+        r.vela(s, vela(t, 105, 105, 105, 105, HORA))
+    assert perto(s["centro"], 105) and any(x[1] == "reequilibrou" for x in s["buf"]["ev"])
+    # sem dados suficientes: a largura padrão
+    r2 = robos.Robo(cfg_de("gvol4"))
+    s2 = r2.novo(0)
+    r2.vela(s2, vela(0, 100, 100, 100, 100, HORA))
+    assert perto(s2["faixa"], 4 * robos.VOL_PADRAO)
+
+
+def teste_dca_caixa():
+    r = robos.Robo(cfg_de("dcaC"))
+    r.juro = lambda t: 0.10
+    s = r.novo(0)
+    r.vela(s, vela(0, 100, 100, 100, 100, HORA))
+    ida = robos.FD.custo_caixa(950, True)
+    assert s["caixa"] < 1e-6 and perto(s["aave"], 950 - ida) and perto(s["acc"]["ponte"], ida)
+    a0 = s["aave"]
+    r.vela(s, vela(HORA, 100, 100, 100, 100, HORA))
+    assert perto(s["aave"], a0 * 1.10 ** (HORA / (365 * DIA)), 1e-9) and s["acc"]["juros"] > 0
+    t = HORA
+    while t < 7 * DIA:
+        t += HORA
+        r.vela(s, vela(t, 100, 100, 100, 100, HORA))
+    assert s["compras"] == 2 and s["caixa"] < 1 and s["acc"]["ponte"] > ida
+    pd = r.por_dentro(s, 100)
+    soma = pd["pares"] + pd["financiamento"] + pd["juros"] - pd["custos"] - pd["liquidacoes"] + pd["preco"]
+    assert perto(soma, pd["resultado"], 1e-6) and pd["juros"] > 0
+    # a última compra saca tudo
+    s.update(compras=19)
+    r._compra_dca(s, t + HORA, 100, "a última")
+    assert s["aave"] == 0 and s["compras"] == 20 and s["caixa"] > 400
+
+
+def teste_janelas():
+    import datetime as dt
+    d0 = dt.date(2026, 1, 1)
+    # +0,1% por dia por 60 dias; CDI 0,05% por dia útil
+    serie = [[(d0 + dt.timedelta(days=i)).isoformat(), 1000 * 1.001 ** i] for i in range(61)]
+    cdi = {(d0 + dt.timedelta(days=i)).isoformat(): 0.0005 for i in range(61) if (d0 + dt.timedelta(days=i)).weekday() < 5}
+    j = robos.janelas({"serie": serie}, cdi, 0.13)
+    assert j["n"] == 5 and j["venceCdi"] == 5, j  # dias 0, 7, 14, 21, 28 (+30 ≤ 60)
+    assert perto(j["mediana"], 1.001 ** 30 - 1, 1e-4)
+    assert j["lista"][0][0] == "2026-01-01" and 0.009 < j["lista"][0][2] < 0.012
+    # caindo: perde em todas
+    serie2 = [[d, 2000 - v] for d, v in serie]
+    j2 = robos.janelas({"serie": serie2}, cdi, 0.13)
+    assert j2["venceCdi"] == 0 and j2["pior"]["retorno"] <= j2["mediana"] <= j2["melhor"]["retorno"]
+    assert robos.janelas({"serie": serie[:20]}, cdi, 0.13) is None
+
+
+def teste_sem_dados_e_antigo():
+    """Uma moeda sem velas não quebra (a versão diz o motivo); um estado antigo (sem a conta por dentro) continua."""
+    pasta = tempfile.mkdtemp(prefix="robos-")
+    try:
+        cli = falso.ClientePapelFalso()
+        orig = cli.velas
+        cli.velas = lambda m, i, a, b: [] if m == "HYPE" else orig(m, i, a, b)
+        papel.rodada(cli, pasta, cli.agora, ["robos"], exemplo=True, buscar_cdi=False, log=papel.Log(quieto=True))
+        d = json.load(open(os.path.join(pasta, "robos.json")))
+        v = next(x for x in d["versoes"] if x["id"] == "ghype1")
+        assert v["historico"] is None and "HYPE" in v["semDados"], v
+        assert next(x for x in d["versoes"] if x["id"] == "gsol1")["historico"]
+        # estado antigo: sem `acc` nas contas ao vivo nem `hv` no teste no passado
+        cli.velas = orig
+        caminho = os.path.join(pasta, "estado.json")
+        est = json.load(open(caminho))
+        fr = est["formas"]["robos"]
+        for vv in fr["vivo"].values():
+            vv["bot"].pop("acc", None)
+            vv["bot"].pop("aave", None)
+        fr["hist"].pop("hv", None)
+        json.dump(est, open(caminho, "w"))
+        cli.agora += 6 * HORA
+        ind = papel.rodada(cli, pasta, cli.agora, ["robos"], exemplo=True, buscar_cdi=False, log=papel.Log(quieto=True))
+        assert ind["formas"]["robos"]["ok"]
+        d = json.load(open(os.path.join(pasta, "robos.json")))
+        conferir_forma(d)
+        v = next(x for x in d["versoes"] if x["id"] == "gbtc10")
+        assert v["aoVivo"]["extra"]["porDentro"].get("estimado") is True
+        assert v["historico"]["extra"]["porDentro"].get("estimado") is None
+        assert json.load(open(caminho))["formas"]["robos"]["hist"]["hv"] == robos.HIST_V
+        assert next(x for x in d["versoes"] if x["id"] == "ghype1")["historico"]  # agora com dados
+        assert "semDados" not in next(x for x in d["versoes"] if x["id"] == "ghype1")
+    finally:
+        shutil.rmtree(pasta, ignore_errors=True)
+
+
 if __name__ == "__main__":
     teste_grade_a_mao()
     teste_caminho_pessimista()
@@ -283,4 +472,11 @@ if __name__ == "__main__":
     teste_pares()
     teste_rodadas()
     teste_tempo_do_historico()
+    teste_regua_segurar()
+    teste_por_dentro_par()
+    teste_grade_saida()
+    teste_grade_oscilacao()
+    teste_dca_caixa()
+    teste_janelas()
+    teste_sem_dados_e_antigo()
     print("ok")

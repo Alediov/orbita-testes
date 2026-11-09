@@ -204,6 +204,26 @@ na versão "Os que você fixou" (partes iguais), e não sai pela regra.
   patrimônio inteiro; `fundingPago` (US$) e, no DCA com proteção, `ciclos` (fechados). `degrausExecutados` conta as
   ordens da grade, as compras do DCA ou, no DCA com proteção, as compras de proteção. As versões têm `grupo` ("Grade"
   ou "DCA");
+  **Revisão de 09/11/2026** (detalhes no começo de `robos.py`): versões novas `gsaida1`/`gsaida3` (`grupo` "Grade com
+  saída": a grade neutra de BTC que fecha tudo quando o preço passa `config.saida.alemDegraus` degrau além da borda ou a
+  conta cai `queda` (15%) do melhor momento desde a montagem, e remonta em volta do preço passadas `esperaHoras` (24) com
+  a oscilação das últimas 24 h, máxima − mínima ÷ preço, até `calma` (4%); o evento da saída leva `motivo` "grade" ou
+  "stop"; `extra.parada` true/false e `extra.remontes`), `gvol2`/`gvol4` (`grupo` "Grade pela oscilação": BTC à vista,
+  meia-largura = k × a oscilação diária, o desvio dos retornos de hora em hora dos últimos `config.vol.dias` dias × √24,
+  entre `min` e `max`, `padrao` sem 24 h de dados; recentrada toda segunda em Brasília, pagando a troca; `extra.volDia` e
+  `extra.faixaAgora`), `gsol1`/`ghype1` (a grade neutra 1× em SOL e HYPE, `grupo` "Grade"), `dcaC` (o DCA semanal com o
+  caixa no empréstimo de USDC da Aave v3 na Base, com os custos do funding: `config.caixa` { `ida`, `volta`, `ponte`,
+  `juroAgora` }; `extra.naAave` = US$ lá agora) e as réguas `segbtc` ("Só segurar BTC", também o "tudo no dia 1" do DCA:
+  os US$ 1.000 que o DCA compra em 20 semanas, de uma vez) e `segeth` (`grupo` "Referência", por último). Toda versão traz
+  `moeda`; sem velas da moeda, `semDados` (texto com o motivo) e `historico` null. Toda conta (ao vivo e teste no
+  passado) traz **`extra.porDentro`** (US$): `pares` (lucro BRUTO, antes das taxas, dos pares fechados da grade ou dos
+  ciclos do DCA com proteção), `preco` (o que sobra: o ganho ou a perda da moeda que a conta segura), `financiamento`
+  (positivo = recebeu), `juros` (Aave), `taxas`, `deslize`, `ponte` (saque, ponte e gás da Aave), `liquidacoes`,
+  `custos` (taxas + deslize + ponte) e `resultado` (patrimônio − 1.000) = pares + financiamento + juros − custos −
+  liquidações + preço; `estimado: true` nas contas ao vivo de antes de 09/11/2026 (taxa e deslize juntos em `taxas`). O
+  `historico` traz **`janelas`**: `{ "dias": 30, "passo": 7, "n", "venceCdi" (em quantas o retorno passou o CDI do mesmo
+  período), "mediana", "pior": { "de", "retorno", "cdi" }, "melhor": {…}, "lista": [[de, retorno, cdi]] (as últimas 30) }`
+  (null com menos de 30 dias); `config.janelas` = { `dias`, `passo` }.
 - cofres: `cofres` (quantos na versão), `travadoAte` (ms; não dá para sair antes), `comissaoPaga` (US$).
 
 ## estado.json
