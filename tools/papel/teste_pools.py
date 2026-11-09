@@ -234,17 +234,111 @@ def ler(pasta):
         return json.load(f)
 
 
+VERSOES_WETH = {v[0] for v in PL.VERSOES}
+NOVOS = {"cbbtc_usdc", "weth_cbbtc", "aero_weth_usdc", "estavel"}
+
+
 def conferir(d, com_hist=True):
     conferir_forma(d, "pools")
-    assert d["padrao"] == "r3h" and {v["id"] for v in d["versoes"]} == {v[0] for v in PL.VERSOES}
+    assert d["padrao"] == "r3h"
+    weth = [v for v in d["versoes"] if v["pool"] == "weth_usdc"]
+    assert {v["id"] for v in weth} == VERSOES_WETH
+    ids_pools = {p["id"] for p in d["pools"]}
+    assert {"weth_usdc"} | NOVOS <= ids_pools and "brz" in ids_pools, ids_pools
+    por_pool = {}
     for v in d["versoes"]:
+        por_pool.setdefault(v["pool"], []).append(v)
         assert v["aoVivo"] is not None, v["id"]
-        assert {"taxasGanhas", "gasPago", "reposicoes", "precoEth"} <= set(v["aoVivo"]["extra"])
-        if v["id"] != "segurar":
-            assert {"perdaImp", "dentro", "dentroFrac"} <= set(v["aoVivo"]["extra"])
+        assert {"taxasGanhas", "gasPago", "reposicoes", "preco", "naBase", "naCotacao"} <= set(v["aoVivo"]["extra"]), v["id"]
+        if v["pool"] == "weth_usdc":
+            assert "precoEth" in v["aoVivo"]["extra"]
+        if not v["id"].endswith("segurar"):
+            assert {"perdaImp", "dentro", "dentroFrac"} <= set(v["aoVivo"]["extra"]), v["id"]
         if com_hist:
-            assert v["historico"] and v["historico"]["aproximado"] is False and v["historico"]["nota"]
+            h = v["historico"]
+            assert h and h["nota"], v["id"]
+            assert h["aproximado"] is (v["grupo"] == "No gauge (AERO)"), v["id"]
+    for p in d["pools"]:
+        if p["observador"]:
+            assert p["id"] not in por_pool and p["nota"]
+            continue
+        assert p["padrao"] in {v["id"] for v in por_pool[p["id"]]}, p
+        assert set(p["versoes"]) == {v["id"] for v in por_pool[p["id"]]}
+        assert p["volume24h"] > 0 and p["tvl"] > 0 and p["giro"] > 0 and p["aprTaxas"] > 0, p
     assert d["config"]["gasWei"] > 0 and d["config"]["precoEth"] > 0
+
+
+def teste_seletores():
+    """O keccak de keccak.py bate com os valores conhecidos do Ethereum."""
+    import keccak
+    assert keccak.keccak256(b"").hex() == "c5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470"
+    assert PL.TOPICO_SWAP == "0xc42079f94a6350d7e6235f29174924f928cc2ac818eb64fed8004e115fbcca67"
+    assert PL.SEL_TOKEN0 == "0x0dfe1681" and PL.SEL_FEE == "0xddca3f43" and PL.SEL_SALDO == "0x70a08231"
+    assert PL.SEL_GETPOOL_UNI == "0x1698ee82" and PL.SEL_DECIMAIS == "0x313ce567"
+
+
+def teste_par_invertido():
+    """cbBTC/USDC tem o USDC como token0: o preço da base é 1/P e o valor sai em US$ do mesmo jeito."""
+    par = PL.Par({"endereco": "0x1", "dex": "uni", "token0": PL.USDC, "token1": PL.TOKENS["cbBTC"][0], "sim0": "USDC",
+                  "sim1": "cbBTC", "base": "cbBTC", "cotacao": "USDC", "dec0": 6, "dec1": 8, "fee": 500, "espaco": 10})
+    p_btc = 70_000.0
+    s = math.sqrt(1 / p_btc)  # cbBTC por USDC
+    assert perto(par.preco_base(s), p_btc) and perto(par.usd_t1(s, 0), p_btc)
+    c = PL.Conta({"id": "x", "nome": "x", "largura": None, "mult": 3.0, "regra": "hora", "risco": "médio", "frase": "",
+                  "gauge": False}, T0, None, par)
+    c.troca(T0, None, s, 0, sigma=0.02)
+    assert 990 < c.curva.ultimo < 1000 and perto(c.w, 0.06)
+    lo, hi = c.faixa_precos()
+    assert lo < p_btc * 0.95 and hi > p_btc * 1.05 and lo > p_btc * 0.93 and hi < p_btc * 1.07
+    c.marcar(T0 + MIN)
+    x = c.curva.extra
+    assert perto(x["naBase"] + x["naCotacao"], c.curva.ultimo, 1e-3) and 400 < x["naBase"] < 600
+
+
+def teste_volatilidade():
+    v = PL.Volatilidade(0.03)
+    assert perto(v.dia(), 0.03)
+    s = 50.0
+    for h in range(24 * 60):  # 60 dias de ±0,5% por hora: diária ≈ 0,5% × √24 ≈ 2,45%
+        s *= math.sqrt(1.005 if h % 2 else 1 / 1.005)
+        v.ver(T0 + h * HORA, s)
+    assert 0.022 < v.dia() < 0.027, v.dia()
+
+
+def teste_gauge():
+    """No gauge: não ganha taxa, ganha AERO pela parte da liquidez em stake e vende uma vez por dia."""
+    par = PL.Par({"endereco": "0x1", "dex": "aero", "fee": 500, "espaco": 100, "unstakedFee": 100_000, "gauge": "0x2"})
+    base = {"nome": "x", "largura": None, "mult": 3.0, "regra": "hora", "risco": "médio", "frase": ""}
+    g = PL.Conta({**base, "id": "g", "gauge": True}, T0, None, par)
+    f = PL.Conta({**base, "id": "f", "gauge": False}, T0, None, par)
+    aero = (0.06, 0.5, 1.0)
+    liq = 10 ** 18
+    for c in (g, f):
+        c.troca(T0, None, sq(2500), 0, sigma=0.03, liq=liq, aero=aero)
+    s_ant, t = sq(2500), T0
+    for k in range(2 * 24 * 60):
+        t += MIN
+        p = sq(2500 * (1.001 if k % 2 else 0.999))
+        for c in (g, f):
+            c.troca(t, s_ant, p, 10_000_000, sigma=0.03, liq=liq, aero=aero)
+        s_ant = p
+    assert g.acc["taxas"] == 0 and g.acc["aero"] > 0 and g.acc["aeroUS"] > 0 and f.acc["taxas"] > 0
+    Lr = g.L * par.escala_l
+    esperado = 0.06 * (2 * 24 * 3600 - 60) * Lr / (0.5 * liq + Lr)
+    assert perto(g.acc["aero"], esperado, 0.02), (g.acc["aero"], esperado)
+    # sem gauge: a taxa é 90% da que ganharia (10% vai para o gauge)
+    par.unstaked = 0
+    h = PL.Conta({**base, "id": "h", "gauge": False}, T0, None, par)
+    h.troca(T0, None, sq(2500), 0, sigma=0.03)
+    s_ant, t = sq(2500), T0
+    for k in range(2 * 24 * 60):
+        t += MIN
+        p = sq(2500 * (1.001 if k % 2 else 0.999))
+        h.troca(t, s_ant, p, 10_000_000, sigma=0.03)
+        s_ant = p
+    assert perto(f.acc["taxas"], 0.9 * h.acc["taxas"], 0.01)
+    g.marcar(t)
+    assert g.curva.extra["aeroGanho"] > 0 and "aeroVendido" in g.curva.extra
 
 
 def teste_rodadas():
@@ -262,22 +356,45 @@ def teste_rodadas():
                 rodar(cli_b, b, q)
             conferir(ler(a))
         da, db = ler(a), ler(b)
+        assert [v["id"] for v in da["versoes"]] == [v["id"] for v in db["versoes"]]
         for va, vb in zip(da["versoes"], db["versoes"]):
+            if va["grupo"] == "No gauge (AERO)":
+                continue  # o AERO depende das amostras do gauge, uma por rodada
             # alcançar dá o mesmo (as que reposicionam só diferem pelo gás, medido a cada rodada: B mediu menos vezes)
             sa, sb = va["aoVivo"]["serie"], vb["aoVivo"]["serie"]
-            assert [d for d, _ in sa] == [d for d, _ in sb] and all(perto(x, y, 1e-4) for (_, x), (_, y) in zip(sa, sb)), va["id"]
+            tol = 1e-4 if va["pool"] == "weth_usdc" else 2e-3
+            assert [d for d, _ in sa] == [d for d, _ in sb] and all(perto(x, y, tol) for (_, x), (_, y) in zip(sa, sb)), va["id"]
             assert va["aoVivo"]["ops"] == vb["aoVivo"]["ops"], va["id"]
             if va["id"] in ("cheia", "r3fixa", "segurar"):
                 assert sa == sb and va["aoVivo"]["piorQueda"] == vb["aoVivo"]["piorQueda"]
         assert da["config"]["passado"]["alcancou"] and da["config"]["trocasLidas"]["hist"] > 100_000
-        assert da["config"]["conferencia"]["fonte"] == "GeckoTerminal"
+        assert da["config"]["conferencia"]["fonte"] == "GeckoTerminal" and da["config"]["pools"] == 5
         assert not da["rodada"]["erros"], da["rodada"]["erros"]
-        r1 = next(v for v in da["versoes"] if v["id"] == "r1")["historico"]
-        cheia = next(v for v in da["versoes"] if v["id"] == "cheia")["historico"]
+        vs = {v["id"]: v for v in da["versoes"]}
+        r1, cheia = vs["r1"]["historico"], vs["cheia"]["historico"]
         # a faixa estreita ganha muito mais taxa por dólar e reposiciona muito mais
         assert r1["extra"]["taxasGanhas"] > 20 * cheia["extra"]["taxasGanhas"] and r1["extra"]["reposicoes"] > 50
         assert "abriu" in {e["tipo"] for e in da["eventos"]}
-        assert da["rodada"]["pedidos"] < 20  # uma rodada normal: poucos pedidos
+        assert da["rodada"]["pedidos"] < 60  # uma rodada normal: poucos pedidos
+        ps = {p["id"]: p for p in da["pools"]}
+        # a escolha: o de mais trocas entre os candidatos (no Aerodrome, com gauge)
+        assert ps["cbbtc_usdc"]["endereco"].lower() == "0xfbb6eed8e7aa03b138556eedaf5d271a5e1e43ef"
+        assert ps["aero_weth_usdc"]["endereco"].lower() == "0xb2cc224c1c9fee385f8ad6a55b4d94e92359dc59"
+        assert ps["estavel"]["par"] == "USDT/USDC" and ps["estavel"]["dex"] == "Aerodrome"
+        assert ps["brz"]["observador"] and "Pouco volume" in ps["brz"]["nota"]
+        assert len(ps["aero_weth_usdc"]["escolha"]["candidatos"]) == 2
+        g = ps["aero_weth_usdc"]["gauge"]
+        assert g["aeroDia"] > 0 and g["precoAero"] and 0 < g["fracStake"] <= 1 and g["aprEmissoes"] > 0
+        # as faixas seguem a volatilidade de cada par: a "média" dos dólares é muito mais estreita que a do ether
+        assert ps["estavel"]["larguras"]["med"] < ps["aero_weth_usdc"]["larguras"]["med"] / 10
+        assert vs["aer-medg"]["historico"]["extra"]["aeroGanho"] > 0 and vs["aer-medg"]["historico"]["extra"]["taxasGanhas"] == 0
+        assert vs["aer-med"]["historico"]["extra"]["taxasGanhas"] > 0
+        # medida em bitcoin: o preço do bitcoin do início e o valor em dólar de verdade
+        e = vs["ecb-segurar"]["aoVivo"]["extra"]
+        assert e["precoRef"] > 0 and e["emDolar"] > 0
+        for v in da["versoes"]:
+            m = v["aoVivo"].get("metricas")
+            assert m and "cdi" in m and "excesso" in m, v["id"]
         # falha do RPC: ok false e o arquivo da rodada boa fica
         antes = ler(a)
         cli_a.rpc_falhar.add("eth_getLogs")
@@ -287,22 +404,69 @@ def teste_rodadas():
         ind = rodar(cli_a, a, t0 + 13 * 6 * HORA)
         assert ind["formas"]["pools"]["ok"]
         conferir(ler(a))
-        # uma versão nova (sem passado no estado): o teste no passado recomeça para todas
+        # um pool novo que para de responder: a forma segue, ele fica parado na saída (com o erro)
+        FP_end = "0xfBB6Eed8e7aa03B138556eeDaF5D271A5E1e43ef"
         est = json.load(open(os.path.join(a, "estado.json")))
-        del est["formas"]["pools"]["hist"]["contas"]["dia5"]
+        est["formas"]["pools"]["pools"]["cbbtc_usdc"]["conferido"] = 1
         papel.gravar_json(os.path.join(a, "estado.json"), est)
-        cli_a.agora = t0 + 14 * 6 * HORA
+        cli_a.pools_fora.add(FP_end)
+        ind = rodar(cli_a, a, t0 + 14 * 6 * HORA)
+        d = ler(a)
+        assert ind["formas"]["pools"]["ok"] and any("cbbtc_usdc" in x for x in d["rodada"]["erros"])
+        assert any(v["pool"] == "cbbtc_usdc" for v in d["versoes"])
+        cli_a.pools_fora.clear()
+        # uma versão nova (sem passado no estado): o teste no passado recomeça para todas daquele pool
+        est = json.load(open(os.path.join(a, "estado.json")))
+        del est["formas"]["pools"]["pools"]["weth_usdc"]["hist"]["contas"]["dia5"]
+        papel.gravar_json(os.path.join(a, "estado.json"), est)
+        cli_a.agora = t0 + 15 * 6 * HORA
         log = papel.Log(quieto=True)
         papel.rodada(cli_a, a, cli_a.agora, formas=["pools"], exemplo=True, buscar_cdi=False, log=log)
-        assert any("versões novas (dia5)" in x for x in log.linhas), log.linhas
+        assert any("pools: weth_usdc: versões novas (dia5)" in x for x in log.linhas), log.linhas
+        assert not any("cbbtc_usdc: versões novas" in x for x in log.linhas)
         conferir(ler(a))
     finally:
         shutil.rmtree(a, ignore_errors=True)
         shutil.rmtree(b, ignore_errors=True)
 
 
+def teste_migracao():
+    """O estado de antes (um pool só, no alto do estado da forma) continua: o WETH/USDC não recomeça e os pools novos
+    começam o passado deles."""
+    a = tempfile.mkdtemp(prefix="pools-m-")
+    try:
+        cli = falso.ClientePapelFalso()
+        t0 = cli.agora
+        rodar(cli, a, t0)
+        est = json.load(open(os.path.join(a, "estado.json")))
+        f = est["formas"]["pools"]
+        w = f.pop("pools")["weth_usdc"]
+        f.update(w)  # o formato antigo: vivo, hist, pedaco, volume, pool, gecko no alto
+        f.pop("vez", None)
+        f.pop("decimais", None)
+        papel.gravar_json(os.path.join(a, "estado.json"), est)
+        ini_hist = w["hist"]["inicio"]
+        ret = {k: c["curva"]["ultimo"] for k, c in w["vivo"]["contas"].items()}
+        log = papel.Log(quieto=True)
+        cli.agora = t0 + 6 * HORA
+        papel.rodada(cli, a, cli.agora, formas=["pools"], exemplo=True, buscar_cdi=False, log=log)
+        assert not any("pools: weth_usdc: versões novas" in x or "pools: weth_usdc: começando" in x for x in log.linhas), log.linhas
+        assert any("cbbtc_usdc: escolhido" in x for x in log.linhas)
+        est = json.load(open(os.path.join(a, "estado.json")))
+        f = est["formas"]["pools"]
+        assert "vivo" not in f and f["pools"]["weth_usdc"]["hist"]["inicio"] == ini_hist
+        d = ler(a)
+        conferir(d)
+        for v in d["versoes"]:
+            if v["pool"] == "weth_usdc":
+                assert v["aoVivo"]["inicio"] == t0 and ret[v["id"]] > 0
+    finally:
+        shutil.rmtree(a, ignore_errors=True)
+
+
 def teste_passado_aos_poucos():
-    """Sem tempo para os 28 dias de uma vez: o ao vivo anda e o passado continua nas rodadas seguintes."""
+    """Sem tempo para os 28 dias de uma vez: o ao vivo anda e os passados continuam nas rodadas seguintes, revezando
+    qual pool começa."""
     a = tempfile.mkdtemp(prefix="pools-c-")
     try:
         cli = falso.ClientePapelFalso()
@@ -310,12 +474,12 @@ def teste_passado_aos_poucos():
         relogio = {"n": 0}
         orig = PL.ler_trocas
 
-        def devagar(rpc, de, ate, ref, ped, tempo, log):
-            # cada pedaço "gasta" tempo: só 3 pedaços por rodada
+        def devagar(rpc, de, ate, ref, ped, tempo, log, par=None):
+            # cada pedaço "gasta" tempo: só 30 pedaços por rodada (o ao vivo dos pools vem primeiro)
             def t():
                 relogio["n"] += 1
-                return relogio["n"] % 4 != 0 and tempo()
-            yield from orig(rpc, de, ate, ref, ped, t, log)
+                return relogio["n"] <= 30 and tempo()
+            yield from orig(rpc, de, ate, ref, ped, t, log, par)
         PL.ler_trocas = devagar
         try:
             t0 = cli.agora
@@ -323,12 +487,13 @@ def teste_passado_aos_poucos():
             d = ler(a)
             assert d["config"]["passado"]["alcancou"] is False and d["config"]["passado"]["faltamDias"] > 20
             assert all(v["aoVivo"] for v in d["versoes"])
-            for k in range(1, 400):
+            for k in range(1, 600):
+                relogio["n"] = 0
                 rodar(cli, a, t0 + k * 6 * HORA)
-                if ler(a)["config"]["passado"]["alcancou"]:
+                if all(p.get("passado", {"alcancou": True})["alcancou"] for p in ler(a)["pools"]):
                     break
             d = ler(a)
-            assert d["config"]["passado"]["alcancou"], d["config"]["passado"]
+            assert all(p.get("passado", {"alcancou": True})["alcancou"] for p in d["pools"]), [p.get("passado") for p in d["pools"]]
             conferir(d)
         finally:
             PL.ler_trocas = orig
@@ -344,7 +509,7 @@ def teste_pool_errado():
         orig = cli.rpc
 
         def rpc(m, p, rede_=None):
-            if m == "eth_call" and p[0]["data"].startswith(PL.SEL_FEE):
+            if m == "eth_call" and p[0]["to"] == PL.POOL and p[0]["data"].startswith(PL.SEL_FEE):
                 return "0x" + FP._palavra(3000)
             return orig(m, p, rede_)
         cli.rpc = rpc
@@ -357,14 +522,19 @@ def teste_pool_errado():
 
 
 if __name__ == "__main__":
+    teste_seletores()
     teste_matematica()
     teste_evento()
     teste_conta_taxas()
     teste_reposicionar()
     teste_resumo_do_dia()
     teste_a_mao()
+    teste_par_invertido()
+    teste_volatilidade()
+    teste_gauge()
     teste_ler_trocas()
     teste_rodadas()
+    teste_migracao()
     teste_passado_aos_poucos()
     teste_pool_errado()
     print("ok")

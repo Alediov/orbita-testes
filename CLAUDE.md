@@ -75,6 +75,18 @@ acabavam; aqui os executores padrão não têm limite.
   em que a rodada viu o palpite (antes do jogo), liquidado pela ESPN, CLV contra o fechamento; o resto conta como "fora
   do teste" com o motivo. Só ao vivo. Um push em `config/bdm/**` roda o papel.yml só com as apostas. Formato e regras no
   `tools/papel/FORMATO.md`; teste em `teste_apostas.py` (`teste_bdm_*`).
+- **Cinco pools** (pedido do Alediov, 09/11/2026; `pools.py`): além do WETH/USDC do Uniswap (as 10 versões e o histórico
+  continuam; o estado antigo vai para `pools.weth_usdc` sem recomeçar, `migrar`), cbBTC/USDC e WETH/cbBTC no Uniswap v3
+  (o par correlacionado é medido em bitcoin), WETH/USDC no Aerodrome Slipstream (cada versão "sem gauge", com as taxas
+  menos a parte do gauge, e "no gauge", com o AERO vendido todo dia: aproximado, porque a parte em stake, a emissão e o
+  preço do AERO só são lidos a cada rodada) e o par de dólares estáveis com mais trocas (USDC/USDT ou EURC/USDC). O
+  BRZ/USDC é só observado (em 09/11/2026 os 28 pools do BRZ na Base somavam ~US$ 10 mil por dia; o BRLA não tem pool com
+  volume na Base). Cada pool novo é ESCOLHIDO na 1ª rodada pelo maior volume da última hora entre os candidatos (fábricas
+  do Uniswap e do Slipstream + endereços conhecidos de páginas públicas), conferindo token0/token1/fee/tickSpacing/
+  decimals na rede, e a escolha fica (`pools.<id>.escolha`; o log da 1ª rodada registra tudo). As faixas dos pools novos
+  seguem a oscilação diária medida em cada um (estreita/média/larga = 1/3/8 vezes). O ao vivo de todos vem primeiro e os
+  passados se revezam entre as rodadas. Seletores e o tópico do Swap pelo keccak de `keccak.py` (Python puro). Saída
+  `pools[]` com volume, liquidez, giro, taxas ao ano e o gauge (FORMATO.md, "Pools").
 - Os exemplos que o app usa sem rede ficam no repositório do app (`tools/mercado/exemplos/`); refazer aqui
   (`python3 tools/papel/falso.py`) e copiar para lá (`tools/mercado/exemplos/papel/`) quando o formato mudar.
 - Os workflows (`mercado.yml`, `papel.yml`, `memes.yml`, `ideias.yml`) religam os agendamentos pela API a cada rodada (num
