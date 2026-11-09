@@ -50,6 +50,23 @@ acabavam; aqui os executores padrão não têm limite.
   Actions vai para o `motivoSemTranscricao` e o vídeo é tentado de novo até 6 vezes). Ramo órfão `ideias` (2×/dia):
   `videos/<id>.json`, `indice.json` (sem os textos) e `log.txt`. Quem lê e classifica é a tarefa do repositório privado
   (`gerador/IDEIAS.md` de lá). Teste: `python3 tools/ideias/teste_ideias.py`.
+- **Revisão de 09/11/2026** (pedido do Alediov: "aprimorar cada um dos Testes"; olhando as rodadas reais de 03 a
+  09/11): (1) **métricas comuns** em toda conta com série (`conta.metricas`, posto pelo `papel.py` em todas as formas e
+  pelo `mercado.py` em cada conta do copy trading, que agora lê `tools/papel` no checkout): CDI no MESMO período,
+  excesso sobre ele, ao mês (só com 7 dias) e ao ano (só com 30), volatilidade, Sharpe contra o CDI (só com 14 dias),
+  retorno por queda, pior dia e dias positivos; o CDI tenta 3 vezes (o BC respondeu 304 em 08/11) e, sem ele, usa a taxa
+  dos últimos 20 dias guardados (`cdiAno`). (2) **Apostas**: o mais/menos de 2,5 gols nunca era lido ao vivo (o
+  `/historical-odds` não traz o nome do mercado; agora pelo id 1010) e o 404 da lista de jogos (Libertadores sem jogos)
+  vira lista vazia. Achado: "Valor 3%" quase não aposta (29 em 4.922 jogos no passado, 0 em 6 dias ao vivo); é a
+  realidade da Betano (internacional) contra a Pinnacle nas ligas grandes, não um defeito. (3) **Funding**: a versão
+  `entre` (entre corretoras, que tinha ficado de fora), só ao vivo e aproximada, pelas taxas previstas da Binance e da
+  Bybit que a própria HL publica (o Actions não alcança a Binance nem a Bybit). (4) **Looping**: as réguas `wst1` (só o
+  staking) e `eth1` (só o ether). (5) **Pools**: `dia10`/`dia5`, o jeito de cuidar da pool à mão (olha 1×/dia, reinveste
+  as taxas a cada 7 dias), inspirado no que o Canal do Marinho (Victor Marinho, "Mestre das Pools") ensina; os vídeos
+  não abriram daqui, então os números são uma suposição a confirmar com ele; versão nova recomeça o passado das pools.
+  (6) **Memecoins** (`VERSAO` 2, recomeçou): o PumpPortal manda lançamentos de outras plataformas (filtro `pool` "pump")
+  e a DexScreener não lista os tokens pequenos (GeckoTerminal confere; nenhum dos dois = "sem dados", fora das apostas).
+  Detalhes no `tools/papel/FORMATO.md`.
 - Os exemplos que o app usa sem rede ficam no repositório do app (`tools/mercado/exemplos/`); refazer aqui
   (`python3 tools/papel/falso.py`) e copiar para lá (`tools/mercado/exemplos/papel/`) quando o formato mudar.
 - Os workflows (`mercado.yml`, `papel.yml`, `memes.yml`, `ideias.yml`) religam os agendamentos pela API a cada rodada (num

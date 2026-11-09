@@ -218,9 +218,12 @@ def ler(pasta):
 def conferir(d):
     conferir_forma(d, "funding")
     assert d["forma"] == "funding" and d["nome"] == "Funding" and d["padrao"] == "btc1"
-    assert {v["id"] for v in d["versoes"]} == {"btc1", "eth1", "hype1", "sol1", "btc3", "seletiva", "seletiva3", "rodizio"}
+    assert {v["id"] for v in d["versoes"]} == {"btc1", "eth1", "hype1", "sol1", "btc3", "seletiva", "seletiva3", "rodizio", "entre"}
     for v in d["versoes"]:
         assert v["alav"] <= 3
+        if v["id"] == "entre":
+            assert v["historico"] is None and {"recebido", "pago", "longo", "curto", "diferencaAno"} <= set(v["aoVivo"]["extra"])
+            continue
         for k in ("aoVivo", "historico"):
             c = v[k]
             assert c is not None, (v["id"], k)
@@ -250,8 +253,11 @@ def teste_rodadas():
         da, db = ler(a), ler(b)
         assert ler(b)["agora"] == da["agora"]
         for va, vb in zip(da["versoes"], db["versoes"]):
+            if va["id"] == "entre":
+                continue  # a entre corretoras depende de quando a rodada lê o previsto (por isso é aproximada)
             assert va["aoVivo"] == vb["aoVivo"], va["id"]  # alcançar o tempo perdido dá o mesmo resultado
-        assert [e["texto"] for e in da["eventos"]] == [e["texto"] for e in db["eventos"]]
+        assert [e["texto"] for e in da["eventos"] if e["versao"] != "entre"] == \
+            [e["texto"] for e in db["eventos"] if e["versao"] != "entre"]
         btc = da["versoes"][0]["aoVivo"]
         assert len(btc["serie"]) >= 7 and btc["inicio"] == F.hora_de(t0 - F.FOLGA_MS)
         dias = [x for x, _ in btc["serie"]]
@@ -267,6 +273,11 @@ def teste_rodadas():
         # sem eventos de hora em hora: no máximo um de financiamento por versão por semana
         fin = [e for e in da["eventos"] if e["tipo"] in ("recebeu", "pagou")]
         assert len(fin) <= 8 * 2
+        # a entre corretoras: só ao vivo, montou e desmontou no mundo de mentira, e anda com o dinheiro
+        en = next(v for v in da["versoes"] if v["id"] == "entre")
+        assert en["historico"] is None and en["aoVivo"]["aproximado"] and en["grupo"] == "Entre corretoras"
+        assert ("entre", "entrou") in tipos and ("entre", "saiu") in tipos, sorted(t for t in tipos if t[0] == "entre")
+        assert en["aoVivo"]["extra"]["recebido"] > 0
 
         # uma falha da API: ok false no índice, o funding.json da rodada boa fica
         antes = ler(a)
@@ -286,6 +297,27 @@ def teste_rodadas():
     finally:
         shutil.rmtree(a, ignore_errors=True)
         shutil.rmtree(b, ignore_errors=True)
+
+
+def teste_entre():
+    """A entre corretoras à mão: diferença acima de 8% entra, ganha metade do dinheiro × diferença, sai abaixo de 2%."""
+    ev = F.Eventos()
+    en = F.Entre(0)
+    leit = {"BTC": {"hl": 0.10, "binance": 0.0, "bybit": 0.05}, "ETH": {"hl": 0.02, "binance": 0.01}}
+    en.passo(0, leit, ev)
+    assert en.pos == {"moeda": "BTC", "longo": "binance", "curto": "hl", "desde": 0}
+    custo = 500 * (F.ENTRE_TAXA["binance"] + F.ENTRE_TAXA["hl"] + 2 * F.DESLIZE["BTC"]) + F.ENTRE_PONTE
+    assert perto(en.curva.ultimo, 1000 - custo)
+    v0 = en.curva.ultimo
+    en.passo(365 * DIA, leit, ev)  # um ano com 10% de diferença em metade do dinheiro
+    assert perto(en.curva.ultimo, v0 + v0 / 2 * 0.10)
+    v1 = en.curva.ultimo
+    baixa = {"BTC": {"hl": 0.01, "binance": 0.0}}
+    en.passo(366 * DIA, baixa, ev)  # a diferença caiu a 1% numa leitura só: a média (5,5%) ainda segura
+    assert en.pos is not None
+    en.passo(367 * DIA, baixa, ev)  # duas leituras baixas: sai
+    assert en.pos is None and en.curva.ultimo < v1 + v1 / 2 * 0.10 * 2 / 365 + 1e-9
+    assert [e["tipo"] for e in ev.para_json()][::-1] == ["entrou", "saiu"]
 
 
 def teste_pouco_tempo():
@@ -311,6 +343,7 @@ if __name__ == "__main__":
     teste_rodizio()
     teste_teste_no_passado()
     teste_pares()
+    teste_entre()
     teste_rodadas()
     teste_pouco_tempo()
     print("ok")

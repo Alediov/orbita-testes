@@ -89,6 +89,10 @@ VERSOES = [
      "O mesmo com 2×: liquidada se o ether cair uns 40%."),
     ("eth2def", "ETH 2× com defesa", "eth", 2, 1.3, "alto",
      "2×, mas quando o fator de saúde cai a 1,3 vende um pouco do ether e paga a dívida, voltando a 2×."),
+    ("wst1", "Só wstETH", "wst", 1, None, "baixo",
+     "Régua do laço: só compra wstETH e deixa no Aave, sem empréstimo. Mostra quanto do laço é só o staking."),
+    ("eth1", "Só ETH", "eth", 1, None, "alto",
+     "Régua do ether × dólar: só compra ether e deixa no Aave, sem empréstimo. Mostra quanto das outras é só o ether."),
     ("usdc", "Só USDC", "usdc", 1, None, "baixo",
      "Só deposita os dólares no Aave e recebe o juro, sem laço: a régua das outras."),
 ]
@@ -268,6 +272,10 @@ class Conta:
         self.montada = True
         if self.tipo == "usdc":
             self._ev(ev, t, "abriu", f"Depositou {moeda_br(self.a)} em USDC no Aave.")
+        elif L == 1:
+            moeda = "wstETH" if self.tipo == "wst" else "ether"
+            self._ev(ev, t, "abriu", f"Comprou {moeda_br(self.garantia_us(p))} em {moeda} e depositou no Aave, sem "
+                                     f"empréstimo (custou {moeda_br(custo)}).")
         else:
             moeda = "wstETH" if self.tipo == "wst" else "ether"
             divida = f"{num_br(self.b, 4)} ETH" if self.tipo == "wst" else moeda_br(self.b)
@@ -618,7 +626,7 @@ def rodar(ctx):
             vid, nome, tipo, alav, defesa, risco, frase = cfg
             e = vivo.get(vid)
             versoes.append({"id": vid, "nome": nome, "frase": frase, "risco": risco, "alav": alav,
-                            "grupo": {"wst": "wstETH × ETH", "eth": "ETH × USDC", "usdc": "Referência"}[tipo],
+                            "grupo": "Referência" if alav == 1 else {"wst": "wstETH × ETH", "eth": "ETH × USDC"}[tipo],
                             "aoVivo": Curva.de_json(e["curva"]).resumo() if e else None,
                             "historico": (hist.get("versoes") or {}).get(vid)})
         itens = [{"ativo": "wstETH", "deposito": atual.get("sup:wstETH"), "staking": atual.get("stake"),

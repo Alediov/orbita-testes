@@ -229,6 +229,10 @@ def teste_rodadas():
             assert av and av["serie"][0][1] == 1000
             assert av["serie"][-1][1] >= 0 and av["ops"] == 2 * reg[v["id"]]["apostas"]
             assert {"apostas", "acerto", "roi", "resultado"} <= set(av["extra"])
+        # só o pump.fun entra na amostra (os de outras plataformas são contados à parte)
+        assert o["outrasPlataformas"] > 0 and not any(i["mint"].endswith("bonk") for i in d["itens"])
+        # o GeckoTerminal confirmou os que a DexScreener não listou: nenhum ficou "sem dados" no mundo de mentira
+        assert o["tudo"]["semDados"] == 0 and o["tudo"]["semNegocios"] > 0
         # os itens não trazem nomes (só o endereço encurtado)
         assert d["itens"] and all("…" in i["mint"] and "nome" not in i for i in d["itens"])
         assert "Mentira" not in json.dumps(d, ensure_ascii=False)
@@ -243,6 +247,13 @@ def teste_rodadas():
         cli.falhar.clear()
         rodar(cli, a, t0 + 16 * 12 * HORA + HORA)
         assert ler(a)["observatorio"]["tudo"]["tokens"] > n
+        # o GeckoTerminal falha: quem a DexScreener não lista fica "sem dados" (fora das apostas), não "morto"
+        cli.falhar.add("gecko")
+        antes = ler(a)["observatorio"]["tudo"]
+        rodar(cli, a, t0 + 17 * 12 * HORA)
+        depois = ler(a)["observatorio"]["tudo"]
+        assert depois["semDados"] > 0 and depois["morreram"] - antes["morreram"] < depois["tokens"] - antes["tokens"]
+        cli.falhar.clear()
         # o PumpPortal falha: segue (sem amostra nova), com o erro anotado
         cli.falhar.add("pumpportal")
         ind = rodar(cli, a, t0 + 18 * 12 * HORA)

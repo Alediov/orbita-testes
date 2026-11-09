@@ -27,6 +27,31 @@ def conferir_conta(c, onde):
     assert 0 <= c["piorQueda"] <= 1, f"{onde}: pior queda {c['piorQueda']}"
     if c["serie"]:
         assert abs(c["serie"][-1][1] / 1000 - 1 - c["retorno"]) < 0.02, f"{onde}: retorno não bate com a série"
+        m = c.get("metricas")
+        assert m and {"dias", "cdi", "excesso", "venceCdi", "aoMes", "aoAno", "volAno", "sharpe", "retornoPorQueda",
+                      "piorDia", "diasPositivos"} <= set(m), f"{onde}: sem as métricas comuns"
+        assert m["cdi"] >= 0 and (m["aoMes"] is None) == (m["dias"] < 7), f"{onde}: métricas {m}"
+
+
+def teste_metricas():
+    """As métricas comuns à mão: CDI no mesmo período, excesso, Sharpe e o ao mês só com 7 dias."""
+    import conta
+    cdi = {f"2026-11-{d:02d}": 0.0005 for d in range(2, 30)}  # 0,05% por dia útil (aqui todos os dias da série)
+    ini = 1793707200000  # 03/11/2026, 9h em Brasília
+    serie = [[f"2026-11-{d:02d}", 1000 * 1.001 ** (d - 3)] for d in range(3, 24)]
+    m = conta.metricas({"inicio": ini, "serie": serie, "piorQueda": 0.0}, cdi, 0.149)
+    assert m["dias"] == 20 and abs(m["retorno"] - (1.001 ** 20 - 1)) < 1e-6
+    assert abs(m["cdi"] - (1.0005 ** 20 - 1)) < 1e-6 and m["venceCdi"] and m["excesso"] > 0
+    assert m["aoAno"] is None and m["aoMes"] is not None and m["diasPositivos"] == 1.0
+    assert m["volAno"] < 1e-6 and m["sharpe"] is None  # sem oscilação, não há Sharpe
+    # oscilando e perdendo do CDI: Sharpe negativo
+    serie2 = [[f"2026-11-{d:02d}", 1000 * (1.004 if d % 2 else 0.997)] for d in range(3, 24)]
+    m2 = conta.metricas({"inicio": ini, "serie": serie2, "piorQueda": 0.01}, cdi, 0.149)
+    assert m2["sharpe"] is not None and m2["sharpe"] < 0 and not m2["venceCdi"] and m2["piorDia"] < 0
+    # uma conta de 3 dias não tem ao mês (extrapolar engana)
+    m3 = conta.metricas({"inicio": ini, "serie": serie[:3], "piorQueda": 0.0}, cdi, 0.149)
+    assert m3["aoMes"] is None and m3["sharpe"] is None
+    assert conta.cdi_ano_da_serie(cdi, 0.1) == round(1.0005 ** 252 - 1, 4) and conta.cdi_ano_da_serie({}, 0.1) == 0.1
 
 
 def conferir_forma(d, nome):
@@ -47,6 +72,7 @@ def conferir_forma(d, nome):
 
 
 def main():
+    teste_metricas()
     falhas = []
     for t in sorted(glob.glob(os.path.join(AQUI, "teste_*.py"))):
         if t.endswith("teste_papel.py"):

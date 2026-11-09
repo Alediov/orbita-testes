@@ -196,6 +196,33 @@ def teste_ler_trocas():
 
 
 # ------------------------------------------------------------------------------------------- rodadas
+def teste_a_mao():
+    """"dia": só reposiciona na olhada do meio-dia (Brasília) e põe as taxas de volta a cada 7 dias."""
+    g = sem_custos()
+    try:
+        c = PL.Conta(cfg("dia5"), T0)  # T0 = 0h UTC = 21h em Brasília
+        c.troca(T0, None, sq(2500), 0)
+        s0 = sq(2500)
+        # sobe 8% às 22h (Brasília): fora da faixa de 5%, mas ninguém olha até o meio-dia seguinte
+        c.troca(T0 + HORA, s0, sq(2700), 0)
+        c.troca(T0 + 10 * HORA, sq(2700), sq(2700), 0)
+        assert c.acc["repos"] == 0 and not c.dentro(sq(2700))
+        c.troca(T0 + 16 * HORA, sq(2700), sq(2700), 0)  # 13h em Brasília: olhou e reposicionou
+        assert c.acc["repos"] == 1 and c.dentro(sq(2700)) and c.olhou == (T0 + 16 * HORA + PL.FUSO_MS) // DIA
+        # uma semana de vai e vem dentro da faixa: as taxas acumulam e voltam para a posição
+        t, s_ant = T0 + 17 * HORA, sq(2700)
+        L0 = c.L
+        while t < T0 + 9 * DIA:
+            for p_ in (2720, 2680):
+                c.troca(t, s_ant, sq(p_), 0)
+                s_ant, t = sq(p_), t + 30 * MIN
+        assert c.acc["reinv"] >= 1 and c.L > L0 and c.fx + c.fy * 0 < 1e-3
+        c.marcar(t)
+        assert c.curva.extra["reinvestimentos"] == c.acc["reinv"]
+    finally:
+        com_custos(g)
+
+
 def rodar(cli, pasta, quando, prazo=20):
     cli.agora = quando
     return papel.rodada(cli, pasta, quando, formas=["pools"], prazo_min=prazo, exemplo=True, buscar_cdi=False,
@@ -259,6 +286,15 @@ def teste_rodadas():
         cli_a.rpc_falhar.clear()
         ind = rodar(cli_a, a, t0 + 13 * 6 * HORA)
         assert ind["formas"]["pools"]["ok"]
+        conferir(ler(a))
+        # uma versão nova (sem passado no estado): o teste no passado recomeça para todas
+        est = json.load(open(os.path.join(a, "estado.json")))
+        del est["formas"]["pools"]["hist"]["contas"]["dia5"]
+        papel.gravar_json(os.path.join(a, "estado.json"), est)
+        cli_a.agora = t0 + 14 * 6 * HORA
+        log = papel.Log(quieto=True)
+        papel.rodada(cli_a, a, cli_a.agora, formas=["pools"], exemplo=True, buscar_cdi=False, log=log)
+        assert any("versões novas (dia5)" in x for x in log.linhas), log.linhas
         conferir(ler(a))
     finally:
         shutil.rmtree(a, ignore_errors=True)
@@ -326,6 +362,7 @@ if __name__ == "__main__":
     teste_conta_taxas()
     teste_reposicionar()
     teste_resumo_do_dia()
+    teste_a_mao()
     teste_ler_trocas()
     teste_rodadas()
     teste_passado_aos_poucos()

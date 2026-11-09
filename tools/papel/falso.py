@@ -80,9 +80,18 @@ class _Comum:
     def funding_previsto(self):
         self._contar("predictedFundings")
         prox = (self.agora // HORA + 1) * HORA
-        return [[m, [["HlPerp", {"fundingRate": f"{self._taxa(m):.8f}", "nextFundingTime": prox, "fundingIntervalHours": 1}],
-                     ["BinPerp", {"fundingRate": f"{self._taxa(m) * 8:.8f}", "nextFundingTime": prox, "fundingIntervalHours": 8}]]]
-                for m in _base.MAX_LEV]
+        out = []
+        for m in _base.MAX_LEV:
+            hl_h = self._taxa(m)
+            # Binance e Bybit seguem a HL de longe, com degraus de 3 dias (assim a versão entre corretoras entra e sai)
+            degrau = (self.agora // (3 * 86_400_000) + len(m)) % 3 - 1
+            bin_h, byb_h = hl_h * 0.6 + 0.000012 * degrau, hl_h * 0.8 - 0.000004
+            lst = [["HlPerp", {"fundingRate": f"{hl_h:.8f}", "nextFundingTime": prox, "fundingIntervalHours": 1}]]
+            if m != "HYPE":  # o HYPE não tem perpétuo nas outras duas (como na vida real, em 11/2026)
+                lst += [["BinPerp", {"fundingRate": f"{bin_h * 8:.8f}", "nextFundingTime": prox, "fundingIntervalHours": 8}],
+                        ["BybitPerp", {"fundingRate": f"{byb_h * 8:.8f}", "nextFundingTime": prox, "fundingIntervalHours": 8}]]
+            out.append([m, lst])
+        return out
 
 
 class ClientePapelFalso(*_mixins, _Comum, _base.ClienteFalso):

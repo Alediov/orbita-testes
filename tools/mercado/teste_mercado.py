@@ -353,6 +353,9 @@ try:
     ok("Robô (quase certo): opera" in pf[falso.endereco(2)]["frase"] and "contra o movimento" in pf[falso.endereco(2)]["frase"], pf[falso.endereco(2)]["frase"])
     ok(sum(sum(l) for l in pf[falso.endereco(2)]["horario"]) > 0 and len(pf[falso.endereco(2)]["horario"]) == 7, "mapa de horário 7 × 24")
     ok(all("gm" in x and "pm" in x for c in r2["carteiras"] for x in c["aoVivo"].values()), "ganho médio e perda média em cada conta")
+    mt = r2["carteiras"][0]["aoVivo"]["3x1"].get("metricas") or {}
+    ok({"dias", "cdi", "excesso", "venceCdi", "aoMes", "volAno", "sharpe"} <= set(mt) and mt["cdi"] > 0,
+       f"métricas comuns (CDI no mesmo período, Sharpe) em cada conta: {mt}")
     # carteira seguida antes das variantes: as contas que faltam começam no cursor, com as moedas boas de antes
     with open(os.path.join(pasta, "estado.json")) as f:
         ev = json.load(f)

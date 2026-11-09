@@ -37,6 +37,7 @@ nomes exatos dos campos (`mint`, `vSolInBondingCurve`, `vTokensInBondingCurve`, 
 from __future__ import annotations
 
 import copy
+import datetime as dt
 import math
 import random
 
@@ -50,7 +51,11 @@ except ImportError:  # pragma: no cover
     ERROS = (rede.Erro,)
 
 NOME = "Memecoins"
-VERSAO = 1
+# 2 (09/11/2026): a 1ª rodada real mostrou que o PumpPortal manda também lançamentos de outras plataformas (a curva
+# delas é outra: um deles saiu "28.904 vezes" por erro de unidade) e que a DexScreener não lista boa parte dos tokens
+# pequenos (25 de 32 viraram "sem negócios"); a amostra agora é só do pump.fun, quem falta na DexScreener é procurado no
+# GeckoTerminal e o que nenhum dos dois conhece fica "sem dados" (fora das apostas). Recomeça do zero.
+VERSAO = 2
 
 MIN = 60_000
 OUVIR_S = 180
@@ -74,6 +79,8 @@ CRIADOR_GRANDE = 0.10
 MAX_TOKENS = 3000                 # o resumo de cada token analisado (para as contagens), os mais novos
 MAX_ITENS = 40
 SOL_PADRAO = 150.0
+X_ABSURDO = 1e5                   # máxima ÷ lançamento acima disso = erro de unidade (outra moeda de cotação): fora
+DEX_GECKO = {"pump-fun": "pumpfun", "pumpfun": "pumpfun"}
 
 # (id, nome, entrada, filtro RugCheck, saída, risco, frase)
 VERSOES = [
@@ -269,14 +276,26 @@ def contagens(lista):
             "graduaram": c(lambda x: x["g"]), "golpes": c(lambda x: x["gp"]), "morreram": c(lambda x: x["mo"]),
             "semNegocios": c(lambda x: x["sv"]), "rugcheckAlto": c(lambda x: x["rc"] == "alto"),
             "rugcheckSem": c(lambda x: x["rc"] is None), "criadorGrande": c(lambda x: x["cr"] >= CRIADOR_GRANDE),
-            "medianaX24": x24[len(x24) // 2] if x24 else None, "semVelas": c(lambda x: x.get("vf")),
+            "medianaX24": x24[len(x24) // 2] if x24 else None, "semVelas": c(lambda x: x.get("vf") and not x.get("sd")),
+            "semDados": c(lambda x: x.get("sd")),
             "vivos24h": c(lambda x: x["x24"] is not None and x["x24"] >= 1 and not x["mo"])}
 
 
 # ---------------------------------------------------------------------------------------------------- fontes
+def eh_pumpfun(m):
+    """O PumpPortal manda também os lançamentos de outras plataformas (o campo `pool`: "pump", "bonk"…). Só os do
+    pump.fun entram (a curva da simulação é a dele); sem o campo, vale o endereço terminado em "pump"."""
+    pool = m.get("pool")
+    if pool is not None:
+        return str(pool).lower() == "pump"
+    return str(m.get("mint") or "").endswith("pump")
+
+
 def ler_lancamento(m, agora):
     """Uma mensagem de criação do PumpPortal → o token (só números e o endereço) ou None."""
     if not isinstance(m, dict) or m.get("txType") not in ("create", None) or not m.get("mint"):
+        return None
+    if not eh_pumpfun(m):
         return None
     vS, vT = _f(m.get("vSolInBondingCurve")), _f(m.get("vTokensInBondingCurve"))
     if not vS or not vT:
@@ -302,6 +321,10 @@ def ouvir(fonte, agora, est, log, erros):
         log(f"  memes: formato do PumpPortal: {rede.estrutura(amostra, 2)}")
         est["formatoVisto"] = True
     lanc, migr = [], []
+    outras = sum(1 for m in msgs if isinstance(m, dict) and m.get("txType") == "create" and m.get("mint")
+                 and not eh_pumpfun(m))
+    if outras:
+        est["outrasPlataformas"] = int(est.get("outrasPlataformas") or 0) + outras
     ts = sorted(int(m["_t"]) for m in msgs if isinstance(m, dict) and m.get("_t"))
     seg = round((ts[-1] - ts[0]) / 1000) if len(ts) > 1 else OUVIR_S
     for m in msgs:
@@ -351,6 +374,44 @@ def ler_pares(fonte, mints, log, est, erros):
             liq = _f(((p.get("liquidity") or {}).get("usd")), 0.0) or 0.0
             if preco is not None and (o["preco"] is None or liq >= o["liq"]):
                 o["preco"], o["liq"] = preco, liq
+    return out
+
+
+def pares_gecko(fonte, mint, log, est, erros):
+    """Os pares de um token pelo GeckoTerminal (quando a DexScreener não o conhece): {"pares": [...], "preco": SOL por
+    token ou None} ou {"pares": []} se o GeckoTerminal também não conhece (404 ou lista vazia: ninguém negociou), ou None
+    se ele falhou (o token fica "sem dados": fora das apostas)."""
+    try:
+        r = fonte.gecko(f"/networks/solana/tokens/{mint}/pools?page=1")
+    except ERROS as e:
+        if getattr(e, "status", None) == 404:
+            return {"pares": [], "preco": None}
+        if len(erros) < 30:
+            erros.append(f"GeckoTerminal (pares): {str(e)[:80]}")
+        return None
+    lst = (r or {}).get("data") or []
+    if lst and not est.get("formatoGeckoPares"):
+        log(f"  memes: formato dos pares do GeckoTerminal: {rede.estrutura(lst[0], 3)}")
+        est["formatoGeckoPares"] = True
+    out = {"pares": [], "preco": None, "liq": 0.0}
+    for x in lst:
+        if not isinstance(x, dict):
+            continue
+        at = x.get("attributes") or {}
+        dex = (((x.get("relationships") or {}).get("dex") or {}).get("data") or {}).get("id") or ""
+        end = at.get("address")
+        if not end:
+            continue
+        criado = at.get("pool_created_at")
+        try:
+            criado = int(dt.datetime.fromisoformat(str(criado).replace("Z", "+00:00")).timestamp() * 1000) if criado else 0
+        except ValueError:
+            criado = 0
+        out["pares"].append((DEX_GECKO.get(dex, dex or "?"), end, criado))
+        preco = _f(at.get("base_token_price_native_currency"))
+        liq = _f(at.get("reserve_in_usd"), 0.0) or 0.0
+        if preco is not None and (out["preco"] is None or liq >= out["liq"]):
+            out["preco"], out["liq"] = preco, liq
     return out
 
 
@@ -411,7 +472,13 @@ def analisar(amostra, fonte, cli, est, contas, ev, log, erros, restante):
     migr = set(amostra.get("migr") or [])
     resumos, por_versao = [], {v[0]: [] for v in VERSOES}
     for tok in toks:
-        info = pares.get(tok["mint"]) or {"pares": [], "preco": None}
+        info = pares.get(tok["mint"])
+        sem_dados = False
+        if info is None:
+            # a DexScreener não lista boa parte dos tokens pequenos: o GeckoTerminal confirma se ninguém negociou
+            info = pares_gecko(fonte, tok["mint"], log, est, erros) if restante() > 60 else None
+            if info is None:
+                info, sem_dados = {"pares": [], "preco": None}, True
         velas_lst = []
         amm = [p for p in info["pares"] if p[0] and p[0] != "pumpfun" and p[1]]
         curva = [p for p in info["pares"] if p[0] == "pumpfun" and p[1]]
@@ -433,9 +500,16 @@ def analisar(amostra, fonte, cli, est, contas, ev, log, erros, restante):
         tok["p24"] = info.get("preco")
         if tok["p24"] is None and not info["pares"]:
             tok["p24"] = 0.0 if velas else None
-        res = classificar(tok, velas, faltou)
+        if velas and max(v[2] for v in velas) / tok["p0"] > X_ABSURDO:
+            faltou, velas = True, []  # erro de unidade (cotado em outra moeda): fica fora, sem contar como 10×
+            if len(erros) < 30:
+                erros.append(f"velas fora de escala em {curto(tok['mint'])}")
+        res = classificar(tok, velas, faltou or sem_dados)
+        res["sd"] = sem_dados
+        if sem_dados:  # não se sabe o que aconteceu: nem morto, nem vivo, nem sem negócios
+            res.update({"x24": None, "mo": False, "sv": False, "x": 1.0})
         resumos.append(res)
-        if faltou:
+        if faltou or sem_dados:
             continue  # sem as velas não dá para simular as regras (nem dizer que morreu)
         for v in VERSOES:
             r = simular(tok, velas, v, sol_usd)
@@ -563,9 +637,11 @@ def rodar(ctx):
                "amostras": int(est.get("nAmostras") or 0), "esperando": sum(len(a["tokens"]) for a in pend),
                "proxima": min((a["t"] + ESPERA for a in pend), default=None), "regras": regras,
                "lancamentosPorMin": round(sorted(ritmo)[len(ritmo) // 2], 1) if ritmo else None,
-               "lancamentosPorDia": round(sorted(ritmo)[len(ritmo) // 2] * 1440) if ritmo else None}
+               "lancamentosPorDia": round(sorted(ritmo)[len(ritmo) // 2] * 1440) if ritmo else None,
+               "outrasPlataformas": int(est.get("outrasPlataformas") or 0)}
         itens = [{"mint": x["m"], "lancado": x["t"], "maxX": x["x"], "x24": x["x24"], "graduou": x["g"], "golpe": x["gp"],
-                  "morreu": x["mo"], "rugcheck": x["rc"], "criadorGrande": x["cr"] >= CRIADOR_GRANDE}
+                  "morreu": x["mo"], "rugcheck": x["rc"], "criadorGrande": x["cr"] >= CRIADOR_GRANDE,
+                  "semDados": bool(x.get("sd"))}
                  for x in sorted(tokens, key=lambda y: -y["t"])[:MAX_ITENS]]
         versoes = [{"id": v[0], "nome": v[1], "frase": v[6], "risco": v[5], "alav": 1,
                     "grupo": "Referência" if v[4] == "segura" else "Regras",

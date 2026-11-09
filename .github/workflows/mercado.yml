@@ -36,7 +36,10 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
-          sparse-checkout: tools/mercado
+          # tools/papel: as métricas comuns (conta.metricas) e o CDI
+          sparse-checkout: |
+            tools/mercado
+            tools/papel
       - name: Estado anterior (ramo mercado)
         run: |
           mkdir -p dados

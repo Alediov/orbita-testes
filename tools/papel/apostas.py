@@ -872,7 +872,17 @@ def mercados(no):
                     h[i] = _precos(o)
             if all(h):
                 out["1x2"] = h
-        elif "ou" not in out and any(t in nome for t in NOMES_TOTAL) and "corner" not in nome and "card" not in nome \
+        elif "ou" not in out and mid == "1010":
+            # OddsPapi: o mercado 1010 é o mais/menos de 2,5 gols (resultados 1010 = mais, 1011 = menos); a resposta
+            # do /historical-odds não traz o nome do mercado (conferido no log de 05/11/2026)
+            h = [None, None]
+            for oid, o in _itens(outs):
+                i = {"1010": 0, "1011": 1}.get(oid)
+                if i is not None:
+                    h[i] = _precos(o)
+            if all(h):
+                out["ou"] = h
+        elif "ou" not in out and nome and any(t in nome for t in NOMES_TOTAL) and "corner" not in nome and "card" not in nome \
                 and "half" not in nome and "1st" not in nome:
             linha = _linha(m)
             if linha is None and "2 5" in nome:
@@ -1138,6 +1148,12 @@ class Vivo:
             except ERROS_API as e:
                 if getattr(e, "status", None) in PARAR:
                     raise
+                if getattr(e, "status", None) == 404:
+                    # a OddsPapi responde 404 quando o campeonato não tem jogos no período (Libertadores entre a
+                    # semifinal e a final, fora de temporada): é lista vazia, não erro
+                    V["fxEm"][chave], V["fxVazio"][chave] = self.agora, True
+                    self.log(f"  apostas: {NOME_LIGA[chave]}: nenhum jogo nos próximos dias")
+                    continue
                 V["fxEm"][chave] = self.agora - cada + 6 * HORA  # tenta de novo daqui a ~6 h
                 self.erros.append(f"lista de jogos ({NOME_LIGA[chave]}): {e}")
                 continue
