@@ -93,7 +93,9 @@ def teste_liquidacao():
     r.vela(s2, vela(0, 70, 70, liq * 1.001, 65))
     assert not s2["morta"]
     r.vela(s, vela(0, 70, 70, 60, 65))
-    assert s["morta"] and s["buf"]["liq"][0]["perda"] == 40.0 and r.patrimonio(s, 65) == 0
+    assert s["morta"] and r.patrimonio(s, 65) == 0
+    # a perda da liquidação é o que restava no preço de liquidação (a manutenção), não o colateral inteiro
+    assert perto(s["buf"]["liq"][0]["perda"], round(liq / 80, 2), 1e-3), s["buf"]["liq"]
     # vendida: liquida na alta
     s3 = r.novo(0)
     s3.update(ini=True, fase="esperando", C=40.0, p=-1.0, e=100.0)
@@ -102,6 +104,38 @@ def teste_liquidacao():
     assert perto(r.liq(s3), lq)
     r.vela(s3, vela(0, 120, 140, 120, 130))
     assert s3["morta"]
+
+
+def teste_neutra_1x_sem_liquidar():
+    """A grade neutra 1× (HYPE, alavancagem máxima 10: a manutenção mais alta) não é liquidada com 20% para cima ou
+    para baixo; com o preço quase dobrando acima da grade, a posição vendida (1×) é, e a conta por dentro põe o
+    prejuízo no preço, não na liquidação."""
+    for alvo in (120.0, 80.0):
+        r = robos.Robo(cfg_de("ghype1"), lev_max=10)
+        s = r.novo(0)
+        t, px = 0, 100.0
+        r.vela(s, vela(t, 100, 100, 100, 100, HORA))
+        for k in range(1, 41):
+            novo = 100 + (alvo - 100) * k / 40
+            t += HORA
+            r.vela(s, vela(t, px, max(px, novo), min(px, novo), novo, HORA))
+            px = novo
+        assert not s["morta"] and r.patrimonio(s, px) > 700, (alvo, r.patrimonio(s, px))
+        assert abs(s["p"]) * px < 1300  # 1×: a posição nunca passa do patrimônio de partida (+ o movimento)
+    r = robos.Robo(cfg_de("ghype1"), lev_max=10)
+    s = r.novo(0)
+    t, px = 0, 100.0
+    r.vela(s, vela(t, 100, 100, 100, 100, HORA))
+    for k in range(1, 81):
+        novo = 100 * 2.0 ** (k / 80)
+        t += HORA
+        r.vela(s, vela(t, px, max(px, novo), min(px, novo), novo, HORA))
+        px = novo
+        if s["morta"]:
+            break
+    assert s["morta"] and px > 180, px
+    pd = r.por_dentro(s, px)
+    assert pd["liquidacoes"] < 120 and pd["preco"] < -800, pd
 
 
 def teste_dca():
@@ -467,6 +501,7 @@ if __name__ == "__main__":
     teste_grade_a_mao()
     teste_caminho_pessimista()
     teste_liquidacao()
+    teste_neutra_1x_sem_liquidar()
     teste_dca()
     teste_martingale()
     teste_pares()

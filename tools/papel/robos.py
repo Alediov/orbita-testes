@@ -66,7 +66,7 @@ LEV_MAX_PADRAO = {"BTC": 40, "ETH": 25, "SOL": 20, "HYPE": 10}
 PARES_PADRAO = {"BTC": "@142", "ETH": "@151", "SOL": "@156", "HYPE": "@107"}
 TOKENS = {"BTC": "UBTC", "ETH": "UETH", "SOL": "USOL", "HYPE": "HYPE"}
 REFAZER_META_MS = DIA
-HIST_V = 2              # mudar o teste no passado (versões, regras, contas): subir para refazer na próxima rodada
+HIST_V = 3              # mudar o teste no passado (versões, regras, contas): subir para refazer na próxima rodada
 ANO_MS = 365 * DIA
 
 # grade com saída (09/11/2026): fecha tudo quando o preço passa SAIDA_ALEM degraus além da borda da grade OU a conta
@@ -394,12 +394,15 @@ class Robo:
         return (C - p * e) / (-p * (1 + mmr))
 
     def liquidar(self, s, t, px):
-        perda = max(0.0, s["C"])
+        # a perda da LIQUIDAÇÃO é o que ainda restava na conta no preço de liquidação (≈ a margem de manutenção); o
+        # prejuízo da posição até ali já estava no patrimônio (até 09/11/2026 contava o colateral inteiro, `C`, e a
+        # conta por dentro punha na liquidação o que era o preço)
+        perda = max(0.0, self.patrimonio(s, px))
         s["buf"]["liq"].append({"em": t, "moeda": self.moeda, "perda": round(perda, 2)})
         s.setdefault("acc", _acc())["liq"] += perda
         lado = "comprada" if s["p"] > 0 else "vendida"
         self.evento(s, t, "liquidou", f"{self.nome}: liquidada a {preco_br(px)} (posição {lado}); a conta perdeu os "
-                                      f"{moeda_br(perda)} de margem e parou.")
+                                      f"{moeda_br(perda)} que restavam e parou.")
         s.update(morta=True, C=0.0, p=0.0, e=0.0)
 
     def evento(self, s, t, tipo, texto, motivo=None):
