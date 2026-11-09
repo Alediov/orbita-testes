@@ -43,9 +43,16 @@ acabavam; aqui os executores padrão não têm limite.
   Base e o `getReserveData` do Aave) e `falso_memes.py`; testes `teste_looping.py`, `teste_opcoes.py`, `teste_pools.py`,
   `teste_memes.py` (todos por `python3 tools/papel/teste_papel.py`). `papel.FORMAS` (o papel.yml) não inclui os memes
   (`FORMAS_A_PARTE`).
+- `tools/ideias/` + `config/ideias-canais.json` + `ideias.yml`: **Antena de ideias** (pedido do Alediov, 09/11/2026:
+  achar cedo nos canais que ele acompanha ideias de macros novas e de testes no papel). Só COLETA: feed RSS de cada canal
+  (channel_id na config; se falhar, procurado de novo na página do @handle), na 1ª rodada de um canal os últimos 30
+  envios pelo yt-dlp, e a transcrição (legendas pt/en pelo yt-dlp, senão youtube-transcript-api; bloqueio do IP do
+  Actions vai para o `motivoSemTranscricao` e o vídeo é tentado de novo até 6 vezes). Ramo órfão `ideias` (2×/dia):
+  `videos/<id>.json`, `indice.json` (sem os textos) e `log.txt`. Quem lê e classifica é a tarefa do repositório privado
+  (`gerador/IDEIAS.md` de lá). Teste: `python3 tools/ideias/teste_ideias.py`.
 - Os exemplos que o app usa sem rede ficam no repositório do app (`tools/mercado/exemplos/`); refazer aqui
   (`python3 tools/papel/falso.py`) e copiar para lá (`tools/mercado/exemplos/papel/`) quando o formato mudar.
-- Os três workflows (`mercado.yml`, `papel.yml`, `memes.yml`) religam os agendamentos pela API a cada rodada (num
+- Os workflows (`mercado.yml`, `papel.yml`, `memes.yml`, `ideias.yml`) religam os agendamentos pela API a cada rodada (num
   repositório público o GitHub os desliga depois de 60 dias sem atividade).
 
 ## Commits

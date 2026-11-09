@@ -1,0 +1,26 @@
+{
+  "_sobre": "Canais que a antena de ideias acompanha (tools/ideias/ideias.py, workflow ideias.yml). channel_id achado na página do @handle em 09/11/2026; se o feed falhar, o programa procura de novo pelo handle.",
+  "canais": [
+    {
+      "chave": "craftgold",
+      "nome": "Craft Gold",
+      "handle": "craftgold19",
+      "channel_id": "UCo-JPwjQ6wEMLXhPJDV7xLg",
+      "foco": "ideias de coisas novas para ganhar dinheiro, quase tudo feito com IA"
+    },
+    {
+      "chave": "marinho",
+      "nome": "Canal do Marinho",
+      "handle": "novocanaldomarinho",
+      "channel_id": "UCgO3Yasdf1gbLwtbZ69o_6w",
+      "foco": "pools de liquidez (série Aposentadoria sem Governo)"
+    },
+    {
+      "chave": "criptobr",
+      "nome": "Cripto BR",
+      "handle": "criptobr",
+      "channel_id": "UCD9A8nZLAtZiM_1ZgLkn-kg",
+      "foco": "faucets, check-ins e macros novas"
+    }
+  ]
+}
