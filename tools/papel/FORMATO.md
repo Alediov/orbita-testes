@@ -249,25 +249,65 @@ sexta). Teste no passado (180 dias, `aproximado: true`): Black-Scholes com o DVO
 
 ## Pools (`pools.json`)
 
-Uniswap v3 WETH/USDC 0,05% na Base (`pools.py`): cada troca do pool pelo RPC público (eventos `Swap`); a taxa e o valor
-da posição saem exatos pela matemática do v3. O "teste no passado" (`aproximado: false`) começa 28 dias antes do ao vivo
-(o RPC gratuito não guarda mais) e depois anda junto com ele; na 1ª vez pode levar algumas rodadas para alcançar
-(`config.passado`).
+Pools de liquidez concentrada na Base (`pools.py`): cada troca do pool pelo RPC público (eventos `Swap`, o mesmo tópico no
+Uniswap v3 e no Aerodrome Slipstream); a taxa e o valor da posição saem exatos pela matemática do v3. O "teste no
+passado" (`aproximado: false`, menos nas versões "no gauge") começa 28 dias antes do ao vivo (o RPC gratuito não guarda
+mais) e depois anda junto com ele; na 1ª vez pode levar algumas rodadas para alcançar (`pools[].passado`). Desde
+09/11/2026 são vários pools (ver **pools**); cada versão diz de qual (`pool`). O WETH/USDC do Uniswap continua com as
+mesmas versões, ids e histórico de antes (o estado antigo é levado para `pools.weth_usdc` sem recomeçar).
 
-- **Versões** (`grupo` "Reposiciona", "À mão", "Parada" ou "Referência"; `alav` 1): `r1`, `r1h`, `r3`, `r3h` (padrão),
+- **pools** (lista, desde 09/11/2026): um item por pool, na ordem `weth_usdc`, `cbbtc_usdc`, `weth_cbbtc`,
+  `aero_weth_usdc`, `estavel`, `brz`:
+
+  ```json
+  { "id": "aero_weth_usdc", "nome": "WETH/USDC", "par": "WETH/USDC", "dex": "Aerodrome", "protocolo": "Aerodrome Slipstream",
+    "endereco": "0xb2cc…", "taxa": 0.0005, "espacoTick": 100, "medida": "usd", "padrao": "aer-med",
+    "versoes": ["aer-est", "aer-estg", …], "observador": false, "preco": 3120.5, "volume24h": 8690000, "trocas24h": 1900,
+    "tvl": 3020000, "giro": 2.88, "rendTaxaDia": 0.0013, "aprTaxas": 0.47, "volDia": 0.031,
+    "larguras": { "est": 0.031, "med": 0.093, … }, "passado": { "alcancou": true, "faltamDias": 0 },
+    "trocasLidas": { "vivo": 4711, "hist": 88287 }, "parteGauge": 0.1,
+    "gauge": { "endereco": "0x…", "aeroDia": 5184, "precoAero": 0.95, "fracStake": 0.6, "amostras": 12, "aproximado": true,
+               "aprEmissoes": 0.61 },
+    "escolha": { "em": 1762…, "origem": "fábrica do Slipstream, espaço 100", "candidatos": [{ "endereco", "dex", "fee",
+                 "espaco", "par", "trocasHora", "volumeHora", "gauge" }] }, "nota": null }
+  ```
+
+  `par` = base/cotação (o preço é o da base na cotação: US$ por ether, US$ por bitcoin, bitcoin por ether, US$ por
+  tether); `taxa` = a taxa da troca (fração); `medida` "usd" ou "btc" (o `weth_cbbtc`: a conta é medida em bitcoin,
+  convertida pelo preço do bitcoin do dia em que começou, `extra.precoRef`, e o dólar de verdade em `extra.emDolar`);
+  `volume24h` e `tvl` em US$ (o nosso volume, pelas trocas lidas; a liquidez pelo `balanceOf` dos dois tokens no pool);
+  `giro` = volume ÷ liquidez; `rendTaxaDia`/`aprTaxas` = giro × taxa (× (1 − `parteGauge`) no Aerodrome), por dia e
+  ×365: quanto o pool inteiro rende só de taxas; `volDia` = a oscilação diária medida no pool; `larguras` = a largura
+  (fração para cada lado) que cada versão teria se pusesse agora. `observador: true` (o `brz`): sem versões, só volume,
+  liquidez e a `nota`. `gauge` só no Aerodrome com gauge: `aeroDia` = AERO pago por dia ao pool inteiro, `fracStake` = a
+  parte da liquidez ativa em stake, `aprEmissoes` ≈ aeroDia × preço × 365 ÷ (liquidez × fracStake). A escolha (a 1ª
+  rodada de cada pool) é o candidato de maior volume na última hora entre os que são o par certo (`escolha.candidatos`);
+  fica para sempre.
+- **Versões do WETH/USDC** (`pool` "weth_usdc"; `grupo` "Reposiciona", "À mão", "Parada" ou "Referência"; `alav` 1): `r1`, `r1h`, `r3`, `r3h` (padrão),
   `r10h`, `dia10`, `dia5`, `cheia`, `r3fixa`, `segurar` (50/50 parado, sem pool). "ao sair" reposiciona na troca em que
   o preço sai da faixa; "1 h fora" depois de 1 h fora. **"À mão"** (desde 09/11/2026: o jeito de quem cuida da pool
   pelo celular, como ensinam os canais brasileiros de pools): olha uma vez por dia ao meio-dia (Brasília), só
   reposiciona se estiver fora nessa hora e a cada 7 dias põe as taxas ganhas de volta na posição, na mesma faixa
-  (`extra.reinvestimentos`). Uma versão nova faz o teste no passado recomeçar para todas (28 dias antes da rodada em
-  que ela nasceu).
-- **extra**: `taxasGanhas` (US$ de taxa do pool ganhos), `gasPago`, `reposicoes`, `reinvestimentos`, `precoEth`, `noEther`/`noDolar` (US$ em
-  cada moeda agora, com as taxas não coletadas), `perdaImp` (US$, ≤ 0: a realizada nos reposicionamentos + a de agora,
-  contra segurar o que foi posto), `dentro`, `dentroFrac` (fração do tempo dentro da faixa), `faixa` [mín., máx.] (US$
-  por ETH).
+  (`extra.reinvestimentos`). Uma versão nova faz o teste no passado recomeçar para todas do mesmo pool (28 dias antes
+  da rodada em que ela nasceu).
+- **Versões dos pools novos** (ids com o prefixo do pool: `cbu-`, `ecb-`, `aer-`, `stb-`): a faixa segue a oscilação
+  diária medida no próprio pool (`volDia`): `est` (estreita, 1×), `med` (média, 3×; o padrão), `larga` (8×), as três
+  reposicionando depois de 1 h fora; `maoM` e `maoL` (média e larga "à mão": 1×/dia + reinveste); `cheia`; `segurar`.
+  No Aerodrome com gauge, `est`, `med`, `larga`, `maoM` e `cheia` ganham também a versão "no gauge" (id + `g`, `grupo`
+  "No gauge (AERO)", `aproximado: true` no `aoVivo` e no `historico`): não ganha taxa e sim AERO (rewardRate × tempo
+  dentro da faixa × L ÷ (liquidez em stake ativa + L)), vendido uma vez por dia; as outras ganham as taxas menos a parte
+  que vai ao gauge (`parteGauge`). A largura é calculada na hora de pôr e de reposicionar (limitada a 50% e a um espaço
+  de tick).
+- **extra**: `taxasGanhas` (US$ de taxa do pool ganhos), `gasPago`, `reposicoes`, `reinvestimentos`, `preco` (a base
+  na cotação), `naBase`/`naCotacao` (US$ em cada moeda agora, com as taxas não coletadas; no WETH/USDC também os antigos
+  `precoEth`, `noEther`/`noDolar`), `perdaImp` (US$, ≤ 0: a realizada nos reposicionamentos + a de agora, contra segurar
+  o que foi posto), `dentro`, `dentroFrac` (fração do tempo dentro da faixa), `faixa` [mín., máx.] (o preço da base na
+  cotação), `largura` (nos pools novos), `aeroGanho` (AERO), `aeroVendido` (US$ líquidos da venda) e `aeroParado` (US$
+  ainda por vender) no gauge, `precoRef`/`emDolar` no `weth_cbbtc`.
 - **config**: `rede`, `protocolo`, `pool`, `par`, `taxaPool`, `precoEth`, `gasWei` (mediana medida), `custoReposicionar`
   (US$ de gás de um reposicionamento), `trocasLidas` { `vivo`, `hist` }, `passado` { `alcancou`, `faltamDias` },
-  `volume24h` (o nosso) e `conferencia` { `fonte`: "GeckoTerminal", `volume24h`, `tvl` } (ou null).
+  `volume24h` (o nosso) e `conferencia` { `fonte`: "GeckoTerminal", `volume24h`, `tvl` } (ou null): todos do WETH/USDC,
+  como antes; e `pools` (quantos pools com contas).
 - **eventos**: `abriu`; um `reequilibrou` por dia com reposicionamentos (o resumo do dia); na `r3fixa`, `saiu` depois de
   1 h fora da faixa e `entrou` quando volta.
 
