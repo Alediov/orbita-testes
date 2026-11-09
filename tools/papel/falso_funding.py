@@ -42,3 +42,35 @@ class Falso:
         for m, lista in self.mundo.funding.items():
             novo[m] = serie_falsa([t for t, _ in lista], m, SEMENTES.get(m, 1100))
         self.mundo.funding = novo
+
+    # ---------------------------------------------------------------- só observando (moedas fora da lista)
+    # moedas de mentira com volume e financiamento próprios: algumas pagam muito há dias, outras pulam, uma tem pouco
+    # volume (fica de fora pelo mínimo de US$ 5 mi)
+    OUTRAS = {"AAA": (0.00006, 40e6), "BBB": (0.00004, 12e6), "CCC": (0.00009, 3e6), "DDD": (0.00002, 80e6),
+              "EEE": (0.00005, 9e6), "FFF": (-0.00003, 20e6), "GGG": (0.000035, 6e6), "HHH": (0.00008, 15e6)}
+
+    def _taxa_outra(self, m, t):
+        nivel, _ = self.OUTRAS[m]
+        r = random.Random(f"{m}:{t // (2 * 86_400_000)}")  # semente em texto: a mesma em todo processo
+        return round(nivel * (r.random() * 2.2 - 0.4) + random.Random(f"{m}:{t}").gauss(0, 0.000005), 8)
+
+    def meta_e_contextos(self):
+        meta, ctxs = super().meta_e_contextos()
+        meta = {"universe": list(meta["universe"]) + [{"name": m, "szDecimals": 1, "maxLeverage": 5} for m in self.OUTRAS]}
+        agora = (self.agora // HORA) * HORA
+        ctxs = list(ctxs) + [{"funding": f"{self._taxa_outra(m, agora):.8f}", "markPx": "1.0", "oraclePx": "1.0",
+                              "openInterest": "2000000", "premium": "0.0", "dayNtlVlm": f"{v:.0f}"}
+                             for m, (_, v) in self.OUTRAS.items()]
+        return [meta, ctxs]
+
+    def financiamento(self, moeda, ini, fim):
+        if moeda not in self.OUTRAS:
+            return super().financiamento(moeda, ini, fim)
+        self._contar("fundingHistory")
+        fim = min(fim, self.agora)
+        t = (int(ini) // HORA + 1) * HORA
+        out = []
+        while t <= fim:
+            out.append({"coin": moeda, "fundingRate": f"{self._taxa_outra(moeda, t):.8f}", "premium": "0.0", "time": t + 40})
+            t += HORA
+        return out

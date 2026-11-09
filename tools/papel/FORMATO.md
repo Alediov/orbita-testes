@@ -149,7 +149,7 @@ Lista própria da forma (opcional). Nos **cofres**: os cofres seguidos e os fixa
 
 No **funding**, `itens` traz uma linha por moeda: `{ "moeda", "par" (o par à vista, "@142"), "alavMax", "fundingAgora",
 "media3d", "hl", "binance", "bybit" }` (taxas ao ano, fração: 0,11 = 11% a.a.; `binance`/`bybit` podem ser null). As
-versões do funding têm `grupo` ("1×" ou "3×").
+versões do funding têm `grupo` ("1×", "3×", "Caixa na Aave", "Mais cuidadosas" ou "Entre corretoras").
 
 E `candidatos` (só nos cofres): os que passaram na regra e os maiores abertos, para ele escolher quais fixar
 (no máximo 40): `{ "endereco", "nome", "tvl", "apr", "idadeDias", "lucroMes", "lucroTotal", "piorQueda", "comissao",
@@ -169,6 +169,36 @@ na versão "Os que você fixou" (partes iguais), e não sai pela regra.
   "Hyperliquid", "Binance" ou "Bybit"; null fora), `diferencaAno` (a diferença das taxas previstas agora, fração ao
   ano; igual a `fundingAno`), `montagens` e `leituras`; `base` é null. `config.entre` = { `entra`, `sai`, `troca`,
   `taxas`, `ponte` };
+  **Revisão de 09/11/2026** (detalhes no começo de `funding.py`): versões `seletivaC` e `rodizioC` (`grupo` "Caixa na
+  Aave": o dinheiro fora de posição rende o juro de depósito de USDC da Aave v3 na Base; ir custa `config.caixa.ida`
+  US$ + `ponte` × valor, voltar `volta` + `ponte` × valor; `extra.naAave` true/false) e `compensa` e `rodizioCalmo`
+  (`grupo` "Mais cuidadosas"; números em `config.compensa` { `dias`, `ficaDias`, `previstoHoras`, `entraAno` (por moeda,
+  o financiamento ao ano a partir do qual a ida e a volta se pagam em `dias`) } e `config.calmo` { `dias`, `pagaDias`,
+  `diferencaAno` }). `config.caixa.juroAgora` = o juro da Aave agora (fração ao ano). Toda conta do funding (também a
+  `entre`, também no `historico`) traz **`extra.porDentro`** (US$): `financiamento` (= `recebido` − `pago`), `juros` (da
+  Aave), `taxas` (da corretora), `deslize`, `reequilibrio` (o custo dos reequilíbrios, já dentro de `taxas` + `deslize`),
+  `ponte` (saque, ponte e gás; na `entre`, a ponte entre corretoras), `liquidacoes` (margem perdida), `custos` (`taxas` +
+  `deslize` + `ponte`), `resultado` (patrimônio − 1.000), `resto` (o que sobra: preço e base), `ritmoDia` (ganho por dia
+  com financiamento + juros, nos últimos 7 dias; na `entre`, pela diferença de agora), `empateDias` (dias, nesse ritmo,
+  para os ganhos cobrirem custos + liquidações; 0 = já cobriram; null = o ritmo não é positivo) e `naAave` (null fora
+  das versões com caixa). Contas de antes de 09/11/2026 não sabiam separar taxa e deslize: a divisão delas é estimada.
+
+  O funding.json traz ainda, no topo:
+
+  - **`foraDaAmostra`** (null até haver 5 semanas de dados): `{ "aproximado": true, "de", "ate", "semanas",
+    "treinoDias": 56, "minimoDias": 28, "nota", "regras": [{ "id": "seletiva" | "rodizio", "nome", "grade": [{"entra",
+    "sai"}] ou [{"dif"}], "fixa" (os limites de sempre), "conta" (a conta fora da amostra, com `metricas`,
+    `aproximado: true`, `de`, `ate`), "escolhas": [{ "de" (a segunda), "treino" (o retorno da escolhida nas 8 semanas
+    antes), "entra", "sai" | "dif" }], "trocas" (semanas com limites diferentes dos de sempre), "fixaNoPeriodo" (o
+    retorno da regra fixa no mesmo período), "melhorNoPeriodo" ({limites, "retorno"}: a melhor da grade olhando para
+    trás, otimista), "gradeNoPeriodo" }] }`. A cada segunda, a escolha usa só as 8 semanas anteriores. O `historico` das
+    versões continua "teste no passado": os limites de sempre (10%/3% e 5 pontos) foram escolhidos antes destes dados,
+    não por eles; o otimista é o `melhorNoPeriodo`.
+  - **`observatorio`** (só observando, nenhuma conta): `{ "em", "candidatas" (moedas fora da lista com volume de 24 h ≥
+    `criterio.volumeMin`), "lidas", "criterio": { "volumeMin", "candidatas", "dias", "alta", "mostrar" }, "nota",
+    "moedas": [{ "moeda", "ano3d", "ano7d", "agora" (frações ao ano), "volumeDia", "oi" (US$), "alavMax", "altaDias"
+    (dias seguidos, até agora, com a média do dia acima de `alta`), "altaDesde" (ms), "altaTodoPeriodo" (alta nos 14
+    dias lidos), "negativas7d" (fração das horas negativas em 7 dias) }] }`, ordenadas pelo `ano7d`.
 - robôs: `comprado` (US$ na moeda agora), `caixa` (US$), `degrausExecutados`, `precoMedio`, `foraDaGrade` (true/false);
   Nas versões no perpétuo (grade neutra, DCA com proteção 3×), `comprado` tem sinal (negativo = vendido) e `caixa` é o
   patrimônio inteiro; `fundingPago` (US$) e, no DCA com proteção, `ciclos` (fechados). `degrausExecutados` conta as

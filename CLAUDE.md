@@ -104,6 +104,14 @@ acabavam; aqui os executores padrão não têm limite.
   com o que se sabia, universo = a lista inteira com os fechados; aos poucos, 240 s por rodada, refeito a cada 7 dias) em
   `passado`; `cofres_lider.py`, o cofre × copiar as operações do cofre no papel com o `sim.py` do copy trading (1×,
   1 min) para os 5 melhores, em `lider`. As execuções de mentira dos cofres estão no `falso_cofres.py`.
+- **Funding revisto** (pedido do Alediov, 09/11/2026, pelos 6 dias ao vivo: quase tudo entre −0,08% e +0,02% contra o
+  CDI em +0,2%; detalhes no começo do `funding.py` e no `FORMATO.md`): versões `seletivaC`/`rodizioC` (o dinheiro parado
+  no empréstimo de USDC da Aave v3 na Base, com saque, ponte e gás), `compensa` (só monta se o financiamento previsto, a
+  média de 8 h, paga ida e volta em 14 dias; fica 3 dias) e `rodizioCalmo` (troca só com 3 dias de vantagem que pague a
+  troca em 14 dias); `extra.porDentro` em toda conta (financiamento, juros, taxas, deslize, reequilíbrio, ponte, resto e o
+  empate em dias); `foraDaAmostra` (walk-forward semanal dos limites da seletiva e do rodízio numa grade pequena,
+  aproximado) e `observatorio` (as 5 moedas fora da lista com o maior financiamento de 7 dias, volume ≥ US$ 5 mi; sem
+  conta). O teste no passado é refeito pelo `HIST_V`.
 - Os exemplos que o app usa sem rede ficam no repositório do app (`tools/mercado/exemplos/`); refazer aqui
   (`python3 tools/papel/falso.py`) e copiar para lá (`tools/mercado/exemplos/papel/`) quando o formato mudar.
 - Os workflows (`mercado.yml`, `papel.yml`, `memes.yml`, `ideias.yml`) religam os agendamentos pela API a cada rodada (num

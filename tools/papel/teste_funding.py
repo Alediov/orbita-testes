@@ -218,7 +218,7 @@ def ler(pasta):
 def conferir(d):
     conferir_forma(d, "funding")
     assert d["forma"] == "funding" and d["nome"] == "Funding" and d["padrao"] == "btc1"
-    assert {v["id"] for v in d["versoes"]} == {"btc1", "eth1", "hype1", "sol1", "btc3", "seletiva", "seletiva3", "rodizio", "entre"}
+    assert {v["id"] for v in d["versoes"]} == {"btc1", "eth1", "hype1", "sol1", "btc3", "seletiva", "seletiva3", "rodizio", "seletivaC", "rodizioC", "compensa", "rodizioCalmo", "entre"}
     for v in d["versoes"]:
         assert v["alav"] <= 3
         if v["id"] == "entre":
@@ -334,6 +334,185 @@ def teste_pouco_tempo():
         shutil.rmtree(pasta, ignore_errors=True)
 
 
+# ------------------------------------------------------------------------------------------- revisão de 09/11/2026
+class AaveFixa:
+    """O juro da Aave fixo (no lugar do looping.Taxas)."""
+    def __init__(self, ano):
+        self.ano = ano
+
+    def taxa(self, chave, t):
+        return self.ano
+
+
+def teste_caixa_na_aave():
+    g = sem_taxas()
+    try:
+        # financiamento 0 por 4 dias (a seletiva fica fora: o dinheiro vai para a Aave a 5% ao ano), depois 20% ao ano
+        d, t0 = dados_sinteticos(24 * 8, {"BTC": lambda i: 0.0 if i < 96 else 0.0000228})
+        d.aave = AaveFixa(0.05)
+        c = F.Conta(cfg("seletivaC"), t0)
+        ev = F.Eventos()
+        c.passo(t0, d, ev)
+        assert c.na_aave and not c.dentro
+        ida = F.custo_caixa(1000, True)
+        assert perto(c.pos.caixa, 1000 - ida, 1e-9) and perto(c.acc["gas"], ida)
+        for i in range(1, 60):
+            c.passo(t0 + i * HORA, d, ev)
+        juro = (1000 - ida) * ((1.05) ** (59 / 8760) - 1)
+        assert perto(c.acc["aave"], juro, 1e-6) and c.na_aave
+        entrou = None
+        for i in range(60, 24 * 8):
+            c.passo(t0 + i * HORA, d, ev)
+            if c.dentro and entrou is None:
+                entrou = i
+        assert entrou is not None and not c.na_aave
+        pd = c.curva.extra["porDentro"]
+        assert pd["juros"] > 0 and pd["ponte"] > ida and pd["naAave"] is False
+        # o resultado = financiamento + juros − custos − liquidações + resto (preço parado e sem taxas: resto ~0)
+        assert abs(pd["resto"]) < 0.01, pd
+        assert any(e["tipo"] == "caixa" for e in ev.para_json())
+        # a seletiva sem caixa: o dinheiro fica parado (nenhum juro, nenhuma ponte)
+        c2 = F.Conta(cfg("seletiva"), t0)
+        for i in range(0, 60):
+            c2.passo(t0 + i * HORA, d)
+        assert c2.acc["aave"] == 0 and c2.acc["gas"] == 0 and not c2.na_aave
+    finally:
+        com_taxas(g)
+
+
+def teste_rodizio_caixa():
+    g = sem_taxas()
+    try:
+        # todas pagam ~4% ao ano (2% sobre o dinheiro todo, abaixo dos 5% da Aave): fica na Aave; o SOL sobe para 30%
+        taxas = {m: (lambda i: 0.0000046) for m in F.MOEDAS}
+        taxas["SOL"] = lambda i: 0.0000046 if i < 48 else 0.0000342
+        d, t0 = dados_sinteticos(24 * 6, taxas, moedas=F.MOEDAS)
+        d.aave = AaveFixa(0.05)
+        c = F.Conta(cfg("rodizioC"), t0)
+        c.passo(t0, d)
+        assert c.na_aave and not c.dentro
+        for i in range(1, 24 * 6):
+            c.passo(t0 + i * HORA, d)
+        assert c.dentro and c.moeda == "SOL" and not c.na_aave
+    finally:
+        com_taxas(g)
+
+
+def teste_compensa():
+    # BTC: ida e volta = 2 × (0,1% + 0,075%) = 0,35% do tamanho de uma perna; em 14 dias pede 0,35% ÷ 336 h por hora
+    lim = 2 * F.custo_por_lado("BTC") / (F.COMPENSA_DIAS * 24)
+    assert perto(F.dias_para_pagar(2 * F.custo_por_lado("BTC"), lim), 14)
+    assert 0.08 < F.ao_ano(lim) < 0.10  # ~9,1% ao ano
+
+    def taxa(i):
+        return lim * 0.8 if i < 24 else lim * 1.3 if i < 24 + 30 else -lim
+    d, t0 = dados_sinteticos(24 * 8, {"BTC": taxa})
+    c = F.Conta(("x", "x", ["BTC"], 1, "compensa", "baixo", ""), t0)
+    entrou = saiu = None
+    c.passo(t0, d)
+    assert not c.dentro  # 80% do limite: não paga em 14 dias
+    for i in range(1, 24 * 8):
+        c.passo(t0 + i * HORA, d)
+        if c.dentro and entrou is None:
+            entrou = i
+        if entrou and not c.dentro and saiu is None:
+            saiu = i
+    # a média de 8 h passa do limite quando 3 das 8 horas são de 1,3× (0,8 × 5 + 1,3 × 3 = 7,9 < 8; 4 horas: 8,4)
+    assert entrou == 24 + 3, entrou
+    # negativa desde a hora 54, mas fica pelo menos 3 dias (até a 99) e então a média de 24 h já é negativa
+    assert saiu == entrou + 72, saiu
+
+
+def teste_rodizio_calmo():
+    g = sem_taxas()
+    try:
+        taxas = {"BTC": lambda i: 0.00002, "ETH": lambda i: 0.00001 if i < 24 else 0.00004,
+                 "HYPE": lambda i: 0.0, "SOL": lambda i: 0.0}
+        d, t0 = dados_sinteticos(24 * 9, taxas, moedas=F.MOEDAS)
+        c = F.Conta(cfg("rodizioCalmo"), t0)
+        c.passo(t0, d)
+        trocou = None
+        for i in range(1, 24 * 9):
+            c.passo(t0 + i * HORA, d)
+            if c.moeda == "ETH" and trocou is None:
+                trocou = i
+        # o ETH passa o BTC por 5 pontos quando a média de 72 h dele chega a 2,57%/h…: a hora em que começou a liderar + 3 dias
+        assert trocou is not None and trocou < 24 * 7 and c.curva.ops == 6, (trocou, c.curva.ops)
+        # um vaivém curto (a outra à frente só por 1 dia) não troca
+        taxas2 = {"BTC": lambda i: 0.00002, "ETH": lambda i: 0.00009 if 80 <= i < 104 else 0.00001,
+                  "HYPE": lambda i: 0.0, "SOL": lambda i: 0.0}
+        d2, t0 = dados_sinteticos(24 * 9, taxas2, moedas=F.MOEDAS)
+        c2, c3 = F.Conta(cfg("rodizioCalmo"), t0), F.Conta(cfg("rodizio"), t0)
+        c2.passo(t0, d2)
+        c3.passo(t0, d2)
+        for i in range(1, 24 * 9):
+            c2.passo(t0 + i * HORA, d2)
+            c3.passo(t0 + i * HORA, d2)
+        assert c2.moeda == "BTC" and c2.curva.ops == 2, (c2.moeda, c2.curva.ops)
+    finally:
+        com_taxas(g)
+
+
+def teste_por_dentro():
+    d, t0 = dados_sinteticos(24 * 3, {"BTC": lambda i: 0.00002})
+    c = F.Conta(cfg("btc1"), t0)
+    c.passo(t0, d)
+    for i in range(1, 24 * 3):
+        c.passo(t0 + i * HORA, d)
+    pd = c.curva.extra["porDentro"]
+    assert abs(pd["taxas"] + pd["deslize"] - c.curva.taxas) < 1e-3 and pd["taxas"] > pd["deslize"] > 0
+    assert abs(pd["resultado"] - (pd["financiamento"] - pd["custos"] + pd["resto"])) < 1e-3
+    # empate: o que falta (custos − ganhos) ÷ o ganho por dia
+    ritmo = 1000 / 2 * 0.00002 * 24  # ~US$ 0,24 por dia (o vendido é ~metade)
+    assert abs(pd["ritmoDia"] / ritmo - 1) < 0.03  # a 1ª hora (a da montagem) não recebe
+    falta = pd["custos"] - pd["financiamento"]
+    assert falta > 0 and abs(pd["empateDias"] - falta / pd["ritmoDia"]) < 0.1
+    # estado antigo (sem o "tx" no acc): as taxas viram taxa + deslize pela proporção
+    e = c.para_json()
+    e["acc"] = {k: v for k, v in e["acc"].items() if k in ("rec", "pag", "bS", "bN", "fS", "fN", "dS", "dN")}
+    e.pop("dias")
+    c2 = F.Conta(cfg("btc1"), t0, e)
+    assert perto(c2.acc["tx"] + c2.acc["des"], c.curva.taxas, 1e-9)
+    assert c2.por_dentro()["ritmoDia"] is not None
+    # a entre corretoras também
+    en = F.Entre(0)
+    en.passo(0, {"BTC": {"hl": 0.10, "binance": 0.0}}, F.Eventos())
+    pe = en.curva.extra["porDentro"]
+    assert perto(pe["ponte"], F.ENTRE_PONTE) and abs(pe["custos"] - (1000 - en.curva.ultimo)) < 1e-3 and pe["empateDias"] > 0
+
+
+def teste_fora_da_amostra():
+    # BTC paga bem só em pulsos curtos: os limites mais altos ficam de fora; a grade escolhe pelo passado de cada semana
+    def taxa(i):
+        return 0.00003 if (i // 120) % 3 == 0 else 0.000002
+    d, t0 = dados_sinteticos(24 * 70, {m: taxa for m in F.MOEDAS}, moedas=F.MOEDAS)
+    fo = F.fora_da_amostra(d, t0, t0 + (24 * 70 - 1) * HORA, {}, 0.149)
+    assert fo["aproximado"] and fo["semanas"] >= 4 and [r["id"] for r in fo["regras"]] == ["seletiva", "rodizio"]
+    for r in fo["regras"]:
+        assert r["conta"]["aproximado"] is True and r["conta"]["serie"] and r["conta"]["metricas"]
+        assert len(r["escolhas"]) == fo["semanas"] and len(r["gradeNoPeriodo"]) == len(r["grade"])
+        assert r["melhorNoPeriodo"]["retorno"] >= r["fixaNoPeriodo"]  # a melhor olhando para trás nunca perde da fixa
+        assert r["conta"]["serie"][0][0] == fo["de"]
+        for e in r["escolhas"]:
+            assert {k: e[k] for k in r["fixa"]} in r["grade"]
+    # sem dados suficientes: nada
+    assert F.fora_da_amostra(d, t0, t0 + 20 * DIA) is None
+
+
+def teste_observar():
+    cli = falso.ClientePapelFalso()
+    erros = []
+    o = F.observar(cli, cli.agora, lambda *_: None, erros)
+    assert not erros and o["moedas"] and len(o["moedas"]) <= F.OBS_MOSTRAR
+    ms = [x["moeda"] for x in o["moedas"]]
+    assert not set(ms) & set(F.MOEDAS) and "CCC" not in ms  # a CCC tem só US$ 3 mi de volume
+    anos = [x["ano7d"] for x in o["moedas"]]
+    assert anos == sorted(anos, reverse=True)
+    assert all(x["volumeDia"] >= F.OBS_VOLUME and x["altaDias"] >= 0 for x in o["moedas"])
+    cli.falhar.add("metaAndAssetCtxs")
+    assert F.observar(cli, cli.agora, lambda *_: None, erros) is None and erros
+
+
 if __name__ == "__main__":
     teste_posicao()
     teste_liquidacao_e_reequilibrio()
@@ -346,4 +525,11 @@ if __name__ == "__main__":
     teste_entre()
     teste_rodadas()
     teste_pouco_tempo()
+    teste_caixa_na_aave()
+    teste_rodizio_caixa()
+    teste_compensa()
+    teste_rodizio_calmo()
+    teste_por_dentro()
+    teste_fora_da_amostra()
+    teste_observar()
     print("ok")
