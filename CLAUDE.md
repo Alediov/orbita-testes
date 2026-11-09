@@ -95,6 +95,15 @@ acabavam; aqui os executores padrão não têm limite.
   refeito pelo `portfolio`; aos poucos, refeito a cada 7 dias; "aproximado") em `passado`; e o risco reavaliado nas
   carteiras que estavam sem ele. O teste de antes de cada carteira continua (`historico`): é o "período da escolha",
   otimista.
+- **Cofres revistos** (pedido do Alediov, 09/11/2026, pelos 6 dias ao vivo: 5 melhores −0,06% ao vivo × +7,7% no teste
+  no passado; detalhes no `tools/papel/FORMATO.md`, "Cofres"): versões novas `sinais` (o stop + o líder com < 5%, o TVL
+  −30% em 7 dias e o cofre fechado para depósitos; motivo no evento, `motivo`), `constancia` (lucro de 90 dias ÷
+  oscilação, sem quem fez > 50% do lucro num dia), `grandes` (TVL ≥ US$ 1 mi) e as misturas `mix50`/`mix25` com o HLP
+  (rebalanceio toda segunda), todas com `grupo`; o teste antigo virou "no período da escolha (otimista)" e o motor das
+  versões é um só (`simular_regras`); `cofres_passado.py`, o teste FORA DA AMOSTRA (12 semanas, escolha toda segunda só
+  com o que se sabia, universo = a lista inteira com os fechados; aos poucos, 240 s por rodada, refeito a cada 7 dias) em
+  `passado`; `cofres_lider.py`, o cofre × copiar as operações do cofre no papel com o `sim.py` do copy trading (1×,
+  1 min) para os 5 melhores, em `lider`. As execuções de mentira dos cofres estão no `falso_cofres.py`.
 - Os exemplos que o app usa sem rede ficam no repositório do app (`tools/mercado/exemplos/`); refazer aqui
   (`python3 tools/papel/falso.py`) e copiar para lá (`tools/mercado/exemplos/papel/`) quando o formato mudar.
 - Os workflows (`mercado.yml`, `papel.yml`, `memes.yml`, `ideias.yml`) religam os agendamentos pela API a cada rodada (num

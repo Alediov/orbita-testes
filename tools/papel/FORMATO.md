@@ -131,7 +131,9 @@ com a etiqueta "aproximado". Qualquer um dos dois pode ser `null`.
 
 A linha do tempo da forma, mais nova primeiro, no máximo 300: `em` (ms), `versao` (id ou null para a forma inteira),
 `tipo` (curto: abriu, fechou, comprou, vendeu, entrou, saiu, liquidou, trocou, reequilibrou, recebeu, pagou, aviso) e
-`texto` (a frase em português que o app mostra como está; valores com vírgula decimal e "US$").
+`texto` (a frase em português que o app mostra como está; valores com vírgula decimal e "US$"). Opcional `motivo`
+(nos cofres, desde 09/11/2026, nas saídas e trocas): o código do porquê ("stop", "tvl", "lider", "deposito",
+"fechou", "sumiu", "lista", "semana", "fixos").
 
 ### itens
 
@@ -140,8 +142,10 @@ Lista própria da forma (opcional). Nos **cofres**: os cofres seguidos e os fixa
 ```json
 { "endereco": "0xdfc2…", "nome": "Hyperliquidity Provider (HLP)", "tvl": 380000000, "apr": 0.12, "idadeDias": 900,
   "comissao": 0.1, "seguidoresMax": null, "fixo": false, "motivo": "TVL de US$ 380 mi; lucro no mês e no total",
-  "desde": 1762000000000, "aoVivo": {conta}, "historico": {conta}, "saiu": null }
+  "desde": 1762000000000, "aoVivo": {conta}, "historico": {conta}, "saiu": null, "listas": ["seguidos"] }
 ```
+
+`listas` (desde 09/11/2026): em quais listas ele está agora: "seguidos" (os 10 da regra), "grandes", "constancia".
 
 No **funding**, `itens` traz uma linha por moeda: `{ "moeda", "par" (o par à vista, "@142"), "alavMax", "fundingAgora",
 "media3d", "hl", "binance", "bybit" }` (taxas ao ano, fração: 0,11 = 11% a.a.; `binance`/`bybit` podem ser null). As
@@ -182,6 +186,65 @@ recomeça ou converte.
 
 `python3 tools/papel/falso.py <pasta>` roda as formas num mercado de mentira (semente fixa) e grava o mesmo conjunto
 de arquivos com `"exemplo": true`; o app (repositório odonto-quest) usa a cópia em `tools/mercado/exemplos/papel/`.
+
+## Cofres (`cofres.json`): o que entrou em 09/11/2026
+
+Pedidos do Alediov depois de 6 dias ao vivo (5 melhores −0,06% ao vivo × +7,7% no teste no passado). `VERSAO` da
+forma continua 1: as versões novas nascem com US$ 1.000 na 1ª rodada depois da mudança e as listas novas são escolhidas
+numa escolha fora da segunda, uma vez.
+
+- **Versões** (todas com `grupo`): "Pela regra" = `top5` (padrão), `top10`, `top5s` e **`sinais`** (5 melhores com
+  sinais de saída: o stop de 15% do topo e, a cada rodada, o líder com menos de 5% do cofre, o TVL caindo 30% em 7 dias
+  pelo `accountValueHistory` da semana, o cofre fechado para depósitos; sai depois da trava, 4 semanas de castigo, o
+  dinheiro vai para o próximo da fila); "Outras escolhas" = **`constancia`** (os 5 de maior lucro de 90 dias ÷
+  (desvio dos retornos diários × √90), pela cota interpolada dia a dia; recusa quem tem menos de 90 dias, prejuízo em 90
+  dias ou um dia com mais de 50% do lucro), **`grandes`** (os 5 melhores pela nota entre os de TVL ≥ US$ 1 milhão; a
+  escolha detalha também os 15 maiores do pré-filtro) e `semana`; "Com o HLP" = `hlp`, **`mix50`** (50% HLP + 50% nos
+  5 melhores) e **`mix25`** (25% + 75%), que voltam às partes certas toda segunda (vendendo de quem passou da parte, se
+  a trava deixa); "Seus" = `fixos`. As listas de `constancia` e `grandes` ficam no estado (`listas`) com a regra dos
+  seguidos (4 semanas no mínimo; sai antes só se fechar, sumir ou parar de aceitar depósitos).
+- **`historico`** das versões continua (refeito a cada 7 dias, e uma vez quando faltam as versões novas), agora chamado
+  no app de "no período da escolha (otimista)": usa os cofres que a escolha de HOJE detalhou.
+- **`passado`**: o teste FORA DA AMOSTRA (`cofres_passado.py`). As últimas 12 semanas, de uma segunda até a rodada que
+  montou; toda segunda (a cada 7 dias desde o começo) cada versão escolhe só com os números até aquele dia e anda pelos
+  dias seguintes (`simular_regras`, o mesmo motor do `historico`). O universo é a lista inteira (sem o HLP e os filhos,
+  37+ dias de vida): os abertos com US$ 30 mil ou mais pela ordem do TVL de hoje (até 300) e os fechados pela ordem do
+  lucro total em valor absoluto (até 100), mais o HLP. Um `vaultDetails` por cofre, aos poucos (até 240 s por rodada,
+  só com 10 min ou mais de folga na rodada); refeito a cada 7 dias.
+
+  ```json
+  { "aproximado": true, "semanas": 12, "proximo": 1763600000000,
+    "andamento": null | { "fase": "detalhar", "de": ms, "universo": 401, "detalhados": 120, "comDados": 64, "criado": ms },
+    "resultado": { "de": ms, "ate": ms, "feitoEm": ms, "semanas": 13, "aproximado": true,
+      "funil": { "lista": 9478, "candidatos": { "abertos": 380, "fechados": 2100 }, "universo": 401, "detalhados": 401,
+                 "comDados": 150, "recusas": { "nunca teve US$ 100 mil no período": 200 }, "fechados": 12, "usados": 19 },
+      "contas": { "top5": {conta com metricas}, "…": {} },
+      "escolhas": [ { "semana": "2026-08-17", "top5": [{ "endereco", "nome" }], "passaram": 30, "comDados": 140 } ],
+      "previsto": { "top5": 0.077 } },
+    "rodadas": [ { "de": ms, "ate": ms, "retorno": 0.01, "previsto": 0.07, "comDados": 150 } ] }
+  ```
+
+  `previsto` = o que o `historico` (otimista) dava no mesmo período. Limitações: só cofres que ainda estão na lista (os
+  apagados não), os abertos pelo TVL de hoje, a parte do líder de hoje (o sinal do líder não entra; nos fechados a regra
+  não confere a parte), não se sabe quando um cofre fechou para depósitos, o histórico antigo tem poucos pontos.
+- **`lider`**: o cofre × copiar o líder (`cofres_lider.py`) para os 5 melhores de agora: US$ 1.000 copiando no papel as
+  operações do PRÓPRIO cofre (o endereço do cofre nas execuções; o `leader` vai só como informação) com o motor do copy
+  trading (`tools/mercado/sim.py`: proporcional 1×, 1 min de atraso, taxa, deslize, financiamento), desde o dia em que o
+  cofre passou a ser acompanhado, contra a conta própria do cofre (já sem a comissão de 10%).
+
+  ```json
+  { "atraso": 1, "alav": 1,
+    "cofres": [ { "endereco", "nome", "lider", "desde": ms, "em": ms, "fonte": "operações do próprio cofre",
+                  "muitas": false, "cofre": {conta com metricas}, "copia": {conta com metricas; extra.financiamento},
+                  "diferenca": 0.012 } ],
+    "total": { "cofre": {conta}, "copia": {conta}, "diferenca": 0.004, "n": 5, "copiaGanhou": 3 },
+    "saidos": [ { "endereco", "nome", "desde", "saiu", "cofre", "copia", "diferenca" } ] }
+  ```
+
+  `diferenca` = retorno da cópia − retorno do cofre (positivo: copiar teria rendido mais). Só perpétuos entram na cópia;
+  posições que o cofre já tinha e não mexeu depois não são copiadas; `muitas`: chegou ao teto de 4.000 execuções numa
+  rodada (as mais antigas podem faltar).
+- `config` ganhou `sinais`, `constancia`, `tvlGrande` e `misturas`.
 
 ## Apostas de valor (`apostas.json`)
 

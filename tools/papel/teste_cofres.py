@@ -61,6 +61,30 @@ def conferir_forma(d):
         assert {"em", "versao", "tipo", "texto"} <= set(e)
     assert [e["em"] for e in d["eventos"]] == sorted((e["em"] for e in d["eventos"]), reverse=True)
     assert len(json.dumps(d, ensure_ascii=False)) < 400_000, "cofres.json grande demais"
+    # 09/11/2026: grupos, o teste fora da amostra e o cofre × copiar o líder
+    assert all(v.get("grupo") for v in d["versoes"]), [v["id"] for v in d["versoes"] if not v.get("grupo")]
+    for e in d["eventos"]:
+        if e["tipo"] in ("saiu", "trocou"):
+            assert e.get("motivo") in {"stop", "tvl", "lider", "deposito", "fechou", "sumiu", "lista", "fixos", "semana"}, e
+    p = d.get("passado")
+    if p:
+        assert p["aproximado"] is True
+        r = p.get("resultado")
+        if r:
+            assert r["aproximado"] is True and r["de"] < r["ate"] and r["semanas"] >= 12, r["semanas"]
+            for vid, c in r["contas"].items():
+                conferir_conta(c, f"passado/{vid}")
+                assert "metricas" in c, vid
+            for e in r["escolhas"]:
+                assert len(e["top5"]) <= 5 and all({"endereco", "nome"} <= set(x) for x in e["top5"])
+    li = d.get("lider")
+    if li and li["cofres"]:
+        for l in li["cofres"]:
+            conferir_conta(l["cofre"], f"lider/{l['nome']}/cofre")
+            conferir_conta(l["copia"], f"lider/{l['nome']}/copia")
+            assert abs(l["diferenca"] - (l["copia"]["retorno"] - l["cofre"]["retorno"])) < 1e-6
+            assert l["cofre"].get("metricas") is not None or len(l["cofre"]["serie"]) < 2
+        assert li["total"]["n"] == len(li["cofres"])
 
 
 def rodar(pasta, tempos, cli=None, quieto=True):
@@ -162,6 +186,66 @@ def teste_contas_pequenas():
         shutil.rmtree(pasta, ignore_errors=True)
 
 
+def teste_novos():
+    # constância: um dia que faz quase todo o lucro é recusado; o lucro espalhado passa
+    D = DIA
+    s = [(k * D, 1.0 + 0.001 * k) for k in range(120)]
+    c = C.constancia(s, 119 * D)
+    assert c["ok"] and c["lucro"] > 0 and c["maiorDia"] < 0.1, c
+    s2 = [(k * D, 1.0 if k < 100 else 1.2) for k in range(120)]
+    c2 = C.constancia(s2, 119 * D)
+    assert not c2["ok"] and "um só dia" in c2["motivo"], c2
+    assert C.constancia(s, 50 * D) is None  # menos de 90 dias de história
+    # sinais de saída
+    assert C.sinal_saida({"endereco": "0x1", "lf": 0.03})[0] == "lider"
+    assert C.sinal_saida({"endereco": C.HLP, "lf": 0.0}) is None
+    assert C.sinal_saida({"endereco": "0x1", "lf": 0.03}, usar_lider=False) is None
+    assert C.sinal_saida({"endereco": "0x1", "lf": 0.2, "tvlQueda7": 0.31})[0] == "tvl"
+    assert C.sinal_saida({"endereco": "0x1", "lf": 0.2, "tvlQueda7": 0.1, "aceita": False})[0] == "deposito"
+    assert abs(C.tvl_queda7([(0, 100.0), (7 * D, 60.0)], 7 * D) - 0.4) < 1e-9
+    # a versão com sinais sai pelo sinal (depois da trava) e o motivo vai no evento
+    info = lambda a: {"nome": a, "endereco": a, "com": 0.1, "aceita": True, "fechado": False, "lf": 0.2, "tvlQueda7": 0.4}  # noqa: E731
+    ev = C.Eventos()
+    cart = C.Carteira({}, 0)
+    cart.entrar("a", 1000, 0, 1.0, 0.1, C.TRAVA)
+    assert C.conferir_sinais(cart, "sinais", HORA, lambda a: 1.0, info, ev, sinais=True) == []  # travado
+    assert cart.h["a"]["sinal"] == "tvl" and "a" in cart.d["ban"]
+    assert C.conferir_sinais(cart, "sinais", DIA + 1, lambda a: 1.0, info, ev, sinais=True) == ["a"]
+    assert ev.lista[-1]["motivo"] == "tvl" and "TVL caiu 40%" in ev.lista[-1]["texto"]
+    assert C.codigo_motivo("o cofre fechou") == "fechou" and C.codigo_motivo("saiu da lista") == "lista"
+    # misturas: 50% HLP + 50% em dois cofres; na segunda volta às partes
+    info2 = lambda a: {"nome": a, "endereco": a, "com": 0.0 if a == C.HLP else 0.1, "aceita": True, "fechado": False}  # noqa: E731
+    pesos = C.pesos_mistura(0.5, ["a", "b"])
+    assert pesos == {C.HLP: 0.5, "a": 0.25, "b": 0.25}
+    cart = C.Carteira({}, 0)
+    C.ajustar_pesos(cart, "mix50", 0, pesos, info2, lambda a: 1.0, ev)
+    assert abs(cart.h[C.HLP]["custo"] - 500) < 1e-6 and abs(cart.h["a"]["custo"] - 250) < 1e-6 and cart.d["caixa"] < 1e-6
+    assert "Montou a mistura" in ev.lista[-1]["texto"]
+    cota = {C.HLP: 1.0, "a": 2.0, "b": 1.0}
+    C.ajustar_pesos(cart, "mix50", 7 * DIA, pesos, info2, lambda a: cota[a], ev, rebalancear=True)
+    tot = cart.valor(lambda a: cota[a])
+    assert abs(cart.liquido(C.HLP) / tot - 0.5) < 0.02 and abs(cart.liquido("a") / tot - 0.25) < 0.02, (cart.h, tot)
+    # lista própria: fica 4 semanas, depois sai se não passa mais
+    lst = {}
+    sai, ent = C.atualizar_lista(lst, ["a", "b", "c"], 0, 2, {"a": 3, "b": 2, "c": 1})
+    assert ent == ["a", "b"] and not sai
+    sai, ent = C.atualizar_lista(lst, ["c"], 7 * DIA, 2, {"c": 1})
+    assert not sai and not ent and set(lst) == {"a", "b"}
+    sai, ent = C.atualizar_lista(lst, ["c"], 29 * DIA, 2, {"c": 1}, fora=lambda a: "o cofre fechou" if a == "b" else None)
+    assert sai == [("a", "não passa mais na regra"), ("b", "o cofre fechou")] and ent == ["c"], (sai, ent)
+    # o universo do fora da amostra: lista inteira, abertos pelo TVL e fechados pelo lucro, sem filhos do HLP
+    import cofres_passado as PS
+    linhas = {}
+    for x in falso.ClientePapelFalso().cofres():
+        l = C.linha_lista(x)
+        linhas[l["endereco"]] = l
+    uni, meta, tam = PS.universo(C, linhas, FC.A0)
+    assert uni[0] == C.HLP and len(set(uni)) == len(uni)
+    nomes = {meta[a]["n"] for a in uni[1:]}
+    assert "HLP Strategy A" not in nomes and "Aposentado" in nomes and "Recém-chegado" not in nomes, nomes
+    assert PS.inicio_do_teste(FC.A0) <= FC.A0 - 12 * 7 * DIA
+
+
 def teste_rodadas():
     pasta = tempfile.mkdtemp(prefix="cofres-")
     arq_fixos = os.path.join(pasta, "fixos.json")
@@ -179,7 +263,7 @@ def teste_rodadas():
         assert ind["formas"]["cofres"]["ok"], ind
         conferir_forma(d)
         ids = [v["id"] for v in d["versoes"]]
-        assert ids == ["top5", "top10", "top5s", "hlp", "semana", "fixos"], ids
+        assert ids == ["top5", "top10", "top5s", "sinais", "constancia", "grandes", "semana", "hlp", "mix50", "mix25", "fixos"], ids
         v = {x["id"]: x for x in d["versoes"]}
         assert v["fixos"]["fixa"] is True and v["fixos"]["aoVivo"]["extra"]["cofres"] == 1
         assert v["hlp"]["aoVivo"]["extra"]["comissaoPaga"] == 0
@@ -269,6 +353,7 @@ def teste_falhas():
 
 if __name__ == "__main__":
     teste_contas_pequenas()
+    teste_novos()
     teste_rodadas()
     teste_falhas()
     print("ok")

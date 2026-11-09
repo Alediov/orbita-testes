@@ -221,3 +221,40 @@ class Falso:
                 "followers": seguidores, "maxDistributable": f"{av * 0.9:.6f}", "maxWithdrawable": f"{av * 0.5:.6f}",
                 "isClosed": c.fechado(self.agora), "relationship": c.relacao(self.filhos_hlp),
                 "allowDeposits": c.aceita(self.agora), "alwaysCloseOnWithdraw": False}
+
+    # ------------------------------------------------------------------ execuções do cofre (cofre × copiar o líder)
+    def _fills_cofre(self, c):
+        """As operações de mentira do cofre: a cada 8 h, uma posição em BTC ou ETH de até 40% do patrimônio (comprada
+        ou vendida), pelos preços do mundo do copy trading (de T0 a T0 + 60 dias)."""
+        cache = getattr(self, "_fills_c", None)
+        if cache is None:
+            cache = self._fills_c = {}
+        if c.endereco in cache:
+            return cache[c.endereco]
+        r = random.Random(zlib.crc32(("fills " + c.nome).encode()))
+        out, pos, tid = [], {"BTC": 0.0, "ETH": 0.0}, 0
+        t = max(T0 + HORA, c.criado)
+        fim = T0 + 59 * DIA
+        while t < fim:
+            m = r.choice(("BTC", "ETH"))
+            px = self.mundo.px(m, t)
+            av = c.av(c.k(t)) if c.k(t) >= 0 else 0.0
+            alvo = round(r.choice((-1, 0, 1, 1)) * r.uniform(0.1, 0.4) * av / px, 4) if av > 0 else 0.0
+            delta = alvo - pos[m]
+            if abs(delta) * px >= 50:
+                tid += 1
+                out.append({"coin": m, "px": f"{px:.2f}", "sz": f"{abs(delta):.4f}", "side": "B" if delta > 0 else "A",
+                            "time": t, "startPosition": f"{pos[m]:.4f}", "dir": "Open Long" if delta > 0 else "Open Short",
+                            "closedPnl": "0.0", "crossed": True, "fee": "0.0", "tid": tid, "oid": tid})
+                pos[m] = alvo
+            t += 8 * HORA + r.randint(0, 3600) * 1000
+        cache[c.endereco] = out
+        return out
+
+    def execucoes_entre(self, user, ini, fim=None, maximo=10_000):
+        c = self.cofres_falsos.get(str(user).lower())
+        if c is None:
+            return super().execucoes_entre(user, ini, fim, maximo)
+        self._contar("userFillsByTime")
+        fim = min(fim if fim is not None else self.agora, self.agora)
+        return [f for f in self._fills_cofre(c) if ini <= f["time"] <= fim][:maximo]
