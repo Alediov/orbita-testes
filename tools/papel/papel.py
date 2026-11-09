@@ -37,7 +37,7 @@ sys.path.insert(0, os.path.join(AQUI, "..", "mercado"))
 sys.path.insert(0, AQUI)  # antes do mercado: os dois têm um falso.py
 
 import hl  # noqa: E402
-from conta import DIA, dia_de  # noqa: E402
+from conta import DIA, cdi_ano_da_serie, com_metricas, dia_de  # noqa: E402
 
 FORMAS = ["cofres", "funding", "robos", "apostas", "looping", "opcoes", "pools"]
 # as que só rodam quando pedidas (`--formas`): os memecoins têm o job próprio, 2 vezes por dia (`memes.yml`)
@@ -45,6 +45,7 @@ FORMAS_A_PARTE = ["memes"]
 V = 1
 CDI_ANO = 0.149
 REF_DIAS = 400
+CDI_DIAS = 900   # o CDI guardado vai mais longe: o teste no passado das apostas começa ~2,5 anos atrás
 MAX_LOG = 400  # linhas
 
 
@@ -85,19 +86,30 @@ def referencias(cli, ref, agora, log, buscar_cdi=True):
         log(f"  bitcoin: {e}")
     fonte = "fixa"
     if buscar_cdi:
-        try:
-            de = dt.datetime.fromtimestamp(ini / 1000).strftime("%d/%m/%Y")
-            ate = dt.datetime.fromtimestamp(agora / 1000).strftime("%d/%m/%Y")
-            url = f"https://api.bcb.gov.br/dados/serie/bcdata.sgs.12/dados?formato=json&dataInicial={de}&dataFinal={ate}"
-            with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "orbita-testes/1"}), timeout=20) as r:
-                for x in json.loads(r.read().decode()):
-                    d, m, y = x["data"].split("/")
-                    ref["cdi"][f"{y}-{m}-{d}"] = float(x["valor"]) / 100
-            fonte = "bcb"
-        except Exception as e:  # noqa: BLE001
-            log(f"  CDI do Banco Central: {e}; usando {CDI_ANO * 100:.1f}% ao ano")
-    corte = dia_de(ini)
-    for k in ("btc", "cdi"):
+        de = dt.datetime.fromtimestamp((agora - CDI_DIAS * DIA) / 1000).strftime("%d/%m/%Y")
+        ate = dt.datetime.fromtimestamp(agora / 1000).strftime("%d/%m/%Y")
+        url = f"https://api.bcb.gov.br/dados/serie/bcdata.sgs.12/dados?formato=json&dataInicial={de}&dataFinal={ate}"
+        erro = None
+        # o BC às vezes responde 304 (sem corpo) ou cai por alguns segundos: tenta 3 vezes, pedindo sem cache
+        for tentativa in range(3):
+            try:
+                req = urllib.request.Request(url, headers={"User-Agent": "orbita-testes/1", "Cache-Control": "no-cache",
+                                                           "Pragma": "no-cache"})
+                with urllib.request.urlopen(req, timeout=20) as r:
+                    for x in json.loads(r.read().decode()):
+                        d, m, y = x["data"].split("/")
+                        ref["cdi"][f"{y}-{m}-{d}"] = float(x["valor"]) / 100
+                fonte, erro = "bcb", None
+                break
+            except Exception as e:  # noqa: BLE001
+                erro = e
+                time.sleep(2 * (tentativa + 1))
+        if erro is not None:
+            taxa = cdi_ano_da_serie(ref["cdi"], CDI_ANO)
+            log(f"  CDI do Banco Central: {erro}; ficam os {len(ref['cdi'])} dias já guardados e, depois deles, "
+                f"{taxa * 100:.2f}% ao ano")
+    for k, dias in (("btc", REF_DIAS), ("cdi", CDI_DIAS)):
+        corte = dia_de(agora - dias * DIA)
         for d in [d for d in ref[k] if d < corte]:
             del ref[k][d]
     return fonte
@@ -156,6 +168,7 @@ def rodada(cli, pasta, agora=None, formas=None, prazo_min=20.0, exemplo=False, b
                           "rodada": {"pedidos": getattr(cli, "pedidos", 0) - p0,
                                      "segundos": round(time.monotonic() - peso0, 1), "erros": saida.get("erros", [])}})
             saida.pop("erros", None)
+            com_metricas(saida, est["ref"]["cdi"], cdi_ano_da_serie(est["ref"]["cdi"], CDI_ANO))
             if exemplo:
                 saida["exemplo"] = True
             gravar_json(os.path.join(pasta, f"{nome}.json"), saida)
@@ -175,7 +188,8 @@ def rodada(cli, pasta, agora=None, formas=None, prazo_min=20.0, exemplo=False, b
     de = dia_de(agora - REF_DIAS * DIA)
     indice = {"v": V, "agora": agora, "formas": ind_formas,
               "ref": {"btc": sorted([[d, v] for d, v in ref["btc"].items()]),
-                      "cdi": indice_cdi(ref["cdi"], de, dia_de(agora)), "cdiAno": CDI_ANO, "cdiFonte": fonte},
+                      "cdi": indice_cdi(ref["cdi"], de, dia_de(agora), cdi_ano_da_serie(ref["cdi"], CDI_ANO)),
+                     "cdiAno": cdi_ano_da_serie(ref["cdi"], CDI_ANO), "cdiFonte": fonte},
               "exemplo": bool(exemplo)}
     gravar_json(os.path.join(pasta, "indice.json"), indice)
     gravar_json(os.path.join(pasta, "estado.json"), est)

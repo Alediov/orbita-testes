@@ -13,6 +13,7 @@ Uso típico num módulo de forma:
 from __future__ import annotations
 
 import datetime as dt
+import math
 
 CAPITAL = 1000.0
 FUSO_MS = -3 * 3_600_000  # Brasília (sem horário de verão desde 2019)
@@ -20,6 +21,7 @@ HORA = 3_600_000
 DIA = 86_400_000
 MAX_LIQ = 50
 MAX_EVENTOS = 300
+SHARPE_MAX = 10.0
 
 
 def dia_de(ms: int) -> str:
@@ -118,6 +120,106 @@ class Curva:
         c.liq, c.n_liq = list(d.get("liq") or []), d.get("nLiq", 0)
         c.extra, c.ganhos = dict(d.get("extra") or {}), list(d.get("ganhos") or [])
         return c
+
+
+def cdi_ano_da_serie(cdi: dict, padrao: float) -> float:
+    """A taxa ao ano do CDI pelos últimos 20 dias úteis da série do BC (fração diária por dia); sem série, `padrao`."""
+    ult = [cdi[d] for d in sorted(cdi)[-20:]]
+    if len(ult) < 5:
+        return padrao
+    return round((1 + sum(ult) / len(ult)) ** 252 - 1, 4)
+
+
+def _cdi_do_dia(cdi: dict, d: dt.date, primeiro: str, ultimo: str, diaria: float) -> float:
+    """O CDI do dia `d` (fração): o da série; fora dela (antes do 1º ou depois do último dia guardado), a taxa de agora
+    nos dias úteis; dentro dela, um dia útil sem valor é feriado (0)."""
+    k = d.isoformat()
+    if k in cdi:
+        return cdi[k]
+    if (k > ultimo or k < primeiro) and d.weekday() < 5:
+        return diaria
+    return 0.0
+
+
+def metricas(conta: dict | None, cdi: dict, cdi_ano: float, capital: float = CAPITAL) -> dict | None:
+    """Números para decidir, iguais em todas as formas (e no copy trading), a partir da série diária da conta:
+
+    - `dias` (do começo ao último ponto), `aoMes` ((1 + retorno)^(30/dias) − 1; só com 7 dias ou mais) e `aoAno` (só
+      com 30 dias ou mais: extrapolar uma semana para um ano engana);
+    - `cdi`: o CDI no MESMO período (a série 12 do BC, dia a dia; depois do último dia publicado, a taxa de agora) e
+      `excesso` = (1 + retorno) ÷ (1 + cdi) − 1: positivo = ganhou do CDI no mesmo tempo;
+    - `volAno`: o quanto o patrimônio balança (desvio dos retornos diários × √365); `sharpe`: (retorno diário médio −
+      CDI do dia) ÷ desvio × √365, só com 14 dias ou mais e limitado a ±10 (acima de 1 é bom; abaixo de 0, o CDI ganhou
+      com menos risco);
+    - `retornoPorQueda`: o ao ano ÷ a pior queda (a "Calmar"; só com 30 dias e queda de 0,5% ou mais);
+    - `piorDia` (o pior retorno de um dia) e `diasPositivos` (fração dos dias que fecharam no azul).
+
+    Dias sem ponto repetem o valor anterior (a conta ficou parada). Devolve None sem série."""
+    if not conta or not conta.get("serie"):
+        return None
+    try:
+        inicio = dt.date.fromisoformat(dia_de(int(conta.get("inicio") or 0)))
+    except (TypeError, ValueError, OverflowError):
+        return None
+    pontos = {dt.date.fromisoformat(d): float(v) for d, v in conta["serie"]}
+    fim = max(pontos)
+    inicio = min(inicio, min(pontos))
+    valores, v, d = [], capital, inicio
+    while d <= fim:
+        v = pontos.get(d, v)
+        valores.append((d, v))
+        d += dt.timedelta(days=1)
+    dias = (fim - inicio).days
+    ret = valores[-1][1] / capital - 1
+    ultimo, primeiro = (max(cdi), min(cdi)) if cdi else ("", "")
+    diaria = (1 + cdi_ano) ** (1 / 252) - 1
+    rets, livres, ind_cdi = [], [], 1.0
+    anterior = capital
+    for i, (d, v) in enumerate(valores):
+        rf = _cdi_do_dia(cdi, d - dt.timedelta(days=1), primeiro, ultimo, diaria) if i else 0.0
+        if i:
+            ind_cdi *= 1 + rf
+            if anterior > 0:
+                rets.append(v / anterior - 1)
+                livres.append(rf)
+        anterior = v
+    out = {"dias": dias, "retorno": round(ret, 6), "cdi": round(ind_cdi - 1, 6),
+           "excesso": round((1 + ret) / ind_cdi - 1, 6), "venceCdi": (1 + ret) > ind_cdi,
+           "aoMes": None, "aoAno": None, "volAno": None, "sharpe": None, "retornoPorQueda": None,
+           "piorDia": round(min(rets), 6) if rets else None,
+           "diasPositivos": round(sum(1 for r in rets if r > 0) / len(rets), 4) if rets else None}
+    if dias >= 7:
+        out["aoMes"] = round(max(0.0, 1 + ret) ** (30 / dias) - 1, 6)
+    if dias >= 30:
+        out["aoAno"] = round(max(0.0, 1 + ret) ** (365 / dias) - 1, 6)
+        q = float(conta.get("piorQueda") or 0)
+        if q >= 0.005:
+            out["retornoPorQueda"] = round(out["aoAno"] / q, 3)
+    if len(rets) >= 2:
+        m = sum(rets) / len(rets)
+        dp = math.sqrt(sum((r - m) ** 2 for r in rets) / (len(rets) - 1))
+        out["volAno"] = round(dp * math.sqrt(365), 6)
+        if dias >= 14 and dp > 1e-9:
+            ex = [r - f for r, f in zip(rets, livres)]
+            # limitado a ±10: uma conta quase parada que rende menos que o CDI daria −100 (certo, mas sem sentido)
+            out["sharpe"] = round(max(-SHARPE_MAX, min(SHARPE_MAX, sum(ex) / len(ex) / dp * math.sqrt(365))), 3)
+    return out
+
+
+def com_metricas(saida: dict, cdi: dict, cdi_ano: float):
+    """Põe `metricas` em cada conta (`aoVivo` e `historico`) das versões e dos itens de um <forma>.json."""
+    for grupo in (saida.get("versoes") or [], saida.get("itens") or []):
+        for v in grupo:
+            if not isinstance(v, dict):
+                continue
+            for k in ("aoVivo", "historico"):
+                c = v.get(k)
+                if isinstance(c, dict) and c.get("serie"):
+                    try:
+                        c["metricas"] = metricas(c, cdi, cdi_ano)
+                    except (TypeError, ValueError, ZeroDivisionError, OverflowError):
+                        c["metricas"] = None
+    return saida
 
 
 class Eventos:

@@ -19,6 +19,8 @@ Só simulação: nenhuma ordem, nenhuma conta, nenhuma chave. Só a API pública
   mesma proporção que ela; virar de lado fecha e abre com a margem fixa; sem caixa, não entra e conta `semCaixa`), com
   2×, 5× e 10×. São **34 contas por carteira** (8 + 12 + 8 + 6). Cada conta conta também os ganhos e as perdas dos
   fechamentos (`gm`, `pm` no resumo: ganho médio e perda média; as contas de antes de 19h50 contam só daí em diante).
+  Desde 09/11/2026 cada conta do `aoVivo` no `resumo.json` traz também `metricas` (CDI no mesmo período, excesso, ao
+  mês, Sharpe contra o CDI…), as mesmas das outras formas (`tools/papel/conta.py`, formato em `tools/papel/FORMATO.md`).
 - `carteiras.py`: o ranking, os filtros (`CRITERIOS`), as medidas (operações por dia, tempo médio de posição, fração
   passiva…), os motivos de cada escolha, a `nota_escolha` (teste no histórico + fração com ordem limite − alertas), as
   `moedas_boas` (pelas execuções de ANTES da cópia, `MIN_OPS_MOEDA` ordens com resultado e lucro) e o `risco` contra o

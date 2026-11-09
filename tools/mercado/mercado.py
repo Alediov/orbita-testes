@@ -34,6 +34,16 @@ import imitador as IM  # noqa: E402
 import perfil as PF  # noqa: E402
 from sim import (Conta, Mercado, Patrimonio, Velas, dia_de, operacoes_da_carteira, simular)  # noqa: E402
 
+# as métricas comuns de todas as formas (tools/papel/conta.py); no fim do caminho, para não esconder o falso.py daqui
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "papel"))
+try:
+    from conta import cdi_ano_da_serie, metricas  # noqa: E402
+except ImportError:  # pragma: no cover (checkout sem tools/papel)
+    metricas = None
+
+    def cdi_ano_da_serie(cdi, padrao):
+        return padrao
+
 MIN = 60_000
 HORA = 3_600_000
 DIA = 86_400_000
@@ -459,17 +469,26 @@ def referencias(cli, est, agora, log, cdi_ano, buscar_cdi=True):
         log(f"  bitcoin: {e}")
     fonte = "fixa"
     if buscar_cdi:
-        try:
-            a = dt.datetime.fromtimestamp(ini / 1000).strftime("%d/%m/%Y")
-            b = dt.datetime.fromtimestamp(agora / 1000).strftime("%d/%m/%Y")
-            url = f"https://api.bcb.gov.br/dados/serie/bcdata.sgs.12/dados?formato=json&dataInicial={a}&dataFinal={b}"
-            with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "orbita-testes/1"}), timeout=20) as r:
-                for x in json.loads(r.read().decode()):
-                    d, m, y = x["data"].split("/")
-                    est["cdi"][f"{y}-{m}-{d}"] = float(x["valor"]) / 100
-            fonte = "bcb"
-        except Exception as e:  # noqa: BLE001
-            log(f"  CDI do Banco Central: {e}; usando {cdi_ano * 100:.1f}% ao ano")
+        a = dt.datetime.fromtimestamp(ini / 1000).strftime("%d/%m/%Y")
+        b = dt.datetime.fromtimestamp(agora / 1000).strftime("%d/%m/%Y")
+        url = f"https://api.bcb.gov.br/dados/serie/bcdata.sgs.12/dados?formato=json&dataInicial={a}&dataFinal={b}"
+        erro = None
+        for tentativa in range(3):  # o BC às vezes responde 304 sem corpo ou cai por segundos
+            try:
+                req = urllib.request.Request(url, headers={"User-Agent": "orbita-testes/1", "Cache-Control": "no-cache",
+                                                           "Pragma": "no-cache"})
+                with urllib.request.urlopen(req, timeout=20) as r:
+                    for x in json.loads(r.read().decode()):
+                        d, m, y = x["data"].split("/")
+                        est["cdi"][f"{y}-{m}-{d}"] = float(x["valor"]) / 100
+                fonte, erro = "bcb", None
+                break
+            except Exception as e:  # noqa: BLE001
+                erro = e
+                time.sleep(2 * (tentativa + 1))
+        if erro is not None:
+            log(f"  CDI do Banco Central: {erro}; ficam os dias já guardados e, depois deles, "
+                f"{cdi_ano_da_serie(est['cdi'], cdi_ano) * 100:.2f}% ao ano")
     return fonte
 
 
@@ -505,6 +524,10 @@ def montar_resumo(est, agora, fonte_cdi, cdi_ano, exemplo=False, rodada=None):
     for e, c in est["carteiras"].items():
         l, md = c.get("ranking") or {}, c.get("medidas") or {}
         res = c.get("resumo") or {k: Conta.de_json(x).resumo(None, c["desde"]) for k, x in c["contas"].items()}
+        if metricas:
+            taxa = cdi_ano_da_serie(est["cdi"], cdi_ano)
+            res = {k: ({**x, "metricas": metricas({**x, "inicio": c["desde"]}, est["cdi"], taxa)}
+                       if isinstance(x, dict) and x.get("serie") else x) for k, x in res.items()}
         cart.append({
             "endereco": e, "curto": curto(e), "desde": c["desde"], "situacao": "seguindo", "motivos": c.get("motivos") or [],
             "conta": round(l.get("conta", 0)), "pnlMes": round((l.get("mes") or {}).get("pnl", 0)),
