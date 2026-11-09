@@ -23,6 +23,15 @@ Simulação (de hora em hora, passo `t` = hora cheia):
   pagando as taxas das duas pernas;
 - base = (perpétuo − à vista) ÷ à vista, pelas velas; entra no valor marcado (as duas pernas a preços diferentes).
 
+Entre corretoras (`entre`, só ao vivo e aproximada): comprado no perpétuo de uma corretora e vendido no da outra, na
+mesma moeda, onde o financiamento previsto (`predictedFundings` da HL, que traz a Hyperliquid, a Binance e a Bybit) é
+mais alto. O preço some (as duas pernas são perpétuos da mesma moeda) e sobra a DIFERENÇA das taxas. A taxa de cada
+corretora só é lida a cada rodada (~3 a 4 vezes por dia) e vale até a rodada seguinte: por isso é aproximada e não há
+teste no passado (a API não guarda o previsto antigo). Metade do dinheiro de margem em cada corretora (1×); entra com
+diferença ≥ `ENTRE_ENTRA` ao ano (média das 2 últimas leituras), sai abaixo de `ENTRE_SAI`, troca para outra
+combinação só se ela pagar `ENTRE_TROCA` a mais e a posição tiver 3 dias; taxas de quem tira liquidez das duas
+corretoras + deslize nas duas pernas, e `ENTRE_PONTE` US$ para mandar dólar de uma corretora à outra a cada montagem.
+
 Versões em `VERSOES`. O ao vivo começa quando a versão é criada e "alcança" as horas que o GitHub pulou; o teste no
 passado (~180 dias de velas de 1 h) é refeito no máximo 1× por semana.
 """
@@ -59,6 +68,12 @@ HIST_DIAS = 180
 HIST_REFAZER = 7 * DIA
 HIST_TEMPO_MIN = 300     # segundos que precisam sobrar na rodada para refazer o teste no passado
 ALCANCE_MAX = 195 * DIA  # as velas de 1 h só vão até ~200 dias atrás
+ENTRE_ENTRA, ENTRE_SAI, ENTRE_TROCA = 0.08, 0.02, 0.06   # ao ano
+ENTRE_MIN_TROCA = 3 * DIA
+ENTRE_TAXA = {"hl": 0.00045, "binance": 0.0005, "bybit": 0.00055}   # quem tira liquidez, nível base
+ENTRE_PONTE = 1.0          # US$ por montagem (saque e depósito de USDC entre as corretoras)
+ENTRE_LEITURAS = 120       # as últimas leituras do previsto guardadas no estado
+CORRETORA = {"hl": "Hyperliquid", "binance": "Binance", "bybit": "Bybit"}
 FOLGA_MS = 5 * 60_000    # o financiamento da hora sai alguns segundos depois: não processa a hora que acabou de virar
 
 # (id, nome, moedas, alavancagem, regra, risco, frase)
@@ -94,6 +109,9 @@ COMO_FUNCIONA = [
     "10% ao ano, e o rodízio fica na moeda que paga mais.",
     "Taxas das duas pernas na entrada, na saída e em cada reequilíbrio (à vista 0,07%, perpétuo 0,045%, mais um "
     "deslize de 0,03% a 0,08%) já estão descontadas.",
+    "Entre corretoras: em vez do à vista, a outra perna é o perpétuo de OUTRA corretora (comprado onde a taxa é baixa, "
+    "vendido onde é alta). Sobra só a diferença das taxas. Só existe ao vivo, e é aproximada: as taxas previstas da "
+    "Binance e da Bybit são lidas a cada rodada.",
 ]
 AVISOS = [
     "UBTC, UETH e USOL são versões “embrulhadas” que chegam por uma ponte de outra rede: em dias ruins o preço delas "
@@ -106,8 +124,12 @@ AVISOS = [
     "dinheiro inteiro fica preso, e isso nenhum teste no papel mede.",
     "O financiamento entra pelo preço de fechamento de cada hora; na corretora ele usa o preço do oráculo, que difere "
     "um pouco.",
-    "A versão entre corretoras (comprado numa e vendido onde o financiamento é maior) ainda não está no papel.",
+    "Entre corretoras: as taxas da Binance e da Bybit são as previstas que a Hyperliquid publica, lidas só a cada rodada; "
+    "os preços dos dois perpétuos podem descolar por minutos e o dinheiro fica em duas corretoras (dois riscos de "
+    "corretora, e a Binance e a Bybit pedem cadastro com documento).",
 ]
+ENTRE_FRASE = ("Comprado no perpétuo de uma corretora e vendido no de outra onde o financiamento é maior (Hyperliquid, "
+               "Binance ou Bybit): ganha a diferença das taxas. Aproximada: as taxas são lidas a cada rodada.")
 
 
 # ---------------------------------------------------------------------------------------------------- utilidades
@@ -572,6 +594,109 @@ def previstos(cli, erros):
     return out
 
 
+class Entre:
+    """A versão entre corretoras (ver o começo do arquivo). Estado: curva, posição, a leitura anterior e o acumulado."""
+
+    def __init__(self, inicio, estado=None):
+        e = estado or {}
+        self.curva = Curva.de_json(e.get("curva")) or Curva(inicio=inicio)
+        self.pos = e.get("pos")          # {moeda, longo, curto, desde} ou None
+        self.t = int(e.get("t") or inicio)
+        self.antes = e.get("antes")      # a leitura (moeda → corretora → taxa ao ano) usada de t até agora
+        self.leituras = list(e.get("leituras") or [])
+        a = e.get("acc") or {}
+        self.acc = {k: float(a.get(k, 0.0)) for k in ("recebido", "pago", "trocas")}
+
+    def para_json(self):
+        return {"curva": self.curva.para_json(), "pos": self.pos, "t": self.t, "antes": self.antes,
+                "leituras": self.leituras[-ENTRE_LEITURAS:], "acc": self.acc}
+
+    @staticmethod
+    def diferenca(leit, moeda, longo, curto):
+        d = (leit or {}).get(moeda) or {}
+        if d.get(longo) is None or d.get(curto) is None:
+            return None
+        return d[curto] - d[longo]
+
+    def melhor(self, agora_l):
+        """(diferença ao ano pela média das 2 últimas leituras, moeda, longo, curto) da melhor combinação, ou None."""
+        anterior = self.leituras[-1][1] if self.leituras else None
+        melhor = None
+        for m, d in (agora_l or {}).items():
+            cs = [c for c in ("hl", "binance", "bybit") if d.get(c) is not None]
+            for lo in cs:
+                for cu in cs:
+                    if lo == cu:
+                        continue
+                    x = self.diferenca(agora_l, m, lo, cu)
+                    y = self.diferenca(anterior, m, lo, cu)
+                    v = x if y is None else (x + y) / 2
+                    if melhor is None or v > melhor[0]:
+                        melhor = (v, m, lo, cu)
+        return melhor
+
+    def custo(self, moeda, longo, curto, nocional):
+        des = DESLIZE.get(moeda, 0.0008)
+        return nocional * (ENTRE_TAXA[longo] + ENTRE_TAXA[curto] + 2 * des)
+
+    def _texto(self, p):
+        return f"comprado na {CORRETORA[p['longo']]} e vendido na {CORRETORA[p['curto']]} ({p['moeda']})"
+
+    def passo(self, agora, leit, ev):
+        """Anda de `t` até `agora` com a leitura anterior e decide com a de agora."""
+        V = self.curva.ultimo if self.curva.ultimo > 0 else self.curva.capital
+        if self.pos and self.antes and agora > self.t:
+            dif = self.diferenca(self.antes, self.pos["moeda"], self.pos["longo"], self.pos["curto"])
+            if dif is not None:
+                ganho = V / 2 * dif * (agora - self.t) / (365 * DIA)
+                V += ganho
+                self.acc["recebido" if ganho >= 0 else "pago"] += abs(ganho)
+        self.curva.marcar(agora, V)
+        m = self.melhor(leit)
+        sair = trocar = False
+        if self.pos:
+            # a mesma média das 2 últimas leituras da entrada: uma leitura ruim sozinha não desmonta
+            atual = self.diferenca(leit, self.pos["moeda"], self.pos["longo"], self.pos["curto"])
+            ant = self.diferenca(self.leituras[-1][1] if self.leituras else None, self.pos["moeda"], self.pos["longo"],
+                                 self.pos["curto"])
+            if atual is not None and ant is not None:
+                atual = (atual + ant) / 2
+            if atual is None or atual < ENTRE_SAI:
+                sair = True
+            elif m and (m[1], m[2], m[3]) != (self.pos["moeda"], self.pos["longo"], self.pos["curto"]) \
+                    and m[0] - atual >= ENTRE_TROCA and agora - int(self.pos["desde"]) >= ENTRE_MIN_TROCA:
+                trocar = True
+        if self.pos and (sair or trocar):
+            c = self.custo(self.pos["moeda"], self.pos["longo"], self.pos["curto"], V / 2)
+            V -= c
+            self.curva.operou(c, 2)
+            ev.add(agora, "saiu", f"Desmontou ({self._texto(self.pos)}): a diferença das taxas caiu"
+                                  f"{' e outra combinação paga mais' if trocar else ''} (custou {moeda_br(c)}).", "entre")
+            self.pos = None
+            self.curva.marcar(agora, V)
+        if not self.pos and m and m[0] >= ENTRE_ENTRA:
+            c = self.custo(m[1], m[2], m[3], V / 2) + ENTRE_PONTE
+            V -= c
+            self.curva.operou(c, 2)
+            self.acc["trocas"] += 1
+            self.pos = {"moeda": m[1], "longo": m[2], "curto": m[3], "desde": agora}
+            ev.add(agora, "entrou", f"Montou {self._texto(self.pos)}: a diferença prevista é de {pct_br(m[0])} ao ano "
+                                    f"(custou {moeda_br(c)}).", "entre")
+            self.curva.marcar(agora, V)
+        if leit:
+            self.leituras.append([agora, leit])
+            self.leituras = self.leituras[-ENTRE_LEITURAS:]
+        self.antes, self.t = leit or self.antes, agora
+        dif = self.diferenca(leit, self.pos["moeda"], self.pos["longo"], self.pos["curto"]) if self.pos else None
+        self.curva.extra = {"recebido": round(self.acc["recebido"], 4), "pago": round(self.acc["pago"], 4),
+                            "moeda": self.pos["moeda"] if self.pos else None, "dentro": bool(self.pos),
+                            "longo": CORRETORA[self.pos["longo"]] if self.pos else None,
+                            "curto": CORRETORA[self.pos["curto"]] if self.pos else None,
+                            "diferencaAno": round(dif, 4) if dif is not None else None,
+                            "fundingAno": round(dif, 4) if dif is not None else None, "base": None,
+                            "montagens": int(self.acc["trocas"]), "leituras": len(self.leituras)}
+
+
 def buscar(cli, pares, ini, fim, lev, log, erros):
     """As velas de 1 h (perpétuo e à vista) e o financiamento das 4 moedas entre ini e fim. Falha do perpétuo ou do
     financiamento: levanta (a forma fica ok: false); falha do à vista: segue com o preço do perpétuo e anota."""
@@ -654,6 +779,17 @@ def rodar(ctx):
             erros.append(f"{vid} ao vivo: {e}")
             log(f"  funding: {vid} ao vivo: {e}")
 
+    # ---------------------------------------------------------------- entre corretoras (só ao vivo)
+    try:
+        en = Entre(fim, est.get("entre"))
+        leit = {m: {k: v for k, v in (prev.get(m) or {}).items() if v is not None} for m in MOEDAS}
+        leit = {m: d for m, d in leit.items() if len(d) >= 2}
+        en.passo(int(agora), leit, ev)
+        est["entre"] = en.para_json()
+    except Exception as e:  # noqa: BLE001
+        erros.append(f"entre corretoras: {e}")
+        log(f"  funding: entre corretoras: {e}")
+
     # ---------------------------------------------------------------- teste no passado
     if refazer:
         try:
@@ -676,6 +812,10 @@ def rodar(ctx):
         versoes.append({"id": vid, "nome": nome, "frase": frase, "risco": risco, "alav": alav,
                         "grupo": "1×" if alav == 1 else f"{alav}×",
                         "aoVivo": conta, "historico": (hist.get("versoes") or {}).get(vid)})
+    if est.get("entre"):
+        versoes.append({"id": "entre", "nome": "Entre corretoras", "frase": ENTRE_FRASE, "risco": "médio", "alav": 1,
+                        "grupo": "Entre corretoras", "aproximado": True,
+                        "aoVivo": Curva.de_json(est["entre"]["curva"]).resumo(aproximado=True), "historico": None})
     itens = []
     for m in MOEDAS:
         med = d.media(m, fim)
@@ -693,5 +833,7 @@ def rodar(ctx):
             "config": {"frequencia": "a cada 6 h", "moedas": MOEDAS, "pares": pares,
                        "taxas": {"avista": TAXA_SPOT, "perpetuo": TAXA_PERP, "deslize": DESLIZE},
                        "reequilibrio": [REEQ_BAIXO, REEQ_ALTO], "seletiva": [SELETIVA_ENTRA, SELETIVA_SAI],
-                       "rodizio": {"semanas": 1, "diferencaAno": RODIZIO_DIFERENCA}, "alavMax": ALAV_MAX},
+                       "rodizio": {"semanas": 1, "diferencaAno": RODIZIO_DIFERENCA}, "alavMax": ALAV_MAX,
+                       "entre": {"entra": ENTRE_ENTRA, "sai": ENTRE_SAI, "troca": ENTRE_TROCA, "taxas": ENTRE_TAXA,
+                                 "ponte": ENTRE_PONTE}},
             "erros": erros}
