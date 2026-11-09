@@ -61,10 +61,11 @@ class Falso:
     def pumpportal_ouvir(self, segundos, maximo, assinar=None):
         self._contar("pumpportal", 1)
         r = random.Random(self.agora)
-        n = min(maximo, 25 + r.randint(0, 20))
+        n = min(maximo, 32 + r.randint(0, 20))
         msgs = [{"message": "Successfully subscribed to token creation events."}]
         for k in range(n):
-            mint = "".join(r.choice(LETRAS) for _ in range(40)) + "pump"
+            outra = k % 7 == 3  # o PumpPortal manda também lançamentos de outras plataformas (o letsbonk.fun, "bonk")
+            mint = "".join(r.choice(LETRAS) for _ in range(40)) + ("bonk" if outra else "pump")
             sol_criador = r.choice([0.0, 0.0, 0.1, 0.5, 1.0, 3.0, 5.0])
             vS = 30.0 + sol_criador
             vT = M.K_CURVA / vS
@@ -78,7 +79,7 @@ class Falso:
             msgs.append({"signature": "x" * 20, "mint": mint, "traderPublicKey": "y" * 40, "txType": "create",
                          "initialBuy": 1_073_000_000 - vT, "solAmount": sol_criador, "bondingCurveKey": "c" + mint[1:36],
                          "vTokensInBondingCurve": vT, "vSolInBondingCurve": vS, "marketCapSol": vS / vT * M.OFERTA,
-                         "name": "Nome de Mentira", "symbol": "MENT", "uri": "https://exemplo.invalid/x.json", "pool": "pump",
+                         "name": "Nome de Mentira", "symbol": "MENT", "uri": "https://exemplo.invalid/x.json", "pool": "bonk" if outra else "pump",
                          "_t": t})
         return msgs
 
@@ -107,6 +108,19 @@ class Falso:
         return out
 
     def _gecko_memes(self, caminho):
+        m = re.match(r"^/networks/solana/tokens/([^/?]+)/pools", caminho)
+        if m:
+            # os tokens "mortos" não aparecem na DexScreener: o GeckoTerminal confirma (404 = ninguém negociou); de
+            # alguns, o GeckoTerminal conhece o par da curva (a DexScreener não listou)
+            mint = m.group(1)
+            i = self._info(mint)
+            if not i or i["destino"] == "morto":
+                raise rede.Erro("HTTP 404 em GeckoTerminal", 404)
+            return {"data": [{"id": "solana_c" + mint[1:36], "type": "pool",
+                              "attributes": {"address": "c" + mint[1:36], "name": "MENT / SOL",
+                                             "base_token_price_native_currency": f"{i['p0']:.12g}", "reserve_in_usd": "800",
+                                             "pool_created_at": "2026-11-01T00:00:00Z"},
+                              "relationships": {"dex": {"data": {"id": "pump-fun", "type": "dex"}}}}]}
         m = re.match(r"^/networks/solana/pools/([^/]+)/ohlcv/minute\?(.*)$", caminho)
         if not m:
             raise rede.Erro("HTTP 404 em GeckoTerminal", 404)
