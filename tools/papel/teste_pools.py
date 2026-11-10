@@ -223,6 +223,43 @@ def teste_a_mao():
         com_custos(g)
 
 
+def teste_marinho():
+    """"espera3": fora, só reposiciona depois de 3 dias e longe da faixa; "sobra": remonta sem trocar, toda numa moeda,
+    logo do outro lado do preço."""
+    g = sem_custos()
+    try:
+        e3 = PL.Conta(cfg("esp3"), T0)
+        sb = PL.Conta(cfg("sobra"), T0)
+        for c in (e3, sb):
+            c.troca(T0, None, sq(2500), 0)
+        # cai 15%: fora e longe (a faixa é de 5%); dois dias de olhadas sem mexer
+        s_ant, t = sq(2500), T0 + HORA
+        for c in (e3, sb):
+            c.troca(t, s_ant, sq(2125), 0)
+        for d in range(1, 3):
+            for c in (e3, sb):
+                c.troca(T0 + d * DIA + 16 * HORA, sq(2125), sq(2125), 0)
+        assert e3.acc["repos"] == 0 and sb.acc["repos"] == 0
+        for c in (e3, sb):
+            c.troca(T0 + 3 * DIA + 16 * HORA, sq(2125), sq(2125), 0)
+        assert e3.acc["repos"] == 1 and e3.dentro(sq(2125))
+        assert sb.acc["repos"] == 1 and not sb.dentro(sq(2125)) and sb.sa > sq(2125)
+        x, y = sb.tokens(sq(2125))
+        assert y == 0 and x > 0                  # só ether, sem vender
+        # o preço volta para dentro da faixa nova: a posição passa a ter dólar
+        sb.troca(T0 + 4 * DIA, sq(2125), sq(2160), 0)
+        assert sb.dentro(sq(2160)) and sb.tokens(sq(2160))[1] > 0
+        # perto da faixa (a 1% da borda) a espera não mexe, nem depois de 3 dias
+        e7 = PL.Conta(cfg("esp3"), T0)
+        e7.troca(T0, None, sq(2500), 0)
+        e7.troca(T0 + HORA, sq(2500), sq(2350), 0)    # ±5% → 2.381 a 2.625; 2.350 fica a ~1,3% da borda
+        for d in range(1, 5):
+            e7.troca(T0 + d * DIA + 16 * HORA, sq(2350), sq(2350), 0)
+        assert e7.acc["repos"] == 0
+    finally:
+        com_custos(g)
+
+
 def rodar(cli, pasta, quando, prazo=20):
     cli.agora = quando
     return papel.rodada(cli, pasta, quando, formas=["pools"], prazo_min=prazo, exemplo=True, buscar_cdi=False,
@@ -533,6 +570,7 @@ if __name__ == "__main__":
     teste_volatilidade()
     teste_gauge()
     teste_ler_trocas()
+    teste_marinho()
     teste_rodadas()
     teste_migracao()
     teste_passado_aos_poucos()

@@ -131,6 +131,17 @@ INICIO_BLOCOS = 300                    # o ao vivo começa ~10 min antes da 1ª 
 VOL_HORAS = 48
 HORA_CONFERIR = 12                     # "dia": a hora (Brasília) em que a pessoa olha a pool
 REINVESTIR_DIAS = 7                    # "dia": a cada quantos dias põe as taxas de volta
+# As regras do Canal do Marinho (vídeo "Aposentadoria sem Governo #26", pedido do Alediov, 10/11/2026; os números são os
+# da transcrição: 3 a 7 dias): olham 1×/dia como a "dia" e põem as taxas de volta toda semana, mas
+#   "espera3"/"espera7": só reposicionam com o preço fora há 3/7 dias E longe da faixa (perto, a meia largura da faixa
+#     da borda mais próxima, deixa: o preço costuma voltar);
+#   "sobra": fora há 3 dias, não troca nada: remonta a faixa, do mesmo tamanho, logo do outro lado do preço, só com a
+#     moeda que sobrou (tudo ether depois de uma queda → a faixa fica logo ACIMA do preço; tudo dólar depois de uma
+#     alta → logo abaixo). Paga só o gás; se o preço volta, a posição vende aos poucos e ganha a taxa no caminho.
+REGRAS_MAO = ("dia", "espera3", "espera7", "sobra")
+ESPERA_DIAS = {"espera3": 3, "espera7": 7, "sobra": 3}
+PERTO = 0.5                            # "espera": fora, mas a menos de meia largura da borda → não mexe
+FOLGA_SOBRA = 0.002                    # "sobra": a borda nova a 0,2% do preço (fora da faixa de propósito)
 GAS_REINVESTIR = 0.6                   # coletar + aumentar a liquidez: ~60% do gás de um reposicionamento
 PARAMS_REFAZER = 7 * DIA
 AMOSTRA_BLOCOS = 1800                  # a escolha do pool compara as trocas da última hora de cada candidato
@@ -161,6 +172,14 @@ VERSOES = [
      "estiver fora; toda semana põe as taxas ganhas de volta na posição."),
     ("dia5", "±5% · 1×/dia · reinveste", 0.05, "dia", "médio",
      "O mesmo cuidado à mão (uma olhada por dia, taxas de volta toda semana) com uma faixa de 5% para cada lado."),
+    ("esp3", "±5% · espera 3 dias fora", 0.05, "espera3", "médio",
+     "Como o Marinho ensina: faixa de 5%, olha uma vez por dia e, com o preço fora, espera 3 dias antes de mexer; se o "
+     "preço está perto da faixa, nem mexe. Toda semana põe as taxas de volta."),
+    ("esp7", "±5% · espera 7 dias fora", 0.05, "espera7", "médio",
+     "O mesmo, esperando 7 dias com o preço fora antes de reposicionar."),
+    ("sobra", "±5% · remonta com o que sobrou", 0.05, "sobra", "médio",
+     "Com o preço fora há 3 dias, não vende na baixa: monta a faixa de novo logo do outro lado do preço, só com a moeda "
+     "que sobrou (de propósito fora da faixa). Se o preço volta, vai trocando aos poucos e ganhando a taxa."),
     ("cheia", "Faixa cheia", None, "nunca", "médio",
      "A faixa inteira, como nos pools antigos (v2): nunca sai, ganha bem menos por dólar e não precisa reposicionar."),
     ("r3fixa", "±3% sem reposicionar", 0.03, "nunca", "médio",
@@ -182,6 +201,14 @@ VERSOES_VOL = [
      "toda semana põe as taxas de volta."),
     ("maoL", "Larga · 1×/dia · reinveste", 8.0, "dia", "médio",
      "O mesmo cuidado à mão com a faixa larga (hoje ±{w})."),
+    ("esp3", "Média · espera 3 dias fora", 3.0, "espera3", "médio",
+     "Como o Marinho ensina: faixa média (hoje ±{w}), olha uma vez por dia e, com o preço fora, espera 3 dias antes de "
+     "mexer; perto da faixa, nem mexe. Toda semana põe as taxas de volta."),
+    ("esp7", "Média · espera 7 dias fora", 3.0, "espera7", "médio",
+     "O mesmo, esperando 7 dias com o preço fora (faixa de hoje ±{w})."),
+    ("sobra", "Média · remonta com o que sobrou", 3.0, "sobra", "médio",
+     "Fora há 3 dias, não vende na baixa: monta a faixa (hoje ±{w}) logo do outro lado do preço, só com a moeda que "
+     "sobrou."),
     ("cheia", "Faixa cheia", None, "nunca", "médio",
      "A faixa inteira: nunca sai, ganha bem menos por dólar e não precisa reposicionar."),
     ("segurar", "Segurar 50/50", None, "segurar", "médio",
@@ -487,6 +514,8 @@ def grupo_da_versao(cfg):
         return "Referência"
     if cfg.get("gauge"):
         return "No gauge (AERO)"
+    if cfg["regra"] in ESPERA_DIAS:
+        return "Espera fora (Marinho)"
     return "Reposiciona" if cfg["regra"] in ("sai", "hora") else "À mão" if cfg["regra"] == "dia" else "Parada"
 
 
@@ -648,6 +677,49 @@ class Conta:
         self.acc["diaRepos"] += 1
         self.fora = None
 
+    def perto(self, s):
+        """Fora da faixa, mas a menos de meia largura (em preço) da borda mais próxima."""
+        if self.sa <= 0 or self.sb <= 0:
+            return False
+        meia = (self.sb / self.sa) ** PERTO            # em √P: meia largura da faixa, multiplicativa
+        return (s < self.sa and s * meia >= self.sa) or (s > self.sb and s <= self.sb * meia)
+
+    def remontar_sobra(self, t, s, gas_wei, ev=None):
+        """"sobra": a faixa do mesmo tamanho logo do outro lado do preço, só com a moeda que a posição tem (sem troca).
+        As taxas da outra moeda ficam guardadas (não coletadas)."""
+        x, y = self.tokens(s)
+        u1 = self.u1(s)
+        P = preco_de(s)
+        razao = self.sb / self.sa if self.sa > 0 else (1.05 ** 0.5) / (0.95 ** 0.5)
+        gas = self._gas_t1(gas_wei, s, t)
+        self.acc["pi"] += self.perda_imp(s)
+        k = (1 + FOLGA_SOBRA) ** 0.5
+        if s < self.sa:      # tudo na moeda 0: a faixa logo acima do preço
+            X = x + self.fx - gas / P
+            if X <= 0:
+                return
+            self.sa = s * k
+            self.sb = self.sa * razao
+            self.L = X / (1 / self.sa - 1 / self.sb)
+            self.fx = 0.0
+        else:                # tudo na moeda 1: a faixa logo abaixo do preço
+            Y = y + self.fy - gas
+            if Y <= 0:
+                return
+            self.sb = s / k
+            self.sa = self.sb / razao
+            self.L = Y / (self.sb - self.sa)
+            self.fy = 0.0
+        self.dep = list(quantias(self.L, s, self.sa, self.sb))
+        self.curva.operou(gas * u1, 1)
+        self.acc["gas"] += gas * u1
+        self.acc["repos"] += 1
+        self.acc["diaRepos"] += 1
+        self.fora = t
+        lo, hi = self.faixa_precos()
+        self._ev(ev, t, "reequilibrou", f"Fora havia {ESPERA_DIAS['sobra']} dias: remontou sem vender, na faixa de "
+                                        f"{self._txt(lo)} a {self._txt(hi)}, só com o que sobrou.")
+
     def reinvestir(self, t, s, gas_wei):
         """Põe as taxas não coletadas de volta na posição, na MESMA faixa (coleta, troca o que precisa e aumenta a
         liquidez). Não faz nada se as taxas não pagam pelo menos 5 vezes o gás."""
@@ -681,7 +753,16 @@ class Conta:
             return
         self.olhou = d
         if not self.dentro(s):
-            self.reposicionar(t, s, gas_wei, sigma)
+            espera = ESPERA_DIAS.get(self.regra, 0) * DIA
+            if self.fora is None:
+                self.fora = t
+            if self.regra == "dia":
+                self.reposicionar(t, s, gas_wei, sigma)
+            elif t - self.fora >= espera:
+                if self.regra == "sobra":
+                    self.remontar_sobra(t, s, gas_wei, ev)
+                elif not self.perto(s):
+                    self.reposicionar(t, s, gas_wei, sigma)
         if self.reinvestiu is None:
             self.reinvestiu = d
         elif d - self.reinvestiu >= REINVESTIR_DIAS:
@@ -715,7 +796,7 @@ class Conta:
         self._gas = gas_wei
         if not self.montada:
             self.montar(t, s1, gas_wei, ev, sigma)
-            if self.regra == "dia":
+            if self.regra in REGRAS_MAO:
                 self.olhou = (t + FUSO_MS) // DIA  # pôr a posição conta como a olhada do dia
             self.t, self.s, self.marca = t, s1, t
             self.curva.marcar(t, self.valor(s1))
@@ -766,7 +847,7 @@ class Conta:
                     moeda = self.par.nome_cot() if sobe else self.par.nome_base()
                     self._ev(ev, t, "saiu", f"O {self.par.nome_base()} ficou {lado} da faixa por 1 hora "
                                             f"({self.par.texto_preco(s1)}): a posição parou de ganhar e está toda em {moeda}.")
-            if self.regra == "dia":
+            if self.regra in REGRAS_MAO:
                 self.olhar(t, s1, gas_wei, ev, sigma)
         self.t, self.s = t, s1
         if t // MARCA_MS != self.marca // MARCA_MS:

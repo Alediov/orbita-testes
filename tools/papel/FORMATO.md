@@ -532,6 +532,12 @@ mesmas versões, ids e histórico de antes (o estado antigo é levado para `pool
   reposiciona se estiver fora nessa hora e a cada 7 dias põe as taxas ganhas de volta na posição, na mesma faixa
   (`extra.reinvestimentos`). Uma versão nova faz o teste no passado recomeçar para todas do mesmo pool (28 dias antes
   da rodada em que ela nasceu).
+- **"Espera fora (Marinho)"** (`grupo`, desde 10/11/2026, pedido do Alediov pelo vídeo #26 do Canal do Marinho; em
+  TODOS os pools, ids `esp3`, `esp7`, `sobra`, com o prefixo nos novos; ±5% no WETH/USDC e a faixa média nos novos):
+  olham 1×/dia e reinvestem como as "À mão", mas com o preço fora `esp3`/`esp7` só reposicionam depois de 3/7 dias e
+  longe da faixa (a menos de meia largura da borda, não mexem); `sobra`, fora há 3 dias, remonta a faixa do mesmo
+  tamanho logo do outro lado do preço (0,2% dele) só com a moeda que sobrou, sem troca (só o gás): fica de propósito
+  fora da faixa e só volta a ganhar se o preço voltar; o evento é um `reequilibrou`.
 - **Versões dos pools novos** (ids com o prefixo do pool: `cbu-`, `ecb-`, `aer-`, `stb-`): a faixa segue a oscilação
   diária medida no próprio pool (`volDia`): `est` (estreita, 1×), `med` (média, 3×; o padrão), `larga` (8×), as três
   reposicionando depois de 1 h fora; `maoM` e `maoL` (média e larga "à mão": 1×/dia + reinveste); `cheia`; `segurar`.
