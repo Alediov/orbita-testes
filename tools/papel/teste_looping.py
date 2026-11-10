@@ -173,6 +173,181 @@ def teste_taxas_por_dia():
     assert tx.taxa("stake", d("2026-01-01")) == LP.STAKING_PADRAO
 
 
+# ------------------------------------------------------------------------------------------- revisão de 09/11/2026
+def teste_auto_monta_e_desmonta():
+    g = sem_custos()
+    try:
+        # staking 3% e juro 2%: (3 − 1) × 1 ponto = 2 pontos a mais no laço ≥ 0,5 → monta já no começo
+        tx = taxas_fixas(stake=0.03, bor_WETH=0.02)
+        ev = LP.Eventos()
+        c = LP.Conta(cfg("wstAuto3"), T0, params())
+        c.passo(T0, 0, 2000.0, 2000.0, tx, ev)
+        assert c.L == 3 and perto(c.saude(2000), 1.395) and c.acc["montagens"] == 1
+        assert ev.lista[-1]["motivo"] == "compensa"
+        # o juro do ether dispara (3% + 2 pontos): no dia seguinte, desmonta para 1× com o motivo "juro"
+        tx2 = taxas_fixas(stake=0.03, bor_WETH=0.06)
+        c.passo(T0 + DIA, DIA, 2000.0, 2000.0, tx2, ev)
+        assert c.L == 1 and c.b < 1e-12 and c.acc["desmontagens"] == 1
+        assert ev.lista[-1]["motivo"] == "juro" and ev.lista[-1]["tipo"] == "reequilibrou"
+        # só uma decisão por dia
+        n = len(ev.lista)
+        c.passo(T0 + DIA + HORA, HORA, 2000.0, 2000.0, tx, ev)
+        assert len(ev.lista) == n and c.L == 1
+        # diferença pequena: 2 × 0,2 ponto = 0,4 < 0,5 → não monta; a régua do 1× segue
+        c2 = LP.Conta(cfg("wstAuto3"), T0, params())
+        c2.passo(T0, 0, 2000.0, 2000.0, taxas_fixas(stake=0.03, bor_WETH=0.028))
+        assert c2.L == 1 and c2.b == 0
+        # o 6× com 0,2 ponto: 5 × 0,2 = 1 ponto → monta
+        c3 = LP.Conta(cfg("wstAuto6"), T0, params())
+        c3.passo(T0, 0, 2000.0, 2000.0, taxas_fixas(stake=0.03, bor_WETH=0.028))
+        assert c3.L == 6
+        # a diferença some (juro = staking, sem disparar): desmonta com o motivo "diferenca"
+        ev3 = LP.Eventos()
+        for k in range(1, 5):
+            c3.passo(T0 + k * DIA, DIA, 2000.0, 2000.0, taxas_fixas(stake=0.03, bor_WETH=0.0305), ev3)
+        assert c3.L == 1 and ev3.lista[-1]["motivo"] == "diferenca"
+    finally:
+        com_custos(g)
+    # com custos: montar e desmontar cobram troca, deslize, relâmpago e gás sobre o que muda
+    c = LP.Conta(cfg("wstAuto3"), T0, params())
+    c.passo(T0, 0, 2000.0, 2000.0, taxas_fixas(stake=0.03, bor_WETH=0.0299))  # 0,02 ponto: fica no 1×
+    E0 = c.valor(2000)
+    c.passo(T0 + DIA, 0, 2000.0, 2000.0, taxas_fixas(stake=0.03, bor_WETH=0.02))
+    assert c.L == 3
+    custo = 2 * E0 * (LP.TAXA_TROCA + LP.DESLIZE) + 2 * E0 * LP.TAXA_RELAMPAGO + LP.GAS_US
+    assert perto(c.valor(2000), E0 - custo, 1e-4), (c.valor(2000), E0 - custo)
+    pd = c.curva.extra["porDentro"]
+    assert perto(pd["relampago"], 2 * E0 * LP.TAXA_RELAMPAGO, 1e-4) and pd["montagens"] == 1
+
+
+def teste_tendencia():
+    g = sem_custos()
+    try:
+        tx = taxas_fixas(sup_USDC=0.05)
+        ev = LP.Eventos()
+        # abaixo da média: fica em USDC no Aave
+        c = LP.Conta(cfg("eth2tend"), T0, params())
+        c.passo(T0, 0, 2000.0, 2000.0, tx, ev, tend=(1900.0, 2000.0))
+        assert c.L == 0 and perto(c.u, 1000) and c.a == 0 and c.b == 0 and c.saude(2000) is None
+        assert ev.lista[-1]["motivo"] == "queda"
+        c.passo(T0 + DIA, DIA, 1500.0, 1400.0, tx, ev, tend=(1500.0, 1900.0))
+        assert perto(c.valor(1500), 1000 * 1.05 ** (1 / 365), 1e-6)  # o ether caiu e a conta só rendeu o juro
+        # o ether passa a média: monta o 2× (2 vezes o patrimônio em ether)
+        c.passo(T0 + 2 * DIA, DIA, 2100.0, 2050.0, tx, ev, tend=(2100.0, 1950.0))
+        E = c.valor(2100)
+        assert c.L == 2 and perto(c.garantia_us(2100), 2 * E) and perto(c.b, E) and c.u == 0
+        assert ev.lista[-1]["motivo"] == "alta"
+        # sem média (poucos dias): não muda
+        c.passo(T0 + 3 * DIA, DIA, 2100.0, 2100.0, tx, ev, tend=(None, None))
+        assert c.L == 2
+        # cai abaixo: vende tudo, paga a dívida
+        c.passo(T0 + 4 * DIA, DIA, 1800.0, 1800.0, tx, ev, tend=(1800.0, 1950.0))
+        assert c.L == 0 and c.b == 0 and c.a == 0 and perto(c.u, c.valor(1800))
+        assert c.curva.extra["laco"] == "fora" and c.curva.extra["emUsdc"] > 0
+    finally:
+        com_custos(g)
+    # a média móvel pelas velas de 1 dia (só os dias fechados até t)
+    d = [(T0 + k * DIA, 100.0 + k, 99.0) for k in range(1, 61)]
+    f, m = LP.media_movel(d, T0 + 60 * DIA)
+    assert f == 160.0 and perto(m, sum(100.0 + k for k in range(11, 61)) / 50)
+    f, m = LP.media_movel(d, T0 + 10 * DIA)
+    assert f == 110.0 and m is None  # menos de 20 dias
+    f, m = LP.media_movel(d, T0 + 25 * DIA)
+    assert perto(m, sum(100.0 + k for k in range(1, 26)) / 25)
+
+
+def teste_estresse():
+    g = sem_custos()
+    try:
+        tx = taxas_fixas(stake=0.03, bor_WETH=0.02)
+        c = LP.Conta(cfg("wst6"), T0, params())
+        c.passo(T0, 0, 2000.0, 2000.0, tx)
+        es = LP.estresse(cfg("wst6"), c, tx, T0, params(), 2000.0)
+        assert es["tipo"] == "wst" and es["base"] == "agora"
+        # rende 6 × 3% − 5 × 2% = 8%; o laço perde com juro acima de 6 × 3% ÷ 5 = 3,6%
+        assert perto(es["rendeAno"], 0.08) and perto(es["juroPerde"], 0.036) and perto(es["juroRegua"], 0.03)
+        j2, j5 = es["juroAlto"]
+        assert perto(j2["juro"], 0.04) and perto(j2["rendeAno"], 0.18 - 0.20)
+        assert perto(j2["diasApagam"], round(365 * 0.08 / 0.02, 1))  # 1.460 dias de juro dobrado apagam um ano
+        assert perto(j5["rendeAno"], 0.18 - 0.50) and perto(j5["diasApagam"], round(365 * 0.08 / 0.32, 1))
+        hf = 6 * 0.93 / 5
+        d6 = es["desvio"][-1]
+        assert d6["desvio"] == 0.06 and perto(d6["hfAave"], hf, 1e-3) and perto(d6["hfSeMercado"], hf * 0.94, 1e-3)
+        assert perto(d6["perdaSaindo"], 0.36) and d6["liquidariaSeMercado"] is False
+        assert perto(es["desvioLiquida"], 1 - 1 / hf, 1e-3)
+        # o laço quando compensa no 1×: a conta teórica do 6×
+        a = LP.Conta(cfg("wstAuto6"), T0, params())
+        a.passo(T0, 0, 2000.0, 2000.0, taxas_fixas(stake=0.03, bor_WETH=0.031))
+        assert a.L == 1 and LP.estresse(cfg("wstAuto6"), a, tx, T0, params(), 2000.0)["base"] == "teorica"
+        # ETH × USDC: queda até liquidar e o fator nas quedas
+        txe = taxas_fixas(sup_WETH=0.02, bor_USDC=0.06)
+        e = LP.Conta(cfg("eth2"), T0, params())
+        e.passo(T0, 0, 2000.0, 2000.0, txe)
+        ee = LP.estresse(cfg("eth2"), e, txe, T0, params(), 2000.0)
+        assert ee["tipo"] == "eth" and perto(ee["quedaLiquida"], 1 - (1000 / 0.84) / 2000, 1e-4)
+        assert perto(ee["rendeAno"], 2 * 0.02 - 0.06) and ee["juroAlto"][0]["diasApagam"] is None  # já rende negativo
+        assert perto(ee["quedas"][1]["hf"], 1.68 * 0.6, 1e-3) and ee["quedas"][1]["liquida"] is False
+        assert LP.estresse(cfg("wst1"), None, tx, T0, params(), 2000.0) is None
+    finally:
+        com_custos(g)
+
+
+def teste_por_dentro_e_empate():
+    tx = taxas_fixas(stake=0.03, bor_WETH=0.02, sup_wstETH=0.001)
+    c = LP.Conta(cfg("wst3"), T0, params())
+    c.passo(T0, 0, 2000.0, 2000.0, tx)
+    for k in range(1, 91):
+        c.passo(T0 + k * DIA, DIA, 2000.0 + k, 1990.0, tx)
+    pd = c.curva.extra["porDentro"]
+    soma = pd["staking"] + pd["juroRecebido"] - pd["juroPago"] - pd["custos"] - pd["liquidacoes"] + pd["preco"]
+    assert perto(soma, pd["resultado"], 1e-4) and abs(pd["preco"]) < 1e-3  # medido em ether: o preço não entra
+    assert perto(pd["custos"], 3000 * (LP.TAXA_TROCA + LP.DESLIZE) + 2000 * LP.TAXA_RELAMPAGO + LP.GAS_US)
+    assert "estimado" not in pd
+    em = c.curva.extra["empate"]
+    custo_regua = 1000 * (LP.TAXA_TROCA + LP.DESLIZE) + LP.GAS_US
+    assert perto(em["custo"], pd["custos"] - custo_regua, 1e-6) and em["pelo"] == "juro"
+    E = c.valor(2000)
+    rende = c.curva.extra["rendeAno"]
+    assert perto(em["ganhoAno"], (rende - 0.031) * E, 1e-3) and perto(em["meses"], em["custo"] / (em["ganhoAno"] / 12), 1e-2)
+    # em dólar de verdade: o ether subiu 4,5%; a conta em dólar subiu junto
+    dol = c.curva.extra["dolar"]
+    assert perto(dol["ether"], 2090 / 2000 - 1, 1e-6) and perto(dol["retorno"], c.curva.extra["emDolar"] / 1000 - 1, 1e-4)
+    # ETH × USDC: o preço aparece no "preco"
+    e = LP.Conta(cfg("eth2"), T0, params())
+    txe = taxas_fixas(sup_WETH=0.02, bor_USDC=0.06)
+    e.passo(T0, 0, 2000.0, 2000.0, txe)
+    e.passo(T0 + DIA, DIA, 2200.0, 2100.0, txe)
+    pe = e.curva.extra["porDentro"]
+    assert pe["preco"] > 190 and perto(pe["staking"] + pe["juroRecebido"] - pe["juroPago"] - pe["custos"] - pe["liquidacoes"] + pe["preco"], pe["resultado"], 1e-4)
+    assert e.curva.extra["empate"]["pelo"] == "preco" and e.curva.extra["empate"]["meses"] is None
+    # a régua não tem empate
+    w = LP.Conta(cfg("wst1"), T0, params())
+    w.passo(T0, 0, 2000.0, 2000.0, tx)
+    assert "empate" not in w.curva.extra
+
+
+def teste_janelas():
+    import datetime as dt
+    d0 = dt.date(2026, 1, 1)
+    # a conta sobe 1% a cada 30 dias; a régua 0,5%
+    serie = [[(d0 + dt.timedelta(days=k)).isoformat(), 1000 * 1.01 ** (k / 30)] for k in range(91)]
+    regua = {(d0 + dt.timedelta(days=k)).isoformat(): 1000 * 1.005 ** (k / 30) for k in range(91)}
+    j = LP.janelas({"serie": serie}, "wst1", regua=regua)
+    assert j["n"] == 9 and j["vence"] == 9 and j["contra"]["id"] == "wst1" and perto(j["mediana"], 0.01, 1e-6)
+    assert perto(j["lista"][0][2], 0.005, 1e-6) and "venceCdi" not in j
+    # contra o ether parado (0%)
+    j = LP.janelas({"serie": serie}, "ether")
+    assert j["vence"] == 9 and j["lista"][0][2] == 0.0
+    # contra o CDI: 2% num mês ganha da conta
+    cdi = {(d0 + dt.timedelta(days=k)).isoformat(): 0.001 for k in range(91)}
+    j = LP.janelas({"serie": serie}, "cdi", cdi=cdi, cdi_ano=0.15)
+    assert j["vence"] == 0 and j["venceCdi"] == 0 and j["pior"]["cdi"] > 0.02
+    assert LP.janelas({"serie": serie[:20]}, "cdi", cdi=cdi) is None
+    assert LP.janelas({"serie": serie}, "wst1", regua={}) is None
+    assert LP.contra_de(cfg("wst6")) == "wst1" and LP.contra_de(cfg("wst1")) == "ether" and LP.contra_de(cfg("eth2")) == "cdi"
+    assert LP.contra_de(cfg("morpho")) == "cdi"
+
+
 # ------------------------------------------------------------------------------------------- rodadas
 def rodar(cli, pasta, quando):
     cli.agora = quando
@@ -198,6 +373,21 @@ def conferir(d):
     assert d["config"]["fontesParametros"]["reservas"] == "getReserveData"
     assert len(d["itens"]) == 3 and all(i["lt"] for i in d["itens"])
     assert "abriu" in {e["tipo"] for e in d["eventos"]}
+    # revisão de 09/11/2026
+    ids = {v["id"]: v for v in d["versoes"]}
+    assert ids["wstAuto3"]["grupo"] == "Laço quando compensa" and ids["morpho"]["grupo"] == "Referência"
+    assert ids["wst3"]["medida"] == "ether" and ids["eth2"]["medida"] == "dolar" and ids["wst3"]["contra"] == "wst1"
+    for v in d["versoes"]:
+        for k in ("aoVivo", "historico"):
+            pd = v[k]["extra"]["porDentro"]
+            assert {"staking", "juroRecebido", "juroPago", "troca", "deslize", "relampago", "gas", "liquidacoes", "preco", "resultado"} <= set(pd)
+            assert v[k]["metricas"] is not None
+            assert ("empate" in v[k]["extra"]) == (v["alav"] > 1), (v["id"], k)
+        assert ("estresse" in v) == (v["alav"] > 1), v["id"]
+        if v["medida"] == "ether":
+            assert set(v["aoVivo"]["extra"]["dolar"]) == {"retorno", "piorQueda", "ether"}
+    assert {x["id"] for x in d["dolar"]} == {"usdc", "morpho", "moonwell"} and all(x["agora"] for x in d["dolar"])
+    assert d["config"]["auto"]["entra"] == LP.AUTO_ENTRA and d["config"]["tendencia"]["dias"] == 50
 
 
 def teste_rodadas():
@@ -215,6 +405,10 @@ def teste_rodadas():
                 rodar(cli_b, b, q)
             conferir(ler(a))
         da, db = ler(a), ler(b)
+        # as janelas aparecem com 30 dias de teste no passado (o mundo de mentira tem ~40)
+        js = {v["id"]: v["historico"].get("janelas") for v in da["versoes"]}
+        assert js["wst3"] and js["wst3"]["contra"]["id"] == "wst1" and js["wst1"]["contra"]["id"] == "ether"
+        assert js["eth2"]["contra"]["id"] == "cdi" and "venceCdi" in js["eth2"]
         for va, vb in zip(da["versoes"], db["versoes"]):
             assert va["aoVivo"]["serie"] == vb["aoVivo"]["serie"], va["id"]  # alcançar dá o mesmo resultado
         assert not da["rodada"]["erros"], da["rodada"]["erros"]
@@ -244,6 +438,64 @@ def teste_rodadas():
         shutil.rmtree(b, ignore_errors=True)
 
 
+def teste_estado_antigo():
+    """O estado de antes de 09/11/2026 (sem as chaves novas na conta e o teste no passado da versão 1) continua: a
+    conta segue de onde estava, com a conta por dentro marcada como estimada, e o passado é refeito."""
+    a = tempfile.mkdtemp(prefix="looping-v-")
+    try:
+        cli = falso.ClientePapelFalso()
+        t0 = cli.agora
+        rodar(cli, a, t0)
+        caminho = os.path.join(a, "estado.json")
+        with open(caminho) as f:
+            est = json.load(f)
+        lp = est["formas"]["looping"]
+        for vid in list(lp["vivo"]):
+            x = lp["vivo"][vid]
+            if vid in {c[0] for c in LP.VERSOES if c[0] not in LP.OPCOES}:
+                x["acc"] = {k: x["acc"][k] for k in ("ganho", "custo", "defesas")}
+                for k in ("u", "L", "dec", "estimado", "dol"):
+                    x.pop(k, None)
+            else:
+                del lp["vivo"][vid]  # as versões novas não existiam
+        lp["hist"]["v"] = 1
+        antes = lp["vivo"]["wst3"]["curva"]["ultimo"]
+        with open(caminho, "w") as f:
+            json.dump(est, f)
+        ind = rodar(cli, a, t0 + 6 * HORA)
+        assert ind["formas"]["looping"]["ok"]
+        d = ler(a)
+        conferir(d)
+        w = next(v for v in d["versoes"] if v["id"] == "wst3")
+        assert w["aoVivo"]["extra"]["porDentro"]["estimado"] is True and abs(w["aoVivo"]["retorno"] - (antes / 1000 - 1)) < 0.01
+        with open(caminho) as f:
+            assert json.load(f)["formas"]["looping"]["hist"]["v"] == LP.HIST_V
+    finally:
+        shutil.rmtree(a, ignore_errors=True)
+
+
+def teste_dolar_sem_dados():
+    """A Morpho fora do ar cai para a DefiLlama; a Moonwell sem pool na DefiLlama vira `semDados` (sem derrubar nada)."""
+    a = tempfile.mkdtemp(prefix="looping-d-")
+    try:
+        cli = falso.ClientePapelFalso()
+        cli.falhar.add("morpho")
+        cli.sem_moonwell = True
+        ind = rodar(cli, a, cli.agora)
+        assert ind["formas"]["looping"]["ok"]
+        d = ler(a)
+        v = {x["id"]: x for x in d["versoes"]}
+        assert v["morpho"]["aoVivo"] is not None and v["morpho"].get("semDados") is None
+        assert next(x for x in d["dolar"] if x["id"] == "morpho")["fonte"] == "DefiLlama (Morpho)"
+        mw = v["moonwell"]
+        assert mw["aoVivo"] is None and mw["historico"] is None and "Moonwell" in mw["semDados"], mw.get("semDados")
+        assert next(x for x in d["dolar"] if x["id"] == "moonwell")["semDados"]
+        assert any("Morpho (blue-api)" in e for e in d["rodada"]["erros"])
+        conferir_forma(d, "looping")
+    finally:
+        shutil.rmtree(a, ignore_errors=True)
+
+
 if __name__ == "__main__":
     teste_config_reserva()
     teste_wst_em_ether()
@@ -252,5 +504,12 @@ if __name__ == "__main__":
     teste_defesa()
     teste_usdc_e_custos()
     teste_taxas_por_dia()
+    teste_auto_monta_e_desmonta()
+    teste_tendencia()
+    teste_estresse()
+    teste_por_dentro_e_empate()
+    teste_janelas()
     teste_rodadas()
+    teste_estado_antigo()
+    teste_dolar_sem_dados()
     print("ok")

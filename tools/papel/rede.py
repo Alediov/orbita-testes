@@ -5,7 +5,10 @@ odonto-quest/docs/plano-testes-mercado-2.md; as amostras das respostas estão an
 
 - Deribit pública (`www.deribit.com/api/v2/public/<método>`): cadeia de opções, índice, DVOL e preços de entrega;
 - API GraphQL do Aave (`api.v3.aave.com/graphql`): mercados da Base e o histórico diário de juros;
-- DefiLlama (`yields.llama.fi`): o histórico diário do rendimento do staking (Lido);
+- API GraphQL da Morpho (`blue-api.morpho.org/graphql`, pública, sem chave): os cofres de USDC na Base e o histórico
+  diário da taxa (looping, régua "Só USDC na Morpho"; os nomes dos campos não foram conferidos daqui);
+- DefiLlama (`yields.llama.fi`): o histórico diário do rendimento do staking (Lido) e, pelo `/pools` e `/chart`, o
+  depósito de USDC da Moonwell na Base (e a reserva da Morpho);
 - RPC público da Base (`base-rpc.publicnode.com`): eventos do pool da Uniswap, leitura de contratos e preço do gás.
   (O `mainnet.base.org` devolveu 429 no getLogs; o publicnode serviu. Mais de ~30 dias para trás o publicnode pede
   chave: "Archive requests require a personal token"; no máximo 20.000 eventos por pedido.)
@@ -33,6 +36,7 @@ UA = "orbita-testes/1"
 URL = {
     "deribit": "https://www.deribit.com/api/v2/public/",
     "aave": "https://api.v3.aave.com/graphql",
+    "morpho": "https://blue-api.morpho.org/graphql",
     "llama": "https://yields.llama.fi",
     "base": "https://base-rpc.publicnode.com",
     "gecko": "https://api.geckoterminal.com/api/v2",
@@ -144,6 +148,16 @@ class Cliente:
         if j.get("errors"):
             msgs = "; ".join(str((e or {}).get("message"))[:160] for e in j["errors"][:3])
             raise Erro(f"Aave GraphQL: {msgs}")
+        return j.get("data") or {}
+
+    def morpho(self, query):
+        """POST na API GraphQL pública da Morpho; devolve o `data` (erros do GraphQL viram Erro com as mensagens)."""
+        j = self._http(URL["morpho"], "morpho", "Morpho GraphQL", {"query": query})
+        if not isinstance(j, dict):
+            raise Erro("Morpho GraphQL: resposta sem objeto")
+        if j.get("errors"):
+            msgs = "; ".join(str((e or {}).get("message"))[:160] for e in j["errors"][:3])
+            raise Erro(f"Morpho GraphQL: {msgs}")
         return j.get("data") or {}
 
     def llama(self, caminho):

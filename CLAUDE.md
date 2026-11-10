@@ -119,6 +119,13 @@ acabavam; aqui os executores padrão não têm limite.
   de 7 dias, recentrada toda segunda); grade neutra 1× em SOL e HYPE; DCA com o caixa na Aave (`dcaC`, os custos do
   `funding.py`); `extra.porDentro` em toda conta e `historico.janelas` (30 dias a cada 7, contra o CDI do mesmo
   período). Moeda sem velas: `semDados`. O teste no passado é refeito pelo `HIST_V`.
+- **Looping revisto** (pedido do Alediov, 09/11/2026; detalhes no começo do `looping.py` e no `FORMATO.md`, "Looping"):
+  o 1×/3×/6× iguais no passado NÃO era defeito (taxas de cada dia; o staking pagou ~0,14 ponto a mais que o juro do
+  ether no ano, e cada × a mais custa ~0,13% para montar); versões `wstAuto3`/`wstAuto6` (laço só quando compensa, com
+  `motivo` nos eventos), `eth2tend` (2× só acima da média de 50 dias, senão USDC no Aave) e as réguas `morpho` (blue-api,
+  reserva DefiLlama) e `moonwell` (DefiLlama), com `semDados` se a fonte falhar; `estresse` por versão de laço,
+  `extra.empate`, `extra.porDentro`, `extra.dolar` (wstETH em dólar), `historico.janelas` contra a régua certa (`contra`:
+  "wst1", "ether" ou "cdi") e `dolar` no topo. O teste no passado é refeito pelo `HIST_V`.
 - Os exemplos que o app usa sem rede ficam no repositório do app (`tools/mercado/exemplos/`); refazer aqui
   (`python3 tools/papel/falso.py`) e copiar para lá (`tools/mercado/exemplos/papel/`) quando o formato mudar.
 - Os workflows (`mercado.yml`, `papel.yml`, `memes.yml`, `ideias.yml`) religam os agendamentos pela API a cada rodada (num

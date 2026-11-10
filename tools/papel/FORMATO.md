@@ -365,6 +365,65 @@ velas da HL (1 h ao vivo, 1 dia no teste no passado, que é `aproximado: true`).
 - **config**: `rede`, `protocolo`, `pool`, `alavMax`, `emode` { `lt`, `bonus`, `ltv`, `nome` }, `fontesParametros`,
   `custos` { `troca`, `deslize`, `relampago`, `gas` }, `stakingFonte`.
 
+**Revisão de 09/11/2026** (detalhes no começo de `looping.py`):
+
+- **Por que wst1/wst3/wst6 davam o mesmo no teste no passado** (+2,35/+2,36/+2,36% em ether): não era defeito. As
+  taxas já eram as de cada dia (staking do Lido pela DefiLlama, juros do Aave pelo GraphQL, uma por dia). No ano, o
+  staking pagou em média só ~0,14 ponto a mais que o juro do ether (em 36% dos dias, menos), e montar custa ~0,13% do
+  dinheiro por × a mais: o ganho extra de cada × pagou o próprio custo e nada mais. A rodada que refaz o passado
+  escreve no log a diferença média do período.
+- **Versões novas**: `wstAuto3`/`wstAuto6` (`grupo` "Laço quando compensa": começa no 1× e monta quando (alav − 1) ×
+  (staking + depósito do wstETH − juro do ether), na média de 7 dias, passa de `config.auto.entra` (0,5 ponto ao ano)
+  com o juro do dia abaixo do staking; desmonta para 1× quando isso, na média de 3 dias, cai abaixo de `sai` (0,1 ponto)
+  ou o juro do dia passa o staking por `dispara` (2 pontos); uma decisão por dia UTC, pagando troca + deslize sobre o
+  que muda, relâmpago sobre a dívida que muda e o gás), `eth2tend` (`grupo` "ETH × USDC": 2× só com o fechamento do dia
+  anterior acima da média de `config.tendencia.dias` (50) fechamentos, ou dos que houver a partir de `minimo` (20);
+  abaixo, vende tudo, paga a dívida e deixa o dólar no depósito de USDC do Aave) e as réguas `morpho` e `moonwell`
+  (`grupo` "Referência": o "Só USDC" num cofre grande de USDC da Morpho na Base, pela blue-api, com a DefiLlama de
+  reserva, e no depósito de USDC da Moonwell, pela DefiLlama; sem as recompensas em moedas dos protocolos). Sem a
+  taxa da fonte: `semDados` (o motivo), `aoVivo` e `historico` null. Os eventos de montar e desmontar (`reequilibrou`)
+  levam `motivo`: "compensa", "diferenca", "juro", "alta", "queda" (e "defesa" na defesa do `eth2def`).
+- **Toda versão** traz `medida` ("ether" nas wstETH, "dolar" nas outras) e `contra` (a referência certa: "wst1" para
+  os laços de wstETH, "ether" para o `wst1`, "cdi" para as de dólar). Nas de ether o CDI não serve de régua.
+  As de dólar (`usdc`, `morpho`, `moonwell`) trazem `onde` ("Aave", "Morpho", "Moonwell").
+- **extra.porDentro** (US$, em toda conta, ao vivo e no passado): `staking` (o ganho do wstETH em ether), `juroRecebido`
+  (depósito; no `eth2tend`, também o do USDC quando fora), `juroPago`, `troca`, `deslize`, `relampago`, `gas`, `custos`
+  (a soma dos quatro), `liquidacoes` (a multa), `preco` (o que sobra: o ether nas de ETH × USDC; ~0 nas wstETH, medidas
+  em ether), `resultado` (patrimônio − 1.000) = staking + juroRecebido − juroPago − custos − liquidações + preço,
+  `montagens`, `desmontagens`; `estimado: true` nas contas ao vivo de antes de 09/11/2026 (staking dentro de
+  `juroRecebido` e todos os custos em `troca`).
+- **extra.empate** (só nas versões de laço, `alav` > 1): `{ "custo" (US$ que o laço pagou a mais que a régua, que também
+  compra a moeda uma vez), "custoTotal", "ganhoAno" (US$ ao ano que o laço rende a mais que a régua pelas taxas de
+  agora; 0 quando a versão está no 1× ou fora), "meses" (custo ÷ ganho por mês; null se não paga pelo juro), "sobra"
+  (o que o laço já ganhou além da régua, pagos os custos e as liquidações; null nas de ETH × USDC), "jaPagou",
+  "pelo": "juro" | "preco" }` (nas de ETH × USDC o laço só paga pelo preço: o juro do dólar passa o do ether).
+- **extra** novos: `dolar` (wstETH: `{ "retorno" (em dólar de verdade), "piorQueda" (em dólar), "ether" (o quanto o ether
+  andou no período) }`), `laco` ("montado" | "1×" nas `wstAuto*`; "alta" | "fora" no `eth2tend`), `montadaEm` (a
+  alavancagem montada agora: 1 ou a da versão; 0 = fora), `emUsdc` (US$ parados no `eth2tend`) e `onde` (réguas de dólar).
+- **estresse** (na versão, só nas de laço; pelas taxas de agora e pela conta de agora quando montada, senão pela conta
+  teórica da versão montada, `base` "agora" | "teorica"):
+  - wstETH: `{ "tipo": "wst", "alav", "base", "juroAgora", "stakingAgora", "rendeAno", "juroPerde" (o juro do ether em
+    que o laço passa a render menos que zero), "juroRegua" (acima dele o laço rende menos que o 1×), "juroAlto": [{
+    "vezes": 2 | 5, "juro", "rendeAno", "diasApagam" (quantos dias desse juro apagam um ano de ganho; null se não
+    apaga) }], "desvio": [{ "desvio": 0,02 | 0,05 | 0,06, "hfAave" (o fator de saúde não muda: o oráculo do Aave usa o
+    câmbio do staking), "hfSeMercado" (o fator se o oráculo usasse o mercado), "liquidariaSeMercado", "perdaSaindo"
+    (fração do patrimônio perdida vendendo com esse desconto: alavancagem × desvio) }], "desvioLiquida" (o desvio de
+    mercado que liquidaria se o oráculo fosse o mercado), "oraculo" }`;
+  - ETH × USDC: `{ "tipo": "eth", …, "depositoAgora", "juroPerde", "juroAlto", "quedas": [{ "queda": 0,2 | 0,4, "hf",
+    "liquida", "perda" }], "quedaLiquida" (a queda do ether até a liquidação), "hfAgora", "oraculo" }`.
+- **historico.janelas**: como nos robôs (30 dias, uma a cada 7), contra a referência da versão: `{ "dias", "passo", "n",
+  "contra": { "id", "nome" }, "vence", "mediana", "pior": { "de", "retorno", "ref" }, "melhor": {…}, "lista": [[de,
+  retorno, ref]] }`; contra o CDI também `venceCdi` e `pior.cdi`/`melhor.cdi`.
+- **dolar** (no topo, "Onde o dólar rende mais"): `[{ "id": "usdc" | "morpho" | "moonwell", "nome", "agora", "media30",
+  "media365" (frações ao ano), "fonte", "cofre" (o nome do cofre da Morpho), "tvl", "recompensa" (a parte em moeda do
+  protocolo, fora da conta), "comRecompensas" (Morpho: a taxa com elas), "semDados" }]`.
+- **config** novos: `auto` { `entra`, `sai`, `dispara`, `diasEntra`, `diasSai` }, `tendencia` { `dias`, `minimo` },
+  `estresse` { `juro`, `desvio`, `queda` }, `janelas` { `dias`, `passo` }.
+- Não conferidos daqui (a 1ª rodada registra a estrutura no log): a blue-api da Morpho (`vaults(...) { items { address
+  name state { totalAssetsUsd netApyWithoutRewards netApy apy fee } } }` e `vaultByAddress(...) { historicalState {
+  netApyWithoutRewards|netApy|apy(options: { startTimestamp, endTimestamp, interval: DAY }) { x y } } }`, os campos
+  tentados em ordem) e o `/pools` da DefiLlama (`chain`, `project`, `symbol`, `tvlUsd`, `apyBase`, `apyReward`, `pool`).
+
 ## Opções (`opcoes.json`)
 
 Venda de opções de BTC e ETH na Deribit pública (`opcoes.py`): ao vivo, toda sexta depois do vencimento das 08h UTC,
