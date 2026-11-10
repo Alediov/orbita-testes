@@ -1,12 +1,13 @@
 # Testes de mercado do Órbita: o observatório de memecoins do pump.fun (tools/papel/memes.py), NO PAPEL: nenhuma
 # carteira, nenhuma ordem, nenhuma chave; só fontes públicas e gratuitas (PumpPortal, DexScreener, GeckoTerminal,
-# RugCheck, RPC público da Solana). Job próprio, 2 vezes por dia (plano: "Minutos do Actions"): ouve os lançamentos por
-# 3 min, sorteia uma amostra e analisa as amostras de 24 h atrás com o freio do GeckoTerminal. Grava memes.json no
+# RugCheck, RPC público da Solana, gorjetas da Jito, metadados no IPFS). Job próprio, 3 vezes por dia desde 09/11/2026
+# (~200 lançamentos por dia): analisa as amostras de 24 h atrás (e os vivos de 7 dias atrás) com o freio do
+# GeckoTerminal, ouve os lançamentos por 10 min e anota os sinais da hora do lançamento. Grava memes.json no
 # mesmo ramo órfão `papel` das outras formas (mesmo grupo de concorrência do papel.yml: um espera o outro).
 name: Testes de mercado (memecoins, observatório no papel)
 on:
   schedule:
-    - cron: "41 3,15 * * *"
+    - cron: "41 3,11,19 * * *"
   workflow_dispatch: {}
 permissions:
   contents: write

@@ -40,7 +40,7 @@ import hl  # noqa: E402
 from conta import DIA, cdi_ano_da_serie, com_metricas, dia_de  # noqa: E402
 
 FORMAS = ["cofres", "funding", "robos", "apostas", "looping", "opcoes", "pools"]
-# as que só rodam quando pedidas (`--formas`): os memecoins têm o job próprio, 2 vezes por dia (`memes.yml`)
+# as que só rodam quando pedidas (`--formas`): os memecoins têm o job próprio, 3 vezes por dia (`memes.yml`)
 FORMAS_A_PARTE = ["memes"]
 V = 1
 CDI_ANO = 0.149

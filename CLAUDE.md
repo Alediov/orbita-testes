@@ -36,7 +36,7 @@ acabavam; aqui os executores padrão não têm limite.
   `base-rpc.publicnode.com`: faixas ±1/±3/±10%, cheia, sem reposicionar e segurar 50/50; o passado são os 28 dias antes
   do começo, o máximo que o RPC grátis guarda) e `memes.py` (observatório do pump.fun: amostra sorteada de 24
   lançamentos pelo websocket do PumpPortal, analisada 24 h depois pela DexScreener, GeckoTerminal e RugCheck; job
-  próprio `memes.yml`, 2 vezes por dia, no mesmo ramo `papel`; nomes dos tokens nunca guardados). As fontes fora da
+  próprio `memes.yml`, 3 vezes por dia desde 09/11/2026, no mesmo ramo `papel`; nomes dos tokens nunca guardados). As fontes fora da
   Hyperliquid passam por `rede.py` (freio por fonte; `ws.py` é o websocket mínimo, só biblioteca padrão), e cada uma
   registra no log a estrutura da 1ª resposta de verdade (os nomes dos campos foram escritos sem acesso daqui: conferir
   no log da 1ª rodada). Mercado de mentira em `falso_looping.py`, `falso_opcoes.py`, `falso_pools.py` (também o RPC da
@@ -134,6 +134,16 @@ acabavam; aqui os executores padrão não têm limite.
   "exercida"/"chamada"); o passado com o sorriso e o spread medidos na cadeia de cada rodada (`config.sorriso`) e a
   oferta no tique; `historico.janelas` contra a régua certa (`contra`); `extra.porDentro`, `extra.empate`,
   `extra.piorSemana`; `estresse` (quedas e altas de 15/30% num fim de semana). O passado é refeito pelo `HIST_V`.
+- **Memecoins revistos** (pedido do Alediov, 09/11/2026, as 7 melhorias; detalhes no começo do `memes.py` e no
+  `FORMATO.md`, "Memecoins"; não recomeça): a curva de cada token (5 min, 1 h, 6 h, 24 h e 7 dias, numa 2ª olhada com
+  velas de 1 h) com as taxas "de cada 100" e o intervalo de Wilson; os sinais da hora do lançamento (criador, os 10
+  maiores donos, bundle pelas assinaturas da curva no RPC público da Solana, site/redes SIM/NÃO pelos metadados no IPFS,
+  histórico do criador visto aqui, carteira nova, RugCheck), comparados só com 20 tokens de cada lado; amostra de ~200
+  por dia (3 rodadas de 10 min, `memes.yml` 3×/dia); custos medidos (gorjeta da Jito, prioridade, deslize pela curva e
+  pelo pool, o 1º minuto depois do bundle); regra `grad1h` e a curva depois da graduação; carteiras que chegam cedo
+  (contagens por semana, marcas de criador e bundle) e a regra `copia` fora da amostra (as 10 da semana anterior); e o
+  medidor de golpe (criador vendeu tudo, queda, RugCheck, liquidez; fração das apostas de cada regra). Os links e nomes
+  dos tokens nunca são guardados; carteiras só pelo endereço público.
 - Os exemplos que o app usa sem rede ficam no repositório do app (`tools/mercado/exemplos/`); refazer aqui
   (`python3 tools/papel/falso.py`) e copiar para lá (`tools/mercado/exemplos/papel/`) quando o formato mudar.
 - Os workflows (`mercado.yml`, `papel.yml`, `memes.yml`, `ideias.yml`) religam os agendamentos pela API a cada rodada (num

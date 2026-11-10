@@ -18,7 +18,12 @@ odonto-quest/docs/plano-testes-mercado-2.md; as amostras das respostas estão an
 - DexScreener (`api.dexscreener.com`): os pares de até 30 tokens por pedido; RugCheck (`api.rugcheck.xyz`): os riscos
   de um token; RPC público da Solana (`solana-rpc.publicnode.com`): a taxa de prioridade;
 - PumpPortal (`wss://pumpportal.fun/api/data`): os lançamentos do pump.fun (grátis; as negociações por token são pagas
-  e não são usadas), por um cliente de websocket mínimo (`ws.py`, só biblioteca padrão).
+  e não são usadas), por um cliente de websocket mínimo (`ws.py`, só biblioteca padrão);
+- Jito (`bundles.jito.wtf/api/v1/bundles/tip_floor`, público, sem chave): as gorjetas que entraram nos últimos blocos
+  (percentis, em SOL), para o custo de cada operação dos memecoins;
+- gateway IPFS público (`ipfs.io`): os metadados de um token (só para saber SE tem site ou redes; o link nunca é
+  guardado), lidos até `LIMITE_META` bytes. O endereço vem do próprio lançamento e só é aberto quando aponta para um
+  CID do IPFS (pedido sempre ao ipfs.io) ou para o arweave.net.
 
 `pedidos` conta todas as tentativas; `contagem` separa por fonte. `Erro.codigo` traz o código do erro do JSON-RPC
 (o publicnode diz no texto o intervalo menor quando a resposta passaria de 20.000 eventos).
@@ -44,10 +49,13 @@ URL = {
     "rugcheck": "https://api.rugcheck.xyz/v1",
     "solana": "https://solana-rpc.publicnode.com",
     "pumpportal": "wss://pumpportal.fun/api/data",
+    "jito": "https://bundles.jito.wtf/api/v1/bundles/tip_floor",
+    "ipfs": "https://ipfs.io/ipfs/",
 }
 REPETIR = (429, 500, 502, 503, 504)
 # intervalo mínimo entre dois pedidos à mesma fonte (s): o freio contra o 429
-INTERVALO = {"base": 0.12, "gecko": 2.5, "dex": 1.1, "rugcheck": 1.1, "solana": 0.3}
+INTERVALO = {"base": 0.12, "gecko": 2.5, "dex": 1.1, "rugcheck": 1.1, "solana": 0.3, "jito": 1.0, "ipfs": 0.5}
+LIMITE_META = 32_768  # bytes lidos dos metadados de um token (um JSON pequeno; o resto é cortado)
 # espera no 429 (s), por tentativa; as outras fontes usam 5 × 2^k
 ESPERA_429 = {"gecko": [30, 60, 90]}
 
@@ -86,7 +94,7 @@ class Cliente:
             self.dormir(falta)
         self._ultimo[tipo] = self.relogio()
 
-    def _http(self, url, tipo, rotulo, corpo=None, aceitar="application/json"):
+    def _http(self, url, tipo, rotulo, corpo=None, aceitar="application/json", limite=None):
         dados = json.dumps(corpo).encode() if corpo is not None else None
         cab = {"User-Agent": UA, "Accept": aceitar}
         if dados:
@@ -99,7 +107,7 @@ class Cliente:
             self.contagem[tipo] += 1
             try:
                 with urllib.request.urlopen(req, timeout=self.prazo) as r:
-                    b = r.read()
+                    b = r.read(limite) if limite else r.read()
                 try:
                     return json.loads(b.decode("utf-8", errors="replace"))
                 except ValueError:
@@ -187,6 +195,18 @@ class Cliente:
     def rugcheck(self, mint):
         """O resumo dos riscos de um token da Solana (RugCheck)."""
         return self._http(f"{URL['rugcheck']}/tokens/{mint}/report/summary", "rugcheck", "RugCheck")
+
+    def jito(self):
+        """As gorjetas da Jito que entraram nos últimos blocos (lista com os percentis, em SOL)."""
+        return self._http(URL["jito"], "jito", "Jito (gorjetas)")
+
+    def metadados(self, url):
+        """O JSON de metadados de um token (só os primeiros `LIMITE_META` bytes; o endereço já vem conferido)."""
+        tentativas, self.tentativas = self.tentativas, 1  # metadado que não abre de primeira fica sem dados
+        try:
+            return self._http(url, "ipfs", "metadados (IPFS)", limite=LIMITE_META)
+        finally:
+            self.tentativas = tentativas
 
     def pumpportal_ouvir(self, segundos, maximo, assinar=("subscribeNewToken", "subscribeMigration")):
         """Ouve o websocket do PumpPortal por até `segundos` (ou `maximo` mensagens) e devolve as mensagens (dicts, com

@@ -4,7 +4,7 @@ O workflow `papel.yml` roda `tools/papel/papel.py` a cada 6 h e grava, num commi
 
 - `indice.json`: o que existe e quando cada forma rodou (o app lê primeiro e só baixa a forma que mudou);
 - `<forma>.json`: um por forma (`cofres.json`, `funding.json`, `robos.json`, `apostas.json`, `looping.json`,
-  `opcoes.json`, `pools.json`; e `memes.json`, gravado pelo job próprio `memes.yml`, 2 vezes por dia, no mesmo ramo);
+  `opcoes.json`, `pools.json`; e `memes.json`, gravado pelo job próprio `memes.yml`, 3 vezes por dia desde 09/11/2026, no mesmo ramo);
 - `estado.json`: o que a próxima rodada precisa (o app não lê);
 - `log.txt`: as últimas rodadas.
 
@@ -555,32 +555,93 @@ mesmas versões, ids e histórico de antes (o estado antigo é levado para `pool
 
 ## Memecoins (`memes.json`)
 
-O observatório do pump.fun (`memes.py`, job `memes.yml`, 2 vezes por dia): uma amostra sorteada de 24 lançamentos a cada
-rodada, analisada 24 h depois. **Os nomes dos tokens não aparecem** (só o endereço encurtado). `historico` é sempre null.
-**Recomeçou do zero em 09/11/2026** (`VERSAO` 2): a 1ª rodada real mostrou lançamentos de outras plataformas no
-PumpPortal (curva diferente; um deles saiu "28.904×" por erro de unidade) e que a DexScreener não lista a maioria dos
-tokens pequenos (viravam "sem negócios"). Agora a amostra é só do pump.fun (`pool` "pump"), quem falta na DexScreener é
-procurado no GeckoTerminal, e o que nenhum dos dois responde fica "sem dados" (fora das apostas e das contagens de morto
-e vivo).
+O observatório do pump.fun (`memes.py`, job `memes.yml`, 3 vezes por dia desde 09/11/2026: 03h41, 11h41 e 19h41 UTC):
+todos os lançamentos do pump.fun ouvidos numa janela de 10 min (~68; acima de `AMOSTRA` = 80, sorteio simples sem
+reposição), analisados 24 h depois e os vivos de novo 7 dias depois. **Os nomes, símbolos e links dos tokens não
+aparecem** (só o endereço encurtado). `historico` é sempre null. **Recomeçou do zero em 09/11/2026** (`VERSAO` 2): a 1ª
+rodada real mostrou lançamentos de outras plataformas no PumpPortal (curva diferente; um deles saiu "28.904×" por erro de
+unidade) e que a DexScreener não lista a maioria dos tokens pequenos (viravam "sem negócios"). Agora a amostra é só do
+pump.fun (`pool` "pump"), quem falta na DexScreener é procurado no GeckoTerminal, e o que nenhum dos dois responde fica
+"sem dados" (fora das apostas e das contagens de morto e vivo).
+
+**Revisão de 09/11/2026** (pedido do Alediov, as 7 melhorias; NÃO recomeça: os campos novos só existem nas amostras
+ouvidas depois dela, e o app esconde as seções sem eles):
+
+1. **A curva de cada token**: o preço ÷ o do lançamento com 5 min, 1 h e 6 h (velas de minuto do GeckoTerminal), 24 h
+   (o preço da DexScreener/GeckoTerminal na análise) e 7 dias (velas de 1 h na 2ª olhada; mortos em 24 h ficam mortos).
+   Sem negócios = 0.
+2. **Sinais na hora do lançamento** (logo depois de ouvir; tokens com 0 a ~12 min): criador comprou ≥ 10%; os 10 maiores
+   donos fora a curva com ≥ 25% (`getTokenLargestAccounts`); ≥ 2 compras no MESMO slot da criação (bundle, pelas
+   assinaturas da curva); site ou redes nos metadados (SIM/NÃO, só pelo IPFS/arweave; o link nunca é guardado); o
+   criador já lançou outro que o observatório ouviu (contagens por endereço, até 4.000 criadores); a carteira do criador
+   com menos de 10 transações; RugCheck alto. A comparação com/sem só vale (`ok`) com **20 tokens de cada lado**
+   (`MIN_SINAL`), com o intervalo de Wilson.
+3. **Amostra maior**: de ~48 para ~200 por dia (3 rodadas × ~68). Pedidos por rodada com ~70 tokens (o freio de
+   `rede.py` entre parênteses): PumpPortal 1 conexão de 10 min; RugCheck ~70 (1,1 s); IPFS ~70 (0,5 s); RPC da Solana
+   ~450 a 650 (0,3 s; `getSignaturesForAddress` 1 a 3 + `getTransaction` até 4 + 1 + 1 + 1 por token, e 1 por token na
+   análise; nenhum limite publicado: depois de 8 falhas seguidas o RPC sai da rodada e os sinais ficam sem dados); Jito
+   1; DexScreener ~3 (até 30 tokens por pedido; limite de 300/min); GeckoTerminal ~80 a 120 (2,5 s; 30/min públicos, o
+   IP do Actions é dividido); Hyperliquid 2. O viés que sobra é o do horário (3 janelas fixas).
+4. **Custos de verdade**: taxa do pump.fun 1% por lado na curva e 0,30% no pool (0,25% + 0,05% do criador); rede = taxa
+   base (5.000 lamports) + a prioridade (mediana de `getRecentPrioritizationFees` × 100 mil unidades) + a gorjeta da
+   Jito (mediana do `tip_floor`; sem ela, 0,001 SOL); deslize pela própria curva (x·y = k) com a aposta de US$ 10, e no
+   pool pela conta x·y = k com o pool da graduação (79 SOL × 206,9 mi de tokens: conferir). O "1º minuto" compra pelo
+   fechamento do 1º minuto (depois dos robôs do bloco do lançamento; sem vela, pelo preço depois do bundle).
+5. **Depois da graduação**: a curva típica a partir do preço da graduação (5 min, 1 h, 6 h; 24 h na olhada de 7 dias), a
+   taxa de graduação com o intervalo, o tempo até se formar e as regras `graduacao` × `grad1h`.
+6. **Carteiras que chegam cedo**: quem comprou no 1º minuto (até 4 compras abertas por token); por carteira, compras cedo
+   e acertos (o token dobrou) por semana, até 3.000 carteiras; marcas de "já criou um token visto aqui" e "comprou no
+   bundle". A regra `copia` escolhe as 10 mais certeiras da semana ANTERIOR (≥ 3 compras e ≥ 1 acerto) e a escolha fica
+   guardada (`copiaSel`): fora da amostra.
+7. **Medidor de golpe**: o criador vendeu tudo até a checagem logo depois de ouvir (com os minutos de vida na hora) e em
+   24 h; queda de mais de 90% em minutos (com o minuto da queda); RugCheck alto; liquidez do pool abaixo de 5% da da
+   graduação; e a fração das apostas de cada regra que caiu num destes.
 
 - **Versões** (`grupo` "Regras" ou "Referência"; `alav` 1; US$ 10 por token): `min1` (padrão), `min5`, `momento`,
-  `graduacao`, `min1rc` (só tokens sem risco alto no RugCheck), `segura` (segura ~24 h). A conta é marcada uma vez por
+  `graduacao`, `grad1h` (1 h depois da graduação, desde 09/11/2026), `min1rc` (só tokens sem risco alto no RugCheck),
+  `copia` (as carteiras da semana anterior, desde 09/11/2026), `segura` (segura ~24 h). A conta é marcada uma vez por
   amostra analisada (no fim das 24 h dela); só aposta o que a conta tem (`extra.semDinheiro` = apostas que não couberam).
+  Versão nova numa conta que já existia começa no dia em que apareceu.
 - **extra**: `apostas`, `ganhas`, `acerto`, `roi` (resultado ÷ apostado), `resultado` (US$), `apostado`, `dobrou` e `stop`
-  (saídas pelo dobro e pelo −50%), `melhor`/`pior` (US$ de uma aposta).
+  (saídas pelo dobro e pelo −50%), `melhor`/`pior` (US$ de uma aposta); desde 09/11/2026 `emGolpe` (apostas em tokens com
+  algum sinal de golpe), `resultadoGolpe`, `custos` { `taxa`, `rede`, `deslize` } (US$ somados) e `custoPct` (custos ÷
+  apostado).
 - **observatorio**: `{ "tudo": {contagens}, "semana": {contagens dos últimos 8 dias}, "desde" (ms), "amostras",
   "esperando" (tokens aguardando as 24 h), "proxima" (ms da próxima análise), "regras": [{ "id", "nome", "apostas",
-  "acerto", "roi", "resultado", "melhor", "pior", "dobrou", "stop" }], "lancamentosPorMin", "lancamentosPorDia" }`.
+  "acerto", "roi", "resultado", "melhor", "pior", "dobrou", "stop", "emGolpe", "resultadoGolpe", "custoPct", "custos" }],
+  "lancamentosPorMin", "lancamentosPorDia" }`.
   Contagens: `tokens`, `dobraram` (máxima ≥ 2× o lançamento), `dezVezes`, `graduaram`, `golpes` (queda > 90% em até 5 min
   na 1ª hora), `morreram` (sem negociação depois do 1º minuto ou < 10% do lançamento em ~24 h, sem ter graduado),
   `semNegocios`, `semVelas` (tinham par, mas as velas não vieram), `rugcheckAlto`, `rugcheckSem`, `criadorGrande`
   (criador comprou ≥ 10% na criação), `medianaX24` (preço de ~24 h ÷ o do lançamento, dos que negociaram; pode ser null),
   `vivos24h`, `semDados` (nem a DexScreener nem o GeckoTerminal responderam: não se sabe; desde 09/11/2026). No
   `observatorio`, também `outrasPlataformas` (lançamentos de outras plataformas que o PumpPortal mandou e ficaram fora).
+  **Desde 09/11/2026** (sempre de "tudo"):
+  - `taxas`: [{ `id` (somem1h, dobram, vale24, vale7d, dez, graduam), `nome`, `k`, `n`, `p`, `ic` [baixo, alto] (Wilson
+    95%), `dica` }];
+  - `curva`: [{ `id` (5m, 1h, 6h, 24h, 7d), `nome`, `n`, `q1`, `mediana`, `q3`, `acima` (fração ≥ 1×) }];
+  - `sinais`: { `minimo`, `tokens`, `linhas`: [{ `id` (criadorGrande, concentrado, bundle, redes, criadorRepetido,
+    carteiraNova, rugcheck), `nome`, `com` e `sem` { `n`, `sobreviveram` (≥ 50% em 24 h), `icSobreviveram`, `dobraram`,
+    `icDobraram` }, `semDados`, `ok` }] };
+  - `graduacao`: { `n`, `graduaram`, `taxa`, `ic`, `minutosMediana`, `curva` [{ `id` (0, 5m, 1h, 6h, 24h), `nome`, `n`,
+    `q1`, `mediana`, `q3` }] (÷ o preço da graduação), `regras` (as linhas de `graduacao` e `grad1h`) };
+  - `golpe`: { `linhas` [{ `id` (criadorCedo, criador24h, queda, rugcheck, liquidez, qualquer), `nome`, `k`, `n`, `p`,
+    `ic` }], `minutosQueda`, `minutosCriador` (mediana dos minutos de vida em que o criador já tinha vendido),
+    `idadeChecagem`, `regras` [{ `id`, `nome`, `apostas`, `emGolpe`, `fracao`, `resultado` }] };
+  - `cedo`: { `semana`, `observadas`, `comprasCedo`, `selecao` (as escolhidas desta semana, encurtadas), `carteiras`
+    [{ `carteira` ("AbCd…WxYz"), `compras`, `acertos`, `taxa`, `criador`, `bundle`, `copiando` }] (as 15 de mais acertos
+    nas 2 últimas semanas), `criadoras`, `bundle` };
+  - `custos`: { `taxaCurva`, `taxaAmm`, `redeBaseSol`, `prioridade`, `prioridadeSol`, `gorjetaSol`, `gorjetaP75Sol`,
+    `gorjetaMedida`, `porOperacaoSol`, `porOperacaoUsd`, `solUsd`, `porApostaPct` (ida e volta sem o deslize),
+    `deslizeLancamento` (US$ 10 na curva vazia), `fontes` {de onde vem cada número} };
+  - `amostra`: { `porRodada`, `ouvirSegundos`, `rodadasPorDia`, `porDia` (média dos últimos 7 dias), `metodo`, `pedidos`
+    {fonte: pedidos desta rodada} }; `esperando7d`; `semDados`: [{ `fonte` (rpc, metadados, rugcheck, jito, rpc24h,
+    tempo), `motivo` }] (as fontes que falharam nesta rodada; o resto segue).
 - **itens**: os últimos 40 tokens analisados: `{ "mint" ("AbCd…pump"), "lancado" (ms), "maxX", "x24" (null sem
   negócios ou sem dados), "graduou", "golpe", "morreu", "rugcheck" ("alto" | "ok" | null), "criadorGrande",
-  "semDados" }`.
-- **config**: `rede`, `plataforma`, `aposta`, `amostra`, `ouvirSegundos`, `taxas` { `curva`, `amm`, `deslizeAmm`,
-  `redeSol` }, `prioridade` (mediana medida, micro-lamports por unidade), `saida` { `alta`, `baixa`, `minutos` },
-  `observatorio: true`.
+  "semDados" }`; desde 09/11/2026 `curva` (os 5 pontos, ou null) e `golpeAlgum`.
+- **config**: `rede`, `plataforma`, `aposta`, `amostra`, `ouvirSegundos`, `taxas` { `curva`, `amm`, `deslizeAmm` (0: o
+  deslize do pool sai da conta), `redeSol` (sem medida) }, `prioridade` (mediana medida, micro-lamports por unidade),
+  `saida` { `alta`, `baixa`, `minutos` }, `observatorio: true`; desde 09/11/2026 `amostragem`, `sinais` (os limites) e
+  `copia` { `carteiras`, `minCompras`, `atrasoMin` }.
 - **eventos** (`resumo`, `aviso`): o resumo de cada amostra (o da forma, `versao` null) e o da versão padrão.
