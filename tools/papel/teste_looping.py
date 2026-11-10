@@ -197,13 +197,18 @@ def teste_auto_monta_e_desmonta():
         c2 = LP.Conta(cfg("wstAuto3"), T0, params())
         c2.passo(T0, 0, 2000.0, 2000.0, taxas_fixas(stake=0.03, bor_WETH=0.028))
         assert c2.L == 1 and c2.b == 0
-        # o 6× com 0,2 ponto: 5 × 0,2 = 1 ponto → monta
+        # regra de 09/11/2026: o que conta é a diferença por × a mais (0,2 ponto < 0,5): o 6× também não monta
         c3 = LP.Conta(cfg("wstAuto6"), T0, params())
         c3.passo(T0, 0, 2000.0, 2000.0, taxas_fixas(stake=0.03, bor_WETH=0.028))
+        assert c3.L == 1
+        c3.passo(T0 + DIA, DIA, 2000.0, 2000.0, taxas_fixas(stake=0.03, bor_WETH=0.02))
         assert c3.L == 6
-        # a diferença some (juro = staking, sem disparar): desmonta com o motivo "diferenca"
+        # a diferença fica negativa sem disparar: fica montado os 30 dias mínimos e só depois desmonta ("diferenca")
         ev3 = LP.Eventos()
-        for k in range(1, 5):
+        for k in range(2, 10):
+            c3.passo(T0 + k * DIA, DIA, 2000.0, 2000.0, taxas_fixas(stake=0.03, bor_WETH=0.0305), ev3)
+        assert c3.L == 6
+        for k in range(10, 40):
             c3.passo(T0 + k * DIA, DIA, 2000.0, 2000.0, taxas_fixas(stake=0.03, bor_WETH=0.0305), ev3)
         assert c3.L == 1 and ev3.lista[-1]["motivo"] == "diferenca"
     finally:
@@ -212,7 +217,10 @@ def teste_auto_monta_e_desmonta():
     c = LP.Conta(cfg("wstAuto3"), T0, params())
     c.passo(T0, 0, 2000.0, 2000.0, taxas_fixas(stake=0.03, bor_WETH=0.0299))  # 0,02 ponto: fica no 1×
     E0 = c.valor(2000)
+    # 1 ponto já não paga a ida e a volta em 60 dias com custos; 3 pontos pagam
     c.passo(T0 + DIA, 0, 2000.0, 2000.0, taxas_fixas(stake=0.03, bor_WETH=0.02))
+    assert c.L == 1
+    c.passo(T0 + 2 * DIA, 0, 2000.0, 2000.0, taxas_fixas(stake=0.05, bor_WETH=0.02))
     assert c.L == 3
     custo = 2 * E0 * (LP.TAXA_TROCA + LP.DESLIZE) + 2 * E0 * LP.TAXA_RELAMPAGO + LP.GAS_US
     assert perto(c.valor(2000), E0 - custo, 1e-4), (c.valor(2000), E0 - custo)
