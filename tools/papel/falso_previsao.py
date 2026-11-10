@@ -156,7 +156,7 @@ class Falso:
             xs = [m for m in xs if m["vol"] >= float(um("volume_num_min"))]
         if um("liquidity_num_min"):
             xs = [m for m in xs if m["vol"] / 4 >= float(um("liquidity_num_min"))]
-        chave = {"volume24hr": lambda m: m["vol"], "endDate": lambda m: m["fim"]}.get(um("order"), lambda m: m["i"])
+        chave = {"volume24hr": lambda m: m["vol"], "volumeNum": lambda m: m["vol"], "endDate": lambda m: m["fim"]}.get(um("order"), lambda m: m["i"])
         xs.sort(key=chave, reverse=um("ascending") == "false")
         off, lim = int(um("offset", 0)), int(um("limit", 100))
         return [self._gamma_json(m) for m in xs[off:off + lim]]
@@ -176,9 +176,20 @@ class Falso:
             bids = [{"price": f"{max(0.001, b - d):.3f}", "size": f"{s}"} for d, s in ((0.02, 2000), (0.01, 300), (0, 12))]
             return {"market": m["cond"], "asset_id": m["toks"][k], "bids": bids, "asks": asks, "timestamp": str(self.agora)}
         if u.path == "/prices-history":
+            if "market" not in q or q["market"][0] not in self._por_tok:
+                raise rede.Erro("HTTP 400 em CLOB de mentira: market", 400)
+            if ("interval" in q) == ("startTs" in q):  # um OU outro, como a API
+                raise rede.Erro("HTTP 400 em CLOB de mentira: interval ou startTs/endTs", 400)
+            if "startTs" in q and getattr(self, "pv_so_intervalo", False):  # a reserva: só o interval funciona
+                raise rede.Erro("HTTP 400 em CLOB de mentira: startTs", 400)
             m, k = self._por_tok[q["market"][0]]
-            a = max(int(q["startTs"][0]) * 1000, m["ini"])
-            b = min(int(q["endTs"][0]) * 1000, self.agora, m["fim"])
+            fim_ = min(self.agora, m["fim"])
+            if "interval" in q:
+                dur = {"max": 10 ** 13, "1m": 30 * DIA, "1w": 7 * DIA, "1d": DIA}[q["interval"][0]]
+                a, b = max(m["ini"], fim_ - dur), fim_
+            else:
+                a = max(int(q["startTs"][0]) * 1000, m["ini"])
+                b = min(int(q["endTs"][0]) * 1000, fim_)
             f = max(1, int(q.get("fidelity", ["60"])[0])) * 60_000
             out, t = [], (a // f) * f + f
             while t <= b and len(out) < 1500:
@@ -233,6 +244,23 @@ class Falso:
             for n, x in enumerate(lst):
                 x["rank"] = str(n + 1)
             return lst[: int(q.get("limit", ["50"])[0])]
+        if u.path == "/trades" and "market" in q:
+            m = self._por_cond.get(q["market"][0])
+            if not m or m["fim"] > self.agora:
+                return []
+            out = []
+            for c in self._carteiras:
+                r = random.Random(c["k"] * 7_777 + m["i"])
+                if r.random() > 0.35:
+                    continue
+                t = m["ini"] + int(r.random() * (m["fim"] - m["ini"]) * 0.9)
+                lado = (0 if m["o"] else 1) if r.random() < c["hab"] else (1 if m["o"] else 0)
+                p = self._p(m, t)
+                for _ in range(3):
+                    out.append({"proxyWallet": c["end"], "side": "BUY", "asset": m["toks"][lado], "conditionId": m["cond"],
+                                "size": round(r.uniform(100, 2000), 2), "price": round(p if lado == 0 else 1 - p, 4),
+                                "timestamp": t // 1000, "outcomeIndex": lado, "pseudonym": f"Apelido-{c['k']}"})
+            return out[:500]
         if u.path == "/trades":
             end = q["user"][0].lower()
             c = next((c for c in self._carteiras if c["end"] == end), None)

@@ -687,8 +687,21 @@ ranking), `motivo` }] e a forma segue. Tempo máximo por rodada: `ORCAMENTO_S` (
 - **casas**: `{ "fontes": { "Kalshi" | "Manifold": { "ok", "mercados", "motivo" } }, "regra", "pares": [{ "pergunta",
   "outra" (casa), "outraPergunta", "polymarket" (preço do Sim), "outraPreco", "diferenca" (outra − Polymarket), "nota"
   (Jaccard), "fim", "cat", "comprou" (o lado comprado, ou null) }] }` (até 30, a maior diferença primeiro).
-- **seguir**: `{ "semana" (a segunda), "escolhidaEm", "proxima", "regra" { "n", "atrasoMin", "deslize", "minimo" },
-  "carteiras": [{ "carteira" ("0x1234…abcd"), "copiadas", "fechadas", "ganhas", "abertas" }] }`. Nunca o apelido.
+- **seguir**: `{ "semana" (a segunda), "escolhidaEm", "proxima", "fonte", "mercadosLidos", "motivo" (por que não há
+  carteiras; null com elas), "regra" { "n", "atrasoMin", "deslize", "minimo" }, "carteiras": [{ "carteira"
+  ("0x1234…abcd"), "copiadas", "fechadas", "ganhas", "abertas" }] }`. Nunca o apelido. **O ranking** (desde a 1ª rodada
+  real, 09/11/2026: o `/v1/leaderboard` da Data API e o `lb-api…/profit` respondem HTTP 410, aposentados) é montado
+  aqui: os 15 mercados de maior volume resolvidos na semana anterior (Gamma, `closed=true`, `order=volumeNum`), as
+  negociações públicas de cada um (`/trades?market=<conditionId>&takerOnly=false`) e, por carteira com 3 negócios ou
+  mais, o resultado se ficou até a resolução (compra = cotas × (pagamento − preço); venda = cotas × (preço −
+  pagamento)); as 10 maiores com lucro. Sem nenhuma, `semDados` "ranking" e `seguir.motivo`.
+- **prices-history**: `market` = o id do token do CLOB (de `clobTokenIds`, nunca o conditionId); a API aceita
+  `startTs`/`endTs` OU `interval`, e `fidelity` em minutos. A 1ª rodada real deu HTTP 400 no jeito
+  `startTs&endTs&fidelity`; a rodada tenta em ordem `startTs&endTs&fidelity`, `startTs&endTs`, `interval=max&fidelity`
+  e `interval=1w|1m&fidelity` (só no 400), guarda o que funcionou (`estado.histJeito`) e corta os pontos fora do
+  período. Dois mercados seguidos sem histórico param os pedidos da rodada (`semDados` "clob"). Os 4xx dessas fontes
+  levam o começo do corpo na mensagem do log. A busca da Manifold usa 3 palavras distintivas (e 2, se vier vazia),
+  `filter=open&contractType=BINARY&sort=score`: com 5 palavras ela voltava `[]`.
 - **itens**: as posições abertas (até 80, a que acaba primeiro antes): `{ "versao", "mercado" (id), "pergunta" (até 90
   caracteres; mercados são públicos), "lado" ("Yes"/"No" ou o nome), "preco" (entrada), "agora" (melhor compra), "valor",
   "em", "fim", "cat" }` + `outra`/`outraPreco` (dif) ou `carteira` (seguir).

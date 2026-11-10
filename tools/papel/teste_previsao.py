@@ -120,6 +120,7 @@ def teste_rodadas():
     assert c["mercados"] > 100 and [h["id"] for h in c["horizontes"]] == ["24h", "7d", "30d"]
     assert all(len(h["faixas"]) == 10 and h["brier"] is not None for h in c["horizontes"])
     # diferença entre casas: casou e nenhum par casou o "parecido" com outro número
+    assert any(p["outra"] == "Manifold" for p in d["casas"]["pares"]), "a Manifold achou par"
     assert d["casas"]["pares"] and all(p["nota"] >= P.DIF_JACCARD for p in d["casas"]["pares"])
     assert not any("5k" in p["outraPergunta"] and "0k" in p["pergunta"] for p in d["casas"]["pares"])
     # seguir: só endereço encurtado e contagens, nunca o apelido
@@ -127,10 +128,40 @@ def teste_rodadas():
     assert "Apelido" not in s and len(d["seguir"]["carteiras"]) == P.SEG_N
     assert all(len(x["carteira"]) < 15 for x in d["seguir"]["carteiras"])
     # a estrutura de cada fonte ficou no log da 1ª rodada; nada de vírgula decimal em ponto nos eventos
-    for r in ("gamma /markets (abertos)", "clob /book", "clob /prices-history", "kalshi /markets", "pmdata /trades"):
+    for r in ("gamma /markets (abertos)", "clob /book", "clob /prices-history", "kalshi /markets", "pmdata /trades",
+              "manifold /search-markets"):
         assert f"estrutura de {r}" in log, r
     assert not any(" centavos" in e["texto"] and "." in e["texto"].split(" centavos")[0][-5:] for e in d["eventos"])
     assert d["semDados"] == []
+
+
+def teste_historico_reserva():
+    """O 1º jeito do prices-history dando 400 (como na 1ª rodada real): a reserva por `interval` responde e fica guardada."""
+    import falso
+    import papel
+    pasta = tempfile.mkdtemp(prefix="prev-")
+    try:
+        cli = falso.ClientePapelFalso()
+        cli.pv_so_intervalo = True
+        for k in range(3):
+            cli.agora += 6 * falso.HORA
+            papel.rodada(cli, pasta, cli.agora, formas=["previsao"], exemplo=True, buscar_cdi=False, log=papel.Log(quieto=True))
+        with open(os.path.join(pasta, "previsao.json")) as f:
+            d = json.load(f)
+        with open(os.path.join(pasta, "estado.json")) as f:
+            est = json.load(f)
+        assert d["calibracao"]["mercados"] > 50, d["calibracao"]["andamento"]
+        assert est["formas"]["previsao"]["histJeito"] >= 2
+        assert not any(x["fonte"] == "clob" for x in d["semDados"])
+    finally:
+        shutil.rmtree(pasta, ignore_errors=True)
+
+
+def teste_ranking_pelas_negociacoes():
+    """O ranking sai das negociações públicas dos mercados resolvidos na semana anterior (o leaderboard morreu)."""
+    _, d, log = rodadas(2)
+    assert d["seguir"]["mercadosLidos"] and len(d["seguir"]["carteiras"]) == P.SEG_N, d["seguir"]
+    assert "leaderboard" not in log and "estrutura de pmdata /trades (mercado)" in log
 
 
 def teste_fonte_falhando():

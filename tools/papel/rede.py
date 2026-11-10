@@ -68,6 +68,7 @@ REPETIR = (429, 500, 502, 503, 504)
 # intervalo mínimo entre dois pedidos à mesma fonte (s): o freio contra o 429
 INTERVALO = {"base": 0.12, "gecko": 2.5, "dex": 1.1, "rugcheck": 1.1, "solana": 0.3, "jito": 1.0, "ipfs": 0.5,
              "gamma": 0.25, "clob": 0.2, "pmdata": 0.3, "pmlb": 0.5, "kalshi": 0.5, "manifold": 0.3}
+DIZ_O_ERRO = {"gamma", "clob", "pmdata", "kalshi", "manifold"}  # o 4xx leva o começo do corpo na mensagem
 LIMITE_META = 32_768  # bytes lidos dos metadados de um token (um JSON pequeno; o resto é cortado)
 # espera no 429 (s), por tentativa; as outras fontes usam 5 × 2^k
 ESPERA_429 = {"gecko": [30, 60, 90]}
@@ -143,7 +144,11 @@ class Cliente:
                         raise Erro(f"{rotulo}: {str(j['error'].get('message'))[:200]}", e.code, j["error"].get("code"))
                 except ValueError:
                     pass
-                raise Erro(f"HTTP {e.code} em {rotulo}", e.code) from None
+                # as fontes dos mercados de previsão dizem no corpo o que está errado (ex.: o 400 do prices-history)
+                extra = ""
+                if tipo in DIZ_O_ERRO and corpo_erro:
+                    extra = ": " + corpo_erro.decode("utf-8", errors="replace").strip().replace("\n", " ")[:160]
+                raise Erro(f"HTTP {e.code} em {rotulo}{extra}", e.code) from None
             except (urllib.error.URLError, TimeoutError, OSError) as e:
                 if k < tentativas - 1:
                     self.dormir(min(30, 3 * 2 ** k))

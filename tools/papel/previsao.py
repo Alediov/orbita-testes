@@ -94,6 +94,15 @@ JANELA_DIAS, JANELA_PASSO = 30, 7
 MAX_EVENTOS_RODADA = 25
 ITENS_MAX = 80
 SEMANA_MS = 7 * DIA
+# os jeitos de pedir o prices-history, em ordem (startTs/endTs OU interval; fidelity em minutos)
+HIST_JEITOS = [
+    lambda a, b, f: f"startTs={a}&endTs={b}&fidelity={f}",
+    lambda a, b, f: f"startTs={a}&endTs={b}",
+    lambda a, b, f: f"interval=max&fidelity={max(f, 720) if b - a > 7 * 86400 else max(f, 60)}",
+    lambda a, b, f: "interval=1w&fidelity=60" if b - a <= 7 * 86400 else "interval=1m&fidelity=720",
+]
+RANK_MERCADOS = 15            # mercados resolvidos na semana anterior lidos para montar o ranking
+RANK_MIN_NEGOCIOS = 3
 
 CATEGORIAS = ["Esportes", "Política", "Cripto", "Economia", "Cultura", "Ciência e tecnologia", "Outros"]
 _PALAVRAS = [  # (categoria, palavras) na ordem de prioridade; casa palavra inteira, sem acento e sem maiúscula
@@ -548,9 +557,11 @@ class Rodada:
 
     def pedir(self, metodo, caminho, rotulo, fonte_sem=None):
         """Um pedido; registra a estrutura na 1ª resposta de cada `rotulo` e, no erro, anota `semDados`."""
+        self.ultimo_status = None
         try:
             r = getattr(self.f, metodo)(caminho)
         except ERROS as e:
+            self.ultimo_status = getattr(e, "status", None)
             if fonte_sem:
                 self.sem.setdefault(fonte_sem, str(e)[:160])
             self.log(f"  previsão: {rotulo}: {e}")
@@ -621,8 +632,36 @@ class Rodada:
         return asks
 
     def historico(self, tok, ini, fim, fidelidade):
-        r = self.pedir("clob", f"/prices-history?market={urllib.parse.quote(tok)}&startTs={ini // 1000}&endTs={fim // 1000}"
-                               f"&fidelity={fidelidade}", "clob /prices-history", "clob")
+        """O histórico do token do CLOB (o id de `clobTokenIds`, nunca o conditionId) entre `ini` e `fim`. A API aceita
+        `startTs`/`endTs` OU `interval`, e `fidelity` em minutos; a 1ª rodada real deu HTTP 400 no 1º jeito, então há
+        jeitos de reserva (`HIST_JEITOS`), e o que funcionou fica guardado (`est.histJeito`). Os pontos fora de
+        [ini, fim] saem aqui. None se nenhum jeito respondeu (ou a fonte já falhou nesta rodada)."""
+        if getattr(self, "hist_fora", False):
+            return None
+        est = self.ctx.est
+        ordem = list(range(len(HIST_JEITOS)))
+        j0 = est.get("histJeito")
+        if isinstance(j0, int) and 0 <= j0 < len(ordem):
+            ordem.remove(j0)
+            ordem.insert(0, j0)
+        r = None
+        for j in ordem:
+            q = HIST_JEITOS[j](ini // 1000, fim // 1000, fidelidade)
+            r = self.pedir("clob", f"/prices-history?market={urllib.parse.quote(str(tok))}&{q}", "clob /prices-history")
+            if r is not None:
+                if est.get("histJeito") != j:
+                    self.log(f"  previsão: prices-history respondeu do jeito {j} ({q.split('&')[0]}…)")
+                est["histJeito"] = j
+                break
+            if self.ultimo_status != 400:
+                break
+        if r is None:
+            self.hist_falhas = getattr(self, "hist_falhas", 0) + 1
+            if self.hist_falhas >= 2:  # dois mercados sem histórico: para nesta rodada (o motivo fica no log)
+                self.hist_fora = True
+                self.sem.setdefault("clob", "o histórico de preços (prices-history) não respondeu em nenhum jeito")
+            return None
+        self.hist_falhas = 0
         pts = []
         for x in self.lista(r, "history", "data"):
             if isinstance(x, dict):
@@ -631,10 +670,10 @@ class Rodada:
                 t, p = ms_de(x[0]), _f(x[1])
             else:
                 continue
-            if t and p is not None:
+            if t and p is not None and ini - HORA <= t <= fim + HORA:
                 pts.append((t, p))
         pts.sort()
-        return pts if r is not None else None
+        return pts
 
 
 # ---------------------------------------------------------------------------------------------------- entradas
@@ -728,15 +767,22 @@ def manifold_mercados(R, perguntas):
     for q in perguntas[:MANIFOLD_BUSCAS]:
         if not R.tempo(90) or falhou >= 3:
             break
-        termo = " ".join(sorted(_palavras(q)[0], key=len, reverse=True)[:5])
-        if not termo:
-            continue
-        r = R.pedir("manifold", f"/search-markets?term={urllib.parse.quote(termo)}&filter=open&contractType=BINARY&limit=5",
-                    "manifold /search-markets", "manifold")
-        if r is None:
-            falhou += 1
-            continue
-        for m in R.lista(r, "markets", "data"):
+        # a busca casa TODAS as palavras: com 5 ela voltava vazia na 1ª rodada real; 3 palavras distintivas e, sem nada, 2
+        palavras = [w for w in sorted(_palavras(q)[0], key=len, reverse=True) if not w.isdigit()]
+        achou = []
+        for n in (3, 2):
+            termo = " ".join(palavras[:n])
+            if not termo:
+                break
+            r = R.pedir("manifold", f"/search-markets?term={urllib.parse.quote(termo)}&filter=open&contractType=BINARY"
+                                    f"&sort=score&limit=10", "manifold /search-markets", "manifold")
+            if r is None:
+                falhou += 1
+                break
+            achou = R.lista(r, "markets", "data")
+            if achou or not R.tempo(90):
+                break
+        for m in achou:
             if not isinstance(m, dict) or m.get("isResolved") or str(m.get("outcomeType") or "BINARY") != "BINARY":
                 continue
             if (_f(m.get("uniqueBettorCount"), 0) or 0) < MANIFOLD_MIN_APOSTADORES:
@@ -768,22 +814,55 @@ def pares_de(abertos, outros):
 
 
 # ---------------------------------------------------------------------------------------------------- seguir
-def ranking(R):
-    r = R.pedir("pmdata", "/v1/leaderboard?timePeriod=week&orderBy=PNL&limit=50", "pmdata /v1/leaderboard")
-    xs = R.lista(r, "data", "leaderboard")
-    if not xs:
-        r = R.pedir("pmlb", "/profit?window=7d&limit=50", "lb-api /profit")
-        xs = R.lista(r, "data")
-    out = []
-    for x in xs:
-        if not isinstance(x, dict):
+def ranking(R, agora):
+    """O ranking da semana anterior, montado pelas negociações públicas (o `/v1/leaderboard` da Data API e o `lb-api`
+    responderam HTTP 410, aposentados, na 1ª rodada real): os `RANK_MERCADOS` mercados de maior volume resolvidos de
+    segunda a domingo da semana passada (Gamma), as negociações de cada um (`/trades?market=<conditionId>`) e, por
+    carteira, o resultado se ficou até a resolução: compra = cotas × (pagamento − preço), venda = cotas × (preço −
+    pagamento). Devolve ([(carteira, resultado, negócios)], o número de mercados lidos, o motivo se ficou vazio)."""
+    seg_ = ms_de(semana_de(agora) + "T03:00:00Z")
+    de, ate = seg_ - SEMANA_MS, seg_
+    r = R.pedir("gamma", f"/markets?closed=true&end_date_min={iso(de)}&end_date_max={iso(ate)}&volume_num_min=10000"
+                         f"&order=volumeNum&ascending=false&limit={RANK_MERCADOS * 2}", "gamma /markets (semana passada)", "gamma")
+    if r is None:
+        return [], 0, "os mercados da semana passada não vieram"
+    mercados = [mk for mk in (mercado_de(m) for m in R.lista(r, "data", "markets"))
+                if mk and mk["cond"] and mk["resultado"] in (0.0, 1.0)]
+    mercados.sort(key=lambda mk: -mk["vol"])
+    soma, conta, lidos = {}, {}, 0
+    for mk in mercados[:RANK_MERCADOS]:
+        if not R.tempo(80):
+            break
+        t = R.pedir("pmdata", f"/trades?market={mk['cond']}&limit=500&takerOnly=false", "pmdata /trades (mercado)", "pmdata")
+        if t is None:
             continue
-        end = str(x.get("proxyWallet") or x.get("address") or x.get("wallet") or "")
-        pnl = _f(x.get("pnl"), _f(x.get("amount"), _f(x.get("profit"))))
-        if re.fullmatch(r"0x[0-9a-fA-F]{40}", end) and pnl is not None:
-            out.append((end.lower(), pnl, _f(x.get("vol"), _f(x.get("volume"), None))))
+        lidos += 1
+        for x in R.lista(t, "data", "trades"):
+            if not isinstance(x, dict):
+                continue
+            end = str(x.get("proxyWallet") or x.get("user") or "").lower()
+            asset = str(x.get("asset") or x.get("asset_id") or "")
+            preco, tam = _f(x.get("price")), _f(x.get("size"), 0.0)
+            if not re.fullmatch(r"0x[0-9a-f]{40}", end) or preco is None or not tam:
+                continue
+            k = mk["toks"].index(asset) if asset in mk["toks"] else _f(x.get("outcomeIndex"))
+            if k not in (0, 1, 0.0, 1.0):
+                continue
+            paga = mk["resultado"] if int(k) == 0 else 1 - mk["resultado"]
+            lado = str(x.get("side") or "").upper()
+            res = tam * (paga - preco) if lado == "BUY" else tam * (preco - paga) if lado == "SELL" else 0.0
+            soma[end] = soma.get(end, 0.0) + res
+            conta[end] = conta.get(end, 0) + 1
+    out = [(e, round(v, 2), conta[e]) for e, v in soma.items() if conta[e] >= RANK_MIN_NEGOCIOS]
     out.sort(key=lambda x: -x[1])
-    return out
+    motivo = None
+    if not mercados:
+        motivo = "nenhum mercado resolvido na semana passada com volume"
+    elif not lidos:
+        motivo = "as negociações públicas (Data API /trades) não vieram"
+    elif not out:
+        motivo = "nenhuma carteira com negócios suficientes nos mercados da semana passada"
+    return out, lidos, motivo
 
 
 def preco_em(pts, t):
@@ -1107,17 +1186,18 @@ def rodar(ctx):
         seg.setdefault(k, v0)
     sem_atual = semana_de(agora)
     if seg.get("semana") != sem_atual and R.tempo(90):
-        rk = ranking(R)
-        if rk:
+        rk, lidos, motivo = ranking(R, agora)
+        if rk and any(pnl > 0 for _, pnl, _ in rk):
             antigas = set(seg.get("carteiras") or [])
             novas = [e for e, pnl, _ in rk if pnl > 0][:SEG_N]
-            seg.update({"semana": sem_atual, "carteiras": novas, "escolhidaEm": agora,
+            seg.update({"semana": sem_atual, "carteiras": novas, "escolhidaEm": agora, "mercadosLidos": lidos,
                         "cursor": {e: agora for e in novas}, "contas": {e: (seg.get("contas") or {}).get(e, {"copiadas": 0, "ganhas": 0, "fechadas": 0}) for e in novas}})
             entraram, sairam = len(set(novas) - antigas), len(antigas - set(novas))
-            ev.add(agora, "trocou", f"Escolheu as {len(novas)} carteiras de maior lucro da semana passada para copiar nesta "
-                                    f"({entraram} novas, {sairam} saíram).", "seguir")
+            ev.add(agora, "trocou", f"Escolheu as {len(novas)} carteiras de maior lucro da semana passada (nas negociações de "
+                                    f"{lidos} mercados resolvidos) para copiar nesta ({entraram} novas, {sairam} saíram).", "seguir")
         else:
-            R.sem.setdefault("ranking", "o ranking da semana não veio")
+            R.sem.setdefault("ranking", motivo or "nenhuma carteira com lucro na semana passada")
+            seg["motivo"] = motivo or "nenhuma carteira com lucro na semana passada"
     copiadas = 0
     conta_s = contas["seguir"]
     seg["porDia"] = {k: n for k, n in (seg.get("porDia") or {}).items() if k.split("|")[-1] >= dia_de(agora - 3 * DIA)}
@@ -1255,7 +1335,9 @@ def rodar(ctx):
                 it["carteira"] = p["carteira"]
             itens.append(it)
     itens.sort(key=lambda x: (x.get("fim") or 9e15))
-    seguir = {"semana": seg.get("semana"), "escolhidaEm": seg.get("escolhidaEm"),
+    seguir = {"semana": seg.get("semana"), "escolhidaEm": seg.get("escolhidaEm"), "mercadosLidos": seg.get("mercadosLidos"),
+              "motivo": None if seg.get("carteiras") else (seg.get("motivo") or R.sem.get("ranking")),
+              "fonte": "negociações públicas dos mercados resolvidos na semana anterior",
               "proxima": ms_de(semana_de(agora) + "T03:00:00Z") + SEMANA_MS,
               "carteiras": [{"carteira": carteira_curta(e), **(seg.get("contas") or {}).get(e, {}),
                              "abertas": sum(1 for p in conta_s.pos.values() if p.get("de") == e)}
