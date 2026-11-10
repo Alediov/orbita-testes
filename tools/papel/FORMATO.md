@@ -4,7 +4,7 @@ O workflow `papel.yml` roda `tools/papel/papel.py` a cada 6 h e grava, num commi
 
 - `indice.json`: o que existe e quando cada forma rodou (o app lê primeiro e só baixa a forma que mudou);
 - `<forma>.json`: um por forma (`cofres.json`, `funding.json`, `robos.json`, `apostas.json`, `looping.json`,
-  `opcoes.json`, `pools.json`; e `memes.json`, gravado pelo job próprio `memes.yml`, 3 vezes por dia desde 09/11/2026, no mesmo ramo);
+  `opcoes.json`, `pools.json`, `previsao.json`; e `memes.json`, gravado pelo job próprio `memes.yml`, 3 vezes por dia desde 09/11/2026, no mesmo ramo);
 - `estado.json`: o que a próxima rodada precisa (o app não lê);
 - `log.txt`: as últimas rodadas.
 
@@ -645,3 +645,53 @@ ouvidas depois dela, e o app esconde as seções sem eles):
   `saida` { `alta`, `baixa`, `minutos` }, `observatorio: true`; desde 09/11/2026 `amostragem`, `sinais` (os limites) e
   `copia` { `carteiras`, `minCompras`, `atrasoMin` }.
 - **eventos** (`resumo`, `aviso`): o resumo de cada amostra (o da forma, `versao` null) e o da versão padrão.
+
+## Mercados de previsão (`previsao.json`)
+
+Desde 09/11/2026 (pedido do Alediov; `previsao.py`, no `papel.yml` a cada 6 h com as outras formas). **Só observação e
+papel**: desde abril de 2026 o Brasil bloqueou a Polymarket e a Kalshi; nenhuma conta, carteira, ordem ou chave. Fontes
+públicas e gratuitas pela `rede.py` (freio por fonte): Polymarket Gamma (`/markets`), CLOB (`/book`, `/prices-history`),
+Data API (`/v1/leaderboard`, reserva `lb-api…/profit`; `/trades?user=`), Kalshi (`/trade-api/v2/markets`) e Manifold
+(`/v0/search-markets`). Os campos foram escritos sem acesso a elas: a 1ª resposta de cada uma tem a estrutura registrada
+no log ("previsão: estrutura de …"). Fonte que falha: `semDados` [{ `fonte` (gamma, clob, pmdata, kalshi, manifold,
+ranking), `motivo` }] e a forma segue. Tempo máximo por rodada: `ORCAMENTO_S` (420 s; no mercado de mentira ~0,1 s e
+~130 pedidos na 1ª rodada, ~40 depois, mais os históricos do observatório, até 80 por rodada).
+
+- **Versões** (`alav` 1; US$ 20 por posição; entrada = melhor oferta de venda do livro + o deslize de andar pelo livro
+  com os US$ 20, `comprar_no_livro`; taxa da Polymarket só nos mercados que cobram, `takerBaseFee` × min(preço, 1 −
+  preço) × cotas, a conferir; marcadas pela melhor oferta de compra; saem pela resolução oficial, anulado = 50
+  centavos): `fav90` (padrão) e `fav95` (`grupo` "Favorito perto do fim": o lado a ≥ 90%/95% e ≤ 99% faltando até 7
+  dias), `azarao` ("Azarão": o lado entre 2% e 10% faltando até 30 dias), `difK` e `difM` ("Diferença entre casas":
+  compra na Polymarket o lado 5 pontos ou mais mais barato que na Kalshi/Manifold, já com o deslize; casamento
+  conservador `casar`: os mesmos números e negações, Jaccard ≥ 0,7 nas palavras sem as vazias, fim a até 3 dias; na
+  Manifold, ≥ 20 apostadores), `seguir` ("Seguir os melhores", `aproximado: true` e `soAoVivo: true`: toda segunda as 10
+  carteiras de maior lucro da semana no ranking; cada compra ≥ US$ 50 delas depois da escolha vira US$ 20 nossos pelo
+  preço do histórico 5 min depois + 1 centavo, no máximo 3 por carteira por dia e 30 por rodada; a venda delas fecha a
+  nossa) e as réguas `cdi` e `usdc` ("Referência"). Filtros de entrada: liquidez ≥ US$ 5 mil, volume de 24 h ≥ US$ 1
+  mil, até 8 posições novas por versão por rodada. Mercados de esporte entram, com a categoria marcada.
+- **extra** (menos nas réguas): `posicoes`, `abertas`, `resolvidas`, `vendidas`, `ganhas`, `anuladas`, `acerto`,
+  `apostado`, `roi` (realizado ÷ US$ apostados nas fechadas), `precoMedio` (de entrada), `porCategoria` {cat: n},
+  `porDentro` { `ganhos`, `perdas` (realizados), `taxas`, `deslize`, `custos`, `emAberto` (as abertas pela melhor compra
+  − o custo), `realizado`, `resultado` } e `cauda` { `perdas`, `maiorPerda`, `perdaMedia`, `ganhoMedio`,
+  `vitoriasPorPerda` (quantas vitórias médias paga a maior perda) }.
+- **historico** (só `fav90`, `fav95`, `azarao`; `aproximado: true`, `de`, `ate`, `nota`, `janelas` de 30 dias a cada 7
+  como nos robôs): os mercados encerrados do observatório, o preço de cada dia antes do fim, 1 centavo de deslize, sem
+  taxas.
+- **calibracao**: `{ "mercados", "desde", "ate" (ms do fim), "porCategoria" {cat: n}, "criterio" { "volumeMin",
+  "duracaoMinDias", "dias" }, "andamento" { "lidosAgora", "listados", "alcancouDias", "meta" }, "nota", "azarao" (a
+  faixa 0–10% a 24 h: { "previsto", "real", "n", "ic" }), "horizontes": [{ "id" ("24h" | "7d" | "30d"), "nome", "dias",
+  "n", "brier", "porCategoria": [{ "cat", "n", "brier" }], "faixas": [{ "de", "ate", "n", "previsto" (preço médio),
+  "real" (fração que aconteceu), "sim", "ic" [baixo, alto] (Wilson 95%) }] (10) }] }`. Mercados de sim ou não
+  encerrados com resultado, volume ≥ US$ 5 mil, abertos por 2 dias ou mais; o fim é o `closedTime` (ou o `endDate`);
+  lidos 80 por rodada, os novos primeiro e, para trás, até 180 dias; no máximo 3.000 guardados.
+- **casas**: `{ "fontes": { "Kalshi" | "Manifold": { "ok", "mercados", "motivo" } }, "regra", "pares": [{ "pergunta",
+  "outra" (casa), "outraPergunta", "polymarket" (preço do Sim), "outraPreco", "diferenca" (outra − Polymarket), "nota"
+  (Jaccard), "fim", "cat", "comprou" (o lado comprado, ou null) }] }` (até 30, a maior diferença primeiro).
+- **seguir**: `{ "semana" (a segunda), "escolhidaEm", "proxima", "regra" { "n", "atrasoMin", "deslize", "minimo" },
+  "carteiras": [{ "carteira" ("0x1234…abcd"), "copiadas", "fechadas", "ganhas", "abertas" }] }`. Nunca o apelido.
+- **itens**: as posições abertas (até 80, a que acaba primeiro antes): `{ "versao", "mercado" (id), "pergunta" (até 90
+  caracteres; mercados são públicos), "lado" ("Yes"/"No" ou o nome), "preco" (entrada), "agora" (melhor compra), "valor",
+  "em", "fim", "cat" }` + `outra`/`outraPreco` (dif) ou `carteira` (seguir).
+- **abertos** { `lidos`, `porCategoria` }; **config**: `frequencia`, `moeda` "US$", `aposta`, `bloqueio`,
+  `soObservacao: true`, `fav`, `azarao`, `dif`, `filtros`, `taxas`, `janelas`.
+- **eventos** (`entrou`, `ganhou`, `perdeu`, `anulou`, `saiu`, `trocou`, `aviso`): até 25 por rodada.

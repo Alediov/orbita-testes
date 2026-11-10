@@ -24,6 +24,12 @@ odonto-quest/docs/plano-testes-mercado-2.md; as amostras das respostas estão an
 - gateway IPFS público (`ipfs.io`): os metadados de um token (só para saber SE tem site ou redes; o link nunca é
   guardado), lidos até `LIMITE_META` bytes. O endereço vem do próprio lançamento e só é aberto quando aponta para um
   CID do IPFS (pedido sempre ao ipfs.io) ou para o arweave.net.
+- Polymarket (mercados de previsão, `previsao.py`; desde 09/11/2026, sem chave): a Gamma API
+  (`gamma-api.polymarket.com`: mercados, eventos e a resolução), o CLOB (`clob.polymarket.com`: livro e
+  `prices-history`), a Data API (`data-api.polymarket.com`: negociações públicas e o ranking) e, de reserva para o
+  ranking, o `lb-api.polymarket.com`; a Kalshi (`api.elections.kalshi.com/trade-api/v2`, a lista pública de mercados) e
+  a Manifold (`api.manifold.markets/v0`, dinheiro de mentira) como referência de preço. Os nomes dos campos foram
+  escritos sem acesso a elas daqui: a 1ª rodada de verdade registra a estrutura de cada resposta no log.
 
 `pedidos` conta todas as tentativas; `contagem` separa por fonte. `Erro.codigo` traz o código do erro do JSON-RPC
 (o publicnode diz no texto o intervalo menor quando a resposta passaria de 20.000 eventos).
@@ -51,10 +57,17 @@ URL = {
     "pumpportal": "wss://pumpportal.fun/api/data",
     "jito": "https://bundles.jito.wtf/api/v1/bundles/tip_floor",
     "ipfs": "https://ipfs.io/ipfs/",
+    "gamma": "https://gamma-api.polymarket.com",
+    "clob": "https://clob.polymarket.com",
+    "pmdata": "https://data-api.polymarket.com",
+    "pmlb": "https://lb-api.polymarket.com",
+    "kalshi": "https://api.elections.kalshi.com/trade-api/v2",
+    "manifold": "https://api.manifold.markets/v0",
 }
 REPETIR = (429, 500, 502, 503, 504)
 # intervalo mínimo entre dois pedidos à mesma fonte (s): o freio contra o 429
-INTERVALO = {"base": 0.12, "gecko": 2.5, "dex": 1.1, "rugcheck": 1.1, "solana": 0.3, "jito": 1.0, "ipfs": 0.5}
+INTERVALO = {"base": 0.12, "gecko": 2.5, "dex": 1.1, "rugcheck": 1.1, "solana": 0.3, "jito": 1.0, "ipfs": 0.5,
+             "gamma": 0.25, "clob": 0.2, "pmdata": 0.3, "pmlb": 0.5, "kalshi": 0.5, "manifold": 0.3}
 LIMITE_META = 32_768  # bytes lidos dos metadados de um token (um JSON pequeno; o resto é cortado)
 # espera no 429 (s), por tentativa; as outras fontes usam 5 × 2^k
 ESPERA_429 = {"gecko": [30, 60, 90]}
@@ -207,6 +220,25 @@ class Cliente:
             return self._http(url, "ipfs", "metadados (IPFS)", limite=LIMITE_META)
         finally:
             self.tentativas = tentativas
+
+    # mercados de previsão (previsao.py): `caminho` com a consulta, ex.: "/markets?closed=true&limit=100"
+    def gamma(self, caminho):
+        return self._http(URL["gamma"] + caminho, "gamma", f"Polymarket Gamma {caminho.split('?')[0][:40]}")
+
+    def clob(self, caminho):
+        return self._http(URL["clob"] + caminho, "clob", f"Polymarket CLOB {caminho.split('?')[0][:40]}")
+
+    def pmdata(self, caminho):
+        return self._http(URL["pmdata"] + caminho, "pmdata", f"Polymarket Data {caminho.split('?')[0][:40]}")
+
+    def pmlb(self, caminho):
+        return self._http(URL["pmlb"] + caminho, "pmlb", f"Polymarket ranking {caminho.split('?')[0][:40]}")
+
+    def kalshi(self, caminho):
+        return self._http(URL["kalshi"] + caminho, "kalshi", f"Kalshi {caminho.split('?')[0][:40]}")
+
+    def manifold(self, caminho):
+        return self._http(URL["manifold"] + caminho, "manifold", f"Manifold {caminho.split('?')[0][:40]}")
 
     def pumpportal_ouvir(self, segundos, maximo, assinar=("subscribeNewToken", "subscribeMigration")):
         """Ouve o websocket do PumpPortal por até `segundos` (ou `maximo` mensagens) e devolve as mensagens (dicts, com

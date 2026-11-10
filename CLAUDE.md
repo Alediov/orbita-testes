@@ -144,6 +144,13 @@ acabavam; aqui os executores padrão não têm limite.
   (contagens por semana, marcas de criador e bundle) e a regra `copia` fora da amostra (as 10 da semana anterior); e o
   medidor de golpe (criador vendeu tudo, queda, RugCheck, liquidez; fração das apostas de cada regra). Os links e nomes
   dos tokens nunca são guardados; carteiras só pelo endereço público.
+- **Mercados de previsão** (pedido do Alediov, 09/11/2026; `previsao.py` + `falso_previsao.py` + `teste_previsao.py`, no
+  `papel.FORMAS`; formato no `FORMATO.md`): SÓ observação e papel (o Brasil bloqueou a Polymarket e a Kalshi em abril de
+  2026). Observatório de calibração (preço 24 h/7 d/30 d antes do fim × o que aconteceu, faixas com Wilson, Brier por
+  categoria), favorito perto do fim (≥ 90/95%, ≤ 7 dias), azarão (≤ 10%), diferença entre casas (Kalshi e Manifold,
+  casamento conservador), seguir as 10 carteiras da semana anterior (fora da amostra, aproximado) e as réguas CDI e USDC;
+  passado aproximado pelos mercados do observatório. Fontes públicas sem chave pela `rede.py` (gamma, clob, pmdata,
+  pmlb, kalshi, manifold): conferir a estrutura no log da 1ª rodada.
 - Os exemplos que o app usa sem rede ficam no repositório do app (`tools/mercado/exemplos/`); refazer aqui
   (`python3 tools/papel/falso.py`) e copiar para lá (`tools/mercado/exemplos/papel/`) quando o formato mudar.
 - Os workflows (`mercado.yml`, `papel.yml`, `memes.yml`, `ideias.yml`) religam os agendamentos pela API a cada rodada (num

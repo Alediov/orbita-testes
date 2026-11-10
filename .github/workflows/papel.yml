@@ -1,4 +1,4 @@
-# Testes de mercado do Órbita, as outras formas (cofres, funding, robôs, apostas, looping, opções e pools), NO PAPEL:
+# Testes de mercado do Órbita, as outras formas (cofres, funding, robôs, apostas, looping, opções, pools e previsão), NO PAPEL:
 # contas fictícias de US$ 1.000, nenhuma ordem, nenhuma conta, nenhuma chave; só APIs públicas de leitura. Plano em
 # docs/plano-testes-mercado-2.md; formato em tools/papel/FORMATO.md. Grava indice.json, <forma>.json (o app Órbita lê,
 # Finanças → Testes), estado.json e log.txt no ramo órfão `papel`, sempre num commit único (sem histórico).

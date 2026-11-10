@@ -4,7 +4,7 @@ resultados: tools/papel/FORMATO.md). Roda no GitHub Actions (`.github/workflows/
 públicas de leitura.
 
 Cada forma é um módulo desta pasta (`cofres.py`, `funding.py`, `robos.py`, `apostas.py`, `looping.py`, `opcoes.py`,
-`pools.py`, `memes.py`) com:
+`pools.py`, `memes.py`, `previsao.py`) com:
 
     NOME = "Funding"          # o nome curto (chip do app)
     VERSAO = 1                # mudar o formato do estado da forma: subir (o estado antigo vai para ctx.antigo)
@@ -39,7 +39,7 @@ sys.path.insert(0, AQUI)  # antes do mercado: os dois têm um falso.py
 import hl  # noqa: E402
 from conta import DIA, cdi_ano_da_serie, com_metricas, dia_de  # noqa: E402
 
-FORMAS = ["cofres", "funding", "robos", "apostas", "looping", "opcoes", "pools"]
+FORMAS = ["cofres", "funding", "robos", "apostas", "looping", "opcoes", "pools", "previsao"]
 # as que só rodam quando pedidas (`--formas`): os memecoins têm o job próprio, 3 vezes por dia (`memes.yml`)
 FORMAS_A_PARTE = ["memes"]
 V = 1

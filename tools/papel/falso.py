@@ -28,7 +28,7 @@ _esp.loader.exec_module(_base)
 HORA, DIA, T0 = _base.HORA, _base.DIA, _base.T0
 
 _mixins = []
-for _n in ("falso_cofres", "falso_funding", "falso_robos", "falso_looping", "falso_opcoes", "falso_pools", "falso_memes", "falso_apostas"):
+for _n in ("falso_cofres", "falso_funding", "falso_robos", "falso_looping", "falso_opcoes", "falso_pools", "falso_memes", "falso_apostas", "falso_previsao"):
     try:
         _mixins.append(getattr(importlib.import_module(_n), "Falso"))
     except ImportError:
