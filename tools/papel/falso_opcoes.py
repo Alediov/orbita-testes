@@ -3,7 +3,7 @@
 
 - `get_volatility_index_data`: um DVOL que anda em regimes (40–75% no BTC, um pouco mais no ETH), de hora em hora;
 - `get_book_summary_by_currency`: a cadeia de agora, vencimentos nas próximas 6 sextas e nas últimas sextas dos 2
-  meses seguintes, strikes de 1.000 (BTC) e 50 (ETH) até ±40%, preços pela fórmula com a inclinação, compra/venda a
+  meses seguintes, strikes de 1.000 (BTC) e 50 (ETH) até ±40%, preços pela fórmula com o sorriso padrão (`iv_do_sorriso`), compra/venda a
   ±3% em tiques de 0,0001 da moeda (sem oferta de compra quando arredonda para zero), na MOEDA como na Deribit;
 - `get_index_price` e `get_delivery_prices` (o preço às 08h UTC de cada dia).
 """
@@ -66,7 +66,7 @@ class Falso:
             for i in range(-int(0.4 * S / passo), int(0.4 * S / passo) + 1):
                 K = centro + i * passo
                 for tipo in ("put", "call"):
-                    iv = O.iv_com_inclinacao(base, fut, K, T, tipo)
+                    iv = O.iv_do_sorriso(base, fut, K, T, tipo)
                     teo = O.bs(fut, K, T, iv, tipo) / S  # na moeda
                     bid = math.floor(teo * 0.97 / O.TIQUE) * O.TIQUE
                     ask = math.ceil(teo * 1.03 / O.TIQUE) * O.TIQUE

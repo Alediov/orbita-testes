@@ -440,6 +440,55 @@ sexta). Teste no passado (180 dias, `aproximado: true`): Black-Scholes com o DVO
   "premio" (US$ recebidos), "marca" (US$ que custaria recomprar), "vendidaEm" }`.
 - **config**: `moedas`, `fonte`, `precos` (índice de agora), `taxas`, `ivHistorico`, `deltaAlvo`, `aoVivoComeca`.
 
+**Revisão de 09/11/2026** (detalhes no começo de `opcoes.py`; o opcoes.json antigo continua valendo: as chaves novas
+são opcionais):
+
+- **Versões novas** (todas com `moeda` e `contra`): `put30C`, `putstopC`, `eth_put15C` (`grupo` "Garantia rendendo": a
+  garantia em dólar no empréstimo de USDC da Aave v3 na Base, com o juro de cada dia; pôr lá custa `config.caixa.ida`
+  US$ uma vez e cada pagamento tira o valor de lá por `volta` US$; `ponte` 0, supondo que a Deribit manda e recebe USDC
+  na própria Base), `put30vrp`, `eth_put15vrp` (`grupo` "Prêmio caro": só vende na sexta em que a volatilidade implícita
+  ÷ a realizada de `config.vrp.dias` dias ≥ `config.vrp.minimo` (1,2); nas outras, o dólar fica na Aave), `roda`,
+  `eth_roda` (`grupo` "A roda": put de delta 0,30 até ser exercida, depois call de delta 0,30 sobre a moeda até ser
+  chamada) e as réguas `segbtc`, `segeth` e `usdc` (`grupo` "Referência", por último; começam na mesma 1ª sexta; o
+  `usdc` sem o juro da Aave: `semDados`, `aoVivo` e `historico` null). `contra` = a régua certa: "usdc" (puts),
+  "segbtc"/"segeth" (calls cobertas), "cdi" (strangle, roda e as réguas).
+- **eventos** novos: `trocou` com `motivo` "exercida" (a put da roda virou moeda) ou "chamada" (a moeda saiu pela call);
+  `vendeu` com `motivo` "caro" (ou "semDados", sem a realizada) e `aviso` com `motivo` "barato" ("Ficou de fora esta
+  semana: implícita X × realizada Y…") no prêmio caro; `caixa` (pôs o dólar na Aave).
+- **extra** novos (em toda conta com opções, ao vivo e no passado):
+  - `porDentro` (US$; também nas réguas): `premios`, `pagos` (no vencimento), `recompras`, `taxas` (opção + à vista),
+    `entrega`, `aave` (os custos de ir e tirar), `juros` (da Aave), `custos` (taxas + entrega + aave), `emAberto` (o que
+    custaria recomprar as opções abertas, ≤ 0), `preco` (o que sobra: a moeda que a conta segura) e `resultado`
+    (patrimônio − 1.000) = prêmios − pagos − recompras − custos + juros + emAberto + preço;
+  - `empate`: `{ "custos", "premioSemana" (o prêmio líquido médio por vencimento), "semanas" (custos ÷ prêmio da
+    semana), "sobra" (prêmios + juros − pagos − recompras − custos, sem o preço da moeda), "jaPagou",
+    "semanasParaRecuperar" (−sobra ÷ prêmio da semana; 0 se já pagou) }`;
+  - `piorSemana`: `{ "de", "vence" (dias), "perda" (US$ ≥ 0), "resultado", "semanasDePremio" (perda ÷ prêmio médio),
+    "premioMedio", "semanas" (vencimentos fechados) }` (o vencimento de pior resultado das opções; o strangle soma as
+    duas pernas);
+  - Garantia rendendo e réguas de dólar: `naAave` (US$ lá agora), `juros`, `juroAgora`;
+  - roda: `fase` ("put" | "call"), `exercidas`, `chamadas`;
+  - prêmio caro: `filtro`: `{ "vendeu", "fora" (semanas), "minimo", "dias", "ultima": { "em", "iv", "rv", "rv7",
+    "razao", "vendeu" } }`.
+- **estresse** (na versão, menos nas réguas): `{ "base": "agora" | "teorica" (sem posição aberta: o que a versão
+  venderia agora pela cadeia, com US$ 1.000), "preco", "valor" (a conta agora), "dias" (2: um fim de semana), "vol"
+  {"queda": 1,3, "alta": 1,1} (multiplica a volatilidade), "posicoes": [{ "tipo", "strike", "vence", "q" }], "naMoeda",
+  "premioSemana" (o prêmio médio do teste no passado; sem ele, o do ao vivo), "premioFonte" ("passado" | "aoVivo"),
+  "choques": [{ "variacao" (−0,15, −0,30 e, nas que seguram a moeda ou vendem call, +0,15, +0,30), "perda" (US$;
+  negativo = ganho), "perdaPct" (÷ valor), "semanasDePremio" }] }`.
+- **historico.janelas** (como no looping): 30 dias, uma a cada 7, contra a régua de `contra` (sem a série dela, o CDI):
+  `{ "dias", "passo", "n", "contra": { "id", "nome" }, "vence", "mediana", "pior", "melhor", "lista" }`.
+- **Teste no passado mais realista** (`HIST_V` 2 no estado: refeito na 1ª rodada): a volatilidade de cada strike = DVOL
+  × a razão do **sorriso** pelo |delta| (`config.sorriso[moeda]`: `{ "fonte": "cadeia" | "padrao", "n" (medidas), "put":
+  { "0.05": 1,18, …, "0.50": 1,0 }, "call": {…}, "spread": { "put": {delta: meio spread relativo}, "call": {…} } }`,
+  medido a cada rodada no vencimento da semana da cadeia contra o DVOL de agora (as últimas 40 medidas); sem medida, a
+  curva padrão 1 + 0,40 × (0,5 − |delta|) nas puts e 1 + 0,10 × (0,5 − |delta|) nas calls, com 3% de meio spread); a
+  venda pela oferta de compra estimada (marca − meio spread), arredondada para baixo no tique de 0,0001 da moeda.
+  `config.sorrisoHistorico` diz qual valeu no passado.
+- **config** novos: `sorriso`, `sorrisoHistorico`, `vrp` { `minimo`, `dias`, `diasCurto`, `agora`: { moeda: { "iv",
+  "rv", "rv7", "razao", "caro", "fonteIv": "dvol" | "atm" } } }, `caixa` { `ida`, `volta`, `ponte`, `juroAgora` },
+  `estresse` { `choques`, `vol`, `dias` }, `janelas` { `dias`, `passo` }; `taxas` ganhou `spot` e `deslizeSpot`.
+
 ## Pools (`pools.json`)
 
 Pools de liquidez concentrada na Base (`pools.py`): cada troca do pool pelo RPC público (eventos `Swap`, o mesmo tópico no

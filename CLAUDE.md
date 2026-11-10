@@ -126,6 +126,14 @@ acabavam; aqui os executores padrão não têm limite.
   reserva DefiLlama) e `moonwell` (DefiLlama), com `semDados` se a fonte falhar; `estresse` por versão de laço,
   `extra.empate`, `extra.porDentro`, `extra.dolar` (wstETH em dólar), `historico.janelas` contra a régua certa (`contra`:
   "wst1", "ether" ou "cdi") e `dolar` no topo. O teste no passado é refeito pelo `HIST_V`.
+- **Opções revistas** (pedido do Alediov, 09/11/2026, pelo teste no passado: puts levemente positivas, calls cobertas,
+  strangle e a mensal negativas, Sharpe negativo em todas; detalhes no começo do `opcoes.py` e no `FORMATO.md`,
+  "Opções"): réguas `segbtc`/`segeth`/`usdc` (`grupo` "Referência"); garantia rendendo na Aave (`put30C`, `putstopC`,
+  `eth_put15C`, sem ponte: a suposição está no código); prêmio caro (`put30vrp`, `eth_put15vrp`: vende só com implícita ÷
+  realizada de 30 dias ≥ 1,2, eventos com `motivo` "caro"/"barato"); a roda (`roda`, `eth_roda`, eventos `trocou` com
+  "exercida"/"chamada"); o passado com o sorriso e o spread medidos na cadeia de cada rodada (`config.sorriso`) e a
+  oferta no tique; `historico.janelas` contra a régua certa (`contra`); `extra.porDentro`, `extra.empate`,
+  `extra.piorSemana`; `estresse` (quedas e altas de 15/30% num fim de semana). O passado é refeito pelo `HIST_V`.
 - Os exemplos que o app usa sem rede ficam no repositório do app (`tools/mercado/exemplos/`); refazer aqui
   (`python3 tools/papel/falso.py`) e copiar para lá (`tools/mercado/exemplos/papel/`) quando o formato mudar.
 - Os workflows (`mercado.yml`, `papel.yml`, `memes.yml`, `ideias.yml`) religam os agendamentos pela API a cada rodada (num
