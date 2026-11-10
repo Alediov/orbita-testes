@@ -82,7 +82,7 @@ except ImportError:  # pragma: no cover
 
 NOME = "Looping"
 VERSAO = 1
-HIST_V = 2                # subir refaz o teste no passado (2: as versões e os números de 09/11/2026)
+HIST_V = 3                # subir refaz o teste no passado (3: a regra nova do laço quando compensa, 09/11/2026)
 
 POOL = "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5"  # Pool do Aave v3 na Base (conferido no Teste de alcance)
 CHAIN = 8453
@@ -112,10 +112,16 @@ ALCANCE_MAX = 195 * DIA   # as velas de 1 h só vão até ~200 dias atrás
 FOLGA_MS = 5 * 60_000
 
 # laço quando compensa (wstAuto*)
-AUTO_ENTRA = 0.005        # ganho extra ao ano do laço sobre o 1× (média de 7 dias) para montar
-AUTO_SAI = 0.001          # abaixo disso (média de 3 dias), desmonta: a diferença sumiu
+# Rodada real de 09/11/2026: com a regra de antes (0,5 ponto de ganho extra em 7 dias, sai abaixo de 0,1 em 3 dias) o
+# wstAuto6 montou 14 vezes no ano e perdeu 13,5% em custos. Agora só monta se a diferença dos últimos 14 dias pagar a ida
+# e a volta em `AUTO_PAGA_DIAS` dias, sai só quando a diferença fica negativa (7 dias) ou o juro dispara, e fica montado
+# pelo menos `AUTO_FICA_DIAS` dias (menos no disparo).
+AUTO_ENTRA = 0.005        # diferença staking − juro do ether (por × a mais, média de 14 dias) mínima para montar
+AUTO_PAGA_DIAS = 60       # e o ganho extra desses dias precisa pagar montar + desmontar
+AUTO_SAI = 0.0            # média de 7 dias abaixo disso: desmonta
 AUTO_DISPARA = 0.02       # juro do ether do dia acima do staking por isso: desmonta já
-AUTO_DIAS_ENTRA, AUTO_DIAS_SAI = 7, 3
+AUTO_DIAS_ENTRA, AUTO_DIAS_SAI = 14, 7
+AUTO_FICA_DIAS = 30
 # ETH só na alta (eth2tend)
 MEDIA_DIAS, MEDIA_MIN = 50, 20
 # estresse
@@ -320,6 +326,7 @@ class Conta:
         self.u = float(e.get("u", 0.0))
         self.L = e.get("L", 1 if self.auto else self.alav)
         self.dec = e.get("dec")
+        self.montouEm = e.get("montouEm")
         self.montada = bool(e.get("montada"))
         self.t = int(e.get("t") or inicio)
         self.p = e.get("p")  # último preço do ether
@@ -338,7 +345,7 @@ class Conta:
         self.novo = not estado
 
     def para_json(self):
-        return {"curva": self.curva.para_json(), "a": self.a, "b": self.b, "r": self.r, "u": self.u, "L": self.L,
+        return {"curva": self.curva.para_json(), "a": self.a, "b": self.b, "r": self.r, "u": self.u, "L": self.L, "montouEm": self.montouEm,
                 "dec": self.dec, "montada": self.montada, "t": self.t, "p": self.p, "pref": self.pref, "acc": self.acc,
                 "estimado": self.estimado, "dol": self.dol}
 
@@ -465,14 +472,22 @@ class Conta:
         difs = [tx.diferenca(t - i * DIA) for i in range(dias)]
         return (self.alav - 1) * sum(difs) / len(difs)
 
+    def _custo_ida_volta(self):
+        """Montar e desmontar, em fração do dinheiro: (troca + deslize + relâmpago) × (alavancagem − 1), duas vezes."""
+        por_x = TAXA_TROCA + DESLIZE + TAXA_RELAMPAGO
+        return 2 * por_x * (self.alav - 1)
+
     def _compensa(self, t, tx):
-        return (self._ganho_extra(t, tx, AUTO_DIAS_ENTRA) >= AUTO_ENTRA
+        g = self._ganho_extra(t, tx, AUTO_DIAS_ENTRA)
+        return (g / max(1e-9, self.alav - 1) >= AUTO_ENTRA
+                and g * AUTO_PAGA_DIAS / 365 >= self._custo_ida_volta()
                 and tx.taxa("bor:WETH", t) < tx.taxa("stake", t) + tx.taxa("sup:wstETH", t))
 
     def _decidir_auto(self, t, p, tx, ev):
         if self.L <= 1:
             if self._compensa(t, tx):
                 g = self._ganho_extra(t, tx, AUTO_DIAS_ENTRA)
+                self.montouEm = t
                 self._rebalancear(t, p, self.alav, "compensa",
                                   f"Montou o laço de {num_br(self.alav, 0)}×: o staking passou a pagar "
                                   f"{num_br(g / (self.alav - 1) * 100, 2)} ponto ao ano a mais que o juro do ether (média de "
@@ -480,10 +495,12 @@ class Conta:
             return
         s = tx.taxa("stake", t) + tx.taxa("sup:wstETH", t)
         b = tx.taxa("bor:WETH", t)
+        montou = getattr(self, "montouEm", None)
+        cedo = montou is not None and t - montou < AUTO_FICA_DIAS * DIA
         if b >= s + AUTO_DISPARA:
             self._rebalancear(t, p, 1, "juro", f"Desmontou para 1×: o juro do ether disparou a {pct_br(b, 2)} ao ano, "
                                                f"contra {pct_br(s, 2)} do staking", ev)
-        elif self._ganho_extra(t, tx, AUTO_DIAS_SAI) < AUTO_SAI:
+        elif not cedo and self._ganho_extra(t, tx, AUTO_DIAS_SAI) < AUTO_SAI:
             self._rebalancear(t, p, 1, "diferenca", f"Desmontou para 1×: a diferença entre o staking e o juro do ether "
                                                     f"sumiu (média de {AUTO_DIAS_SAI} dias)", ev)
 
@@ -1340,7 +1357,8 @@ def rodar(ctx):
                            "custos": {"troca": TAXA_TROCA, "deslize": DESLIZE, "relampago": TAXA_RELAMPAGO, "gas": GAS_US},
                            "stakingFonte": "DefiLlama (Lido)" if tc["serie"].get("stake") else "fixo",
                            "auto": {"entra": AUTO_ENTRA, "sai": AUTO_SAI, "dispara": AUTO_DISPARA,
-                                    "diasEntra": AUTO_DIAS_ENTRA, "diasSai": AUTO_DIAS_SAI},
+                                    "diasEntra": AUTO_DIAS_ENTRA, "diasSai": AUTO_DIAS_SAI,
+                                    "pagaDias": AUTO_PAGA_DIAS, "ficaDias": AUTO_FICA_DIAS},
                            "tendencia": {"dias": MEDIA_DIAS, "minimo": MEDIA_MIN},
                            "estresse": {"juro": list(ESTRESSE_JURO), "desvio": list(ESTRESSE_DESVIO), "queda": list(ESTRESSE_QUEDA)},
                            "janelas": {"dias": JANELA_DIAS, "passo": JANELA_PASSO}},
