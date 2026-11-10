@@ -687,12 +687,15 @@ ranking), `motivo` }] e a forma segue. Tempo máximo por rodada: `ORCAMENTO_S` (
   Desde 10/11/2026 (a 2ª rodada real deu Brier 0,27 a 24 h com 80 mercados, quase todos linhas de poucos jogos): a
   tabela e o teste no passado usam **um mercado por evento** (`events[0].id`, o de maior volume; as linhas de um jogo e os
   candidatos de um evento neg_risk andam juntos), `calibracao.eventos` = quantos sobraram e `calibracao.conferenciaLado`
-  { `n`, `concordam`, `fracao` } = quantos últimos preços do histórico (lido até 2 h depois do fim) concordam com o
-  resultado (bem abaixo de 1 = lado trocado; o log avisa abaixo de 0,8). O lado 0 é o 1º de `outcomes` (a ordem de
+  { `n`, `concordam`, `fracao`, `corte` } = dos eventos com o último preço do histórico já decidido (≤ 10% ou ≥ 90%),
+  quantos concordam com o resultado (`o` = 1 se o lado 0 venceu; bem abaixo de 1 = lado trocado; o log avisa abaixo de
+  0,6). O último preço NÃO é o de depois da resolução: os mercados de jogos param de negociar no início do jogo (o
+  `endDate`), então `ult` = `pts[0]` = o preço de antes do jogo; na 3ª rodada real (10/11/2026) os 13 que discordavam
+  eram zebras (quase todas linhas do mesmo jogo), não lado trocado. O lado 0 é o 1º de `outcomes` (a ordem de
   `clobTokenIds` e `outcomePrices` segue a dele); `["No", "Yes"]` é trocado para o "Sim" ser o lado 0; com nomes (times,
   pessoas), o 1º nome. Os mercados lidos antes disso (sem o evento) foram lidos de novo.
 - **Data API**: a v1 respondeu HTTP 410 ("Data API v1 has been retired", migração para `/v2/`): as negociações são
-  pedidas em `/v2/trades` (`?market=` no ranking, `?user=` na cópia); se a v2 pedir chave (401/403), `semDados`
+  pedidas em `/v2/trades` (`?condition=<conditionId>` no ranking, `?user=` na cópia; a v2 recusa `market`); se a v2 pedir chave (401/403), `semDados`
   "ranking" e `seguir.motivo` dizem isso e o resto continua.
 - **casas**: `{ "fontes": { "Kalshi" | "Manifold": { "ok", "mercados", "motivo" } }, "regra", "pares": [{ "pergunta",
   "outra" (casa), "outraPergunta", "polymarket" (preço do Sim), "outraPreco", "diferenca" (outra − Polymarket), "nota"

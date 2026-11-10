@@ -249,8 +249,10 @@ class Falso:
             raise rede.Erro('HTTP 410 em Data API de mentira: {"error":"Data API v1 has been retired"}', 410)
         if getattr(self, "pv_v2_chave", False):
             raise rede.Erro("HTTP 401 em Data API de mentira: unauthorized", 401)
-        if u.path == "/v2/trades" and "market" in q:
-            m = self._por_cond.get(q["market"][0])
+        if u.path == "/v2/trades" and "market" in q:  # como a v2 de verdade: o conditionId vai em `condition`
+            raise rede.Erro("HTTP 400 em Data API de mentira: 'market' is not a query param on this API", 400)
+        if u.path == "/v2/trades" and "condition" in q:
+            m = self._por_cond.get(q["condition"][0])
             if not m or m["fim"] > self.agora:
                 return []
             out = []

@@ -73,6 +73,19 @@ def teste_lados():
     assert mk["nomes"] == ["Yes", "No"] and mk["toks"] == ["222", "111"] and mk["resultado"] == 0.0
     mk = P.mercado_de({**base, "outcomes": '["Yes", "No"]', "outcomePrices": '["0.5", "0.5"]'})
     assert mk["resultado"] == 0.5  # anulado: a calibração só guarda 0 ou 1
+    # o BO5 da 3ª rodada real: lado 0 (Invictus Gaming) a 3,2% no fim e o lado 1 (Gen.G) venceu → o = 0, concorda
+    bo5 = {**base, "question": "LoL: Invictus Gaming vs Gen.G (BO5) - Worlds Playoffs",
+           "outcomes": '["Invictus Gaming", "Gen.G"]', "outcomePrices": '["0", "1"]'}
+    mk = P.mercado_de(bo5)
+    assert mk["resultado"] == 0.0 and mk["nomes"][1] == "Gen.G" and P.marca(mk, 1) == 1.0
+    pts = [(mk["fim"] - 2 * P.DIA, 0.195), (mk["fim"] - 3 * P.HORA, 0.032)]
+    m1 = {"o": int(mk["resultado"]), "ult": int(round(pts[-1][1] * 1000)), "pts": P.pontos_diarios(pts, mk["fim"]), "ev": "bo5"}
+    assert m1["pts"][0] == 32 and m1["o"] == 0
+    lote = {f"b{i}": {**m1, "ev": f"e{i}", "vol": 1} for i in range(9)}
+    assert P.conferir_lado(lote)["fracao"] == 1.0
+    # a zebra antes do jogo (último preço 23%, o lado 0 venceu) não conta na conferência: o último preço não decidiu
+    lote["z"] = {**m1, "ev": "z", "ult": 230, "o": 1, "vol": 1}
+    assert P.conferir_lado(lote)["n"] == 9
     # um por evento e a conferência do lado
     merc = {str(i): {"ev": "j1" if i < 5 else str(i), "vol": i, "o": 1, "ult": 990, "pts": [900] * 31, "cat": "Esportes"}
             for i in range(12)}

@@ -843,7 +843,7 @@ def ranking(R, agora):
     for mk in mercados[:RANK_MERCADOS]:
         if not R.tempo(80):
             break
-        t = R.pedir("pmdata", f"{PMDATA}/trades?market={mk['cond']}&limit=500&takerOnly=false", "pmdata /trades (mercado)", "pmdata")
+        t = R.pedir("pmdata", f"{PMDATA}/trades?condition={mk['cond']}&limit=500&takerOnly=false", "pmdata /trades (mercado)", "pmdata")
         if t is None:
             if R.ultimo_status in (401, 403):
                 pediu_chave = R.ultimo_status
@@ -913,13 +913,18 @@ def um_por_evento(merc):
 
 
 def conferir_lado(merc):
-    """O último preço do histórico (já depois do fim) concorda com o resultado? Perto de 100% = o lado lido é o
-    mesmo do resultado; bem abaixo, sinal de lado trocado. None com menos de 10 mercados."""
-    xs = [m for m in merc.values() if m.get("ult") is not None and m["ult"] >= 0 and abs(m["ult"] - 500) >= 200]
-    if len(xs) < 10:
+    """O lado lido é o mesmo do resultado? `o` = 1 se o lado 0 (o 1º de `outcomes`) venceu. O último preço do
+    histórico NÃO é o de depois da resolução: os mercados de jogos param de negociar no início do jogo (o `endDate`),
+    então o `ult` é o preço de antes do jogo, e uma zebra discorda dele sem nada estar trocado (3ª rodada real,
+    10/11/2026: 26 de 39, quase todas as linhas do mesmo jogo de Texas State). Por isso conta só os mercados com o
+    último preço decidido (≤ 10% ou ≥ 90%), um por evento: com o lado certo, quase todos concordam; trocado, quase
+    nenhum. None com menos de 8."""
+    xs = [m for m in um_por_evento(merc).values() if m.get("ult") is not None and m["ult"] >= 0
+          and (m["ult"] <= 100 or m["ult"] >= 900)]
+    if len(xs) < 8:
         return None
     ok = sum(1 for m in xs if (m["ult"] > 500) == (m["o"] == 1))
-    return {"n": len(xs), "concordam": ok, "fracao": round(ok / len(xs), 4)}
+    return {"n": len(xs), "concordam": ok, "fracao": round(ok / len(xs), 4), "corte": [0.1, 0.9]}
 
 
 def tabela_calibracao(merc):
@@ -1323,7 +1328,7 @@ def rodar(ctx):
     merc = cal.get("mercados") or {}
     unicos = um_por_evento(merc)
     lado = conferir_lado(merc)
-    if lado and lado["fracao"] < 0.8:
+    if lado and lado["fracao"] < 0.6:
         R.log(f"  previsão: AVISO: só {lado['concordam']} de {lado['n']} últimos preços concordam com o resultado (lado trocado?)")
     calib = {"mercados": len(merc), "eventos": len(unicos), "conferenciaLado": lado, "horizontes": tabela_calibracao(unicos),
              "desde": min((m["fim"] for m in merc.values()), default=None),
