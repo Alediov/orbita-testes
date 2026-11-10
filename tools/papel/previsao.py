@@ -101,6 +101,7 @@ HIST_JEITOS = [
     lambda a, b, f: f"interval=max&fidelity={max(f, 720) if b - a > 7 * 86400 else max(f, 60)}",
     lambda a, b, f: "interval=1w&fidelity=60" if b - a <= 7 * 86400 else "interval=1m&fidelity=720",
 ]
+PMDATA = "/v2"                # a Data API v1 foi aposentada (HTTP 410 com "migration": ".../v2/") na 2ª rodada real
 RANK_MERCADOS = 15            # mercados resolvidos na semana anterior lidos para montar o ranking
 RANK_MIN_NEGOCIOS = 3
 
@@ -317,6 +318,11 @@ def mercado_de(m):
     precos = [_f(p) for p in _lista_json(m.get("outcomePrices"))]
     if len(nomes) != 2 or len(toks) != 2:
         return None
+    # o lado 0 é sempre o 1º de `outcomes` (a ordem de `clobTokenIds` e de `outcomePrices` segue a dele); se vier
+    # ["No", "Yes"], troca para o "Sim" ser o lado 0. Outcomes com nome (times, pessoas) ficam na ordem da fonte.
+    if [str(x).strip().lower() for x in nomes] == ["no", "yes"]:
+        nomes, toks = nomes[::-1], toks[::-1]
+        precos = precos[::-1] if len(precos) == 2 else precos
     mid = str(m.get("id") or m.get("conditionId") or "")
     if not mid:
         return None
@@ -342,8 +348,12 @@ def mercado_de(m):
         "vol24": _f(m.get("volume24hr"), _f(m.get("volume24hrClob"), 0.0)),
         "vol": _f(m.get("volumeNum"), _f(m.get("volume"), 0.0)),
         "liq": _f(m.get("liquidityNum"), _f(m.get("liquidity"), 0.0)),
-        "ini": ini, "fim": min(x for x in (fim, fechou) if x) if (fim or fechou) else None, "fimPrevisto": fim,
+        "fechouEm": fechou, "ini": ini, "fim": min(x for x in (fim, fechou) if x) if (fim or fechou) else None, "fimPrevisto": fim,
         "fechado": fechado, "resultado": resultado, "cat": categoria(m),
+        "evento": str(((m.get("events") or [{}])[0] or {}).get("id") or ((m.get("events") or [{}])[0] or {}).get("slug")
+                      or m.get("eventSlug") or m.get("groupItemTitle") or "") if isinstance(m.get("events"), list) else
+                  str(m.get("eventSlug") or ""),
+        "negRisk": bool(m.get("negRisk") or m.get("neg_risk")),
         "taxaBps": _f(m.get("takerBaseFee"), 0.0) if m.get("feesEnabled", True) is not False else 0.0,
         "livro": m.get("enableOrderBook") is not False,
         "aberto": (not fechado) and m.get("active", True) is not False and m.get("acceptingOrders", True) is not False,
@@ -829,12 +839,15 @@ def ranking(R, agora):
     mercados = [mk for mk in (mercado_de(m) for m in R.lista(r, "data", "markets"))
                 if mk and mk["cond"] and mk["resultado"] in (0.0, 1.0)]
     mercados.sort(key=lambda mk: -mk["vol"])
-    soma, conta, lidos = {}, {}, 0
+    soma, conta, lidos, pediu_chave = {}, {}, 0, None
     for mk in mercados[:RANK_MERCADOS]:
         if not R.tempo(80):
             break
-        t = R.pedir("pmdata", f"/trades?market={mk['cond']}&limit=500&takerOnly=false", "pmdata /trades (mercado)", "pmdata")
+        t = R.pedir("pmdata", f"{PMDATA}/trades?market={mk['cond']}&limit=500&takerOnly=false", "pmdata /trades (mercado)", "pmdata")
         if t is None:
+            if R.ultimo_status in (401, 403):
+                pediu_chave = R.ultimo_status
+                break
             continue
         lidos += 1
         for x in R.lista(t, "data", "trades"):
@@ -858,8 +871,10 @@ def ranking(R, agora):
     motivo = None
     if not mercados:
         motivo = "nenhum mercado resolvido na semana passada com volume"
+    elif not lidos and pediu_chave:
+        motivo = f"a Data API v2 pede chave (HTTP {pediu_chave}); o seguir fica parado"
     elif not lidos:
-        motivo = "as negociações públicas (Data API /trades) não vieram"
+        motivo = "as negociações públicas (Data API v2 /trades) não vieram"
     elif not out:
         motivo = "nenhuma carteira com negócios suficientes nos mercados da semana passada"
     return out, lidos, motivo
@@ -883,6 +898,28 @@ def pontos_diarios(pts, fim):
         antes = [p for tt, p in pts if tt <= t]
         out.append(int(round(antes[-1] * 1000)) if antes else -1)
     return out
+
+
+def um_por_evento(merc):
+    """Um mercado por evento (o de maior volume): as linhas de um mesmo jogo (spreads, mais/menos, empate) e os
+    candidatos de um evento de vários resultados (neg_risk) andam juntos, e 10 linhas de uma zebra só pareciam 10
+    acertos do azarão (2ª rodada real, 09/11/2026: Brier 0,27 com 80 mercados de poucos jogos)."""
+    por = {}
+    for k, m in merc.items():
+        ev = m.get("ev") or k
+        if ev not in por or m.get("vol", 0) > merc[por[ev]].get("vol", 0):
+            por[ev] = k
+    return {k: merc[k] for k in por.values()}
+
+
+def conferir_lado(merc):
+    """O último preço do histórico (já depois do fim) concorda com o resultado? Perto de 100% = o lado lido é o
+    mesmo do resultado; bem abaixo, sinal de lado trocado. None com menos de 10 mercados."""
+    xs = [m for m in merc.values() if m.get("ult") is not None and m["ult"] >= 0 and abs(m["ult"] - 500) >= 200]
+    if len(xs) < 10:
+        return None
+    ok = sum(1 for m in xs if (m["ult"] > 500) == (m["o"] == 1))
+    return {"n": len(xs), "concordam": ok, "fracao": round(ok / len(xs), 4)}
 
 
 def tabela_calibracao(merc):
@@ -923,6 +960,10 @@ def tabela_calibracao(merc):
 
 def coletar_calibracao(R, cal, agora, erros):
     """Lê os mercados encerrados novos (e, para trás, até 180 dias) e guarda o preço de cada dia antes do fim."""
+    if any("ev" not in m for m in (cal.get("mercados") or {}).values()):
+        # lidos antes de 10/11/2026, sem o evento nem o último preço: lê de novo (a tabela passou a ser um por evento)
+        R.log(f"  previsão: o observatório recomeça ({len(cal.get('mercados') or {})} mercados sem o evento)")
+        cal.clear()
     merc = cal.setdefault("mercados", {})
     pulados = cal.setdefault("pulados", [])
     ps = set(pulados)
@@ -948,7 +989,7 @@ def coletar_calibracao(R, cal, agora, erros):
         if feitos >= CAL_POR_RODADA or not R.tempo(45):
             return False
         feitos += 1
-        pts = R.historico(mk["toks"][0], mk["fim"] - 31 * DIA, mk["fim"], 720)
+        pts = R.historico(mk["toks"][0], mk["fim"] - 31 * DIA, max(mk["fim"], mk.get("fechouEm") or 0) + 2 * HORA, 720)
         if pts is None:
             return False
         if not pts:
@@ -956,7 +997,8 @@ def coletar_calibracao(R, cal, agora, erros):
             ps.add(mk["id"])
             return True
         merc[mk["id"]] = {"fim": mk["fim"], "o": int(mk["resultado"]), "cat": mk["cat"], "q": curta(mk["q"], 80),
-                          "vol": round(mk["vol"]), "pts": pontos_diarios(pts, mk["fim"])}
+                          "vol": round(mk["vol"]), "pts": pontos_diarios(pts, mk["fim"]), "ev": mk["evento"] or mk["id"],
+                          "ult": int(round(pts[-1][1] * 1000))}
         return True
 
     # os novos (do mais antigo ao mais novo)
@@ -1204,7 +1246,7 @@ def rodar(ctx):
     for end in seg.get("carteiras") or []:
         if not R.tempo(70) or copiadas >= SEG_MAX_RODADA:
             break
-        r = R.pedir("pmdata", f"/trades?user={end}&limit=100", "pmdata /trades", "pmdata")
+        r = R.pedir("pmdata", f"{PMDATA}/trades?user={end}&limit=100", "pmdata /trades", "pmdata")
         if r is None:
             continue
         cur = seg["cursor"].get(end, agora)
@@ -1279,13 +1321,18 @@ def rodar(ctx):
     cal = est.setdefault("cal", {})
     andamento = coletar_calibracao(R, cal, agora, R.erros) if R.tempo(40) else {"lidosAgora": 0}
     merc = cal.get("mercados") or {}
-    calib = {"mercados": len(merc), "horizontes": tabela_calibracao(merc),
+    unicos = um_por_evento(merc)
+    lado = conferir_lado(merc)
+    if lado and lado["fracao"] < 0.8:
+        R.log(f"  previsão: AVISO: só {lado['concordam']} de {lado['n']} últimos preços concordam com o resultado (lado trocado?)")
+    calib = {"mercados": len(merc), "eventos": len(unicos), "conferenciaLado": lado, "horizontes": tabela_calibracao(unicos),
              "desde": min((m["fim"] for m in merc.values()), default=None),
              "ate": max((m["fim"] for m in merc.values()), default=None),
              "porCategoria": {}, "andamento": andamento,
              "criterio": {"volumeMin": CAL_VOL_MIN, "duracaoMinDias": CAL_DURACAO_MIN // DIA, "dias": CAL_DIAS},
-             "nota": "O preço do “Sim” (o histórico de 12 em 12 h) antes do fim × o que aconteceu, nos mercados de sim ou "
-                     "não encerrados com resultado (os anulados ficam de fora)."}
+             "nota": "O preço do 1º lado (o “Sim”, ou o 1º nome nos mercados de times e pessoas; histórico de 12 em 12 h) "
+                     "antes do fim × o que aconteceu, nos mercados de dois lados encerrados com resultado (os anulados "
+                     "ficam de fora), um por evento (o de maior volume): as linhas de um mesmo jogo andam juntas."}
     for m in merc.values():
         calib["porCategoria"][m["cat"]] = calib["porCategoria"].get(m["cat"], 0) + 1
     calib["porCategoria"] = dict(sorted(calib["porCategoria"].items(), key=lambda x: -x[1]))
@@ -1316,7 +1363,7 @@ def rodar(ctx):
         if v["id"] in COM_PASSADO and merc:
             regra, lim = COM_PASSADO[v["id"]]
             try:
-                out["historico"] = simular_passado(merc, regra, lim, cdi, cdi_ano)
+                out["historico"] = simular_passado(unicos, regra, lim, cdi, cdi_ano)
             except (KeyError, ValueError, ZeroDivisionError) as e:
                 R.erros.append(f"passado {v['id']}: {e}")
         if v["id"] == "seguir":

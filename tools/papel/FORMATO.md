@@ -684,6 +684,16 @@ ranking), `motivo` }] e a forma segue. Tempo máximo por rodada: `ORCAMENTO_S` (
   "real" (fração que aconteceu), "sim", "ic" [baixo, alto] (Wilson 95%) }] (10) }] }`. Mercados de sim ou não
   encerrados com resultado, volume ≥ US$ 5 mil, abertos por 2 dias ou mais; o fim é o `closedTime` (ou o `endDate`);
   lidos 80 por rodada, os novos primeiro e, para trás, até 180 dias; no máximo 3.000 guardados.
+  Desde 10/11/2026 (a 2ª rodada real deu Brier 0,27 a 24 h com 80 mercados, quase todos linhas de poucos jogos): a
+  tabela e o teste no passado usam **um mercado por evento** (`events[0].id`, o de maior volume; as linhas de um jogo e os
+  candidatos de um evento neg_risk andam juntos), `calibracao.eventos` = quantos sobraram e `calibracao.conferenciaLado`
+  { `n`, `concordam`, `fracao` } = quantos últimos preços do histórico (lido até 2 h depois do fim) concordam com o
+  resultado (bem abaixo de 1 = lado trocado; o log avisa abaixo de 0,8). O lado 0 é o 1º de `outcomes` (a ordem de
+  `clobTokenIds` e `outcomePrices` segue a dele); `["No", "Yes"]` é trocado para o "Sim" ser o lado 0; com nomes (times,
+  pessoas), o 1º nome. Os mercados lidos antes disso (sem o evento) foram lidos de novo.
+- **Data API**: a v1 respondeu HTTP 410 ("Data API v1 has been retired", migração para `/v2/`): as negociações são
+  pedidas em `/v2/trades` (`?market=` no ranking, `?user=` na cópia); se a v2 pedir chave (401/403), `semDados`
+  "ranking" e `seguir.motivo` dizem isso e o resto continua.
 - **casas**: `{ "fontes": { "Kalshi" | "Manifold": { "ok", "mercados", "motivo" } }, "regra", "pares": [{ "pergunta",
   "outra" (casa), "outraPergunta", "polymarket" (preço do Sim), "outraPreco", "diferenca" (outra − Polymarket), "nota"
   (Jaccard), "fim", "cat", "comprou" (o lado comprado, ou null) }] }` (até 30, a maior diferença primeiro).

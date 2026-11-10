@@ -118,7 +118,8 @@ class Falso:
              "liquidityNum": round(m["vol"] / 4, 2), "closed": fechado, "active": not fechado, "enableOrderBook": True,
              "acceptingOrders": not fechado, "bestBid": None if fechado else round(max(0.001, p - 0.005), 3),
              "bestAsk": None if fechado else round(min(0.999, p + 0.005), 3),
-             "events": [{"title": m["q"], "slug": f"evento-{m['i']}"}],
+             "events": [{"id": str(90000 + (m["i"] // 2 if m["cat"] == "Esportes" else m["i"])), "title": m["q"],
+                         "slug": f"evento-{m['i']}"}],
              "takerBaseFee": 100 if m["cat"] == "Cripto" else 0}
         if EN[m["cat"]] and m["i"] % 2 == 0:
             d["category"] = EN[m["cat"]]
@@ -244,7 +245,11 @@ class Falso:
             for n, x in enumerate(lst):
                 x["rank"] = str(n + 1)
             return lst[: int(q.get("limit", ["50"])[0])]
-        if u.path == "/trades" and "market" in q:
+        if u.path.startswith("/trades"):  # a v1 foi aposentada (como na rodada real de 09/11/2026)
+            raise rede.Erro('HTTP 410 em Data API de mentira: {"error":"Data API v1 has been retired"}', 410)
+        if getattr(self, "pv_v2_chave", False):
+            raise rede.Erro("HTTP 401 em Data API de mentira: unauthorized", 401)
+        if u.path == "/v2/trades" and "market" in q:
             m = self._por_cond.get(q["market"][0])
             if not m or m["fim"] > self.agora:
                 return []
@@ -261,7 +266,7 @@ class Falso:
                                 "size": round(r.uniform(100, 2000), 2), "price": round(p if lado == 0 else 1 - p, 4),
                                 "timestamp": t // 1000, "outcomeIndex": lado, "pseudonym": f"Apelido-{c['k']}"})
             return out[:500]
-        if u.path == "/trades":
+        if u.path == "/v2/trades":
             end = q["user"][0].lower()
             c = next((c for c in self._carteiras if c["end"] == end), None)
             return self._trades(c) if c else []

@@ -59,6 +59,31 @@ def teste_mercado_de():
     assert P.ms_de(1793000000) == 1793000000000 and P.ms_de("2026-11-01") == P.ms_de("2026-11-01T00:00:00Z")
 
 
+def teste_lados():
+    """O "Não" vence; outcomes com nome; outcomes na ordem ["No", "Yes"]; anulado fica fora."""
+    base = {"id": "9", "question": "Q?", "clobTokenIds": '["111", "222"]', "closed": True,
+            "endDate": "2026-11-01T00:00:00Z", "umaResolutionStatus": "resolved", "events": [{"id": "77"}]}
+    mk = P.mercado_de({**base, "outcomes": '["Yes", "No"]', "outcomePrices": '["0", "1"]'})
+    assert mk["resultado"] == 0.0 and mk["toks"][0] == "111" and P.marca(mk, 0) == 0 and P.marca(mk, 1) == 1
+    assert mk["evento"] == "77"
+    mk = P.mercado_de({**base, "outcomes": '["Flamengo", "Vasco"]', "outcomePrices": '["0", "1"]'})
+    assert mk["resultado"] == 0.0 and mk["nomes"] == ["Flamengo", "Vasco"] and mk["toks"] == ["111", "222"]
+    # ["No", "Yes"]: o "Sim" vira o lado 0, com o token e o preço dele
+    mk = P.mercado_de({**base, "outcomes": '["No", "Yes"]', "outcomePrices": '["1", "0"]'})
+    assert mk["nomes"] == ["Yes", "No"] and mk["toks"] == ["222", "111"] and mk["resultado"] == 0.0
+    mk = P.mercado_de({**base, "outcomes": '["Yes", "No"]', "outcomePrices": '["0.5", "0.5"]'})
+    assert mk["resultado"] == 0.5  # anulado: a calibração só guarda 0 ou 1
+    # um por evento e a conferência do lado
+    merc = {str(i): {"ev": "j1" if i < 5 else str(i), "vol": i, "o": 1, "ult": 990, "pts": [900] * 31, "cat": "Esportes"}
+            for i in range(12)}
+    u = P.um_por_evento(merc)
+    assert len(u) == 8 and "4" in u and "0" not in u
+    assert P.conferir_lado(merc)["fracao"] == 1.0
+    for m in merc.values():
+        m["o"] = 0
+    assert P.conferir_lado(merc)["fracao"] == 0.0
+
+
 def teste_tabela():
     merc = {}
     for i in range(100):
@@ -117,6 +142,8 @@ def teste_rodadas():
     assert por["cdi"]["aoVivo"]["retorno"] > 0 and por["usdc"]["aoVivo"]["retorno"] == 0
     # calibração com as 3 janelas e as 10 faixas
     c = d["calibracao"]
+    assert c["conferenciaLado"]["fracao"] > 0.9, c["conferenciaLado"]
+    assert c["eventos"] < c["mercados"]
     assert c["mercados"] > 100 and [h["id"] for h in c["horizontes"]] == ["24h", "7d", "30d"]
     assert all(len(h["faixas"]) == 10 and h["brier"] is not None for h in c["horizontes"])
     # diferença entre casas: casou e nenhum par casou o "parecido" com outro número
@@ -160,8 +187,25 @@ def teste_historico_reserva():
 def teste_ranking_pelas_negociacoes():
     """O ranking sai das negociações públicas dos mercados resolvidos na semana anterior (o leaderboard morreu)."""
     _, d, log = rodadas(2)
+    # um 401 da v2 (se ela pedir chave): o seguir fica em semDados com o motivo, o resto continua
     assert d["seguir"]["mercadosLidos"] and len(d["seguir"]["carteiras"]) == P.SEG_N, d["seguir"]
-    assert "leaderboard" not in log and "estrutura de pmdata /trades (mercado)" in log
+    assert "leaderboard" not in log and "estrutura de pmdata /trades (mercado)" in log and "410" not in log
+
+
+def teste_v2_pede_chave():
+    import falso
+    import papel
+    pasta = tempfile.mkdtemp(prefix="prev-")
+    try:
+        cli = falso.ClientePapelFalso()
+        cli.pv_v2_chave = True
+        papel.rodada(cli, pasta, cli.agora, formas=["previsao"], exemplo=True, buscar_cdi=False, log=papel.Log(quieto=True))
+        with open(os.path.join(pasta, "previsao.json")) as f:
+            d = json.load(f)
+        assert "pede chave" in (d["seguir"]["motivo"] or "") and any(x["fonte"] == "ranking" for x in d["semDados"])
+        assert {v["id"]: v for v in d["versoes"]}["fav90"]["aoVivo"]["extra"]["posicoes"] > 0
+    finally:
+        shutil.rmtree(pasta, ignore_errors=True)
 
 
 def teste_fonte_falhando():
