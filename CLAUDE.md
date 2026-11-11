@@ -50,6 +50,14 @@ acabavam; aqui os executores padrão não têm limite.
   Actions vai para o `motivoSemTranscricao` e o vídeo é tentado de novo até 6 vezes). Ramo órfão `ideias` (2×/dia):
   `videos/<id>.json`, `indice.json` (sem os textos) e `log.txt`. Quem lê e classifica é a tarefa do repositório privado
   (`gerador/IDEIAS.md` de lá). Teste: `python3 tools/ideias/teste_ideias.py`.
+- **Canais parecidos** (pedido do Alediov, 11/11/2026: "aumentar o leque", 1×/semana): `tools/ideias/descobrir.py`, passo
+  do `ideias.yml` com `--cada 7` (input `descobrir` = sim força): candidatos pelos canais em destaque dos seguidos
+  (`/@handle/channels`), pela busca do YouTube filtrada por canais (as `buscas` de cada canal e as gerais da config;
+  sem elas, o `foco` e as palavras típicas dos títulos) e pelos @canais citados nas descrições; feed RSS de cada um;
+  nota 0–100 (títulos parecidos com algum seguido, frequência, se ainda posta, por quantos caminhos veio); fora os
+  seguidos, os `dispensados`, quem não posta há 60 dias e quem não escreve em português (`idiomas`). Saída
+  `sugestoes.json` no ramo `ideias`. Só sugere: Seguir/Dispensar é no app, que grava `config/ideias-canais.json`
+  (o canal novo em `canais`, o dispensado em `dispensados`). Teste: `python3 tools/ideias/teste_descobrir.py`.
 - **Revisão de 09/11/2026** (pedido do Alediov: "aprimorar cada um dos Testes"; olhando as rodadas reais de 03 a
   09/11): (1) **métricas comuns** em toda conta com série (`conta.metricas`, posto pelo `papel.py` em todas as formas e
   pelo `mercado.py` em cada conta do copy trading, que agora lê `tools/papel` no checkout): CDI no MESMO período,
