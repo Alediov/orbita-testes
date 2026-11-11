@@ -1,33 +1,53 @@
 {
-  "_sobre": "Canais que a antena de ideias acompanha (tools/ideias/ideias.py, workflow ideias.yml). channel_id achado na página do @handle em 09/11/2026; se o feed falhar, o programa procura de novo pelo handle.",
+  "_sobre": "Canais que a antena de ideias acompanha (tools/ideias/ideias.py, workflow ideias.yml). channel_id achado na página do @handle em 09/11/2026; se o feed falhar, o programa procura de novo pelo handle. `buscas`: o que procurar para achar canais parecidos (tools/ideias/descobrir.py, 1×/semana). `dispensados`: canais que o Alediov dispensou no app (não voltam). Seguir/Dispensar no app grava este arquivo.",
   "canais": [
     {
       "chave": "craftgold",
       "nome": "Craft Gold",
       "handle": "craftgold19",
       "channel_id": "UCo-JPwjQ6wEMLXhPJDV7xLg",
-      "foco": "ideias de coisas novas para ganhar dinheiro, quase tudo feito com IA"
+      "foco": "ideias de coisas novas para ganhar dinheiro, quase tudo feito com IA",
+      "buscas": [
+        "ganhar dinheiro com IA",
+        "renda extra com inteligência artificial"
+      ]
     },
     {
       "chave": "marinho",
       "nome": "Canal do Marinho",
       "handle": "novocanaldomarinho",
       "channel_id": "UCgO3Yasdf1gbLwtbZ69o_6w",
-      "foco": "pools de liquidez (série Aposentadoria sem Governo)"
+      "foco": "pools de liquidez (série Aposentadoria sem Governo)",
+      "buscas": [
+        "pools de liquidez",
+        "renda passiva DeFi"
+      ]
     },
     {
       "chave": "criptobr",
       "nome": "Cripto BR",
       "handle": "criptobr",
       "channel_id": "UCD9A8nZLAtZiM_1ZgLkn-kg",
-      "foco": "faucets, check-ins e macros novas"
+      "foco": "faucets, check-ins e macros novas",
+      "buscas": [
+        "faucet bitcoin grátis",
+        "airdrop cripto grátis"
+      ]
     },
     {
       "chave": "theoborges",
       "nome": "Theo Borges",
       "handle": "theoborges",
-      "channel_id": "",
-      "foco": "apostas esportivas (ideias para o teste de Apostas de valor no papel)"
+      "channel_id": "UCLWt2kCXdBlc2qWlUrP4vqw",
+      "foco": "apostas esportivas (ideias para o teste de Apostas de valor no papel)",
+      "buscas": [
+        "apostas de valor futebol",
+        "trader esportivo"
+      ]
     }
-  ]
+  ],
+  "idiomas": [
+    "pt"
+  ],
+  "dispensados": []
 }

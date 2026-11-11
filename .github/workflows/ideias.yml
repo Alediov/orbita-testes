@@ -3,6 +3,7 @@
 # sem histórico): videos/<id>.json, indice.json e log.txt. Só leitura pública, sem chave e sem conta; quem lê e
 # classifica é a tarefa agendada do repositório privado do app. O YouTube às vezes bloqueia os IPs do Actions: o
 # motivo fica no vídeo e no log, os metadados ficam assim mesmo e a transcrição é tentada de novo nas rodadas seguintes.
+# Uma vez por semana, tools/ideias/descobrir.py procura canais parecidos (sugestoes.json; seguir ou dispensar é no app).
 name: Antena de ideias (vídeos dos canais)
 on:
   schedule:
@@ -14,6 +15,9 @@ on:
         default: "40"
       recomecar:
         description: "Recomeçar do zero, sem o ramo anterior (sim/não)"
+        default: "não"
+      descobrir:
+        description: "Procurar canais parecidos agora, mesmo antes de 7 dias (sim/não)"
         default: "não"
 permissions:
   contents: write
@@ -48,6 +52,12 @@ jobs:
           ls dados
       - name: Rodada
         run: python -I tools/ideias/ideias.py --dados dados --max "${{ inputs.maximo || '40' }}"
+      - name: Canais parecidos (1×/semana)
+        if: always()
+        continue-on-error: true
+        run: |
+          if [ "${{ inputs.descobrir }}" = "sim" ]; then CADA=0; else CADA=7; fi
+          python -I tools/ideias/descobrir.py --dados dados --cada "$CADA"
       - name: Guardar no ramo ideias
         if: always()
         env:
