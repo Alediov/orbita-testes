@@ -50,9 +50,10 @@ PAGINA = "https://www.youtube.com/@{}?hl=pt-BR&gl=BR"
 NS = {"a": "http://www.w3.org/2005/Atom", "yt": "http://www.youtube.com/xml/schemas/2015"}
 
 VERSAO = 1
-MAX_CANDIDATOS = 40
+MAX_CANDIDATOS = 60
 MAX_SUGESTOES = 12
 POR_BUSCA = 12
+NOTA_MIN = 30
 PAUSA = 2.5
 SEM_POSTAR_DIAS = 60
 PESO_ORIGEM = {"destaque": 1.0, "citado": 0.9, "busca": 0.5}
@@ -314,7 +315,7 @@ def rodada(dados, config_path, rede, log, agora=None):
 
     candidatos = {}   # chave (channel_id ou @handle) → {…, origens: set, motivos: []}
 
-    def anotar(c, origem, motivo):
+    def anotar(c, origem, motivo, de=None, rank=0):
         k = c.get("channel_id") or ("@" + dobrar(c.get("handle") or ""))
         if not c.get("channel_id") and not c.get("handle"):
             return
@@ -322,7 +323,12 @@ def rodada(dados, config_path, rede, log, agora=None):
                 or dobrar(c.get("handle") or "") in hs_seg | disp_h):
             return
         x = candidatos.setdefault(k, {"channel_id": c.get("channel_id"), "handle": c.get("handle") or "", "nome": c.get("nome") or "",
-                                      "inscritos": c.get("inscritos"), "origens": set(), "motivos": []})
+                                      "inscritos": c.get("inscritos"), "origens": set(), "motivos": [],
+                                      "de": collections.Counter(), "peso": 0.0})
+        # o peso: destaque e citação valem mais que a busca; na busca, quem vem antes nos resultados vale mais
+        x["peso"] += PESO_ORIGEM[origem] * (1 - min(rank, POR_BUSCA) / (2 * POR_BUSCA))
+        if de:
+            x["de"][de] += 1
         for campo in ("channel_id", "handle", "nome", "inscritos"):
             if not x.get(campo) and c.get(campo):
                 x[campo] = c[campo]
@@ -337,9 +343,12 @@ def rodada(dados, config_path, rede, log, agora=None):
         try:
             d = dados_iniciais(rede.texto(DESTAQUE.format(urllib.parse.quote(c["handle"]))))
             achados = [x for x in canais_no_json(d or {}) if x["channel_id"] != c.get("channel_id")]
+            if not achados:   # muitos canais não têm mais a aba "Canais": os em destaque ficam na página inicial
+                d = dados_iniciais(rede.texto(PAGINA.format(urllib.parse.quote(c["handle"]))))
+                achados = [x for x in canais_no_json(d or {}) if x["channel_id"] != c.get("channel_id")]
             fontes["destaque"] += len(achados)
             for x in achados:
-                anotar(x, "destaque", f"em destaque no {c.get('nome')}")
+                anotar(x, "destaque", f"em destaque no {c.get('nome')}", c.get("chave"))
             log(f"destaque {c.get('chave')}: {len(achados)}")
         except Exception as e:  # noqa: BLE001
             erros.append(f"destaque {c.get('chave')}: {str(e)[:120]}")
@@ -350,7 +359,8 @@ def rodada(dados, config_path, rede, log, agora=None):
     for c in seguidos:
         bs = list(c.get("buscas") or [])
         if not bs:
-            foco = re.split(r"[(;,]", c.get("foco") or "")[0].strip()
+            # o foco dos canais seguidos pelo app é só "parecido com X": não serve de busca
+            foco = "" if c.get("sugerido") else re.split(r"[(;,]", c.get("foco") or "")[0].strip()
             if foco:
                 bs.append(foco)
             ws = [w for t in tit_seg.get(c.get("chave"), []) for w in palavras(t)]
@@ -358,7 +368,7 @@ def rodada(dados, config_path, rede, log, agora=None):
             if len(tip) >= 2:
                 bs.append(" ".join(tip))
         for b in bs[:3]:
-            buscas.append((b, c.get("nome")))
+            buscas.append((b, c.get("chave")))
     for b in cfg.get("buscas") or []:
         buscas.append((b, None))
     vistas = set()
@@ -370,8 +380,8 @@ def rodada(dados, config_path, rede, log, agora=None):
             d = dados_iniciais(rede.texto(BUSCA.format(urllib.parse.quote_plus(b))))
             achados = canais_no_json(d or {})[:POR_BUSCA]
             fontes["busca"] += len(achados)
-            for x in achados:
-                anotar(x, "busca", f"busca “{b}”")
+            for i, x in enumerate(achados):
+                anotar(x, "busca", f"busca “{b}”", de, i)
             log(f"busca “{b}”: {len(achados)}")
         except Exception as e:  # noqa: BLE001
             erros.append(f"busca “{b}”: {str(e)[:120]}")
@@ -383,15 +393,15 @@ def rodada(dados, config_path, rede, log, agora=None):
             if "." in h and h.split(".")[-1] in ("com", "br", "net"):
                 continue  # e-mail
             nome_seg = next((c.get("nome") for c in seguidos if c.get("chave") == v.get("canal")), v.get("canal"))
-            anotar({"handle": h}, "citado", f"citado num vídeo do {nome_seg}")
+            anotar({"handle": h}, "citado", f"citado num vídeo do {nome_seg}", v.get("canal"))
             fontes["citado"] += 1
         for cid in re.findall(r"youtube\.com/channel/(UC[\w-]{22})", v.get("descricao") or ""):
-            anotar({"channel_id": cid}, "citado", "citado numa descrição")
+            anotar({"channel_id": cid}, "citado", "citado numa descrição", v.get("canal"))
             fontes["citado"] += 1
 
     log(f"{len(candidatos)} candidatos ({dict(fontes)})")
     # os candidatos que vieram por mais caminhos primeiro
-    ordem = sorted(candidatos.values(), key=lambda x: (-sum(PESO_ORIGEM[o] for o in x["origens"]), x["nome"]))[:MAX_CANDIDATOS]
+    ordem = sorted(candidatos.values(), key=lambda x: (-x["peso"], x["nome"]))[:MAX_CANDIDATOS]
     perfis = []
     for x in ordem:
         try:
@@ -406,7 +416,14 @@ def rodada(dados, config_path, rede, log, agora=None):
         except Exception as e:  # noqa: BLE001
             erros.append(f"feed {x.get('handle') or x.get('channel_id')}: {str(e)[:120]}")
     corpus = Corpus([palavras(t) for ts in tit_seg.values() for t in ts] + [palavras(t) for x in perfis for t, _ in x["videos"]])
-    vet_seg = {c.get("chave"): corpus.vetor([w for t in tit_seg.get(c.get("chave"), []) for w in palavras(t)]) for c in seguidos}
+    # cada seguido: as palavras dos títulos dele + o foco e as buscas (que dizem o assunto, 3 vezes)
+    def palavras_seg(c):
+        ws = [w for t in tit_seg.get(c.get("chave"), []) for w in palavras(t)]
+        extra = palavras(" ".join([("" if c.get("sugerido") else c.get("foco") or "")] + list(c.get("buscas") or [])))
+        return ws + extra * 3
+    vet_seg = {c.get("chave"): corpus.vetor(palavras_seg(c)) for c in seguidos}
+    ignorados = collections.Counter()
+    avaliados = []
     nome_seg = {c.get("chave"): c.get("nome") for c in seguidos}
     canais = []
     for x in perfis:
@@ -415,15 +432,21 @@ def rodada(dados, config_path, rede, log, agora=None):
         ultimo = min(dias) if dias else None
         v30 = sum(1 for d in dias if d <= 30)
         if ultimo is None or ultimo > SEM_POSTAR_DIAS:
+            ignorados["sem postar"] += 1
             continue
         pt = parece_portugues(tits)
         if "pt" in idiomas and "en" not in idiomas and pt < 0.06:
+            ignorados["outro idioma"] += 1
             continue
         vet = corpus.vetor([w for t in tits for w in palavras(t)])
         sims = {k: cosseno(vet, v) for k, v in vet_seg.items()}
-        perto, sim = max(sims.items(), key=lambda kv: kv[1]) if sims else (None, 0.0)
-        origem = sum(PESO_ORIGEM[o] for o in x["origens"])
-        nota = 50 * min(1.0, sim / 0.35) + 20 * min(1.0, v30 / 8) + 15 * max(0.0, 1 - (ultimo or 60) / 30) + 15 * min(1.0, origem / 1.5)
+        # o seguido mais parecido; quem levou até ele (a busca ou o destaque daquele canal) desempata
+        perto = max(sims, key=lambda k: sims[k] + 0.06 * min(2, x["de"].get(k, 0))) if sims else None
+        sim = sims.get(perto, 0.0) if perto else 0.0
+        nota = (45 * min(1.0, sim / 0.22) + 20 * min(1.0, v30 / 8) + 15 * max(0.0, 1 - (ultimo or 60) / 30)
+                + 20 * min(1.0, x["peso"] / 1.0))
+        avaliados.append({"nome": x["nome"], "nota": round(nota), "parecenca": round(sim, 3), "perto": perto, "videos30": v30,
+                          "pt": round(pt, 2), "peso": round(x["peso"], 2)})
         cid = x["channel_id"]
         canais.append({
             "chave": chave_de(x["handle"], x["nome"]), "nome": x["nome"], "handle": x["handle"], "channel_id": cid,
@@ -435,7 +458,8 @@ def rodada(dados, config_path, rede, log, agora=None):
             "novo": cid not in ja_sugeridos,
         })
     canais.sort(key=lambda c: -c["nota"])
-    canais = [c for c in canais if c["nota"] >= 25][:MAX_SUGESTOES]
+    ignorados["nota baixa"] += sum(1 for c in canais if c["nota"] < NOTA_MIN)
+    canais = [c for c in canais if c["nota"] >= NOTA_MIN][:MAX_SUGESTOES]
     vistos = dict(anterior.get("vistos") or {})
     for c in canais:
         vistos.setdefault(c["channel_id"], c["primeiraVez"])
@@ -443,6 +467,7 @@ def rodada(dados, config_path, rede, log, agora=None):
     out = {"versao": VERSAO, "em": em, "proxima": (agora + dt.timedelta(days=7)).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
            "sobre": "Canais parecidos com os que a antena segue (tools/ideias/descobrir.py, 1×/semana). Só sugestões: seguir ou dispensar é no app.",
            "buscas": [b for b, _ in buscas], "fontes": dict(fontes), "candidatos": len(candidatos), "canais": canais,
+           "ignorados": dict(ignorados), "avaliados": sorted(avaliados, key=lambda a: -a["nota"])[:30],
            "dispensados": len(disp), "vistos": dict(list(vistos.items())[-400:]), "erros": erros[:20]}
     with open(os.path.join(dados, "sugestoes.json"), "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, indent=1)
