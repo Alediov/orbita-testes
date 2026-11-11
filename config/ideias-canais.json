@@ -1,5 +1,5 @@
 {
-  "_sobre": "Canais que a antena de ideias acompanha (tools/ideias/ideias.py, workflow ideias.yml). channel_id achado na página do @handle em 09/11/2026; se o feed falhar, o programa procura de novo pelo handle. `buscas`: o que procurar para achar canais parecidos (tools/ideias/descobrir.py, 1×/semana). `dispensados`: canais que o Alediov dispensou no app (não voltam). Seguir/Dispensar no app grava este arquivo.",
+  "_sobre": "Canais que a antena de ideias acompanha (tools/ideias/ideias.py, workflow ideias.yml). channel_id achado na página do @handle em 09/11/2026; se o feed falhar, o programa procura de novo pelo handle. `buscas`: o que procurar para achar canais parecidos (tools/ideias/descobrir.py, 1×/semana). `dispensados`: canais que o Alediov dispensou no app (não voltam). Seguir/Dispensar no app grava este arquivo. `feeds` (11/11/2026): blogs, newsletters e podcasts por RSS/Atom (tools/ideias/ideias.py `coletar_feeds`): o texto vem do próprio item; `palavras` deixa entrar só os itens com uma delas (sites de notícia postam dezenas por dia), `max` itens novos por rodada, `ativo: false` desliga.",
   "canais": [
     {
       "chave": "craftgold",
@@ -49,5 +49,97 @@
   "idiomas": [
     "pt"
   ],
-  "dispensados": []
+  "dispensados": [],
+  "feeds": [
+    {
+      "chave": "livecoins",
+      "nome": "Livecoins",
+      "url": "https://livecoins.com.br/feed/",
+      "tipo": "blog",
+      "foco": "notícias de cripto em português",
+      "palavras": [
+        "airdrop",
+        "faucet",
+        "aplicativo",
+        "app ",
+        "pix",
+        "cashback",
+        "renda passiva",
+        "staking",
+        "pool",
+        "liquidez",
+        "rendimento",
+        "grátis",
+        "bônus",
+        "recompensa",
+        "yield",
+        "stablecoin",
+        "rende ",
+        "ganhar",
+        "testnet",
+        "pontos"
+      ],
+      "max": 2
+    },
+    {
+      "chave": "portaldobitcoin",
+      "nome": "Portal do Bitcoin",
+      "url": "https://portaldobitcoin.uol.com.br/feed/",
+      "tipo": "blog",
+      "foco": "notícias de cripto em português",
+      "palavras": [
+        "airdrop",
+        "faucet",
+        "aplicativo",
+        "app ",
+        "pix",
+        "cashback",
+        "renda passiva",
+        "staking",
+        "pool",
+        "liquidez",
+        "rendimento",
+        "grátis",
+        "bônus",
+        "recompensa",
+        "yield",
+        "stablecoin",
+        "rende ",
+        "ganhar",
+        "testnet",
+        "pontos"
+      ],
+      "max": 2
+    },
+    {
+      "chave": "cointelegraphbr",
+      "nome": "Cointelegraph Brasil",
+      "url": "https://br.cointelegraph.com/rss",
+      "tipo": "blog",
+      "foco": "notícias de cripto em português",
+      "palavras": [
+        "airdrop",
+        "faucet",
+        "aplicativo",
+        "app ",
+        "pix",
+        "cashback",
+        "renda passiva",
+        "staking",
+        "pool",
+        "liquidez",
+        "rendimento",
+        "grátis",
+        "bônus",
+        "recompensa",
+        "yield",
+        "stablecoin",
+        "rende ",
+        "ganhar",
+        "testnet",
+        "pontos"
+      ],
+      "max": 2
+    }
+  ]
 }

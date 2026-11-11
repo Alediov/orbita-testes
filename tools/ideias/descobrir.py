@@ -306,7 +306,7 @@ def rodada(dados, config_path, rede, log, agora=None):
     fontes = collections.Counter()
 
     # os títulos de cada canal seguido (o que a antena guardou)
-    guard = videos_guardados(dados)
+    guard = [v for v in videos_guardados(dados) if not v.get("tipo")]   # sem os itens de blogs e podcasts
     tit_seg = collections.defaultdict(list)
     for v in guard:
         if v.get("canal"):

@@ -19,6 +19,13 @@ Shorts). Transcrição: legendas (automáticas ou não, pt e depois en) pelo yt-
 youtube-transcript-api. O YouTube às vezes bloqueia IPs de datacenter: o motivo vai para o vídeo e para o log, os
 metadados ficam assim mesmo e o vídeo é tentado de novo nas rodadas seguintes (`MAX_TENTATIVAS`).
 
+Além do YouTube (pedido do Alediov, 11/11/2026): os feeds RSS/Atom de blogs, newsletters e podcasts de `feeds` na
+config ({chave, nome, url, tipo blog|newsletter|podcast, foco, palavras?, max?}). Cada item vira um registro igual ao
+de vídeo (id "r" + 10 hex do link, `tipo` = o da fonte, `url` = o link do item) e o "texto" é o próprio conteúdo do
+item (content:encoded > description > summary, sem HTML; nos podcasts, as notas do episódio): não há o que
+transcrever. `palavras` (opcional) só deixa entrar os itens com uma delas no título ou no resumo (sites de notícia
+postam dezenas por dia; o filtro de IA tem 30 pedidos por dia); `max` (padrão 5) itens novos por rodada por fonte.
+
 Só biblioteca padrão; o yt-dlp e o youtube-transcript-api são opcionais (o workflow instala os dois).
 Uso: python3 -I tools/ideias/ideias.py --dados dados [--config config/ideias-canais.json] [--inicio 30]
 """
@@ -106,6 +113,112 @@ def ler_feed(texto, canal):
         out.append({"id": vid, "canal": canal, "titulo": (e.findtext("a:title", "", NS) or "").strip(),
                     "publicado": e.findtext("a:published", None, NS), "descricao": desc or ""})
     return out
+
+
+# ------------------------------------------------------------------------------------------- feeds de fora do YouTube
+MAX_FEED = 5               # itens novos por rodada por fonte
+MIN_TEXTO = 300            # menos que isso: "só o resumo do feed" (vale o título e o resumo para o filtro)
+_NS_FEED = {"a": "http://www.w3.org/2005/Atom", "content": "http://purl.org/rss/1.0/modules/content/",
+            "itunes": "http://www.itunes.com/dtds/podcast-1.0.dtd"}
+
+
+def texto_de_html(h):
+    """HTML → texto corrido (parágrafos viram espaço; entidades decodificadas)."""
+    h = re.sub(r"(?is)<(script|style)[^>]*>.*?</\1>", " ", h or "")
+    h = re.sub(r"(?i)<br\s*/?>|</p>|</li>|</h\d>", "\n", h)
+    t = html.unescape(_TAG.sub(" ", h))
+    return re.sub(r"[ \t\r\f\v]+", " ", re.sub(r"\n\s*\n+", "\n", t)).strip()
+
+
+def id_do_item(link):
+    import hashlib
+    return "r" + hashlib.sha1((link or "").encode("utf-8")).hexdigest()[:10]
+
+
+def data_do_item(s):
+    """RFC 822 (RSS) ou ISO (Atom) → ISO com fuso, ou None."""
+    if not s:
+        return None
+    s = s.strip()
+    try:
+        from email.utils import parsedate_to_datetime
+        d = parsedate_to_datetime(s)
+        if d.tzinfo is None:
+            d = d.replace(tzinfo=dt.timezone.utc)
+        return d.isoformat()
+    except (TypeError, ValueError, IndexError):
+        pass
+    try:
+        return dt.datetime.fromisoformat(s.replace("Z", "+00:00")).isoformat()
+    except ValueError:
+        return None
+
+
+def ler_feed_fora(texto, chave):
+    """Os itens de um feed RSS 2.0 ou Atom: [{id, canal, titulo, publicado, url, resumo, texto}]."""
+    raiz = ET.fromstring(texto)
+    out = []
+    itens = raiz.findall("./channel/item") or raiz.findall("a:entry", _NS_FEED)
+    for e in itens:
+        atom = e.tag.endswith("entry")
+        if atom:
+            lk = next((l.get("href") for l in e.findall("a:link", _NS_FEED) if l.get("rel") in (None, "alternate")), None)
+            titulo = e.findtext("a:title", "", _NS_FEED)
+            pub = e.findtext("a:published", None, _NS_FEED) or e.findtext("a:updated", None, _NS_FEED)
+            resumo = e.findtext("a:summary", "", _NS_FEED)
+            corpo = e.findtext("a:content", "", _NS_FEED)
+        else:
+            lk = (e.findtext("link") or "").strip() or (e.find("enclosure").get("url") if e.find("enclosure") is not None else None)
+            titulo = e.findtext("title", "")
+            pub = e.findtext("pubDate", None)
+            resumo = e.findtext("description", "") or e.findtext("itunes:summary", "", _NS_FEED)
+            corpo = e.findtext("content:encoded", "", _NS_FEED)
+        if not lk:
+            continue
+        txt = texto_de_html(corpo) or texto_de_html(resumo)
+        out.append({"id": id_do_item(lk), "canal": chave, "titulo": html.unescape((titulo or "").strip()), "url": lk,
+                    "publicado": data_do_item(pub), "resumo": texto_de_html(resumo)[:600], "texto": txt})
+    return out
+
+
+def coletar_feeds(config, videos, baixar_fn, agora, log):
+    """Põe em `videos` os itens novos dos feeds de fora do YouTube. → ({chave: estado}, novos)"""
+    out, novos = {}, 0
+    for f in config.get("feeds") or []:
+        if f.get("ativo") is False:
+            continue
+        chave = f["chave"]
+        st = {"nome": f.get("nome") or chave, "tipo": f.get("tipo") or "blog", "url": f.get("url"), "foco": f.get("foco"),
+              "feed": None, "erro": None, "achados": 0, "fora": True}
+        try:
+            itens = ler_feed_fora(baixar_fn(f["url"]), chave)
+            st["feed"] = True
+        except Exception as e:  # noqa: BLE001
+            st["feed"], st["erro"] = False, f"feed: {e}"
+            log(f"{chave}: feed de fora falhou ({e})")
+            out[chave] = st
+            continue
+        pal = [p.lower() for p in f.get("palavras") or []]
+        if pal:
+            itens = [i for i in itens if any(p in (i["titulo"] + " " + i["resumo"]).lower() for p in pal)]
+        st["achados"] = len(itens)
+        n = 0
+        for i in sorted(itens, key=lambda x: x.get("publicado") or "", reverse=True):
+            if i["id"] in videos:
+                continue
+            if n >= int(f.get("max") or MAX_FEED):
+                break
+            n += 1
+            novos += 1
+            tem = len(i["texto"]) >= MIN_TEXTO
+            videos[i["id"]] = {"canal": chave, "id": i["id"], "titulo": i["titulo"], "publicado": i["publicado"],
+                               "url": i["url"], "duracao": None, "descricao": i["resumo"], "tipo": st["tipo"],
+                               "transcricao": i["texto"] if tem else None, "idioma": None, "fonte": "feed" if tem else None,
+                               "motivoSemTranscricao": None if tem else "só o resumo do feed",
+                               "tentativas": MAX_TENTATIVAS, "visto": agora, "atualizado": agora}
+        log(f"{chave}: {len(itens)} itens no feed ({st['tipo']}), {n} novos")
+        out[chave] = st
+    return out, novos
 
 
 # ------------------------------------------------------------------------------------------- legendas
@@ -378,10 +491,13 @@ def rodada(dados, config, baixar_fn=baixar, ytdlp=None, api=None, inicio=30, max
         st["achados"] = len(achados)
         canais_out[chave] = st
         log(f"{chave}: {len(achados)} no feed/lista, channel_id {cid}")
+    fora, novos_fora = coletar_feeds(config, videos, baixar_fn, agora, log)
+    canais_out.update(fora)
+    novos += novos_fora
     log(f"{novos} vídeos novos")
 
     # 2) transcrever (mais novos primeiro; os nunca tentados antes dos que já falharam)
-    fila = [v for v in videos.values() if not v.get("transcricao") and v.get("tentativas", 0) < MAX_TENTATIVAS
+    fila = [v for v in videos.values() if not v.get("transcricao") and v.get("tentativas", 0) < MAX_TENTATIVAS and not v.get("tipo")
             and v.get("motivoSemTranscricao") != "vídeo indisponível"]
     fila.sort(key=lambda v: (v.get("tentativas", 0) > 0, -publicado_ts(v)))
     bloqueios = 0
@@ -443,7 +559,7 @@ def rodada(dados, config, baixar_fn=baixar, ytdlp=None, api=None, inicio=30, max
         "canais": canais_out,
         "total": len(lista), "comTranscricao": com,
         "videos": [{k: v.get(k) for k in ("id", "canal", "titulo", "publicado", "url", "duracao", "visto",
-                                          "atualizado", "idioma", "fonte", "motivoSemTranscricao", "tentativas")}
+                                          "atualizado", "idioma", "fonte", "motivoSemTranscricao", "tentativas", "tipo")}
                    | {"transcricao": bool(v.get("transcricao")), "caracteres": len(v.get("transcricao") or "")}
                    for v in lista],
         "rodadas": rodadas[-MAX_RODADAS:],

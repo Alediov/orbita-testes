@@ -226,6 +226,54 @@ def teste_sem_ferramentas():
         shutil.rmtree(d)
 
 
+def teste_feeds_de_fora():
+    """Blogs, newsletters e podcasts (11/11/2026): RSS e Atom, palavras, máximo por rodada, sem yt-dlp."""
+    longo = "<p>" + "Um app novo que paga no Pix por tarefas simples. " * 12 + "</p>"
+    rss = f"""<?xml version="1.0"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Blog</title>
+      <item><title>Airdrop novo da semana</title><link>https://blog.test/1</link><pubDate>Tue, 10 Nov 2026 12:00:00 -0300</pubDate>
+        <description>Resumo curto</description><content:encoded><![CDATA[{longo}]]></content:encoded></item>
+      <item><title>Política hoje</title><link>https://blog.test/2</link><pubDate>Tue, 10 Nov 2026 13:00:00 -0300</pubDate><description>nada</description></item>
+      <item><title>App que paga airdrop curto</title><link>https://blog.test/3</link><pubDate>Mon, 09 Nov 2026 12:00:00 -0300</pubDate><description>só isso</description></item>
+    </channel></rss>"""
+    pod = """<?xml version="1.0"?><feed xmlns="http://www.w3.org/2005/Atom"><entry><title>Ep. 12: renda passiva</title>
+      <link href="https://pod.test/12"/><published>2026-11-08T10:00:00Z</published><summary>Notas do episódio</summary></entry></feed>"""
+    rede = Rede({})
+    rede.feeds = {}
+    base = rede.__call__
+    def chamar(url, prazo=30):
+        if url == "https://blog.test/feed":
+            return rss
+        if url == "https://pod.test/feed":
+            return pod
+        if url == "https://quebrado.test/feed":
+            raise RuntimeError("HTTP Error 500")
+        return base(url)
+    cfg = {"canais": [], "feeds": [
+        {"chave": "blog", "nome": "Blog", "url": "https://blog.test/feed", "tipo": "blog", "palavras": ["airdrop", "app"], "max": 5},
+        {"chave": "pod", "nome": "Pod", "url": "https://pod.test/feed", "tipo": "podcast"},
+        {"chave": "quebrado", "nome": "Quebrado", "url": "https://quebrado.test/feed"},
+        {"chave": "off", "nome": "Off", "url": "https://off.test/feed", "ativo": False},
+    ]}
+    d = tempfile.mkdtemp()
+    try:
+        yt = YtFalso({})
+        idx = I.rodada(d, cfg, baixar_fn=chamar, ytdlp=yt, api=I.TranscriptApi(buscar=api_falsa(set())), pausa=0, log=I.Log(eco=False))
+        ids = {v["id"]: v for v in idx["videos"]}
+        assert len(ids) == 3, ids   # a de política fica de fora pelas palavras
+        assert not yt.chamadas, "nada de yt-dlp para os feeds"
+        v1 = json.load(open(os.path.join(d, "videos", I.id_do_item("https://blog.test/1") + ".json")))
+        assert v1["tipo"] == "blog" and v1["fonte"] == "feed" and "Pix" in v1["transcricao"] and v1["url"] == "https://blog.test/1"
+        v3 = ids[I.id_do_item("https://blog.test/3")]
+        assert v3["transcricao"] is False and v3["motivoSemTranscricao"] == "só o resumo do feed"
+        assert ids[I.id_do_item("https://pod.test/12")]["tipo"] == "podcast"
+        assert idx["canais"]["quebrado"]["feed"] is False and "off" not in idx["canais"] and idx["canais"]["blog"]["fora"]
+        # a 2ª rodada não repete
+        idx2 = I.rodada(d, cfg, baixar_fn=chamar, ytdlp=yt, api=I.TranscriptApi(buscar=api_falsa(set())), pausa=0, log=I.Log(eco=False))
+        assert idx2["rodadas"][-1]["novos"] == 0 and idx2["total"] == 3
+    finally:
+        shutil.rmtree(d)
+
+
 if __name__ == "__main__":
     for nome, f in list(globals().items()):
         if nome.startswith("teste_") and callable(f):

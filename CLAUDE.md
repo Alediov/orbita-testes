@@ -50,6 +50,11 @@ acabavam; aqui os executores padrão não têm limite.
   Actions vai para o `motivoSemTranscricao` e o vídeo é tentado de novo até 6 vezes). Ramo órfão `ideias` (2×/dia):
   `videos/<id>.json`, `indice.json` (sem os textos) e `log.txt`. Quem lê e classifica é a tarefa do repositório privado
   (`gerador/IDEIAS.md` de lá). Teste: `python3 tools/ideias/teste_ideias.py`.
+- **Blogs, newsletters e podcasts** (pedido do Alediov, 11/11/2026): `feeds` em `config/ideias-canais.json` (RSS ou
+  Atom; `palavras`, `max`, `ativo`), coletados pelo `ideias.py` (`coletar_feeds`) na mesma rodada: cada item vira um
+  `videos/<id>.json` (id "r" + 10 hex do link, `tipo` blog|newsletter|podcast, `url` do item) com o texto do próprio
+  item no lugar da transcrição (sem yt-dlp). Começou com Livecoins, Portal do Bitcoin e Cointelegraph Brasil, filtrados
+  pelas palavras; a 1ª rodada real confere se os feeds respondem. Teste em `teste_ideias.py` (`teste_feeds_de_fora`).
 - **Canais parecidos** (pedido do Alediov, 11/11/2026: "aumentar o leque", 1×/semana): `tools/ideias/descobrir.py`, passo
   do `ideias.yml` com `--cada 7` (input `descobrir` = sim força): candidatos pelos canais em destaque dos seguidos
   (`/@handle/channels`), pela busca do YouTube filtrada por canais (as `buscas` de cada canal e as gerais da config;
