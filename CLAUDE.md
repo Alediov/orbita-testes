@@ -87,6 +87,12 @@ acabavam; aqui os executores padrão não têm limite.
   seguem a oscilação diária medida em cada um (estreita/média/larga = 1/3/8 vezes). O ao vivo de todos vem primeiro e os
   passados se revezam entre as rodadas. Seletores e o tópico do Swap pelo keccak de `keccak.py` (Python puro). Saída
   `pools[]` com volume, liquidez, giro, taxas ao ano e o gauge (FORMATO.md, "Pools").
+- **Pools arrojadas** (pedido do Alediov, 11/11/2026, pela ideia do Canal do Marinho de 04/11: pool de risco escolhida
+  por filtro; `arrojadas.py`, chamado pelo `pools.py` uma vez por dia fechado do GeckoTerminal): pré-filtro (uma moeda
+  fora das grandes, volume ≥ US$ 100 mil, liquidez ≥ US$ 50 mil, taxas ≥ 100% ao ano), filtro (60 dias de idade, 24 de 30
+  dias com US$ 50 mil+, os 10 maiores donos com até 40%) e um sorteado pela data; posição de faixa inteira pela vela
+  diária (aproximado). Versões `arrEscada` (padrão: 7 partes, uma por dia, 7 dias cada), `arrSemana` e `arrControle`
+  (sem o filtro, para ver se ele ajuda). Sem teste no passado (viés de sobrevivência). Formato no `FORMATO.md`, "Pools".
 - **Copy trading revisto** (pedido do Alediov, 09/11/2026, pelos dados reais de 02 a 09/11; detalhes no
   `tools/mercado/LEIA-ME.md`): 18 contas por carteira (sem 10×; 5 min só no controle `3x5`); versões `p20`/`p25`/`p30`
   que largam a carteira quando a cópia cai 20/25/30% do topo; `agregadas.py` (As 5 melhores, Só robôs, Só pessoas,

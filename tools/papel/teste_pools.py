@@ -285,6 +285,9 @@ def conferir(d, com_hist=True):
     por_pool = {}
     for v in d["versoes"]:
         por_pool.setdefault(v["pool"], []).append(v)
+        if v["pool"] == "arrojada":   # as arrojadas têm a conta própria (teste_arrojadas)
+            assert v["grupo"] == "Arrojada (Marinho)" and v["historico"] is None and v["aproximado"], v
+            continue
         assert v["aoVivo"] is not None, v["id"]
         assert {"taxasGanhas", "gasPago", "reposicoes", "preco", "naBase", "naCotacao"} <= set(v["aoVivo"]["extra"]), v["id"]
         if v["pool"] == "weth_usdc":
@@ -301,6 +304,8 @@ def conferir(d, com_hist=True):
             continue
         assert p["padrao"] in {v["id"] for v in por_pool[p["id"]]}, p
         assert set(p["versoes"]) == {v["id"] for v in por_pool[p["id"]]}
+        if p.get("variavel"):
+            continue
         assert p["volume24h"] > 0 and p["tvl"] > 0 and p["giro"] > 0 and p["aprTaxas"] > 0, p
     assert d["config"]["gasWei"] > 0 and d["config"]["precoEth"] > 0
 
@@ -378,6 +383,48 @@ def teste_gauge():
     assert g.curva.extra["aeroGanho"] > 0 and "aeroVendido" in g.curva.extra
 
 
+def teste_arrojadas():
+    import arrojadas as AR
+    # contas puras
+    assert AR.fator_lp(1) == 1 and perto(AR.fator_lp(4), 0.8, 1e-9)
+    assert AR.taxa_do_nome("MEME / WETH 1%") == 0.01 and AR.taxa_do_nome("X / Y") == 0.003
+    assert AR.taxa_do_nome("A / B 0.05%") == 0.0005
+    p = {"pb0": 1.0, "pq0": 1.0, "v0": 100.0}
+    assert perto(AR.valor_posicao(p, 4.0, 1.0), 2.5 * 100 * 0.8, 1e-9)   # segurar 250 × 0,8
+    ok, _ = AR.constancia([[i, 0, 0, 0, 1, 200_000] for i in range(30)])
+    assert ok
+    ok, _ = AR.constancia([[i, 0, 0, 0, 1, 2_000_000 if i % 9 == 0 else 10_000] for i in range(30)])
+    assert not ok
+    # rodadas: 10 dias, uma rodada a cada 6 h
+    pasta = tempfile.mkdtemp(prefix="pools-arr-")
+    try:
+        cli = falso.ClientePapelFalso()
+        t0 = cli.agora
+        for k in range(40):
+            rodar(cli, pasta, t0 + k * 6 * HORA)
+        d = ler(pasta)
+        arr = [p for p in d["pools"] if p["id"] == "arrojada"]
+        assert len(arr) == 1 and arr[0]["variavel"] and arr[0]["aproximado"], arr
+        esc = arr[0]["escolhaDoDia"]
+        nomes = {p["nome"] for p in esc["passaram"]}
+        assert nomes == {"MEME / WETH 1%", "COIN / USDC 1%"}, (nomes, esc["motivos"])
+        assert esc["motivos"].get("novo demais", 0) >= 1 and esc["motivos"].get("volume não constante", 0) >= 1
+        assert esc["motivos"].get("donos concentrados", 0) >= 1, esc["motivos"]
+        assert esc["escolhido"]["nome"] in nomes
+        vs = {v["id"]: v for v in d["versoes"] if v["pool"] == "arrojada"}
+        assert set(vs) == {"arrEscada", "arrSemana", "arrControle"}
+        esc_v = vs["arrEscada"]["aoVivo"]
+        assert esc_v and esc_v["ops"] >= 8, esc_v     # entrou todo dia e saiu das de 7 dias
+        assert esc_v["extra"]["emPools"] == 7 and len(esc_v["extra"]["arrPosicoes"]) == 7, esc_v["extra"]
+        assert esc_v["extra"]["taxasGanhas"] > 0
+        assert all(v["historico"] is None and v["semHistorico"] for v in vs.values())
+        tipos = {e["tipo"] for e in d["eventos"] if e.get("versao") in vs}
+        assert {"entrou", "saiu"} <= tipos, tipos
+        assert len(arr[0]["escolhas"]) >= 9
+    finally:
+        shutil.rmtree(pasta, ignore_errors=True)
+
+
 def teste_rodadas():
     a = tempfile.mkdtemp(prefix="pools-a-")
     b = tempfile.mkdtemp(prefix="pools-b-")
@@ -395,8 +442,8 @@ def teste_rodadas():
         da, db = ler(a), ler(b)
         assert [v["id"] for v in da["versoes"]] == [v["id"] for v in db["versoes"]]
         for va, vb in zip(da["versoes"], db["versoes"]):
-            if va["grupo"] == "No gauge (AERO)":
-                continue  # o AERO depende das amostras do gauge, uma por rodada
+            if va["grupo"] in ("No gauge (AERO)", "Arrojada (Marinho)"):
+                continue  # o AERO depende das amostras do gauge; as arrojadas escolhem no dia (não alcançam)
             # alcançar dá o mesmo (as que reposicionam só diferem pelo gás, medido a cada rodada: B mediu menos vezes)
             sa, sb = va["aoVivo"]["serie"], vb["aoVivo"]["serie"]
             tol = 1e-4 if va["pool"] == "weth_usdc" else 2e-3
@@ -571,6 +618,7 @@ if __name__ == "__main__":
     teste_gauge()
     teste_ler_trocas()
     teste_marinho()
+    teste_arrojadas()
     teste_rodadas()
     teste_migracao()
     teste_passado_aos_poucos()

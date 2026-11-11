@@ -222,6 +222,9 @@ class Falso:
 
     def gecko(self, caminho):
         self._contar("gecko", 1)
+        r = gecko_arrojadas(caminho, self.agora, self.mundo.px("ETH", self.agora))
+        if r is not None:
+            return r
         if caminho.startswith("/networks/base/pools/"):
             return {"data": {"id": "base_" + PL.POOL.lower(), "type": "pool",
                              "attributes": {"volume_usd": {"h24": "23500000.5"}, "reserve_in_usd": "30500000.1",
@@ -232,3 +235,67 @@ class Falso:
         if hasattr(self, "_gecko_memes"):
             return self._gecko_memes(caminho)
         raise rede.Erro("HTTP 404 em GeckoTerminal", 404)
+
+
+# ------------------------------------------------------------------------------------------------ as arrojadas (arrojadas.py)
+# Seis pools de mentira na lista do GeckoTerminal: dois passam no filtro (MEME, COIN), um é novo demais (PUMP: só o
+# controle), um tem volume de pico (SPIKE), um tem donos concentrados (WHALE) e um é de moedas grandes (WETH/USDC).
+ARR_POOLS = {
+    "0x" + "a1" * 20: {"nome": "MEME / WETH 1%", "idade": 200, "vol": 300_000, "liq": 400_000, "top10": 25, "tend": 0.004, "osc": 0.08},
+    "0x" + "a2" * 20: {"nome": "PUMP / WETH 1%", "idade": 20, "vol": 900_000, "liq": 300_000, "top10": 60, "tend": -0.06, "osc": 0.2},
+    "0x" + "a3" * 20: {"nome": "SPIKE / USDC 0.3%", "idade": 120, "vol": 500_000, "liq": 120_000, "top10": 20, "tend": 0.0, "osc": 0.05, "pico": True},
+    "0x" + "a4" * 20: {"nome": "WHALE / WETH 1%", "idade": 150, "vol": 250_000, "liq": 200_000, "top10": 80, "tend": 0.0, "osc": 0.05},
+    "0x" + "a5" * 20: {"nome": "WETH / USDC 0.05%", "idade": 700, "vol": 20_000_000, "liq": 30_000_000, "top10": 10, "tend": 0.0, "osc": 0.02},
+    "0x" + "a6" * 20: {"nome": "COIN / USDC 1%", "idade": 300, "vol": 150_000, "liq": 200_000, "top10": 30, "tend": -0.01, "osc": 0.04},
+}
+
+
+DIA = 86_400_000
+
+
+def _hs(*partes):
+    import zlib
+    return zlib.crc32(repr(partes).encode()) & 0xFFFF
+
+
+def _arr_preco(end, dia_n):
+    p = ARR_POOLS[end]
+    x = 1.0
+    for d in range(dia_n):
+        x *= 1 + p["tend"] + p["osc"] * (_hs(end, d) / 65535 - 0.5) * 2
+    return max(1e-6, x)
+
+
+def gecko_arrojadas(caminho, agora, eth):
+    import datetime as _dt
+    if caminho.startswith("/networks/base/pools?page="):
+        if "page=1" not in caminho:
+            return {"data": []}
+        dados = []
+        for end, p in ARR_POOLS.items():
+            criado = _dt.datetime.fromtimestamp(agora / 1000 - p["idade"] * 86400, _dt.timezone.utc).isoformat()
+            dados.append({"id": "base_" + end, "type": "pool",
+                          "attributes": {"address": end, "name": p["nome"], "pool_created_at": criado,
+                                         "reserve_in_usd": str(p["liq"]), "volume_usd": {"h24": str(p["vol"])}}})
+        return {"data": dados}
+    for end, p in ARR_POOLS.items():
+        if caminho.startswith(f"/networks/base/pools/{end}/ohlcv/day"):
+            hoje = agora // DIA
+            quote = "token=quote" in caminho
+            lista = []
+            for k in range(40):
+                d = hoje - k
+                if d < hoje - p["idade"]:
+                    break
+                px = (eth if "WETH" in p["nome"].split("/")[1] else 1.0) if quote else _arr_preco(end, int(d - (hoje - 40)))
+                vol = p["vol"] * (0.8 + 0.4 * _hs(end, "v", d) / 65535)
+                if p.get("pico"):
+                    vol = p["vol"] * 10 if k % 9 == 0 else 20_000
+                lista.append([int(d * DIA // 1000), px, px, px, px, vol])
+            return {"data": {"attributes": {"ohlcv_list": lista}}}
+        if caminho.startswith(f"/networks/base/pools/{end}?"):
+            return {"data": {"relationships": {"base_token": {"data": {"id": "base_0x" + end[2:6] * 10}},
+                                               "quote_token": {"data": {"id": "base_" + T["WETH"].lower()}}}}}
+        if caminho.startswith(f"/networks/base/tokens/0x{end[2:6] * 10}/info"):
+            return {"data": {"attributes": {"holders": {"count": 5000, "distribution_percentage": {"top_10": str(p["top10"])}}}}}
+    return None

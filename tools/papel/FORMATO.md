@@ -559,6 +559,19 @@ mesmas versões, ids e histórico de antes (o estado antigo é levado para `pool
 - **eventos**: `abriu`; um `reequilibrou` por dia com reposicionamentos (o resumo do dia); na `r3fixa`, `saiu` depois de
   1 h fora da faixa e `entrou` quando volta.
 
+### Arrojadas pelo filtro do Marinho (11/11/2026, `arrojadas.py`)
+
+Um item a mais em `pools[]` com `id: "arrojada"`, `variavel: true` (o pool muda todo dia; sem preço, faixa nem
+volume próprios), `aproximado: true`, `padrao: "arrEscada"`, `regras` {`volumeMin`, `volumeDiaMin`, `diasConstante`,
+`liquidezMin`, `idadeDias`, `aprMin`, `top10Max`, `partes`, `seguraDias`}, `escolhaDoDia` {`dia`, `vistos`,
+`preFiltro`, `filtro`, `motivos` {motivo: quantos}, `escolhido` e `controle` ({`pool`, `nome`, `dex`, `taxa`, `apr`,
+`volume24h`, `liquidez`, `idadeDias`, `top10`} ou null), `passaram` [os mesmos campos]}, `escolhas` (os últimos 30
+dias, o mais novo primeiro: {`dia`, `nome`, `pool`, `apr`, `preFiltro`, `filtro`}), `comoFunciona` e `nota`. Versões
+`arrEscada`, `arrSemana`, `arrControle` com `pool: "arrojada"`, `grupo: "Arrojada (Marinho)"`, `aproximado: true`,
+`historico: null` e `semHistorico` (por que não há passado). extra: `emPools` (posições abertas), `caixa`,
+`taxasGanhas`, `perdaImp` e `arrPosicoes` [{`pool`, `nome`, `desde`, `dias`, `v0`, `valor`, `taxas`}]. eventos:
+`entrou` e `saiu` (com `motivo`: "7 dias", "sumiu"). As contas vivem em `estado.json` → `arrojadas`.
+
 ## Memecoins (`memes.json`)
 
 O observatório do pump.fun (`memes.py`, job `memes.yml`, 3 vezes por dia desde 09/11/2026: 03h41, 11h41 e 19h41 UTC):

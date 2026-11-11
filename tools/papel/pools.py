@@ -65,6 +65,7 @@ import bisect
 import copy
 import math
 
+import arrojadas as ARR
 import rede
 from conta import CAPITAL, DIA, FUSO_MS, HORA, Curva, Eventos, dia_de, moeda_br, num_br
 from keccak import seletor, topico
@@ -1497,6 +1498,12 @@ def rodar(ctx):
                 passado(cor, rpc, ref, gas_wei, tempo, log)
 
         gk = conferencia_gecko(gecko, pst["weth_usdc"], agora, log, erros)
+        # as arrojadas pelo filtro do Marinho (11/11/2026): uma vez por dia, pelo GeckoTerminal (arrojadas.py)
+        try:
+            arr = ARR.rodar(est.setdefault("arrojadas", {}), gecko, agora, log, erros, ev, tempo)
+        except ERROS as e:
+            erros.append(f"pools arrojadas: {e}")
+            arr = None
         for cor in corridas:
             cor.guardar()
             corte = str(((agora - VOL_HORAS * HORA) // HORA) * HORA)
@@ -1506,6 +1513,9 @@ def rodar(ctx):
         # ---------------------------------------------------------------- saída
         est["eventos"] = ev.para_json()
         saida = montar_saida(corridas, est, agora, gas_wei, gk, btc, erros)
+        if arr:
+            saida["pools"].append(arr[0])
+            saida["versoes"] += arr[1]
         ctx.est.clear()
         ctx.est.update(est)
         return saida
