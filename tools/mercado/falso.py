@@ -61,6 +61,8 @@ class Mundo:
             (9, "tendencia", ["BTC"], 900_000, "user", 50_000, 0.06, 3_000_000, 9e8),      # formador de mercado
             (10, "tendencia", ["ETH"], 3_000, "user", 900, 0.4, 2_000, 1e5),              # conta pequena
             (11, "segura", ["SOL", "HYPE"], 120_000, "user", 9_500, 0.08, 70_000, 5e6),   # "quase nunca perde"
+            (12, "contra", ["BTC", "ETH"], 90_000, "user", -18_000, -0.2, -60_000, 4e6),     # perde sempre (o Ao contrário)
+            (13, "tendencia", ["SOL", "HYPE"], 150_000, "user", -25_000, -0.17, -210_000, 6e6),  # perde sempre
         ]
         for n, estilo, moedas, conta, papel, pm, roi, pt, vlm in perfis:
             e = endereco(n)

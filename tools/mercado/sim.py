@@ -215,6 +215,7 @@ class Conta:
         self.pos: dict[str, dict] = {}  # moeda → {szi, entrada, margem, lev, mmr, desde, checado}
         self.t = inicio
         self.taxas = self.funding = 0.0
+        self.deslizes = 0.0  # o que a diferença de preço custou (11/11/2026: para o "antes dos custos")
         self.ops = self.fechamentos = self.acertos = 0
         self.ganhos = self.perdas = 0.0  # soma dos fechamentos com lucro e com prejuízo (para ganho médio ÷ perda média)
         self.liquidacoes: list[dict] = []
@@ -231,7 +232,7 @@ class Conta:
         return {k: getattr(self, k) for k in ("alav", "atraso", "capital", "caixa", "pos", "t", "taxas", "funding", "ops",
                                               "fechamentos", "acertos", "liquidacoes", "ultimas", "serie", "pico",
                                               "pior_queda", "quebrada", "sem_preco", "variante", "moedas", "bloqueadas",
-                                              "saidas", "inicio", "sem_caixa", "ganhos", "perdas", "parada")}
+                                              "saidas", "inicio", "sem_caixa", "ganhos", "perdas", "parada", "deslizes")}
 
     @classmethod
     def de_json(cls, d):
@@ -473,6 +474,7 @@ class Conta:
             taxa = q * exe * tx
             self.caixa += liber + res - taxa
             self.taxas += taxa
+            self.deslizes += q * px * s
             p["margem"] -= liber
             p["szi"] = atual - sinal * q
             self.fechamentos += 1
@@ -501,6 +503,7 @@ class Conta:
         taxa = q * exe * tx
         self.caixa -= margem + taxa
         self.taxas += taxa
+        self.deslizes += q * px * s
         sinal = 1 if delta > 0 else -1
         if p:
             novo = abs(atual) + q
@@ -535,6 +538,7 @@ class Conta:
             "pm": round(self.perdas / (self.fechamentos - self.acertos), 2) if self.fechamentos > self.acertos and self.perdas else None,
             "taxas": round(self.taxas, 2),
             "funding": round(self.funding, 2),
+            "deslize": round(self.deslizes, 2),
             "liquidacoes": self.liquidacoes[-(5 if self.variante else 20):],
             "nLiq": len(self.liquidacoes),
             "quebrada": self.quebrada,

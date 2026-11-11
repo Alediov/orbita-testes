@@ -101,6 +101,9 @@ acabavam; aqui os executores padrão não têm limite.
   refeito pelo `portfolio`; aos poucos, refeito a cada 7 dias; "aproximado") em `passado`; e o risco reavaliado nas
   carteiras que estavam sem ele. O teste de antes de cada carteira continua (`historico`): é o "período da escolha",
   otimista.
+- **Ao contrário** (pedido do Alediov, 11/11/2026; `tools/mercado/contrario.py`, LEIA-ME): as carteiras que perdem de
+  forma consistente, copiadas normal 1× e ao contrário 1× e 3×, com o "antes dos custos" de cada conta. `contrario` no
+  resumo do ramo `mercado`; teste no `teste_mercado.py` (carteiras 12 e 13 do mundo de mentira perdem sempre).
 - **Cofres revistos** (pedido do Alediov, 09/11/2026, pelos 6 dias ao vivo: 5 melhores −0,06% ao vivo × +7,7% no teste
   no passado; detalhes no `tools/papel/FORMATO.md`, "Cofres"): versões novas `sinais` (o stop + o líder com < 5%, o TVL
   −30% em 7 dias e o cofre fechado para depósitos; motivo no evento, `motivo`), `constancia` (lucro de 90 dias ÷

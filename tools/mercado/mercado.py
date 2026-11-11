@@ -32,6 +32,7 @@ import urllib.request
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import agregadas as AG  # noqa: E402
+import contrario as CT  # noqa: E402
 import carteiras as K  # noqa: E402
 import hl  # noqa: E402
 import imitador as IM  # noqa: E402
@@ -266,6 +267,14 @@ def ao_vivo(cli, est, fim_ops, ate, agora, log, prazo):
     cons = AG.consenso_conta(est, fim_ops)
     for m in cons.pos:
         precisa.setdefault(m, set()).add(cons.t)
+    # o Ao contrário (contrario.py, 11/11/2026): as carteiras que perdem, copiadas também do outro lado
+    try:
+        novas_ct, precisa_ct = CT.coletar(cli, est, fim_ops, agora, log, prazo, valor_conta)
+    except Exception as er:  # noqa: BLE001
+        novas_ct, precisa_ct = {}, {}
+        log(f"  ao contrário: {er}")
+    for m, ts in precisa_ct.items():
+        precisa.setdefault(m, set()).update(ts)
     pr = Precos(cli, log, agora)
     for m, ts in sorted(precisa.items()):
         if time.monotonic() > prazo:
@@ -287,6 +296,13 @@ def ao_vivo(cli, est, fim_ops, ate, agora, log, prazo):
         AG.consenso_rodada(est, cons, novas, merc, ate)
     except Exception as er:  # noqa: BLE001
         log(f"  consenso: {er}")
+        log(traceback.format_exc())
+    try:
+        nct = CT.simular_rodada(est, novas_ct, merc, ate, agora, fim_ops)
+        if nct:
+            log(f"  ao contrário: {nct} operações")
+    except Exception as er:  # noqa: BLE001
+        log(f"  ao contrário: {er}")
         log(traceback.format_exc())
     return n, pr.erros
 
@@ -630,6 +646,7 @@ def montar_resumo(est, agora, fonte_cdi, cdi_ano, exemplo=False, rodada=None):
         "quarentena": quarentena(est), "funil": est.get("funil"), "rodada": rodada,
         "agregadas": AG.resumo_agregadas(est, agora, metricas_de),
         "passado": PS.resumo(est, metricas_de),
+        "contrario": CT.resumo(est, agora, metricas_de),
     }
 
 
@@ -663,6 +680,12 @@ def rodada(cli, pasta, agora=None, forcar_escolha=False, exemplo=False, prazo_mi
             escolher(cli, est, agora, fim_ops, log, prazo)
         except Exception as e:  # noqa: BLE001
             erros.append(f"escolha: {e}")
+            log(traceback.format_exc())
+    if CT.precisa_escolher(est, agora) and time.monotonic() < prazo - 4 * 60:
+        try:
+            CT.escolher(cli, est, agora, fim_ops, log, prazo - 3 * 60, eq_do_portfolio)
+        except Exception as e:  # noqa: BLE001
+            erros.append(f"ao contrário: {e}")
             log(traceback.format_exc())
     if time.monotonic() < prazo - 3 * 60:
         try:

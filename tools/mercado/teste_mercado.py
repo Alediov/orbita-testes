@@ -9,7 +9,8 @@ import tempfile
 AQUI = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, AQUI)
 
-import agregadas as AG  # noqa: E402
+import agregadas as AG
+import contrario as CT  # noqa: E402
 import carteiras as K  # noqa: E402
 import falso  # noqa: E402
 import passado as PS  # noqa: E402
@@ -464,6 +465,22 @@ try:
     co = ag["consenso"]
     ok(co["metricas"] is not None and "consensoAgora" in co and co["inicio"] and isinstance(co["ops"], int), f"Consenso: {co['ops']} operações")
     ok(set(e5["banco"]) >= set(e5["carteiras"]) and all(b["serie"] for b in e5["banco"].values()), "o banco guarda a série de todas")
+    # o Ao contrário (11/11/2026): as que perdem sempre entram, só elas, com as 3 contas, e o inverso é o inverso
+    ct = r5["contrario"]
+    ok(ct and {c["endereco"] for c in ct["carteiras"]} == {falso.endereco(12), falso.endereco(13)},
+       f"ao contrário: só as que perdem na semana, no mês e no total: {ct and [c['curto'] for c in ct['carteiras']]}")
+    ok(ct["funil"]["recusas"].get("não perdeu em 30 dias", 0) >= 5, f"funil do ao contrário: {ct['funil']}")
+    c12 = next(c for c in ct["carteiras"] if c["endereco"] == falso.endereco(12))
+    n1, i1 = c12["contas"]["n1"], c12["contas"]["i1"]
+    ok(set(c12["contas"]) == set(CT.CONTAS) and n1["ops"] > 0 and i1["ops"] > 0, f"as 3 contas andam: {n1['ops']}, {i1['ops']}")
+    ok(all(x["custos"] > 0 and abs(x["antesDosCustos"] - (x["patrimonio"] - 1000 + x["custos"])) < 0.02 for x in (n1, i1)),
+       "antes dos custos = resultado + custos")
+    ok(abs(n1["antesDosCustos"] + i1["antesDosCustos"]) < 0.25 * (abs(n1["antesDosCustos"]) + 5),
+       f"antes dos custos, o normal e o contrário quase se anulam: {n1['antesDosCustos']} × {i1['antesDosCustos']}")
+    ok(n1["patrimonio"] + i1["patrimonio"] < 2000, "somados, os dois perdem os custos")
+    ok(ct["todas"].get("i1") and ct["todas"]["i1"]["serie"] and ct["todas"]["i1"]["metricas"] is not None, "a carteira de carteiras ao contrário")
+    ok(ct["soma"]["n1"]["n"] == 2 and "antesDosCustos" in ct["soma"]["i1"], f"a soma: {ct['soma']}")
+    ok(not (set(e5["carteiras"]) & set(e5["contrario"]["carteiras"])), "nenhuma carteira dos dois lados")
     tam = os.path.getsize(os.path.join(pasta, "resumo.json")) + os.path.getsize(os.path.join(pasta, "estado.json"))
     ok(tam < 2_000_000, f"arquivos pequenos: {tam // 1024} KB")
     with open(os.path.join(pasta, "resumo.json")) as f:

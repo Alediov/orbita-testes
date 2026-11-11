@@ -126,6 +126,8 @@ def agregada(banco, hoje, regra):
     selos = {e: b.get("selo") for e, b in banco.items()}
     if regra == "top5":
         escolher = lambda dia: _sel_top(series, dia)  # noqa: E731
+    elif regra == "todas":  # todas as que estão no teste (o Ao contrário, contrario.py)
+        escolher = lambda dia: sorted(e for e, s in series.items() if s.ativa(dia))  # noqa: E731
     else:
         f = _sel_selo("robo" if regra == "robos" else "humano")
         escolher = lambda dia: f(series, dia, selos)  # noqa: E731

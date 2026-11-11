@@ -49,6 +49,15 @@ Só simulação: nenhuma ordem, nenhuma conta, nenhuma chave. Só a API pública
     o `previsto` (a média desse teste nas escolhidas) para comparar.
   - **Risco reavaliado**: as carteiras sem `risco`/`nota` (escolhidas antes da medida) vêm primeiro em `atualizar_perfis`
     (`reavaliar_risco`: execuções dos últimos 30 dias e o `portfolio`; só alerta, nunca sai por isso).
+- **Ao contrário** (`contrario.py`, pedido do Alediov, 11/11/2026: "se um teste é muito ruim, mas consistente, não daria
+  para apostar contra ele?"): toda semana, até 10 carteiras do ranking que PERDEM de forma consistente (prejuízo na
+  semana, nos 30 dias e no total; 10% ou mais da conta nos 30 dias; conta ≥ US$ 10 mil; os mesmos filtros finos da
+  cópia; nenhuma que já é copiada normal), cada uma com 3 contas de 1 min: `n1` (normal 1×), `i1` e `i3` (ao contrário:
+  `inverter` troca o lado de cada operação). Cada conta traz `custos` (taxas + deslize + financiamento; o deslize agora é
+  contado em `sim.Conta.deslizes`) e `antesDosCustos`; `todas` são as carteiras de carteiras de cada tipo (partes iguais,
+  `agregadas.agregada(…, "todas")`) e `soma` junta as carteiras. Sai quem volta a ganhar nos 30 dias ou some do
+  ranking. `contrario` no resumo. A ideia que o teste mede: o contrário paga os mesmos custos, então só ganha onde a
+  carteira perde mais que os custos já antes deles.
 - `carteiras.py`: o ranking, os filtros (`CRITERIOS`), as medidas (operações por dia, tempo médio de posição, fração
   passiva…), os motivos de cada escolha, a `nota_escolha` (teste no histórico + fração com ordem limite − alertas), as
   `moedas_boas` (pelas execuções de ANTES da cópia, `MIN_OPS_MOEDA` ordens com resultado e lucro) e o `risco` contra o
