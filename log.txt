@@ -1,0 +1,205 @@
+rodada 2026-11-02T21:53:34Z · 0 carteiras seguidas
+  ao vivo: 0 operações novas copiadas
+  entra 0xf6f3…47f8: Conta de US$ 1,1 mi; Lucro de US$ 704 mil em 30 dias (+64% da conta)
+  entra 0x16ae…e401: Conta de US$ 326 mil; Lucro de US$ 245 mil em 30 dias (+75% da conta)
+  entra 0x57da…1a50: Conta de US$ 70 mil; Lucro de US$ 96 mil em 30 dias (+137% da conta)
+  entra 0xc30c…a4c9: Conta de US$ 1,3 mi; Lucro de US$ 1,2 mi em 30 dias (+95% da conta)
+  entra 0x77ee…a018: Conta de US$ 4,6 mi; Lucro de US$ 2,5 mi em 30 dias (+54% da conta)
+  entra 0x9e9f…174d: Conta de US$ 207 mil; Lucro de US$ 164 mil em 30 dias (+79% da conta)
+  escolha: 48139 no ranking, 2354 no pré-filtro, 80 analisadas, 6 aprovadas; 6 seguidas
+rodada 2026-11-02T23:29:10Z · 6 carteiras seguidas
+  ao vivo: 10 operações novas copiadas
+  tempo da rodada esgotado na escolha
+  entra 0xc45f…2772: Conta de US$ 100 mil; Lucro de US$ 88 mil em 30 dias (+88% da conta)
+  escolha: 48161 no ranking, 2349 no pré-filtro, 32 analisadas (32 em 7 dias), 1 aprovadas; 7 seguidas
+rodada 2026-11-03T02:07:34Z · 7 carteiras seguidas
+  ao vivo: 2 operações novas copiadas
+  tempo da rodada esgotado na escolha
+  entra 0x9611…a105: Conta de US$ 48 mil; Lucro de US$ 39 mil em 30 dias (+81% da conta)
+  entra 0x241c…8e0e: Conta de US$ 422 mil; Lucro de US$ 227 mil em 30 dias (+54% da conta)
+  entra 0x84b2…12f2: Conta de US$ 140 mil; Lucro de US$ 98 mil em 30 dias (+70% da conta)
+  entra 0x01d4…4ce9: Conta de US$ 204 mil; Lucro de US$ 121 mil em 30 dias (+59% da conta)
+  entra 0xe198…08d2: Conta de US$ 120 mil; Lucro de US$ 77 mil em 30 dias (+64% da conta)
+  escolha: 48154 no ranking, 2324 no pré-filtro, 27 analisadas (59 em 7 dias), 5 aprovadas; 12 seguidas
+rodada 2026-11-03T03:28:25Z · 12 carteiras seguidas
+  ao vivo: 1 operações novas copiadas
+  tempo da rodada esgotado na escolha
+  entra 0x4ee3…3267: Conta de US$ 73 mil; Lucro de US$ 49 mil em 30 dias (+67% da conta)
+  entra 0x2ab6…8252: Conta de US$ 348 mil; Lucro de US$ 163 mil em 30 dias (+47% da conta)
+  entra 0xeda7…88f3: Conta de US$ 233 mil; Lucro de US$ 118 mil em 30 dias (+51% da conta)
+  entra 0x7b73…3894: Conta de US$ 97 mil; Lucro de US$ 57 mil em 30 dias (+58% da conta)
+  entra 0x6248…34a3: Conta de US$ 213 mil; Lucro de US$ 118 mil em 30 dias (+55% da conta)
+  entra 0xe813…6d74: Conta de US$ 22,7 mi; Lucro de US$ 6,6 mi em 30 dias (+29% da conta)
+  escolha: 48154 no ranking, 2306 no pré-filtro, 39 analisadas (98 em 7 dias), 6 aprovadas; 18 seguidas
+rodada 2026-11-03T11:56:24Z · 18 carteiras seguidas
+  ao vivo: 32 operações novas copiadas
+  entra 0x5af1…1a1a: Conta de US$ 60 mil; Lucro de US$ 33 mil em 30 dias (+55% da conta)
+  entra 0xcdf7…a50f: Conta de US$ 125 mil; Lucro de US$ 60 mil em 30 dias (+48% da conta)
+  entra 0x8098…9261: Conta de US$ 525 mil; Lucro de US$ 170 mil em 30 dias (+32% da conta)
+  entra 0x3271…5c71: Conta de US$ 355 mil; Lucro de US$ 124 mil em 30 dias (+35% da conta)
+  entra 0x7a26…3ac8: Conta de US$ 205 mil; Lucro de US$ 93 mil em 30 dias (+45% da conta)
+  entra 0x3ae8…46d6: Conta de US$ 275 mil; Lucro de US$ 95 mil em 30 dias (+34% da conta)
+  entra 0xb4bf…629b: Conta de US$ 164 mil; Lucro de US$ 76 mil em 30 dias (+46% da conta)
+  entra 0xe0b0…05d8: Conta de US$ 192 mil; Lucro de US$ 88 mil em 30 dias (+46% da conta)
+  entra 0xe34a…3b38: Conta de US$ 251 mil; Lucro de US$ 83 mil em 30 dias (+33% da conta)
+  entra 0x1165…1356: Conta de US$ 48 mil; Lucro de US$ 27 mil em 30 dias (+56% da conta)
+  escolha: 48247 no ranking, 2301 no pré-filtro, 80 analisadas (178 em 7 dias), 10 aprovadas; 28 seguidas
+rodada 2026-11-03T18:22:50Z · 28 carteiras seguidas
+  ao vivo: 65 operações novas copiadas
+  perfis refeitos: 3
+rodada 2026-11-03T23:18:15Z · 28 carteiras seguidas
+  ao vivo: 13 operações novas copiadas
+  perfis refeitos: 3
+rodada 2026-11-04T06:11:12Z · 28 carteiras seguidas
+  ao vivo: 66 operações novas copiadas
+  perfis refeitos: 3
+rodada 2026-11-04T14:27:07Z · 28 carteiras seguidas
+  ao vivo: 53 operações novas copiadas
+  perfis refeitos: 3
+rodada 2026-11-04T21:51:13Z · 28 carteiras seguidas
+  ao vivo: 126 operações novas copiadas
+  perfis refeitos: 3
+rodada 2026-11-05T02:23:43Z · 28 carteiras seguidas
+  ao vivo: 12 operações novas copiadas
+  perfis refeitos: 3
+rodada 2026-11-05T12:16:13Z · 28 carteiras seguidas
+  ao vivo: 27 operações novas copiadas
+  perfis refeitos: 3
+rodada 2026-11-05T19:59:41Z · 28 carteiras seguidas
+  ao vivo: 226 operações novas copiadas
+  perfis refeitos: 3
+rodada 2026-11-06T00:57:07Z · 28 carteiras seguidas
+  ao vivo: 65 operações novas copiadas
+  perfis refeitos: 3
+rodada 2026-11-06T09:20:24Z · 28 carteiras seguidas
+  ao vivo: 39 operações novas copiadas
+  perfis refeitos: 3
+rodada 2026-11-06T17:28:02Z · 28 carteiras seguidas
+  ao vivo: 212 operações novas copiadas
+  perfis refeitos: 3
+rodada 2026-11-06T23:05:46Z · 28 carteiras seguidas
+  ao vivo: 417 operações novas copiadas
+  perfis refeitos: 3
+rodada 2026-11-07T05:54:26Z · 28 carteiras seguidas
+  ao vivo: 286 operações novas copiadas
+  perfis refeitos: 3
+rodada 2026-11-07T12:55:23Z · 28 carteiras seguidas
+  ao vivo: 19 operações novas copiadas
+  perfis refeitos: 3
+rodada 2026-11-07T18:44:27Z · 28 carteiras seguidas
+  ao vivo: 17 operações novas copiadas
+  perfis refeitos: 3
+rodada 2026-11-07T23:37:34Z · 28 carteiras seguidas
+  ao vivo: 13 operações novas copiadas
+  perfis refeitos: 3
+rodada 2026-11-08T05:56:10Z · 28 carteiras seguidas
+  ao vivo: 6 operações novas copiadas
+  perfis refeitos: 3
+rodada 2026-11-08T13:17:27Z · 28 carteiras seguidas
+  ao vivo: 23 operações novas copiadas
+  perfis refeitos: 3
+rodada 2026-11-08T18:49:01Z · 28 carteiras seguidas
+  ao vivo: 117 operações novas copiadas
+  perfis refeitos: 3
+rodada 2026-11-08T23:41:05Z · 28 carteiras seguidas
+  ao vivo: 230 operações novas copiadas
+  perfis refeitos: 3
+rodada 2026-11-09T06:18:52Z · 28 carteiras seguidas
+  ao vivo: 41 operações novas copiadas
+  perfis refeitos: 3
+rodada 2026-11-09T18:43:51Z · 28 carteiras seguidas
+  ao vivo: 98 operações novas copiadas
+  perfis refeitos: 3
+rodada 2026-11-09T21:06:22Z · 28 carteiras seguidas
+  contas que saíram (10×, 5 min fora do controle): 1624
+  ao vivo: 8 operações novas copiadas
+rodada 2026-11-09T21:18:37Z · 28 carteiras seguidas
+  ao vivo: 0 operações novas copiadas
+  0xf6f3…47f8: risco reavaliado (1 alertas), nota 0.5881
+  0x16ae…e401: risco reavaliado (1 alertas), nota 0.7115
+  0x57da…1a50: risco reavaliado (0 alertas), nota 0.9488
+  perfis refeitos: 3
+  passado: novo teste fora da amostra, T0 2026-10-10; universo 44863, amostra 3000
+  passado: portfolio desde o começo: 50 pontos de valor, 50 de lucro; ponto mais perto de T0 a 0.9 h; janelas ['day', 'week', 'month', 'allTime', 'perpDay', 'perpWeek', 'perpMonth', 'perpAllTime']
+  passado (pre): 327 olhadas, 0 analisadas, 0 copiadas nesta rodada
+rodada 2026-11-10T02:43:04Z · 28 carteiras seguidas
+  ao vivo: 12 operações novas copiadas
+  0x77ee…a018: risco reavaliado (1 alertas), nota -0.2362
+  0x9e9f…174d: risco reavaliado (0 alertas), nota -0.2335
+  0xc30c…a4c9: risco reavaliado (2 alertas), nota -0.0704
+  perfis refeitos: 3
+  passado (pre): 386 olhadas, 0 analisadas, 0 copiadas nesta rodada
+rodada 2026-11-10T12:35:01Z · 28 carteiras seguidas
+  ao vivo: 36 operações novas copiadas
+  escolha: 48073 no ranking, 2368 no pré-filtro, 80 analisadas (80 em 7 dias), 0 aprovadas; 28 seguidas
+rodada 2026-11-10T20:47:43Z · 28 carteiras seguidas
+  ao vivo: 95 operações novas copiadas
+  perfis refeitos: 3
+  passado (pre): 385 olhadas, 0 analisadas, 0 copiadas nesta rodada
+rodada 2026-11-11T01:54:46Z · 28 carteiras seguidas
+  ao vivo: 43 operações novas copiadas
+  perfis refeitos: 3
+  passado (pre): 385 olhadas, 0 analisadas, 0 copiadas nesta rodada
+rodada 2026-11-11T09:19:45Z · 28 carteiras seguidas
+  ao vivo: 22 operações novas copiadas
+  perfis refeitos: 3
+  passado (pre): 385 olhadas, 0 analisadas, 0 copiadas nesta rodada
+rodada 2026-11-11T17:52:38Z · 28 carteiras seguidas
+  ao vivo: 96 operações novas copiadas
+  perfis refeitos: 3
+  passado (pre): 385 olhadas, 0 analisadas, 0 copiadas nesta rodada
+rodada 2026-11-12T00:37:49Z · 28 carteiras seguidas
+  ao vivo: 75 operações novas copiadas
+  ao contrário: entra 0x8ae4…3d60 (perdeu +128% da conta em 30 dias)
+  ao contrário: entra 0x4b67…f4e7 (perdeu +201% da conta em 30 dias)
+  perfis refeitos: 3
+  passado (pre): 357 olhadas, 0 analisadas, 0 copiadas nesta rodada
+rodada 2026-11-12T09:46:17Z · 28 carteiras seguidas
+  ao contrário: 11 operações
+  ao vivo: 29 operações novas copiadas
+  perfis refeitos: 3
+  passado (pre): 385 olhadas, 0 analisadas, 0 copiadas nesta rodada
+rodada 2026-11-12T18:15:44Z · 28 carteiras seguidas
+  ao contrário: 14 operações
+  ao vivo: 118 operações novas copiadas
+  ao contrário: entra 0x8742…8427 (perdeu +110% da conta em 30 dias)
+  ao contrário: entra 0x1ee7…edf5 (perdeu +116% da conta em 30 dias)
+  ao contrário: entra 0x95fe…f8fa (perdeu +107% da conta em 30 dias)
+  perfis refeitos: 3
+  passado (fino): 5 olhadas, 29 analisadas, 0 copiadas nesta rodada
+rodada 2026-11-12T23:39:58Z · 28 carteiras seguidas
+  ao contrário: 6 operações
+  ao vivo: 22 operações novas copiadas
+  perfis refeitos: 3
+  passado (fino): 0 olhadas, 30 analisadas, 0 copiadas nesta rodada
+rodada 2026-11-13T06:37:27Z · 28 carteiras seguidas
+  ao contrário: 19 operações
+  ao vivo: 137 operações novas copiadas
+  perfis refeitos: 3
+  passado (fino): 0 olhadas, 17 analisadas, 0 copiadas nesta rodada
+rodada 2026-11-13T16:16:59Z · 28 carteiras seguidas
+  ao contrário: 6 operações
+  ao vivo: 85 operações novas copiadas
+  perfis refeitos: 3
+  passado (fino): 0 olhadas, 43 analisadas, 0 copiadas nesta rodada
+rodada 2026-11-13T21:59:36Z · 28 carteiras seguidas
+  ao contrário: 12 operações
+  ao vivo: 95 operações novas copiadas
+  perfis refeitos: 3
+  passado: 16 escolhidas pela regra em T0
+  passado (copia): 0 olhadas, 15 analisadas, 2 copiadas nesta rodada
+rodada 2026-11-14T02:24:18Z · 28 carteiras seguidas
+  ao contrário: 5 operações
+  ao vivo: 17 operações novas copiadas
+  perfis refeitos: 3
+  passado (copia): 0 olhadas, 0 analisadas, 3 copiadas nesta rodada
+rodada 2026-11-14T11:25:44Z · 28 carteiras seguidas
+  ao contrário: 17 operações
+  ao vivo: 45 operações novas copiadas
+  perfis refeitos: 3
+  passado: pronto: 16 carteiras, 3× · 1 min -17.9% (o teste no período da escolha dizia 0.1142)
+  passado (pronto): 0 olhadas, -134 analisadas, -5 copiadas nesta rodada
+rodada 2026-11-14T17:58:04Z · 28 carteiras seguidas
+  ao contrário: 25 operações
+  ao vivo: 116 operações novas copiadas
+  perfis refeitos: 3
