@@ -204,6 +204,17 @@ na versão "Os que você fixou" (partes iguais), e não sai pela regra.
   patrimônio inteiro; `fundingPago` (US$) e, no DCA com proteção, `ciclos` (fechados). `degrausExecutados` conta as
   ordens da grade, as compras do DCA ou, no DCA com proteção, as compras de proteção. As versões têm `grupo` ("Grade"
   ou "DCA");
+  **Robôs de sinal (14/11/2026, pedido do Alediov: tendência, compra na baixa e venda na alta, e o inverso)**: `tipo`
+  interno "sinal", decidem na virada de cada hora pelas velas de 1 h guardadas e entram e saem a mercado; o stop é
+  conferido a cada vela e, depois dele, a versão espera um dia para entrar de novo (evento `saiu` com `motivo` "stop";
+  as entradas e saídas pela regra levam `motivo` "sinal"; `vendeu` é ficar vendido). `grupo` "Tendência" (`tcruz`,
+  `tcruzls`, `tcruzeth`: médias exponenciais de 24 e 120 h; `trompe`: rompimento da máxima de 168 h, saída na mínima de
+  72 h; `tmovel`: o mesmo rompimento com stop móvel de 2,5 oscilações diárias abaixo do melhor preço), "Compra na baixa,
+  vende na alta" (`rfaixa`: baixa e alta a 3% da média de 72 h; `rfaixavol`: a uma oscilação diária; `rbandas`: 2
+  desvios da média de 48 h, saída na média; `rbandastend`: só compra acima da média de 168 h; `rrsi`: RSI 14 h abaixo de
+  30 / acima de 70; `rbandasls`: as bandas nos dois lados) e "Ao contrário" (`irbandas`, `irsi`, `icruzls`: a mesma
+  regra com o lado trocado, no perpétuo 1×). `extra.lado` (−1, 0, 1), `extra.entradas` e `extra.indicadores` (por
+  regra: `rapida`/`lenta`, `topo`/`fundo`/`stopMovel`, `media`/`baixa`/`alta`/`z`, `rsi`).
   **Revisão de 09/11/2026** (detalhes no começo de `robos.py`): versões novas `gsaida1`/`gsaida3` (`grupo` "Grade com
   saída": a grade neutra de BTC que fecha tudo quando o preço passa `config.saida.alemDegraus` degrau além da borda ou a
   conta cai `queda` (15%) do melhor momento desde a montagem, e remonta em volta do preço passadas `esperaHoras` (24) com

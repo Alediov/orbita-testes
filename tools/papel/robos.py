@@ -66,7 +66,7 @@ LEV_MAX_PADRAO = {"BTC": 40, "ETH": 25, "SOL": 20, "HYPE": 10}
 PARES_PADRAO = {"BTC": "@142", "ETH": "@151", "SOL": "@156", "HYPE": "@107"}
 TOKENS = {"BTC": "UBTC", "ETH": "UETH", "SOL": "USOL", "HYPE": "HYPE"}
 REFAZER_META_MS = DIA
-HIST_V = 3              # mudar o teste no passado (versões, regras, contas): subir para refazer na próxima rodada
+HIST_V = 4              # mudar o teste no passado (versões, regras, contas): subir para refazer na próxima rodada
 ANO_MS = 365 * DIA
 
 # grade com saída (09/11/2026): fecha tudo quando o preço passa SAIDA_ALEM degraus além da borda da grade OU a conta
@@ -81,7 +81,10 @@ SAIDA_ESPERA = DIA
 VOL_DIAS = 7
 VOL_PADRAO = 0.025
 VOL_MIN, VOL_MAX = 0.02, 0.30
-BUF_DIAS = 8            # as velas de 1 h guardadas no estado das versões que precisam delas
+BUF_DIAS = 9            # as velas de 1 h guardadas no estado das versões que precisam delas (9: o rompimento de 7 dias)
+AQUECER_SINAL_DIAS = 9  # as versões de sinal (tendência e reversão) começam com 9 dias de velas de 1 h
+# robôs de sinal (14/11/2026): decidem na virada de cada hora pelas velas de 1 h e entram ou saem a mercado
+SINAL_PAUSA = DIA       # depois de um stop, espera um dia antes de entrar de novo
 # várias janelas no teste no passado
 JANELA_DIAS = 30
 JANELA_PASSO = 7
@@ -152,6 +155,70 @@ VERSOES = [
      "partes": 20, "cada": 7 * DIA, "alav": 1, "risco": "médio", "grupo": "DCA", "caixa": True,
      "frase": "O DCA semanal, mas o dinheiro que espera a vez fica no empréstimo de dólar da Aave (rede Base) rendendo "
               "juro; toda semana saca os US$ 50 da compra, pagando o saque, a ponte e o gás."},
+    # ---- robôs de sinal (pedido do Alediov, 14/11/2026: "de tendência, comprando na baixa, vendendo na alta… e o
+    # inverso"); decidem na virada de cada hora, com as velas de 1 h, e entram ou saem a mercado
+    {"id": "tcruz", "nome": "Tendência: médias de 1 e 5 dias", "tipo": "sinal", "regra": "cruz", "mercado": "spot",
+     "moeda": "BTC", "rapida": 24, "lenta": 120, "alav": 1, "risco": "médio", "grupo": "Tendência",
+     "frase": "Fica comprado em bitcoin enquanto a média de 1 dia está acima da de 5 dias (o preço subindo) e vai para "
+              "dólar quando ela cruza para baixo."},
+    {"id": "tcruzls", "nome": "Tendência nos dois lados (médias)", "tipo": "sinal", "regra": "cruz", "mercado": "perp",
+     "moeda": "BTC", "rapida": 24, "lenta": 120, "ls": True, "alav": 1, "risco": "médio", "grupo": "Tendência",
+     "frase": "As mesmas médias no perpétuo 1×: comprado na alta e VENDIDO na queda (ganha também quando o preço cai)."},
+    {"id": "tcruzeth", "nome": "Tendência ETH: médias de 1 e 5 dias", "tipo": "sinal", "regra": "cruz",
+     "mercado": "spot", "moeda": "ETH", "rapida": 24, "lenta": 120, "alav": 1, "risco": "médio", "grupo": "Tendência",
+     "frase": "A tendência pelas médias no ether, que costuma ter tendências mais fortes (e mais falsas) que o bitcoin."},
+    {"id": "trompe", "nome": "Tendência: rompimento de 7 dias", "tipo": "sinal", "regra": "rompe", "mercado": "spot",
+     "moeda": "BTC", "entra": 168, "sai": 72, "alav": 1, "risco": "médio", "grupo": "Tendência",
+     "frase": "Compra quando o preço passa a máxima dos últimos 7 dias (rompimento) e vende quando perde a mínima dos "
+              "últimos 3 dias: a ideia das \"tartarugas\", em horas."},
+    {"id": "tmovel", "nome": "Tendência com stop móvel", "tipo": "sinal", "regra": "rompe", "mercado": "spot",
+     "moeda": "BTC", "entra": 168, "movel": 2.5, "alav": 1, "risco": "médio", "grupo": "Tendência",
+     "frase": "Compra no rompimento da máxima de 7 dias e sai quando o preço cai 2,5 oscilações diárias abaixo do melhor "
+              "preço desde a compra (o stop sobe junto com o preço)."},
+    {"id": "rfaixa", "nome": "Baixa e alta: 3% da média de 3 dias", "tipo": "sinal", "regra": "faixa",
+     "mercado": "spot", "moeda": "BTC", "media": 72, "f": 0.03, "stop": 0.08, "alav": 1, "risco": "médio",
+     "grupo": "Compra na baixa, vende na alta",
+     "frase": "\"Baixa\" é 3% abaixo da média dos últimos 3 dias e \"alta\" é 3% acima: compra tudo na baixa e vende "
+              "tudo na alta. Sai também com 8% de prejuízo."},
+    {"id": "rfaixavol", "nome": "Baixa e alta pela oscilação", "tipo": "sinal", "regra": "faixa", "mercado": "spot",
+     "moeda": "BTC", "media": 72, "fvol": 1.0, "stop": 0.08, "alav": 1, "risco": "médio",
+     "grupo": "Compra na baixa, vende na alta",
+     "frase": "A mesma ideia, mas a distância da média que conta como baixa ou alta é a oscilação de um dia normal da "
+              "última semana: mais larga quando o mercado está agitado, mais estreita quando está calmo."},
+    {"id": "rbandas", "nome": "Bandas: 2 desvios da média de 2 dias", "tipo": "sinal", "regra": "bandas",
+     "mercado": "spot", "moeda": "BTC", "media": 48, "z": 2.0, "stop": 0.06, "alav": 1, "risco": "médio",
+     "grupo": "Compra na baixa, vende na alta",
+     "frase": "Bandas de Bollinger: compra quando o preço fecha 2 desvios abaixo da média de 2 dias (bem esticado para "
+              "baixo) e vende quando ele volta à média. Stop de 6%."},
+    {"id": "rbandastend", "nome": "Bandas só a favor da tendência", "tipo": "sinal", "regra": "bandas",
+     "mercado": "spot", "moeda": "BTC", "media": 48, "z": 2.0, "stop": 0.06, "filtro": 168, "alav": 1,
+     "risco": "médio", "grupo": "Compra na baixa, vende na alta",
+     "frase": "As bandas, mas só compra a queda quando o preço está acima da média de 7 dias (comprar a queda numa "
+              "alta, não uma faca caindo)."},
+    {"id": "rrsi", "nome": "Força relativa (RSI 30/70)", "tipo": "sinal", "regra": "rsi", "mercado": "spot",
+     "moeda": "BTC", "periodo": 14, "baixo": 30, "alto": 70, "stop": 0.08, "alav": 1, "risco": "médio",
+     "grupo": "Compra na baixa, vende na alta",
+     "frase": "O RSI de 14 horas mede se o preço subiu ou caiu demais: compra abaixo de 30 (\"sobrevendido\") e vende "
+              "acima de 70 (\"sobrecomprado\"). Stop de 8%."},
+    {"id": "rbandasls", "nome": "Bandas nos dois lados", "tipo": "sinal", "regra": "bandas", "mercado": "perp",
+     "moeda": "BTC", "media": 48, "z": 2.0, "stop": 0.06, "ls": True, "alav": 1, "risco": "médio",
+     "grupo": "Compra na baixa, vende na alta",
+     "frase": "No perpétuo 1×: compra 2 desvios abaixo da média e VENDE 2 desvios acima, fechando quando o preço volta "
+              "à média."},
+    {"id": "irbandas", "nome": "Ao contrário: vende na baixa, compra na alta", "tipo": "sinal", "regra": "bandas",
+     "mercado": "perp", "moeda": "BTC", "media": 48, "z": 2.0, "stop": 0.06, "ls": True, "inverso": True, "alav": 1,
+     "risco": "médio", "grupo": "Ao contrário",
+     "frase": "O espelho das bandas nos dois lados: quando o preço estica 2 desvios para baixo, aposta que continua "
+              "caindo (vende); para cima, que continua subindo (compra). Fecha na volta à média."},
+    {"id": "irsi", "nome": "Ao contrário: RSI a favor do embalo", "tipo": "sinal", "regra": "rsi", "mercado": "perp",
+     "moeda": "BTC", "periodo": 14, "baixo": 30, "alto": 70, "stop": 0.08, "ls": True, "inverso": True, "alav": 1,
+     "risco": "médio", "grupo": "Ao contrário",
+     "frase": "O RSI ao contrário: acima de 70 compra (o embalo segue) e abaixo de 30 vende, no perpétuo 1×."},
+    {"id": "icruzls", "nome": "Ao contrário: contra a tendência", "tipo": "sinal", "regra": "cruz", "mercado": "perp",
+     "moeda": "BTC", "rapida": 24, "lenta": 120, "ls": True, "inverso": True, "alav": 1, "risco": "médio",
+     "grupo": "Ao contrário",
+     "frase": "O espelho da tendência nos dois lados: vendido quando as médias dizem alta e comprado quando dizem queda "
+              "(aposta que a tendência vira)."},
     {"id": "segbtc", "nome": "Só segurar BTC (tudo no dia 1)", "tipo": "segurar", "mercado": "spot", "moeda": "BTC",
      "alav": 1, "risco": "médio", "grupo": "Referência",
      "frase": "Régua: compra US$ 1.000 de bitcoin no primeiro dia e só segura. É também o \"tudo no dia 1\" do DCA: "
@@ -179,6 +246,17 @@ COMO_FUNCIONA = [
     "melhor momento; remonta em volta do preço depois de um dia, quando o vai e vem das últimas 24 h fica abaixo de 4%. "
     "Grade pela oscilação: a largura é k vezes a oscilação de um dia normal da última semana, medida de novo toda "
     "segunda.",
+    "Tendência: fica comprado enquanto o preço está subindo e sai (ou fica vendido, nas versões dos dois lados) quando "
+    "vira. \"Subindo\" pode ser a média de 1 dia acima da de 5 dias, ou o preço passar a máxima dos últimos 7 dias "
+    "(rompimento), com saída na mínima de 3 dias ou num stop que sobe junto com o preço.",
+    "Compra na baixa, vende na alta: primeiro define o que é baixa e alta em volta de uma média (3% abaixo e acima da "
+    "média de 3 dias; uma oscilação diária; 2 desvios das bandas de Bollinger; RSI abaixo de 30 e acima de 70), compra "
+    "na baixa e vende na alta ou na volta à média, com um stop se o preço continuar indo contra. Uma versão só compra a "
+    "queda quando o preço está acima da média de 7 dias.",
+    "Ao contrário: as mesmas regras com o lado trocado (vende na baixa e compra na alta; contra a tendência), no "
+    "perpétuo 1×. Mostra se a regra tem alguma vantagem: se as duas perdem, o que pesa são os custos.",
+    "Os robôs de sinal decidem na virada de cada hora, pelas velas de 1 hora, e entram e saem a mercado (taxa e "
+    "deslize); o stop é conferido a cada vela.",
     "Réguas: só segurar bitcoin (o mesmo que pôr de uma vez, no primeiro dia, o total que o DCA compra em 20 semanas) e "
     "só segurar ether. Servem para ver se o robô ganhou de simplesmente comprar e esperar.",
     "Janelas: além dos 180 dias inteiros, o teste no passado é cortado em janelas de 30 dias, uma começando a cada 7, e "
@@ -197,6 +275,9 @@ AVISOS = [
     "preço passa um pouquinho dela; a execução real ainda pode ser diferente (fila maior, ordem parcial).",
     "Grade com saída: a saída e a volta pagam taxa e deslize, e o preço pode voltar logo depois da saída (o robô fica "
     "de fora). Caixa na Aave: o juro é a média do dia e o custo de ir e voltar é aproximado (o gás muda).",
+    "Tendência perde no vai e vem (entra no alto, sai no baixo, várias vezes); compra na baixa perde quando a queda não "
+    "volta (o stop corta, mas depois do prejuízo). Os parâmetros (1 e 5 dias, 3%, 2 desvios, 30/70) foram escolhidos "
+    "antes dos dados, para o teste no passado não ser otimista.",
     NOTA_HIST,
 ]
 
@@ -299,7 +380,11 @@ class Robo:
 
     @property
     def usa_buffer(self):
-        return self.tipo == "grade" and (self.saida or bool(self.vol))
+        return self.tipo == "sinal" or (self.tipo == "grade" and (self.saida or bool(self.vol)))
+
+    @property
+    def aquecer_dias(self):
+        return AQUECER_SINAL_DIAS if self.tipo == "sinal" else AQUECER_DIAS
 
     # ------------------------------------------------------------------ contabilidade
     def novo(self, ate):
@@ -446,6 +531,8 @@ class Robo:
             s.setdefault("max", {})
         elif self.tipo == "martingale":
             s["fase"] = "esperando"
+        elif self.tipo == "sinal":
+            s.setdefault("sinal", 0)
         elif self.tipo == "segurar":
             q = self.comprar_dolares(s, s["caixa"], px, "mercado", t)
             s["compras"] += 1
@@ -639,6 +726,176 @@ class Robo:
         self.evento(s, t, "reequilibrou", f"{self.nome}: segunda-feira; mediu a oscilação ({pct_br(v) if v is not None else 'sem dados'} "
                                           f"por dia) e remontou a grade com ±{pct_br(s['faixa'])} em volta de {preco_br(c)} "
                                           f"(custo de {moeda_br(custo)}).")
+
+    # ------------------------------------------------------------------ robôs de sinal (tendência e reversão)
+    def _serie(self, s):
+        """(máximas, mínimas, fechamentos) das horas guardadas, da mais velha para a mais nova."""
+        hb = s.get("hb") or {}
+        ks = sorted(hb, key=int)
+        return [hb[k][0] for k in ks], [hb[k][1] for k in ks], [hb[k][2] for k in ks]
+
+    def regra(self, s, hs, ls_, cs, t):
+        """O sinal lógico −1 | 0 | +1 da regra (antes do "ao contrário"), ou None sem dados. Pode depender do sinal atual
+        (as regras com saída diferente da entrada). Grava os números que o app mostra em s["ind"]."""
+        cfg, sig, c = self.cfg, s.get("sinal", 0), cs[-1]
+        ls = bool(cfg.get("ls") or cfg.get("inverso"))
+        r = cfg["regra"]
+        if r == "cruz":
+            if len(cs) < cfg["lenta"]:
+                return None
+            a, b = ema(cs, cfg["rapida"]), ema(cs, cfg["lenta"])
+            s["ind"] = {"rapida": round(a, 2), "lenta": round(b, 2)}
+            return 1 if a > b else (-1 if ls else 0)
+        if r == "rompe":
+            n = cfg["entra"]
+            if len(cs) < n + 1:
+                return None
+            topo, fundo = max(hs[-n - 1:-1]), min(ls_[-n - 1:-1])
+            s["ind"] = {"topo": round(topo, 2), "fundo": round(fundo, 2)}
+            if sig > 0:
+                if cfg.get("movel"):
+                    v = self.vol_dia(s, t) or VOL_PADRAO
+                    s["melhor"] = max(s.get("melhor") or c, c)
+                    piso = s["melhor"] * (1 - cfg["movel"] * v)
+                    s["ind"]["stopMovel"] = round(piso, 2)
+                    return 0 if c < piso else 1
+                m = cfg.get("sai", 72)
+                return 0 if c < min(ls_[-m - 1:-1]) else 1
+            if c > topo:
+                s["melhor"] = c
+                return 1
+            return 0
+        if r in ("faixa", "bandas"):
+            n = cfg["media"]
+            if len(cs) < n:
+                return None
+            jan = cs[-n:]
+            m = sum(jan) / n
+            if r == "faixa":
+                f = cfg.get("f") or min(VOL_MAX, max(VOL_MIN / 2, (cfg.get("fvol") or 1) * (self.vol_dia(s, t) or VOL_PADRAO)))
+                baixa, alta = m * (1 - f), m * (1 + f)
+                s["ind"] = {"media": round(m, 2), "baixa": round(baixa, 2), "alta": round(alta, 2)}
+                if sig > 0:
+                    return 0 if c >= alta else 1
+                if sig < 0:
+                    return 0 if c <= baixa else -1
+                if c <= baixa:
+                    return 1
+                return -1 if ls and c >= alta else 0
+            dp = math.sqrt(sum((x - m) ** 2 for x in jan) / (n - 1)) if n > 1 else 0
+            if dp <= 0:
+                return sig
+            z = (c - m) / dp
+            s["ind"] = {"media": round(m, 2), "baixa": round(m - cfg["z"] * dp, 2), "alta": round(m + cfg["z"] * dp, 2), "z": round(z, 3)}
+            if sig > 0:
+                return 0 if c >= m else 1
+            if sig < 0:
+                return 0 if c <= m else -1
+            if z <= -cfg["z"]:
+                if cfg.get("filtro"):
+                    k = cfg["filtro"]
+                    if len(cs) < k or c < sum(cs[-k:]) / k:
+                        return 0
+                return 1
+            return -1 if ls and z >= cfg["z"] else 0
+        if r == "rsi":
+            n = cfg["periodo"]
+            if len(cs) < n + 1:
+                return None
+            v = rsi(cs, n)
+            s["ind"] = {"rsi": round(v, 1)}
+            if sig > 0:
+                return 0 if v >= cfg["alto"] else 1
+            if sig < 0:
+                return 0 if v <= cfg["baixo"] else -1
+            if v <= cfg["baixo"]:
+                return 1
+            return -1 if ls and v >= cfg["alto"] else 0
+        return 0
+
+    def _alvo(self, sinal):
+        """A posição real (−1 | 0 | +1) de um sinal lógico: o "ao contrário" troca o lado; o à vista não fica vendido."""
+        a = -sinal if self.cfg.get("inverso") else sinal
+        return max(0, a) if self.spot else a
+
+    def _lado_real(self, s):
+        q = s["moeda"] if self.spot else s["p"]
+        px = s.get("px") or s.get("pxEntrada") or 0
+        if abs(q) < 1e-12 or (px and abs(q) * px < 0.5):
+            return 0
+        return 1 if q > 0 else -1
+
+    def _ir_para(self, s, alvo, t, c, motivo, texto):
+        """Leva a conta à posição `alvo` (−1 | 0 | +1) a mercado no preço `c`."""
+        atual = self._lado_real(s)
+        if alvo == atual:
+            return
+        antes_eq = self.patrimonio(s, c)
+        q = s["moeda"] if self.spot else s["p"]
+        if abs(q) > 1e-12:  # fecha o que tem
+            res = self.negociar(s, -q, c, "mercado", t)
+            s["buf"]["fech"].append(res if self.spot else self.patrimonio(s, c) - s.get("eqEntrada", antes_eq))
+            a = s.setdefault("acc", _acc())
+            a["pares"] += (self.patrimonio(s, c) - s.get("eqEntrada", antes_eq)) + (a["tx"] + a["des"] + s["fund"] - s.get("c0", a["tx"] + a["des"] + s["fund"]))
+            s["dia"]["n"] += 1
+        if alvo:
+            eq = self.patrimonio(s, c)
+            a = s.setdefault("acc", _acc())
+            s["eqEntrada"], s["c0"], s["pxEntrada"] = eq, a["tx"] + a["des"] + s["fund"], c
+            if self.spot:
+                self.comprar_dolares(s, s["caixa"] * 0.998, c, "mercado", t)
+            else:
+                self.negociar(s, alvo * eq * self.alav * 0.998 / c, c, "mercado", t)
+            s["compras"] += 1
+        s["degraus"] += 1
+        tipo = "comprou" if alvo > 0 else "vendeu" if alvo < 0 else "saiu"
+        self.evento(s, t, tipo, f"{self.nome}: {texto}", motivo)
+
+    def _sinal(self, s, t, T, c):
+        """No fechamento de cada vela: o stop (a cada vela) e, na virada da hora, a regra."""
+        cfg = self.cfg
+        lado = self._lado_real(s)
+        # stop de perda (a cada vela), sobre a posição real
+        if lado and cfg.get("stop") and s.get("pxEntrada"):
+            perda = (s["pxEntrada"] - c) / s["pxEntrada"] * lado
+            if perda >= cfg["stop"]:
+                self._ir_para(s, 0, T, c, "stop", f"o preço andou {pct_br(perda)} contra a posição ({preco_br(c)}); saiu (stop "
+                                                   f"de {pct_br(cfg['stop'], 0)}) e espera um dia.")
+                s["sinal"], s["pausa"] = 0, T + SINAL_PAUSA
+                return
+        if (T + 1) % HORA:
+            return
+        hs, ls_, cs = self._serie(s)
+        novo = self.regra(s, hs, ls_, cs, T)
+        if novo is None:
+            return
+        if s.get("pausa") and T < s["pausa"] and novo != 0 and s.get("sinal", 0) == 0:
+            return
+        velho = s.get("sinal", 0)
+        s["sinal"] = novo
+        alvo = self._alvo(novo)
+        if alvo == lado:
+            return
+        texto = self._texto_sinal(s, velho, novo, alvo, c)
+        self._ir_para(s, alvo, T, c, "sinal", texto)
+
+    def _texto_sinal(self, s, velho, novo, alvo, c):
+        r, ind = self.cfg["regra"], s.get("ind") or {}
+        acao = {1: f"comprou a {preco_br(c)}", -1: f"ficou vendido a {preco_br(c)}", 0: f"saiu a {preco_br(c)}"}[alvo]
+        if r == "cruz":
+            por = "a média de 1 dia passou acima da de 5 dias" if novo > 0 else "a média de 1 dia caiu abaixo da de 5 dias"
+        elif r == "rompe":
+            por = ("o preço passou a máxima de 7 dias" if novo > 0 else
+                   "o preço caiu abaixo do stop móvel" if self.cfg.get("movel") else "o preço perdeu a mínima de 3 dias")
+        elif r == "faixa":
+            por = (f"o preço chegou à baixa ({preco_br(ind.get('baixa', c))})" if (novo > 0 and velho == 0) or (novo == 0 and velho < 0)
+                   else f"o preço chegou à alta ({preco_br(ind.get('alta', c))})")
+        elif r == "bandas":
+            por = ("o preço voltou à média" if novo == 0 else
+                   f"o preço fechou {num_br(abs(ind.get('z', 0)), 1)} desvios {'abaixo' if novo > 0 else 'acima'} da média")
+        else:
+            por = f"o RSI está em {num_br(ind.get('rsi', 0), 0)}"
+        return f"{por}; {acao}."
 
     # ------------------------------------------------------------------ caixa na Aave (DCA)
     def _custo_caixa(self, v, ida):
@@ -850,7 +1107,9 @@ class Robo:
         if s["morta"]:
             return
         # no fechamento
-        if self.tipo == "grade":
+        if self.tipo == "sinal":
+            self._sinal(s, t, T, c)
+        elif self.tipo == "grade":
             if self.saida and self._sair_grade(s, T, c):
                 return
             if self.cfg.get("recentrar") == "semana":
@@ -925,6 +1184,10 @@ class Robo:
             out["faixaAgora"] = round(s["faixa"], 6) if s.get("faixa") else None
         if self.vol:
             out["volDia"] = s.get("volDia")
+        if self.tipo == "sinal":
+            out["lado"] = self._lado_real(s)
+            out["indicadores"] = s.get("ind")
+            out["entradas"] = s["compras"]
         if self.caixa_aave:
             out["naAave"] = round(s.get("aave", 0.0), 2)
         out["porDentro"] = self.por_dentro(s, px)
@@ -945,6 +1208,32 @@ class Robo:
         if a.get("estimado"):
             out["estimado"] = True
         return out
+
+
+def ema(xs, n):
+    """A média móvel exponencial dos últimos valores (começa pela média simples dos primeiros `n`)."""
+    if len(xs) < n:
+        return sum(xs) / len(xs)
+    k = 2 / (n + 1)
+    e = sum(xs[:n]) / n
+    for x in xs[n:]:
+        e = x * k + e * (1 - k)
+    return e
+
+
+def rsi(xs, n=14):
+    """O RSI de Wilder (0 a 100) dos fechamentos."""
+    g = p = 0.0
+    dif = [b - a for a, b in zip(xs, xs[1:])]
+    for d in dif[:n]:
+        g += max(d, 0)
+        p += max(-d, 0)
+    g /= n
+    p /= n
+    for d in dif[n:]:
+        g = (g * (n - 1) + max(d, 0)) / n
+        p = (p * (n - 1) + max(-d, 0)) / n
+    return 100.0 if p == 0 else 100 - 100 / (1 + g / p)
 
 
 # ====================================================================== passar velas numa conta
@@ -1150,7 +1439,7 @@ def rodar(ctx):
         curva = Curva(inicio=agora)
         curva.marcar(agora, CAPITAL)
         if cfg["tipo"] == "queda" or robo.usa_buffer:
-            aq = buscar(moeda_api(cfg, pares), "1h", agora - AQUECER_DIAS * DIA, agora)
+            aq = buscar(moeda_api(cfg, pares), "1h", agora - robo.aquecer_dias * DIA, agora)
             if aq:
                 robo.aquecer(s, aq)
         vivo[cfg["id"]] = {"curva": curva.para_json(), "bot": s}
@@ -1206,7 +1495,7 @@ def rodar(ctx):
             if not velho and not any(c in faltam for c in cfgs):
                 continue
             coin = moeda_api(cfgs[0], pares)
-            velas = buscar(coin, "1h", ini - AQUECER_DIAS * DIA, agora)
+            velas = buscar(coin, "1h", ini - AQUECER_SINAL_DIAS * DIA, agora)
             fund = buscar_funding(moeda, ini - HORA, agora) if merc == "perp" and velas else None
             if velas is not None and not [v for v in velas if v[0] >= ini]:
                 for c in cfgs:

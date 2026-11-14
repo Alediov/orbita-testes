@@ -219,7 +219,9 @@ def conferir_forma(d):
     assert d["forma"] == "robos" and d["nome"] == "Robôs"
     ids = [v["id"] for v in d["versoes"]]
     assert ids == ["gbtc10", "geth10", "gbtc20r", "gneutra1", "gneutra3", "dca", "dcaqueda", "dcam1", "dcam3",
-                   "gsaida1", "gsaida3", "gvol2", "gvol4", "gsol1", "ghype1", "dcaC", "segbtc", "segeth"]
+                   "gsaida1", "gsaida3", "gvol2", "gvol4", "gsol1", "ghype1", "dcaC", "tcruz", "tcruzls", "tcruzeth",
+                   "trompe", "tmovel", "rfaixa", "rfaixavol", "rbandas", "rbandastend", "rrsi", "rbandasls", "irbandas",
+                   "irsi", "icruzls", "segbtc", "segeth"]
     assert d["padrao"] in ids
     for v in d["versoes"]:
         assert v["risco"] in RISCOS and v["nome"] and v["frase"] and 1 <= v["alav"] <= 3
@@ -497,6 +499,86 @@ def teste_sem_dados_e_antigo():
         shutil.rmtree(pasta, ignore_errors=True)
 
 
+# ---------------------------------------------------------------------- robôs de sinal (14/11/2026)
+def _rodar_sinal(id_, precos, cfg_extra=None):
+    cfg = cfg_de(id_)
+    cfg.update(cfg_extra or {})
+    r = robos.Robo(cfg)
+    s = r.novo(0)
+    _subir_horas(r, s, 0, precos)
+    return r, s
+
+
+def teste_sinais_indicadores():
+    assert perto(robos.ema([1.0] * 30, 10), 1.0)
+    xs = [float(i) for i in range(1, 40)]
+    assert robos.ema(xs, 5) > robos.ema(xs, 20)  # subindo: a rápida fica acima
+    assert robos.rsi(xs, 14) == 100.0
+    assert robos.rsi(list(reversed(xs)), 14) < 1
+    zig = [100 + (1 if i % 2 else -1) for i in range(60)]
+    assert 40 < robos.rsi(zig, 14) < 60
+
+
+def teste_tendencia():
+    # 6 dias parados, 4 subindo, 4 caindo: entra na subida e sai na queda
+    precos = [100.0] * 144 + [100 * 1.004 ** i for i in range(1, 97)] + [100 * 1.004 ** 96 * 0.996 ** i for i in range(1, 97)]
+    r, s = _rodar_sinal("tcruz", precos)
+    ev = [x for x in s["buf"]["ev"]]
+    tipos = [x[1] for x in ev]
+    assert "comprou" in tipos and "saiu" in tipos, tipos
+    assert tipos.index("comprou") < len(tipos) - 1 - tipos[::-1].index("saiu")
+    assert r._lado_real(s) == 0
+    assert r.patrimonio(s, precos[-1]) > robos.CAPITAL * 1.05  # pegou boa parte da alta
+    # nos dois lados, termina vendido na queda
+    r2, s2 = _rodar_sinal("tcruzls", precos)
+    assert r2._lado_real(s2) == -1
+    # o contrário termina comprado e perde
+    r3, s3 = _rodar_sinal("icruzls", precos)
+    assert r3._lado_real(s3) == 1 and r3.patrimonio(s3, precos[-1]) < robos.CAPITAL
+    e = r.extra(s)
+    assert e["lado"] == 0 and e["entradas"] >= 1 and "rapida" in (e["indicadores"] or {})
+    # rompimento: só depois de 7 dias de dados
+    rr, sr = _rodar_sinal("trompe", [100.0] * 100 + [101.0])
+    assert rr._lado_real(sr) == 0
+    rr, sr = _rodar_sinal("trompe", [100.0 + (i % 3) * 0.1 for i in range(200)] + [104.0, 105.0])
+    assert rr._lado_real(sr) == 1
+    rm, sm = _rodar_sinal("tmovel", [100.0 + (i % 3) * 0.1 for i in range(200)] + [104, 110, 115, 120] + [80, 70, 60, 60])
+    assert rm._lado_real(sm) == 0 and any("stop móvel" in x[2] for x in sm["buf"]["ev"])
+
+
+def teste_baixa_alta():
+    # vai e vem de ±5% em volta de 100 (período de 2 dias): compra na baixa, vende na alta e ganha
+    import math as m
+    precos = [100 * (1 + 0.05 * m.sin(2 * m.pi * i / 48)) for i in range(24 * 14)]
+    r, s = _rodar_sinal("rfaixa", precos)
+    compras = [x for x in s["buf"]["ev"] if x[1] == "comprou"]
+    assert len(compras) >= 4, len(compras)
+    for x in compras:
+        px = float(x[2].split("comprou a US$ ")[1].split(".")[0].replace(",", ".")) if "comprou a" in x[2] else None
+        assert px is None or px < 100
+    assert r.patrimonio(s, precos[-1]) > robos.CAPITAL * 1.03, r.patrimonio(s, precos[-1])
+    # o contrário nos dois lados perde no vai e vem
+    picos = [(95.0 if i % 40 == 39 else 105.0 if i % 40 == 19 else 100 + (0.1 if i % 2 else -0.1)) for i in range(24 * 12)]
+    ri, si = _rodar_sinal("irbandas", picos)
+    rb, sb = _rodar_sinal("rbandasls", picos)
+    assert [x for x in sb["buf"]["ev"] if x[1] == "comprou"] and [x for x in sb["buf"]["ev"] if x[1] == "vendeu"]
+    precos = picos
+    assert rb.patrimonio(sb, precos[-1]) > ri.patrimonio(si, precos[-1])
+    # stop: cai 10% sem voltar → sai com o stop e espera um dia
+    queda = [100.0] * 80 + [94.0] + [93 - i * 0.5 for i in range(20)]
+    rq, sq = _rodar_sinal("rfaixa", queda)
+    assert any(len(x) > 3 and x[3] == "stop" for x in sq["buf"]["ev"]), [x[2] for x in sq["buf"]["ev"]]
+    assert rq._lado_real(sq) == 0
+    # RSI: compra depois de uma queda forte
+    rr, sr = _rodar_sinal("rrsi", [100.0] * 30 + [100 - i for i in range(1, 6)])
+    assert rr._lado_real(sr) == 1
+    # filtro de tendência: não compra a queda abaixo da média de 7 dias
+    descendo = [200 - i * 0.3 for i in range(200)] + [130, 120]
+    rt, st = _rodar_sinal("rbandastend", descendo)
+    assert not [x for x in st["buf"]["ev"] if x[1] == "comprou"]
+    assert [x for x in _rodar_sinal("rbandas", descendo)[1]["buf"]["ev"] if x[1] == "comprou"]
+
+
 if __name__ == "__main__":
     teste_grade_a_mao()
     teste_caminho_pessimista()
@@ -514,4 +596,7 @@ if __name__ == "__main__":
     teste_dca_caixa()
     teste_janelas()
     teste_sem_dados_e_antigo()
+    teste_sinais_indicadores()
+    teste_tendencia()
+    teste_baixa_alta()
     print("ok")
