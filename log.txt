@@ -1,0 +1,17 @@
+15:49:12 rodada 2026-11-14T15:49:11Z; yt-dlp sim, youtube-transcript-api sim
+15:49:12 craftgold: 15 no feed/lista, channel_id UCo-JPwjQ6wEMLXhPJDV7xLg
+15:49:12 marinho: 15 no feed/lista, channel_id UCgO3Yasdf1gbLwtbZ69o_6w
+15:49:12 criptobr: 15 no feed/lista, channel_id UCD9A8nZLAtZiM_1ZgLkn-kg
+15:49:12 theoborges: 15 no feed/lista, channel_id UCLWt2kCXdBlc2qWlUrP4vqw
+15:49:13 livecoins: 2 itens no feed (blog), 1 novos
+15:49:13 portaldobitcoin: 3 itens no feed (blog), 1 novos
+15:49:13 cointelegraphbr: feed de fora falhou (HTTP Error 410: Gone)
+15:49:13 3 vídeos novos
+15:49:16 sem transcrição criptobr c4TBsJe3kKM: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+15:49:22 sem transcrição criptobr qATh4AwFI34: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+15:49:29 sem transcrição craftgold 36hLgUsHem4: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+15:49:36 sem transcrição craftgold y7eB1k8-xRo: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+15:49:42 sem transcrição criptobr TXlx-9wp9Vc: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+15:49:42 5 bloqueios seguidos desde o começo: o resto fica para a próxima rodada
+15:49:42 93 ficaram para a próxima rodada
+15:49:42 fim: 143 vídeos, 10 com transcrição
