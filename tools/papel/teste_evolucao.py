@@ -98,7 +98,51 @@ def teste_cruzar_e_mutar():
         assert E.chave(novos) != E.chave(pai["genes"]) or all(pai["genes"][k] == novos[k] for k in novos)
     # a filha quase nunca sai igual ao pai ou à mãe (a mutação forçada pode cair no outro); a geração descarta essas
     assert iguais < 30, iguais
-    assert E.nome_de(1) == "Ana" and E.nome_de(len(E.NOMES) + 1) == "Ana 2"
+    assert [E.romano(k) for k in (2, 3, 4, 9, 14, 40)] == ["II", "III", "IV", "IX", "XIV", "XL"]
+    assert len(set(E.NOMES)) == len(E.NOMES) >= 300 and len(set(E.SOBRENOMES)) == len(E.SOBRENOMES) >= 200
+    assert not set(E.NOMES) & set(E.SOBRENOMES)
+
+
+def teste_nomes_de_familia():
+    """A novata funda a família; a filha leva o sobrenome da mãe e o do pai; a mutante fica com os de quem veio; nome
+    repetido ganha II, III."""
+    P = E.parametros(SimpleNamespace(exemplo=True))
+    sp = E.Especie("robos", ESP["grade"], {}, random.Random(9), P, Eventos(), lambda x: None)
+    rng = random.Random(10)
+    a = sp.nascer(E.sortear(rng, sp.esp), "novata")
+    b = sp.nascer(E.sortear(rng, sp.esp), "semente")
+    assert len(a["sob"]) == 1 and len(b["sob"]) == 1 and a["sob"] != b["sob"], (a["nome"], b["nome"])
+    assert a["nome"].split()[0] in E.NOMES and a["nome"].endswith(" " + a["sob"][0])
+    f = sp.nascer(E.sortear(rng, sp.esp), "filha", (a["id"], b["id"]))
+    assert f["sob"] == [b["sob"][0], a["sob"][0]], f["nome"]            # mãe e depois o pai
+    assert f["nome"].endswith(f" {b['sob'][0]} {a['sob'][0]}")
+    n = sp.nascer(E.sortear(rng, sp.esp), "filha", (f["id"], b["id"]))
+    assert n["sob"] == [b["sob"][0], a["sob"][0]], n["nome"]            # o último de cada um
+    irmas = sp.nascer(E.sortear(rng, sp.esp), "filha", (a["id"], a["id"]))
+    assert irmas["sob"] == a["sob"]                                     # os dois da mesma família: um sobrenome só
+    m = sp.nascer(E.sortear(rng, sp.esp), "mutante", (f["id"],))
+    assert m["sob"] == f["sob"] and m["nome"] != f["nome"]
+    assert sp.e["arvore"][f["id"]]["s"] == f["sob"]
+    # fundadoras não repetem sobrenome enquanto houver livre, e ninguém repete o nome
+    nomes = {x["nome"] for x in (a, b, f, n, irmas, m)}
+    sobs = {a["sob"][0], b["sob"][0]}
+    for _ in range(150):
+        x = sp.nascer(E.sortear(rng, sp.esp), "novata")
+        assert x["nome"] not in nomes and x["sob"][0] not in sobs, x["nome"]
+        nomes.add(x["nome"])
+        sobs.add(x["sob"][0])
+    # com um prenome só, o repetido vira II, III
+    orig = E.NOMES
+    E.NOMES = ["Ana"]
+    try:
+        x1 = sp.nascer(E.sortear(rng, sp.esp), "mutante", (a["id"],))
+        x2 = sp.nascer(E.sortear(rng, sp.esp), "mutante", (a["id"],))
+        x3 = sp.nascer(E.sortear(rng, sp.esp), "mutante", (a["id"],))
+    finally:
+        E.NOMES = orig
+    base = f"Ana {a['sob'][0]}"
+    esperado = [base, f"{base} II", f"{base} III"] if a["nome"] != base else [f"{base} II", f"{base} III", f"{base} IV"]
+    assert [x1["nome"], x2["nome"], x3["nome"]] == esperado, (x1["nome"], x2["nome"], x3["nome"])
 
 
 def teste_notas():

@@ -25,9 +25,12 @@ Duas velocidades (decisão de 16/11/2026):
   média). Ela NÃO substitui a versão padrão dos Robôs (decisão dele: "manteremos as duas, como duas frentes"), não
   pode ser eliminada e perde a coroa se perder do controle SEMANAS_COROA semanas seguidas.
 
-Cada versão tem um nome (NOMES, pela ordem de nascimento) para dar para seguir a família: `pais` (pai e mãe; a mutante
-tem um só) e `origem` (de onde veio cada gene: "pai", "mae", "mut" ou "novo"). A árvore guarda os antepassados das
-versões vivas até ARVORE_NIVEIS gerações.
+Cada versão tem um nome de gente, com a família (pedido do Alediov, 16/11/2026): a novata e a semente fundam uma
+família ("Ana Ferraz"); a filha leva o sobrenome da mãe e o do pai, como no Brasil ("Clara Ferraz Lima", filha de Ana
+Ferraz e Bento Lima; o pai é sempre o de nota melhor dos dois, então o último sobrenome segue a linha que vence); a
+mutante fica com os sobrenomes de quem veio. Nome repetido entre as vivas e as da árvore ganha II, III… `pais` (pai e
+mãe; a mutante tem um só) e `origem` (de onde veio cada gene: "pai", "mae", "mut" ou "novo") contam o resto. A árvore
+guarda os antepassados das versões vivas até ARVORE_NIVEIS gerações.
 
 Roda num job próprio (`.github/workflows/evolucao.yml`, 1 vez por dia, no ramo `papel` com o mesmo grupo de
 concorrência das outras formas) e grava `evolucao.json` (formato em FORMATO.md, "Evolução"). Sem `versoes` (a lista
@@ -45,7 +48,7 @@ import robos as R
 from conta import CAPITAL, DIA, HORA, Curva, Eventos, cdi_ano_da_serie, dia_de, metricas
 
 NOME = "Evolução"
-VERSAO = 2              # 2 (16/11/2026): sem clones (versões com o mesmo resultado); recomeçou a liga do 1º dia
+VERSAO = 3              # 2: sem clones; 3: nomes com a família (as duas em 16/11/2026, o 1º dia: recomeçou)
 
 MIN = 60_000
 # ---------------------------------------------------------------- laboratório (no passado)
@@ -149,15 +152,47 @@ ESPECIES = {
 }
 FORMA_NOME = {"robos": "Robôs"}
 
-NOMES = ["Ana", "Bento", "Clara", "Davi", "Elisa", "Fábio", "Gabi", "Heitor", "Iara", "João", "Kaio", "Lara", "Miguel",
-         "Nina", "Otávio", "Paula", "Quim", "Rosa", "Sávio", "Tânia", "Ulisses", "Vera", "Wagner", "Xênia", "Yuri",
-         "Zélia", "Alice", "Bruno", "Cecília", "Diego", "Estela", "Felipe", "Giovana", "Hugo", "Ísis", "Júlio",
-         "Kátia", "Lucas", "Marina", "Nelson", "Olga", "Pedro", "Raquel", "Samuel", "Tereza", "Úrsula", "Vítor",
-         "Wanda", "Yara", "Zeca", "Amanda", "Breno", "Carla", "Dante", "Flora", "Gustavo", "Helena", "Ícaro", "Joana",
-         "Leandro", "Lívia", "Mateus", "Noemi", "Orlando", "Priscila", "Rafael", "Sofia", "Tiago", "Valéria",
-         "Wesley", "Yasmin", "Zaqueu", "Aurora", "Benício", "Celina", "Dalila", "Enzo", "Fernanda", "Gael", "Heloísa",
-         "Igor", "Júlia", "Lauro", "Maitê", "Nicolas", "Odete", "Renata", "Sílvio", "Talita", "Vicente", "Wilma",
-         "Ágata", "Baltazar", "Cíntia", "Diogo", "Elaine", "Frederico", "Glória", "Irene", "Leonel"]
+# os nomes das versões (um prenome e os sobrenomes da família; ver `Especie.batizar`)
+NOMES = (
+    "Ana Bento Clara Davi Elisa Fábio Gabi Heitor Iara João Kaio Lara Miguel Nina Otávio Paula Quim Rosa Sávio "
+    "Tânia Ulisses Vera Wagner Xênia Yuri Zélia Alice Bruno Cecília Diego Estela Felipe Giovana Hugo Ísis Júlio "
+    "Kátia Lucas Marina Nelson Olga Pedro Raquel Samuel Tereza Úrsula Vítor Wanda Yara Zeca Amanda Breno Carla "
+    "Dante Flora Gustavo Helena Ícaro Joana Leandro Lívia Mateus Noemi Orlando Priscila Rafael Sofia Tiago "
+    "Valéria Wesley Yasmin Zaqueu Aurora Benício Celina Dalila Enzo Fernanda Gael Heloísa Igor Júlia Lauro "
+    "Maitê Nicolas Odete Renata Sílvio Talita Vicente Wilma Ágata Baltazar Cíntia Diogo Elaine Frederico Glória "
+    "Irene Leonel Adriana Afonso Alana Alberto Alícia Álvaro Amélia André Anita Antônio Ariel Artur Augusto "
+    "Bárbara Beatriz Bernardo Bianca Caio Camila Carlos Carolina Cássio Catarina César Cláudio Cristina Daniel "
+    "Débora Denise Dirceu Dora Douglas Edgar Eduardo Elza Emanuel Érica Ernesto Eva Fabrício Fátima Flávio "
+    "Francisco Gabriel Germano Gilberto Gisele Graça Guilherme Hélio Henrique Hilda Horácio Inês Isaac Isabel "
+    "Ivan Jaime Janaína Jorge José Juliano Jussara Laís Laura Leila Leonardo Letícia Lia Lorena Luana Luciano "
+    "Luís Luíza Magda Manuela Marcelo Márcia Marcos Mariana Mário Marta Maurício Mauro Melissa Milena Moisés "
+    "Mônica Murilo Nádia Natália Nestor Norma Olívia Osvaldo Pâmela Patrícia Paulo Pietra Rebeca Regina "
+    "Reinaldo Ricardo Rita Roberto Rodrigo Rogério Ronaldo Rosana Rúbia Rui Sabrina Sandra Sara Saulo Sebastião "
+    "Sérgio Simone Sônia Suzana Tales Tatiana Teodoro Thaís Tomás Túlio Valentina Vanessa Vinícius Violeta "
+    "Vitória Viviane Walter Zilda Abel Adélia Aline Amaro Ângela Anselmo Aparecida Arnaldo Benedita Berenice "
+    "Bráulio Cacilda Celso Cora Dário Dulce Edite Elias Estêvão Eunice Fausto Felícia Firmino Gaspar Hermínia "
+    "Iolanda Jacinto Joaquim Josué Lázaro Lídia Lourenço Madalena Matilde Nazaré Otília Plínio Quitéria "
+    "Raimundo Rômulo Salomé Serafim Tadeu Tarsila Ubirajara Valdir Zulmira"
+    " Adriano Alessandra Benjamim Betina Caetana Conrado Damião Dandara Eliane Emília Fabiana Gilda Guido Ingrid Jandira Jonas Kelly Lino Luna Marlene Nilo Otto Pilar Ramiro Selma Tobias Vânia Zoraide Aurélio Bela"
+).split()
+SOBRENOMES = (
+    "Ferraz Lima Souza Silva Santos Oliveira Pereira Costa Almeida Ribeiro Carvalho Gomes Martins Rocha Barbosa "
+    "Moreira Cardoso Teixeira Correia Fernandes Araújo Azevedo Barros Batista Borges Braga Brandão Brito Bueno "
+    "Cabral Caldeira Camargo Campos Castro Cavalcanti Chaves Coelho Cordeiro Cunha Dias Duarte Esteves Farias "
+    "Figueiredo Fonseca Fontes Freitas Furtado Garcia Godoy Guimarães Lacerda Leite Lopes Macedo Machado Maia "
+    "Marques Matos Medeiros Meireles Melo Mendes Miranda Monteiro Morais Moura Nascimento Neves Nogueira Nunes "
+    "Pacheco Paiva Peixoto Pimentel Pinheiro Pires Prado Queiroz Ramos Rangel Rezende Rios Sales Sampaio "
+    "Siqueira Soares Tavares Toledo Torres Valadares Vargas Vasconcelos Viana Vieira Xavier Abreu Aguiar "
+    "Albuquerque Alencar Amaral Andrade Antunes Aragão Assis Bastos Bezerra Bittencourt Calado Carneiro "
+    "Casimiro Coutinho Damasceno Dantas Dutra Falcão Feitosa Fialho Franco Galvão Gouveia Guedes Guerra Holanda "
+    "Jardim Lemos Linhares Lobo Louzada Luz Magalhães Malta Marinho Mesquita Muniz Navarro Negrão Novaes "
+    "Ornelas Padilha Paes Paranhos Passos Pedrosa Pontes Portela Quintana Rabelo Resende Sá Salgado Saraiva "
+    "Seixas Serra Simões Tenório Trindade Uchoa Valente Veloso Ventura Veríssimo Vidal Vilela Zanetti Arruda "
+    "Baptista Barreto Bandeira Bragança Caetano Calixto Capistrano Cerqueira Cidade Colares Cortez Drummond "
+    "Espíndola Estrela Fagundes Faria Gadelha Gusmão Horta Junqueira Lago Leal Madureira Maranhão Mascarenhas "
+    "Montenegro Nóbrega Pessoa Quaresma Rosário Sardinha Taveira Varela"
+    " Alves Amorim Castilho Diniz Lins Motta Peçanha Rolim Sobral"
+).split()
 
 FRASE = ("Cada estratégia vira uma população de versões que evoluem: as piores saem, as melhores se cruzam (cada gene vem "
          "do pai ou da mãe) e às vezes nasce uma mutação. No laboratório isso acontece todo dia no passado; na liga, "
@@ -342,11 +377,15 @@ def num(x):
     return f"{x:.0f}" if abs(x - round(x)) < 1e-9 else f"{x:.1f}".replace(".", ",")
 
 
-def nome_de(n):
-    """O nome da n-ésima versão (1, 2, …) de uma espécie: Ana, Bento, … e depois Ana 2, Bento 2… (nunca repete)."""
-    i = n - 1
-    volta = i // len(NOMES)
-    return NOMES[i % len(NOMES)] + (f" {volta + 1}" if volta else "")
+def romano(n):
+    """2 → "II", 14 → "XIV" (o 2º, o 3º… com o mesmo nome)."""
+    out = ""
+    for v, r in ((1000, "M"), (900, "CM"), (500, "D"), (400, "CD"), (100, "C"), (90, "XC"), (50, "L"), (40, "XL"),
+                 (10, "X"), (9, "IX"), (5, "V"), (4, "IV"), (1, "I")):
+        while n >= v:
+            out += r
+            n -= v
+    return out
 
 
 # ====================================================================== notas
@@ -460,10 +499,39 @@ class Especie:
     def nascer(self, genes, tipo, pais=(), origem=None, g=None):
         self.e["contador"] += 1
         n = self.e["contador"]
-        ind = {"id": f"{self.esp['prefixo']}{n}", "nome": nome_de(n), "genes": genes, "tipo": tipo,
+        nome, sob = self.batizar(tipo, pais)
+        ind = {"id": f"{self.esp['prefixo']}{n}", "nome": nome, "sob": sob, "genes": genes, "tipo": tipo,
                "pais": list(pais), "origem": origem or {k: "novo" for k in genes}, "g": g}
-        self.e["arvore"][ind["id"]] = {"n": ind["nome"], "t": tipo, "p": list(pais), "g": g}
+        self.e["arvore"][ind["id"]] = {"n": nome, "s": sob, "t": tipo, "p": list(pais), "g": g}
+        self._nomes.add(nome)
         return ind
+
+    def batizar(self, tipo, pais):
+        """O nome e os sobrenomes de quem nasce: a filha leva o último sobrenome da mãe e o do pai; a mutante, os de
+        quem veio; a novata e a semente fundam uma família (um sobrenome que nenhuma viva usa, enquanto houver).
+        O prenome é sorteado; nome igual ao de uma viva ou de alguém da árvore ganha II, III…"""
+        arv, rng = self.e["arvore"], self.rng
+        if not hasattr(self, "_nomes"):
+            self._nomes = {a["n"] for a in arv.values()}
+        sob_de = lambda i: (arv.get(i) or {}).get("s") or []  # noqa: E731
+        sp = [sob_de(i) for i in pais]
+        if tipo == "filha" and len(sp) == 2 and sp[0] and sp[1]:
+            sob = [sp[1][-1], sp[0][-1]] if sp[1][-1] != sp[0][-1] else [sp[0][-1]]
+        elif tipo == "mutante" and sp and sp[0]:
+            sob = list(sp[0])
+        else:
+            usados = {x for a in arv.values() for x in a.get("s") or []}
+            livres = [x for x in SOBRENOMES if x not in usados] or SOBRENOMES
+            sob = [rng.choice(livres)]
+        familia = " ".join(sob)
+        for _ in range(12):
+            nome = f"{rng.choice(NOMES)} {familia}"
+            if nome not in self._nomes:
+                return nome, sob
+        k = 2
+        while f"{nome} {romano(k)}" in self._nomes:
+            k += 1
+        return f"{nome} {romano(k)}", sob
 
     def controle_genes(self):
         return genes_da_versao(self.esp, self.cfg_padrao[self.esp["controle"]])
@@ -533,6 +601,8 @@ class Especie:
             tentativas += 1
             pai = torneio()
             mae = torneio(pai)
+            if _n(mae.get("nota")) > _n(pai.get("nota")):  # o pai é o de nota melhor (o sobrenome dele fica por último)
+                pai, mae = mae, pai
             genes, origem = cruzar(rng, self.esp, pai, mae)
             if chave(genes) in vistos:
                 continue
@@ -627,7 +697,7 @@ class Especie:
 
     def de_lab(self, ind):
         """A cópia de uma versão do laboratório para a liga (o mesmo id: a mesma versão, a outra frente)."""
-        out = {k: ind[k] for k in ("id", "nome", "genes", "tipo", "pais", "origem", "g") if k in ind}
+        out = {k: ind[k] for k in ("id", "nome", "sob", "genes", "tipo", "pais", "origem", "g") if k in ind}
         out["fonte"] = "laboratório"
         out["lab"] = {"nota": ind.get("nota"), "val": ind.get("val")}
         return out
@@ -766,6 +836,8 @@ class Especie:
                 pai = max(rng.sample(boas, min(3, len(boas))), key=lambda i: _n(self.media_liga(i)))
                 outras = [i for i in boas if i is not pai]
                 mae = max(rng.sample(outras, min(3, len(outras))), key=lambda i: _n(self.media_liga(i)))
+                if _n(self.media_liga(mae)) > _n(self.media_liga(pai)):
+                    pai, mae = mae, pai
                 genes, origem = cruzar(rng, self.esp, pai, mae)
                 ind = self.nascer(genes, "filha", (pai["id"], mae["id"]), origem, None)
             else:
@@ -1006,6 +1078,8 @@ def _r(x, n=5):
 
 def saida_lab_ind(i):
     out = {k: i[k] for k in ("id", "nome", "genes", "tipo", "pais", "origem", "g") if k in i}
+    if i.get("sob"):
+        out["familia"] = i["sob"][-1]
     for k in ("nota", "val", "jan", "ret", "queda", "ops", "morta", "semNota", "idade", "de"):
         if i.get(k) is not None:
             out[k] = i[k]
@@ -1029,6 +1103,8 @@ def conta_viva(ind, cdi, cdi_ano, serie=False):
 def saida_liga_ind(sp, ind, cdi, cdi_ano, serie):
     out = {k: ind[k] for k in ("id", "nome", "genes", "tipo", "pais", "origem", "fonte", "desde", "lab", "de", "semana")
            if ind.get(k) is not None}
+    if ind.get("sob"):
+        out["familia"] = ind["sob"][-1]
     out["notas"] = [[int(w)] + list(v) for w, v in sorted((ind.get("notas") or {}).items(), key=lambda x: int(x[0]))]
     out["media"] = sp.media_liga(ind)
     out["aoVivo"] = conta_viva(ind, cdi, cdi_ano, serie)

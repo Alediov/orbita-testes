@@ -785,7 +785,10 @@ laboratório, filhas e uma mutante; campeã = venceu o controle 4 semanas seguid
 
 - **gene**: `{ k, nome, tipo: "num" | "int" | "bool" | "op", min, max, passo, opcoes, rotulos, un: "%" (fração) |
   "×" | "h", neutro, so }`; `so` = só vale quando os outros genes têm esses valores (senão fica no `neutro`).
-- **versão** (nos dois): `{ id ("g37"), nome ("Ana", "Ana 2"…, pela ordem de nascimento, nunca repete), genes,
+- **versão** (nos dois): `{ id ("g37"), nome (VERSAO 3, 16/11/2026: um prenome e a família, "Ana Ferraz"; a filha
+  leva o último sobrenome da mãe e o do pai, "Clara Ferraz Lima", e o pai é sempre o de nota melhor; a mutante fica com
+  os de quem veio; a novata e a semente fundam uma família; nome repetido entre as vivas e a árvore ganha II, III…),
+  familia (o último sobrenome: a linha do pai), genes,
   descricao (curta), tipo: "semente" | "novata" | "filha" | "mutante" | "controle", pais: [id pai, id mãe] (a mutante tem
   um só), origem: { <gene>: "pai" | "mae" | "mut" | "novo" }, g (geração em que nasceu no laboratório) }`.
 - **lab**: `{ g (gerações até hoje), dia, hoje (gerações de hoje), pop: [versão + nota, val, jan: [3], ret, queda, ops,
@@ -801,7 +804,7 @@ laboratório, filhas e uma mutante; campeã = venceu o controle 4 semanas seguid
   campeã e o controle) }], controle (igual), campea: { id, nome, desde, genes, semana, descricao, vsControle: [[semana,
   nota, notaControle]] } | null, coroadas: [campeã + ate], semanas: [{ semana, de, melhor, nota, controle, mediana,
   venceram, notas, saiu: [{ id, nome, media }], entrou: [{ id, nome, fonte, tipo }] }] }`.
-- **arvore**: `{ <id>: { n: nome, t: tipo, p: [pais], g } }`, só os antepassados (até 4 gerações) das versões vivas,
+- **arvore**: `{ <id>: { n: nome, s: [sobrenomes], t: tipo, p: [pais], g } }`, só os antepassados (até 4 gerações) das versões vivas,
   da campeã e das coroadas.
 
 Estado: `esp["robos.<espécie>"]` com `contador`, `lab`, `liga` (cada conta com `s`, o estado do robô, e `c`, a
