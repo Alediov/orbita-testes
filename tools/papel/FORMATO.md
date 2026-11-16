@@ -4,7 +4,9 @@ O workflow `papel.yml` roda `tools/papel/papel.py` a cada 6 h e grava, num commi
 
 - `indice.json`: o que existe e quando cada forma rodou (o app lê primeiro e só baixa a forma que mudou);
 - `<forma>.json`: um por forma (`cofres.json`, `funding.json`, `robos.json`, `apostas.json`, `looping.json`,
-  `opcoes.json`, `pools.json`, `previsao.json`; e `memes.json`, gravado pelo job próprio `memes.yml`, 3 vezes por dia desde 09/11/2026, no mesmo ramo);
+  `opcoes.json`, `pools.json`, `previsao.json`; e `memes.json`, gravado pelo job próprio `memes.yml`, 3 vezes por dia desde 09/11/2026, no mesmo ramo;
+  e `evolucao.json`, do job próprio `evolucao.yml`, 1 vez por dia desde 16/11/2026, que NÃO segue o formato das formas:
+  ver "Evolução" no fim);
 - `estado.json`: o que a próxima rodada precisa (o app não lê);
 - `log.txt`: as últimas rodadas.
 
@@ -751,3 +753,55 @@ ranking), `motivo` }] e a forma segue. Tempo máximo por rodada: `ORCAMENTO_S` (
 - **abertos** { `lidos`, `porCategoria` }; **config**: `frequencia`, `moeda` "US$", `aposta`, `bloqueio`,
   `soObservacao: true`, `fav`, `azarao`, `dif`, `filtros`, `taxas`, `janelas`.
 - **eventos** (`entrou`, `ganhou`, `perdeu`, `anulou`, `saiu`, `trocou`, `aviso`): até 25 por rodada.
+
+## Evolução (`evolucao.json`, 16/11/2026)
+
+Pedido do Alediov: versões que evoluem sozinhas (as piores saem, as melhores se cruzam, às vezes uma mutação), para
+achar os melhores parâmetros de cada estratégia. Regras e números no começo do `evolucao.py`. Começa pelos Robôs (BTC):
+três **espécies**, cada uma com os seus **genes** (os parâmetros que mudam):
+
+- `grade` (controle `gbtc10`): `mercado` spot/perp, `faixa` 3–25%, `degraus` 6–40, `alav` 1–3× (só perp), `recentrar`,
+  `saida` e `saidaQueda` 5–30% (só com saída; o `saidaQueda` virou opção da versão em `robos.py`);
+- `bandas` (controle `rbandas`): `mercado`, `ls` (só perp), `media` 12–168 h, `z` 1–3 desvios, `stop` 2–15%,
+  `filtro` 0/72/120/168 h;
+- `tendencia` (controle `tcruz`): `mercado`, `ls`, `rapida` 6–72 h, `lenta` 48–200 h (sempre ≥ 2 × a rápida),
+  `stop` 0/3/5/8/12%.
+
+Duas frentes: o **laboratório** (todo dia, até 10 gerações de 24 nos últimos 180 dias de velas de 1 h, "aproximado";
+nota do treino = média das 3 janelas de 45 dias − ½ desvio entre elas, cada janela = retorno ao mês − ½ pior queda; os
+últimos 45 dias são a prova) e a **liga** (24 ao vivo nas velas de 1 min + o controle; toda segunda saem as 6 piores
+pela média das 4 últimas notas semanais, cada nota = retorno − ½ pior queda da semana; entram até 3 aprovadas do
+laboratório, filhas e uma mutante; campeã = venceu o controle 4 semanas seguidas, não substitui a versão padrão).
+
+```
+{ v, forma: "evolucao", nome: "Evolução", agora, rodada, frase, comoFunciona, avisos, padrao: null, versoes: [],
+  eventos: [{ em, versao: <espécie>, tipo: "liga" | "semana" | "coroa", texto }],
+  regras: { pop, sobrevivem, filhas, mutantes, novatas, geracoesDia, histDias, janelas, minOps, popLiga, saemLiga,
+            doLab, semanasNota, semanasCoroa, minDiasSemana, mutFilha },
+  formas: [{ id: "robos", nome: "Robôs", especies: [<espécie>] }] }
+```
+
+**Espécie**: `{ id, nome, icone, frase, genes: [<gene>], controle: { id, nome, genes, descricao }, lab, liga, arvore }`.
+
+- **gene**: `{ k, nome, tipo: "num" | "int" | "bool" | "op", min, max, passo, opcoes, rotulos, un: "%" (fração) |
+  "×" | "h", neutro, so }`; `so` = só vale quando os outros genes têm esses valores (senão fica no `neutro`).
+- **versão** (nos dois): `{ id ("g37"), nome ("Ana", "Ana 2"…, pela ordem de nascimento, nunca repete), genes,
+  descricao (curta), tipo: "semente" | "novata" | "filha" | "mutante" | "controle", pais: [id pai, id mãe] (a mutante tem
+  um só), origem: { <gene>: "pai" | "mae" | "mut" | "novo" }, g (geração em que nasceu no laboratório) }`.
+- **lab**: `{ g (gerações até hoje), dia, hoje (gerações de hoje), pop: [versão + nota, val, jan: [3], ret, queda, ops,
+  morta, semNota, idade, de (a versão dos Robôs de onde veio a semente)] (pela nota, a melhor primeiro), controle:
+  { nota, val, jan, ret, queda, ops }, hist: [{ g, dia, melhor, id, mediana, val, controle, valControle }] (as
+  últimas 150), saiu: [{ id, nome, nota }] e nasceu: [id] (a última geração), aprovadas: [id] }`.
+- **liga**: `{ inicio, semana (robos.semana_de), semanaDe ("AAAA-MM-DD", a segunda), pop: [versão + fonte
+  ("laboratório" | "liga" | "sorteada"), desde, semana (em que entrou), lab: { nota, val }, notas: [[semana, nota, ret,
+  queda]], media, aoVivo: { retorno, piorQueda, ops, nLiq, morta, inicio, serie e metricas (só as 6 melhores, a
+  campeã e o controle) }], controle (igual), campea: { id, nome, desde, genes, semana, descricao, vsControle: [[semana,
+  nota, notaControle]] } | null, coroadas: [campeã + ate], semanas: [{ semana, de, melhor, nota, controle, mediana,
+  venceram, notas, saiu: [{ id, nome, media }], entrou: [{ id, nome, fonte, tipo }] }] }`.
+- **arvore**: `{ <id>: { n: nome, t: tipo, p: [pais], g } }`, só os antepassados (até 4 gerações) das versões vivas,
+  da campeã e das coroadas.
+
+Estado: `esp["robos.<espécie>"]` com `contador`, `lab`, `liga` (cada conta com `s`, o estado do robô, e `c`, a
+`Curva`) e `arvore`; as velas de 1 h que os robôs de sinal guardam ficam uma vez por mercado em `hb` (cada conta
+recebe a sua cópia, só com as horas antes de onde parou).
+

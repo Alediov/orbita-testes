@@ -676,8 +676,8 @@ class Robo:
             self.evento(s, t, "entrou", f"{self.nome}: o preço voltou para dentro da grade ({preco_br(c)}).")
 
     def _sair_grade(self, s, t, c):
-        """Grade com saída: fecha tudo se o preço passou SAIDA_ALEM degraus além da borda ou a conta caiu SAIDA_QUEDA do
-        melhor momento desde a montagem. Devolve True se saiu."""
+        """Grade com saída: fecha tudo se o preço passou SAIDA_ALEM degraus além da borda ou a conta caiu SAIDA_QUEDA (ou
+        o `saidaQueda` da versão, um gene da Evolução) do melhor momento desde a montagem. Devolve True se saiu."""
         L = s["L"]
         degrau = L[1] - L[0]
         eq = self.patrimonio(s, c)
@@ -687,7 +687,7 @@ class Robo:
             motivo, txt = "grade", f"o preço passou {SAIDA_ALEM} degrau acima da grade ({preco_br(c)})"
         elif c < L[0] - SAIDA_ALEM * degrau:
             motivo, txt = "grade", f"o preço passou {SAIDA_ALEM} degrau abaixo da grade ({preco_br(c)})"
-        elif s["picoG"] > 0 and eq < s["picoG"] * (1 - SAIDA_QUEDA):
+        elif s["picoG"] > 0 and eq < s["picoG"] * (1 - self.cfg.get("saidaQueda", SAIDA_QUEDA)):
             motivo, txt = "stop", f"a conta caiu {pct_br(1 - eq / s['picoG'])} do melhor momento"
         if not motivo:
             return False

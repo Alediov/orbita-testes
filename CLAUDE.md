@@ -173,6 +173,13 @@ acabavam; aqui os executores padrão não têm limite.
   casamento conservador), seguir as 10 carteiras da semana anterior (fora da amostra, aproximado) e as réguas CDI e USDC;
   passado aproximado pelos mercados do observatório. Fontes públicas sem chave pela `rede.py` (gamma, clob, pmdata,
   pmlb, kalshi, manifold): conferir a estrutura no log da 1ª rodada.
+- **Evolução** (pedido do Alediov, 16/11/2026; `tools/papel/evolucao.py` + `evolucao.yml`, 1×/dia, ramo `papel`,
+  `FORMAS_A_PARTE`): as versões dos Robôs (grade, bandas e tendência no BTC) viram populações que evoluem: o
+  **laboratório** (até 10 gerações por dia nos últimos 180 dias de velas de 1 h, nota pela constância em 3 janelas,
+  os últimos 45 dias como prova) e a **liga** (24 ao vivo + o controle; toda segunda saem as 6 piores e entram
+  aprovadas do laboratório, filhas e uma mutante; campeã = venceu o controle 4 semanas seguidas e roda ao lado da versão
+  padrão, não no lugar dela: "manteremos as duas, como duas frentes"). Formato no `FORMATO.md`, "Evolução" (sem
+  `versoes`: o app tem a aba própria Testes → Evolução). O copy trading entra depois. Teste: `teste_evolucao.py`.
 - Os exemplos que o app usa sem rede ficam no repositório do app (`tools/mercado/exemplos/`); refazer aqui
   (`python3 tools/papel/falso.py`) e copiar para lá (`tools/mercado/exemplos/papel/`) quando o formato mudar.
 - Os workflows (`mercado.yml`, `papel.yml`, `memes.yml`, `ideias.yml`) religam os agendamentos pela API a cada rodada (num

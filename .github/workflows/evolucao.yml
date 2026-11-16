@@ -1,0 +1,54 @@
+# Testes de mercado do Órbita: a Evolução (tools/papel/evolucao.py), NO PAPEL: versões dos Robôs que evoluem sozinhas
+# (pedido do Alediov, 16/11/2026). Todo dia, o laboratório roda até 10 gerações nos últimos 180 dias (velas de 1 h) e a
+# liga leva as versões ao vivo até agora (velas de 1 min); na 1ª rodada da semana (segunda, Brasília) a liga elimina,
+# cruza e coroa. Contas fictícias de US$ 1.000, nenhuma ordem, nenhuma chave; só a API pública da Hyperliquid. Grava
+# evolucao.json no mesmo ramo órfão `papel` das outras formas (mesmo grupo de concorrência: um espera o outro).
+name: Testes de mercado (Evolução, no papel)
+on:
+  schedule:
+    - cron: "7 9 * * *"
+  workflow_dispatch: {}
+permissions:
+  contents: write
+  actions: write
+concurrency:
+  group: papel
+  cancel-in-progress: false
+jobs:
+  evolucao:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            tools
+            config
+      - name: Estado anterior (ramo papel)
+        run: |
+          mkdir -p dados
+          if git fetch -q --depth=1 origin papel; then git archive FETCH_HEAD | tar -x -C dados; else echo "ramo papel ainda não existe"; fi
+          ls -la dados
+      - name: Rodada
+        run: python3 -I tools/papel/papel.py --dados dados --prazo 38 --formas evolucao
+      - name: Guardar no ramo papel
+        if: always()
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd dados
+          [ -f indice.json ] || { echo "sem índice"; exit 0; }
+          git init -q
+          git checkout -q -b papel
+          git config user.name "Órbita (testes no papel)"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Evolução: rodada de $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -q -f "https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git" papel
+      - name: Manter os agendamentos ligados
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for w in mercado.yml papel.yml memes.yml evolucao.yml; do gh api -X PUT "repos/${GITHUB_REPOSITORY}/actions/workflows/$w/enable" >/dev/null 2>&1 && echo "ligado: $w" || echo "não deu para religar $w"; done

@@ -95,7 +95,12 @@ def main():
         for nome, f in ind["formas"].items():
             assert f["ok"], f"{nome}: {f.get('erro')}"
             with open(os.path.join(pasta, f["arquivo"])) as fh:
-                conferir_forma(json.load(fh), nome)
+                d = json.load(fh)
+            if nome == "evolucao":  # sem versões: as espécies, o laboratório e a liga (teste_evolucao.py)
+                import teste_evolucao
+                teste_evolucao.conferir_evolucao(d)
+            else:
+                conferir_forma(d, nome)
         assert ind["ref"]["btc"] and ind["ref"]["cdi"], "sem referências"
         assert set(ind["formas"]) == set(papel.FORMAS + papel.FORMAS_A_PARTE), sorted(ind["formas"])
         print(f"rodada completa: {sorted(ind['formas'])}")
