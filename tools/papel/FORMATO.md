@@ -791,7 +791,10 @@ laboratório, filhas e uma mutante; campeã = venceu o controle 4 semanas seguid
 - **lab**: `{ g (gerações até hoje), dia, hoje (gerações de hoje), pop: [versão + nota, val, jan: [3], ret, queda, ops,
   morta, semNota, idade, de (a versão dos Robôs de onde veio a semente)] (pela nota, a melhor primeiro), controle:
   { nota, val, jan, ret, queda, ops }, hist: [{ g, dia, melhor, id, mediana, val, controle, valControle }] (as
-  últimas 150), saiu: [{ id, nome, nota }] e nasceu: [id] (a última geração), aprovadas: [id] }`.
+  últimas 150), saiu: [{ id, nome, nota, clone }] e nasceu: [id] (a última geração), aprovadas: [id] }`. **Clones**
+  (VERSAO 2, 16/11/2026): versões com o mesmo resultado (nota, prova, operações, retorno e queda iguais: genes que não
+  mudam nada, como a queda da saída que nunca dispara) contam como uma só; fica a mais velha e as outras saem com
+  `clone: true`; a liga e as aprovadas também não recebem clones.
 - **liga**: `{ inicio, semana (robos.semana_de), semanaDe ("AAAA-MM-DD", a segunda), pop: [versão + fonte
   ("laboratório" | "liga" | "sorteada"), desde, semana (em que entrou), lab: { nota, val }, notas: [[semana, nota, ret,
   queda]], media, aoVivo: { retorno, piorQueda, ops, nLiq, morta, inicio, serie e metricas (só as 6 melhores, a

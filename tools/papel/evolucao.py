@@ -45,7 +45,7 @@ import robos as R
 from conta import CAPITAL, DIA, HORA, Curva, Eventos, cdi_ano_da_serie, dia_de, metricas
 
 NOME = "Evolução"
-VERSAO = 1
+VERSAO = 2              # 2 (16/11/2026): sem clones (versões com o mesmo resultado); recomeçou a liga do 1º dia
 
 MIN = 60_000
 # ---------------------------------------------------------------- laboratório (no passado)
@@ -393,6 +393,24 @@ def _n(x):
     return x if x is not None else -9.0
 
 
+def assinatura(i):
+    """O resultado de uma versão no laboratório. Duas com a mesma assinatura são clones: genes diferentes que não
+    mudam nada (a queda da saída que nunca dispara, o stop que nunca é tocado); só a mais velha fica, para a população
+    não se encher de cópias (descoberto na 1ª rodada real, 16/11/2026)."""
+    return (i.get("nota"), i.get("val"), i.get("ops"), i.get("ret"), i.get("queda"))
+
+
+def sem_clones(ordem):
+    """`ordem` sem os clones (fica a primeira de cada assinatura)."""
+    vistos, out = set(), []
+    for i in ordem:
+        a = assinatura(i)
+        if a not in vistos:
+            vistos.add(a)
+            out.append(i)
+    return out
+
+
 # ====================================================================== laboratório
 def dados_lab(ctx, pares, P, erros, log):
     """As velas de 1 h (com os dias de aquecer antes) do à vista e do perpétuo e o financiamento do perpétuo."""
@@ -486,9 +504,18 @@ class Especie:
     def geracao(self, lab, dados, cache):
         """Uma geração: ficam as melhores, nascem filhas, mutantes e novatas (já avaliadas)."""
         P, rng = self.P, self.rng
-        ordem = sorted(lab["pop"], key=lambda i: -_n(i.get("nota")))
-        ficam = ordem[:P["SOBREVIVEM"]]
-        saem = ordem[P["SOBREVIVEM"]:]
+        # a mais velha primeiro no empate: entre clones (o mesmo resultado), fica a que já estava
+        ordem = sorted(lab["pop"], key=lambda i: (-_n(i.get("nota")), -i.get("idade", 0)))
+        ficam, saem, vistos_r = [], [], set()
+        for i in ordem:
+            a = assinatura(i)
+            if len(ficam) < P["SOBREVIVEM"] and a not in vistos_r:
+                ficam.append(i)
+                vistos_r.add(a)
+            else:
+                if a in vistos_r:
+                    i["clone"] = True
+                saem.append(i)
         g = lab["g"] + 1
         vistos = {chave(i["genes"]) for i in ficam}
         novos = []
@@ -530,7 +557,8 @@ class Especie:
             ind["idade"] = ind.get("idade", 0) + 1
         lab["pop"] = ficam + novos
         lab["g"] = g
-        lab["saiu"] = [{"id": i["id"], "nome": i["nome"], "nota": i.get("nota")} for i in saem]
+        lab["saiu"] = [{"id": i["id"], "nome": i["nome"], "nota": i.get("nota"), **({"clone": True} if i.get("clone") else {})}
+                       for i in saem]
         lab["nasceu"] = [i["id"] for i in novos]
 
     def resumo_geracao(self, lab):
@@ -548,7 +576,7 @@ class Especie:
         """As melhores do laboratório que venceram o controle no treino E na prova (candidatas à liga)."""
         c = lab.get("controle") or {}
         cn, cv = _n(c.get("nota")), _n(c.get("val"))
-        ordem = sorted(lab["pop"], key=lambda i: -_n(i.get("nota")))[:max(6, self.P["DO_LAB"] * 2)]
+        ordem = sem_clones(sorted(lab["pop"], key=lambda i: -_n(i.get("nota"))))[:max(6, self.P["DO_LAB"] * 2)]
         boas = [i for i in ordem if i.get("nota") is not None and i.get("val") is not None
                 and i["nota"] > cn and i["val"] > cv]
         return sorted(boas, key=lambda i: -i["val"])
@@ -606,7 +634,7 @@ class Especie:
 
     def semear_liga(self, ctx, lab, aquecer):
         P = self.P
-        ordem = sorted([i for i in lab["pop"] if i.get("nota") is not None], key=lambda i: -i["nota"])
+        ordem = sem_clones(sorted([i for i in lab["pop"] if i.get("nota") is not None], key=lambda i: -i["nota"]))
         pop, vistos = [], set()
         for ind in ordem[:P["POP_LIGA"] - P["NOVATAS_SEMENTE"]]:
             pop.append(self.de_lab(ind))

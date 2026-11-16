@@ -125,6 +125,31 @@ def teste_notas():
     assert E.nota_de(curva_de(queda), {}, P)["jan"][0] < a["jan"][0]
 
 
+def teste_sem_clones():
+    """Duas versões com o mesmo resultado (genes que não mudam nada): só a mais velha fica no laboratório."""
+    P = E.parametros(SimpleNamespace(exemplo=True))
+    sp = E.Especie("robos", ESP["grade"], {}, random.Random(3), P, Eventos(), lambda x: None)
+    lab = {"g": 0, "pop": [], "hist": [], "dia": "2026-11-16", "hoje": 0}
+    rng = random.Random(4)
+    for k in range(P["POP"]):
+        ind = sp.nascer(E.sortear(rng, sp.esp), "novata", g=0)
+        ind.update(nota=0.01 * (k % 3), val=0.0, ops=10, ret=0.01 * (k % 3), queda=0.1, idade=k)
+        lab["pop"].append(ind)
+    falsos = {"spot": None, "perp": None}
+    orig = E.avaliar
+    E.avaliar = lambda esp, genes, dados, P: {"nota": -0.5, "val": -0.5, "ops": 10, "ret": -0.1, "queda": 0.3}
+    try:
+        sp.geracao(lab, falsos, {})
+    finally:
+        E.avaliar = orig
+    ficaram = [i for i in lab["pop"] if i.get("nota") != -0.5]
+    assert len(ficaram) == 3, [(i["nome"], i["nota"]) for i in ficaram]          # uma de cada resultado
+    assert all(i["idade"] >= 5 for i in ficaram), [i["idade"] for i in ficaram]   # a mais velha de cada
+    assert sum(1 for x in lab["saiu"] if x.get("clone")) == P["POP"] - 3
+    assert len(lab["pop"]) == P["POP"]
+    assert len(E.sem_clones(lab["pop"])) <= len(lab["pop"])
+
+
 def _liga_falsa(n=12, k=2):
     """Uma liga de mentira: `n` versões e o controle, com as notas das semanas escritas à mão."""
     ctx = SimpleNamespace(exemplo=True)
