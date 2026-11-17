@@ -78,4 +78,5 @@ jobs:
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: sh tools/dados/ramo.sh guardar "llama.cpp $VERSAO"
       - name: O que falta
+        if: inputs.guardar != 'não'
         run: echo "::notice::Para chegar ao app, no repositório dele - python3 tools/publico.py puxar - e depois o APK."

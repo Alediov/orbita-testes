@@ -10,6 +10,11 @@ acabavam; aqui os executores padrão não têm limite.
 - **Tudo é público.** Nunca pôr aqui token, chave, PIN, e-mail, nada das Finanças pessoais dele (Ping-Pong, saldos,
   macros, issue #1), nada do OdontoScan nem de outra área do app. Só código de simulação e dados públicos de mercado
   (endereços públicos de carteiras e cofres são públicos).
+- **A exceção, o espelho** (pedido do Alediov, 17/11/2026, quando os minutos do Actions do repositório privado
+  acabaram: "pode montar o máximo que der no público"): a pasta `espelho/` tem CÓPIAS de alguns scripts do app que só
+  lidam com coisa pública (lista fechada, `ESPELHO` em `tools/publico.py` do repositório do app). Nunca editar aqui:
+  a fonte é lá (`python3 tools/publico.py espelhar`). Nada de paciente, ficha, calouro, livro, conteúdo do app, canal
+  do YouTube ou transcrição entra no espelho.
 - **Só no papel**: nenhuma ordem, nenhuma conta, nenhuma chave de negociação, nenhum segredo nos workflows (o push
   nos ramos de saída usa o `GITHUB_TOKEN` automático).
 - **Tudo gratuito**: só APIs públicas sem chave e sem cartão (as testadas estão no plano 2, "Teste de alcance").
@@ -19,6 +24,15 @@ acabavam; aqui os executores padrão não têm limite.
   com a opção de fixar alguns à mão.
 
 ## Estrutura
+
+- `espelho/` + `tools/dados/` + `dados.yml`, `even3.yml`, `whisper.yml`, `llama.yml`: **o espelho do app** (17/11/2026).
+  `dados.yml` (SIA/SUS dos dois CNES da clínica da UNIOESTE, agregado, todo dia 22; `qual` = xadrez: problemas do
+  Lichess, CC0), `whisper.yml` e `llama.yml` (whisper.cpp e llama.cpp, MIT, compilados para arm64 com as pontes JNI;
+  `guardar` = não só confere) gravam o ramo órfão `dados` (`tools/dados/ramo.sh abrir|guardar`, commit único, nos
+  mesmos caminhos do repositório do app, que puxa com `tools/publico.py puxar`); os três têm o grupo de concorrência
+  `dados` (um por vez; disparar um de cada vez, porque um 2º na fila derruba o 1º que espera). `even3.yml` (4h13,
+  eventos online de amanhã no Even3, `espelho/tools/eventos/`) grava o ramo órfão `eventos`, que o app lê sem token.
+  Teste: `python3 espelho/tools/eventos/teste_even3.py`.
 
 - `tools/mercado/`: copy trading (detalhes no `LEIA-ME.md` de lá). Workflow `mercado.yml`, ramo `mercado`.
 - `tools/papel/`: as outras formas, no formato comum de `tools/papel/FORMATO.md`. Workflow `papel.yml`, ramo `papel`.
@@ -200,7 +214,7 @@ acabavam; aqui os executores padrão não têm limite.
   `teste_cofres_evolucao.py` e `teste_funding_evolucao.py`. Faltam as Previsões e as Opções.
 - Os exemplos que o app usa sem rede ficam no repositório do app (`tools/mercado/exemplos/`); refazer aqui
   (`python3 tools/papel/falso.py`) e copiar para lá (`tools/mercado/exemplos/papel/`) quando o formato mudar.
-- Os workflows (`mercado.yml`, `papel.yml`, `memes.yml`, `ideias.yml`) religam os agendamentos pela API a cada rodada (num
+- Os workflows (`mercado.yml`, `papel.yml`, `memes.yml`, `ideias.yml`, `dados.yml`, `even3.yml`) religam os agendamentos pela API a cada rodada (num
   repositório público o GitHub os desliga depois de 60 dias sem atividade).
 
 ## Commits
