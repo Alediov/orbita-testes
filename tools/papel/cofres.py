@@ -1034,6 +1034,15 @@ def rodar(ctx):
         erros.append(f"fora da amostra: {e}")
         log(f"  fora da amostra: {e}")
 
+    # 6c) a Evolução: as carteiras de cofres que evoluem (cofres_evolucao.py; o app mostra em Testes → Evolução)
+    evolucao = None
+    try:
+        import cofres_evolucao as CE
+        evolucao = CE.avancar(ctx, est, cof, cache)
+    except Exception as e:  # noqa: BLE001
+        erros.append(f"evolução: {e}")
+        log(f"  evolução: {e}")
+
     # 7) a saída
     hist = (est.get("hist") or {}).get("versoes") or {}
     versoes = []
@@ -1099,6 +1108,7 @@ def rodar(ctx):
                    "travaDias": {"hlp": TRAVA_HLP // DIA, "outros": TRAVA // DIA}, "fixos": len(fixos)},
         "passado": PS.resumo(est, ctx),
         "lider": LD.saida(est, cof, ctx),
+        "evolucao": evolucao,
         "erros": erros,
     }
 

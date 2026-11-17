@@ -24,6 +24,9 @@ abertos são escolhidos pelo TVL de hoje (um cofre que era grande e encolheu mai
 é a de hoje (os fechados: não se sabe, a regra não confere) e por isso o sinal do líder não entra neste teste; não se
 sabe quando um cofre fechou para depósitos; o histórico antigo de cada cofre tem poucos pontos (a constância de 90 dias
 fica mais lisa que a de verdade); as comissões são as de hoje.
+
+No fim (`fechar`), a cota e o patrimônio de cada cofre com dados semeiam o banco da Evolução dos Cofres
+(`cofres_evolucao.semear`), que depois anda sozinho, um ponto por dia.
 """
 from __future__ import annotations
 
@@ -187,6 +190,13 @@ def fechar(ctx, C, p, est):
     p["rodadas"] = (p["rodadas"] + [{"de": p["ini"], "ate": p["fim"], "retorno": (contas.get("top5") or {}).get("retorno"),
                                      "previsto": res["previsto"].get("top5"), "comDados": len(p["dados"])}])[-MAX_RODADAS:]
     p["fase"] = "pronto"
+    # antes de jogar os detalhes fora, eles semeiam o banco da Evolução dos Cofres (cofres_evolucao.py)
+    try:
+        import cofres_evolucao as CE
+        n = CE.semear(est, p["dados"], p["ini"], p["fim"], PRE_DIAS)
+        ctx.log(f"  evolução (cofres): banco semeado com {n} cofres")
+    except Exception as e:  # noqa: BLE001
+        ctx.log(f"  evolução (cofres): o banco não foi semeado: {e}")
     p["fila"], p["meta"], p["dados"] = [], {}, {}
     t5 = (contas.get("top5") or {}).get("retorno")
     ctx.log(f"  fora da amostra: pronto: {res['funil']['comDados']} cofres com dados; 5 melhores "
@@ -199,6 +209,9 @@ def avancar(ctx, est, cache, erros):
     p = est.get("passado")
     agora = ctx.agora
     precisa_novo = not p or p.get("v") != VERSAO or (p["fase"] == "pronto" and agora - p["criado"] >= REFAZER_DIAS * DIA)
+    # 17/11/2026: a Evolução dos Cofres nasce do banco que este teste semeia; sem banco, o teste é refeito uma vez
+    if p and p["fase"] == "pronto" and not (est.get("bancoEv") or {}).get("cofres") and not est.get("bancoEvPedido"):
+        precisa_novo = est["bancoEvPedido"] = True
     if ctx.restante() < RESTANTE_MIN:
         if precisa_novo or (p and p["fase"] != "pronto"):
             ctx.log("  fora da amostra: pouco tempo, fica para a próxima")

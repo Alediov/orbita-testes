@@ -57,6 +57,9 @@ em +0,2%):
   seletiva e a diferença do rodízio que mais renderam nas 8 semanas anteriores, e só então anda a semana; aproximado.
 - **Só observando** (`observatorio`): as 5 moedas da HL fora da lista com o maior financiamento médio de 7 dias (volume
   de 24 h ≥ US$ 5 mi), sem conta nenhuma.
+
+17/11/2026: a **Evolução** do Funding (`funding_evolucao.py`, bloco `evolucao` da saída): o carry como espécie (moeda,
+alavancagem até 3×, entrar e sair, rodízio, caixa na Aave), refeito por um banco de dias que esta forma escreve.
 """
 from __future__ import annotations
 
@@ -64,6 +67,7 @@ import bisect
 import copy
 import datetime as dt
 import math
+import sys
 
 import hl
 import conta as CT
@@ -74,6 +78,8 @@ try:  # o juro do dólar na Aave (o mesmo GraphQL do looping)
     import rede
 except ImportError:  # pragma: no cover
     LP = rede = None
+
+import funding_evolucao as FE  # noqa: E402
 
 NOME = "Funding"
 VERSAO = 1
@@ -1255,7 +1261,10 @@ def rodar(ctx):
         log(f"  funding: pouco tempo na rodada ({ctx.restante():.0f} s); o teste no passado fica para a próxima")
         refazer = False
     ini_hist = fim - HIST_DIAS * DIA
-    ini = min(ini_vivo, ini_hist if refazer else ini_vivo) - (JANELA_MEDIA + 1) * HORA
+    # a Evolução do Funding (funding_evolucao.py) refaz as contas por um banco de dias: sem banco, esta rodada baixa os
+    # 180 dias uma vez para semeá-lo
+    semear = FE.precisa_semear(est) and ctx.restante() >= HIST_TEMPO_MIN
+    ini = min(ini_vivo, ini_hist if (refazer or semear) else ini_vivo) - (JANELA_MEDIA + 1) * HORA
     d = buscar(cli, pares, ini, agora, lev, log, erros)
     d.aave = taxas_aave(aave)
 
@@ -1311,6 +1320,14 @@ def rodar(ctx):
             erros.append(f"fora da amostra: {e}")
             log(f"  funding: fora da amostra: {e}")
 
+    # ---------------------------------------------------------------- a Evolução (o carry que evolui)
+    evolucao = None
+    try:
+        evolucao = FE.avancar(ctx, est, d, agora, sys.modules[__name__])
+    except Exception as e:  # noqa: BLE001
+        erros.append(f"evolução: {e}")
+        log(f"  funding: evolução: {e}")
+
     # ---------------------------------------------------------------- só observando (sem conta)
     obs = observar(cli, agora, log, erros)
     if obs is None:
@@ -1346,7 +1363,7 @@ def rodar(ctx):
     juro = d.juro(fim) if d.aave is not None else None
     return {"frase": FRASE, "comoFunciona": COMO_FUNCIONA, "padrao": "btc1", "versoes": versoes,
             "eventos": est["eventos"], "itens": itens, "avisos": AVISOS,
-            "foraDaAmostra": hist.get("fora"), "observatorio": obs,
+            "foraDaAmostra": hist.get("fora"), "observatorio": obs, "evolucao": evolucao,
             "config": {"frequencia": "a cada 6 h", "moedas": MOEDAS, "pares": pares,
                        "taxas": {"avista": TAXA_SPOT, "perpetuo": TAXA_PERP, "deslize": DESLIZE},
                        "reequilibrio": [REEQ_BAIXO, REEQ_ALTO], "seletiva": [SELETIVA_ENTRA, SELETIVA_SAI],

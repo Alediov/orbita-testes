@@ -186,7 +186,18 @@ acabavam; aqui os executores padrão não têm limite.
   "carteira de carteiras" (controle = As 5 melhores) com os genes jeito de copiar, quem, quantas, dias mínimos, olhar para
   trás, troca e largar; contas refeitas pelas séries diárias (`bancoEv` no estado); liga desde a 1ª rodada, laboratório
   com 28 dias de séries. `evolucao` no resumo do ramo `mercado`. A genética comum saiu do `evolucao.py` para
-  `tools/papel/genetica.py`. Teste: `teste_evolucao_copia.py`. Faltam Cofres e Funding.
+  `tools/papel/genetica.py`. Teste: `teste_evolucao_copia.py`.
+- **Evolução dos Cofres e do Funding** (pedido do Alediov, 17/11/2026; FORMATO.md, "Evolução"): o motor do laboratório e
+  da liga das formas refeitas por séries saiu do `evolucao_copia.py` para `tools/papel/evolucao_series.py` (a forma
+  entrega a definição da espécie e os dados com o `simular`; o estado da liga do copy trading não mudou).
+  `cofres_evolucao.py`: a espécie "carteira de cofres" (controle = 5 melhores; genes: como ordenar, quantos, TVL, idade,
+  queda aceita, quanto fica, stop e a parte no HLP), refeita por um banco de cota e TVL por dia (`bancoEv` no estado dos
+  Cofres), semeado pelo `cofres_passado.py` no `fechar` (sem banco, o teste fora da amostra é refeito uma vez) e andado
+  uma vez por dia pela lista da corretora. `funding_evolucao.py`: a espécie "carry" (controle = BTC 1×; genes: moeda ou
+  rodízio, alavancagem até 3×, sempre dentro ou seletiva, a média, entrar e sair, a troca do rodízio e o caixa na Aave),
+  refeita com UM PASSO POR DIA por um banco de dias (financiamento somado, fechamento e máxima do perpétuo, à vista) que
+  o `funding.py` escreve a cada rodada. Saída: `evolucao` no `cofres.json` e no `funding.json`. Testes:
+  `teste_cofres_evolucao.py` e `teste_funding_evolucao.py`. Faltam as Previsões e as Opções.
 - Os exemplos que o app usa sem rede ficam no repositório do app (`tools/mercado/exemplos/`); refazer aqui
   (`python3 tools/papel/falso.py`) e copiar para lá (`tools/mercado/exemplos/papel/`) quando o formato mudar.
 - Os workflows (`mercado.yml`, `papel.yml`, `memes.yml`, `ideias.yml`) religam os agendamentos pela API a cada rodada (num

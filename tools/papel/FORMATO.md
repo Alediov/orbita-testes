@@ -761,6 +761,33 @@ mesmo formato, com `formas: [{ id: "copy", nome: "Copy trading", especies: [cart
 `membros`, `custos` e `largadas`, os genes de dias usam `un: "d"`, e, enquanto o laboratório espera os 28 dias de
 séries, a espécie vem sem `lab` e com `labEspera: { faltam, dias, precisa }`. Regras em `tools/mercado/LEIA-ME.md`.)
 
+(Os **Cofres** e o **Funding** também, desde 17/11/2026: o `cofres.json` e o `funding.json` trazem um bloco `evolucao`
+com este formato, `formas: [{ id: "cofres", nome: "Cofres", especies: [cofres] }]` e `formas: [{ id: "funding", nome:
+"Funding", especies: [carry] }]`. `null` enquanto não há dados (nos Cofres, até o teste fora da amostra semear o banco).
+As três formas "refeitas por séries" usam o mesmo motor, `evolucao_series.py`: cada conta é só os genes e o dia em que
+começou, refeita do zero a cada rodada por um banco de dias que a forma guarda no estado (`bancoEv`).
+
+- **Cofres** (`cofres_evolucao.py`), espécie `cofres` ("Carteira de cofres", controle `top5` = "5 melhores"). Genes:
+  `ordem` (nota de hoje | lucro do mês | de 90 dias | constância), `n` 1–10, `tvl` (US$ 100 mil a 3 mi), `idade`
+  30–180 d, `queda` 15–50%, `fica` 7/14/28 d, `stop` 0–20% e `hlp` 0/25/50%. Sementes: top10, top5s, grandes,
+  constancia, mix50 e mix25. Banco: de cada cofre, a cota e o TVL (em milhares) por dia, até 260 dias; semeado pelo
+  `cofres_passado.py` (o universo largo, com os fechados) e andado uma vez por dia pela cota dos acompanhados ou pela
+  lista (Δ lucro ÷ TVL de ontem). Simulador próprio, um ponto por dia: partes iguais, reequilíbrio semanal, comissão
+  no saque (o valor já desconta a de hoje), sem a trava e sem a parte do líder. `aoVivo.membros` = os cofres de agora,
+  `custos` = a comissão paga, `largadas` = os stops.
+- **Funding** (`funding_evolucao.py`), espécie `carry` (controle `btc1` = "BTC 1×"). Genes: `moedas` (BTC, ETH, HYPE,
+  SOL ou `todas` = rodízio), `alav` 1–3× (nunca mais), `regra` (fixa | seletiva), `media` 1/3/7/14 d, `entra` 5–20% e
+  `folga` 3–10% (só na seletiva: sai a `entra − folga`), `troca` 3/7/14 d e `dif` 2–20% (só no rodízio) e `caixa`
+  (bool, só na seletiva: o dinheiro parado na Aave). Sementes: eth1, hype1, sol1, btc3, seletiva, seletiva3, rodizio
+  e seletivaC. Banco: de cada moeda, por dia de Brasília, a soma do financiamento, o fechamento e a máxima do
+  perpétuo e o fechamento do à vista (até 260 dias; na 1ª vez a rodada baixa os 180 dias). O simulador usa a mesma
+  `Posicao` do `funding.py`, com um passo por dia (o dia de hoje, incompleto, não decide). `aoVivo.membros` = onde o
+  dinheiro está ("BTC 1×", "Aave (dólar)" ou nada), `custos` = taxas, deslize, ponte e gás, `nLiq` = liquidações;
+  `regras.alavMax` = 3.
+
+Nos dois o controle é a versão padrão REFEITA pelo simulador da evolução (aproximado): não bate centavo a centavo com a
+conta da versão no teste.)
+
 Pedido do Alediov: versões que evoluem sozinhas (as piores saem, as melhores se cruzam, às vezes uma mutação), para
 achar os melhores parâmetros de cada estratégia. Regras e números no começo do `evolucao.py`. Começa pelos Robôs (BTC):
 três **espécies**, cada uma com os seus **genes** (os parâmetros que mudam):

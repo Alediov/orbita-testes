@@ -134,6 +134,9 @@ parar de copiar), `quem` (as melhores, só robôs, só pessoas, todas), `n` 1–
 (só nas melhores), `troca` a cada 3/7/14 dias e `largar` (a fatia que cai 10/15/20/30% do topo dela vira dinheiro
 parado até a troca).
 
+(17/11/2026: o motor do laboratório e da liga saiu daqui para `tools/papel/evolucao_series.py`, que os Cofres e o
+Funding também usam; aqui ficaram a espécie, o banco de séries e o simulador. O estado e a saída não mudaram.)
+
 - **Sem rede**: as contas são refeitas pelas séries diárias. `est["bancoEv"]` guarda a série de TODOS os jeitos de cada
   carteira já seguida (cresce com o tempo; o `banco` das agregadas, que só tem o jeito padrão, dá o começo, a saída e
   o selo). Cada troca paga 0,15% de cada lado, como nas agregadas. Uma conta é só os genes e o dia em que começou.
