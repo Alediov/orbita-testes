@@ -1,0 +1,78 @@
+# Dados públicos que o app Órbita usa (17/11/2026, pedido do Alediov: os minutos do Actions do repositório privado
+# acabaram; aqui, público, os executores padrão não têm limite). Os scripts moram em espelho/ (cópias dos do
+# repositório do app, nos mesmos caminhos) e a saída vai para o ramo órfão `dados` (tools/dados/ramo.sh), de onde o
+# `tools/publico.py puxar` do repositório do app copia.
+#   sia     produção ambulatorial oficial (SIA/SUS, DATASUS) dos dois CNES da clínica de Odontologia da UNIOESTE,
+#           agregada por mês (espelho/tools/odontoscan/sia.py). Incremental. Todo dia 22 e à mão.
+#   xadrez  problemas do banco do Lichess (CC0) para os treinos (espelho/tools/xadrez/problemas.py). Só à mão.
+name: Dados públicos do app (SIA, xadrez)
+on:
+  schedule:
+    - cron: "17 9 22 * *"
+  workflow_dispatch:
+    inputs:
+      qual:
+        description: "sia ou xadrez"
+        default: "sia"
+      inicio:
+        description: "SIA: primeiro mês de processamento (AAAA-MM)"
+        default: "2023-01"
+      fim:
+        description: "SIA: último mês (AAAA-MM)"
+        default: "2099-12"
+      refazer:
+        description: "SIA: ler tudo de novo (sim/não)"
+        default: "não"
+permissions:
+  contents: write
+  actions: write
+concurrency:
+  group: dados
+  cancel-in-progress: false
+jobs:
+  dados:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    env:
+      QUAL: ${{ inputs.qual || 'sia' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            espelho
+            tools/dados
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Estado anterior (ramo dados)
+        run: sh tools/dados/ramo.sh abrir
+      - name: SIA
+        if: env.QUAL == 'sia'
+        working-directory: espelho
+        env:
+          INICIO: ${{ inputs.inicio || '2023-01' }}
+          FIM: ${{ inputs.fim || '2099-12' }}
+          REFAZER: ${{ inputs.refazer }}
+        run: |
+          pip install -q numpy pyreaddbc || pip install -q numpy datasus-dbc
+          if [ "$REFAZER" = "sim" ]; then EXTRA="--refazer"; else EXTRA=""; fi
+          python3 tools/odontoscan/sia.py --inicio "$INICIO" --fim "$FIM" $EXTRA
+      - name: Xadrez
+        if: env.QUAL == 'xadrez'
+        working-directory: espelho
+        run: |
+          pip install -q zstandard
+          mkdir -p app/dados/xadrez
+          python3 tools/xadrez/problemas.py 2>&1 | tee tools/xadrez/problemas-log.txt
+      - name: Guardar no ramo dados
+        if: always()
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: sh tools/dados/ramo.sh guardar "$QUAL"
+      - name: Manter o agendamento ligado
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api -X PUT "repos/${GITHUB_REPOSITORY}/actions/workflows/dados.yml/enable" >/dev/null 2>&1 && echo "ligado: dados.yml" || echo "não deu para religar dados.yml"

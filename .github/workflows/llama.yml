@@ -1,0 +1,81 @@
+# Llama (IA local da Eva, no app Órbita): compila o llama.cpp (MIT) com a ponte JNI do app
+# (espelho/tools/eva-local/llama-jni/, cópia da do repositório do app) para arm64-v8a com o NDK do executor e guarda as
+# bibliotecas no ramo `dados` (android-extra/jniLibs/arm64-v8a/), como o whisper.yml. Veio do repositório do app em
+# 17/11/2026. Antes, confere a ponte no próprio executor (x86, com um modelo minúsculo de pesos aleatórios:
+# espelho/tools/eva-local/llama-jni/teste_x86.sh). Só à mão.
+name: Llama (bibliotecas da IA local)
+on:
+  workflow_dispatch:
+    inputs:
+      versao:
+        description: "Versão (tag) do llama.cpp"
+        default: "v0.8.0"
+      guardar:
+        description: "Guardar no ramo dados (sim) ou só conferir que compila (não)"
+        default: "sim"
+permissions:
+  contents: write
+concurrency:
+  group: dados
+  cancel-in-progress: false
+jobs:
+  compilar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      VERSAO: ${{ inputs.versao || 'v0.8.0' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            espelho/tools/eva-local
+            espelho/android-extra/java
+            tools/dados
+      - name: Estado anterior (ramo dados)
+        run: sh tools/dados/ramo.sh abrir
+      - name: Baixar o llama.cpp
+        run: git clone --depth 1 --branch "$VERSAO" https://github.com/ggml-org/llama.cpp.git /tmp/llama.cpp
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Conferir a ponte no x86 (modelo minúsculo)
+        run: |
+          pip install --quiet numpy pyyaml sentencepiece requests || { echo "::error::não consegui instalar o numpy"; exit 1; }
+          sh espelho/tools/eva-local/llama-jni/teste_x86.sh /tmp/llama.cpp /tmp/x86 > /tmp/x86.log 2>&1 \
+            || { tail -40 /tmp/x86.log | sed 's/^/::error::/'; for f in /tmp/x86/cmake.log /tmp/x86/build.log; do [ -f "$f" ] && grep -iE "error" -A3 "$f" | head -30 | sed 's/^/::error::/'; done; exit 1; }
+          tail -5 /tmp/x86.log | sed 's/^/::notice::/'
+      - name: Compilar para arm64-v8a (duas variantes)
+        run: |
+          NDK="${ANDROID_NDK_LATEST_HOME:-$ANDROID_NDK_HOME}"
+          [ -d "$NDK" ] || { echo "::error::NDK não encontrado no runner"; exit 1; }
+          echo "::notice::NDK: $NDK"
+          STRIP="$NDK/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip"
+          NM="$NDK/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-nm"
+          SAIDA=espelho/android-extra/jniLibs/arm64-v8a
+          mkdir -p "$SAIDA"
+          for v in "orbita_llama|armv8-a" "orbita_llama_v82|armv8.2-a+dotprod+fp16"; do
+            NOME=${v%%|*}; ARCH=${v##*|}
+            cmake -S espelho/tools/eva-local/llama-jni -B "/tmp/b-$NOME" -DLLAMA_DIR=/tmp/llama.cpp -DORBITA_NOME="$NOME" \
+              -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE="$NDK/build/cmake/android.toolchain.cmake" \
+              -DANDROID_ABI=arm64-v8a -DANDROID_PLATFORM=android-26 -DGGML_CPU_ARM_ARCH="$ARCH" > "/tmp/cmake-$NOME.log" 2>&1 \
+              || { tail -40 "/tmp/cmake-$NOME.log" | sed 's/^/::error::/'; exit 1; }
+            cmake --build "/tmp/b-$NOME" -j4 --target "$NOME" > "/tmp/build-$NOME.log" 2>&1 \
+              || { grep -E "error" -A3 "/tmp/build-$NOME.log" | head -40 | sed 's/^/::error::/'; exit 1; }
+            "$STRIP" --strip-unneeded "/tmp/b-$NOME/lib$NOME.so" -o "$SAIDA/lib$NOME.so"
+            N=$("$NM" -D --defined-only "$SAIDA/lib$NOME.so" | grep -c "Java_br_alediov_odontoquest_Llama_")
+            [ "$N" = "5" ] || { echo "::error::lib$NOME.so: $N métodos JNI (esperava 5)"; exit 1; }
+            echo "::notice::lib$NOME.so ($ARCH): $(du -h "$SAIDA/lib$NOME.so" | cut -f1), $N métodos JNI"
+          done
+          { echo "llama.cpp $VERSAO ($(git -C /tmp/llama.cpp rev-parse --short HEAD))"; date -u +%Y-%m-%dT%H:%MZ; } > "$SAIDA/../VERSAO-llama.txt"
+      - name: Guardar no ramo dados
+        if: inputs.guardar != 'não'
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: sh tools/dados/ramo.sh guardar "llama.cpp $VERSAO"
+      - name: O que falta
+        run: echo "::notice::Para chegar ao app, no repositório dele - python3 tools/publico.py puxar - e depois o APK."

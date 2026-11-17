@@ -1,0 +1,72 @@
+# Eventos do Even3 de amanhã (veio do repositório do app em 17/11/2026, quando os minutos do Actions de lá acabaram):
+# todo dia, os eventos ONLINE do dia seguinte com inscrições abertas e certificado para o participante, os de
+# Odontologia em destaque. Script e critérios em espelho/tools/eventos/ (even3.py + classificar.py; teste sem rede:
+# python3 espelho/tools/eventos/teste_even3.py). Grava even3/<data>.json, even3/ultimo.json (o app lê sem token,
+# Agenda → "Amanhã no Even3") e log.txt no ramo órfão `eventos`, num commit único; nenhum segredo.
+#
+# De onde vêm os eventos: a busca do site pede reCAPTCHA e devolve a lista vazia num servidor; por isso o script usa o
+# sitemap de eventos futuros (~8 mil URLs) e lê só o começo de cada página (o JSON-LD com a data e o modo), guardando
+# um índice no ramo para não reler tudo todo dia; depois abre no Chromium só as online do dia.
+name: Eventos do Even3 (amanhã)
+on:
+  schedule:
+    # 04h13 em Brasília: o sitemap é refeito às 06h UTC, e a aba mostra os de AMANHÃ o dia inteiro
+    - cron: "13 7 * * *"
+  workflow_dispatch:
+    inputs:
+      data:
+        description: "Data dos eventos (AAAA-MM-DD; vazio = amanhã em Brasília)"
+        default: ""
+      depurar:
+        description: "Guardar o texto das páginas candidatas em depuracao/ (sim/não)"
+        default: "não"
+permissions:
+  contents: write
+  actions: write
+concurrency:
+  group: eventos-even3
+  cancel-in-progress: false
+jobs:
+  even3:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: espelho/tools/eventos
+      - name: Dias anteriores (ramo eventos)
+        run: |
+          mkdir -p dados
+          if git fetch -q --depth=1 origin eventos; then git archive FETCH_HEAD | tar -x -C dados; else echo "ramo eventos ainda não existe"; fi
+          rm -rf dados/depuracao
+          ls -la dados dados/even3 2>/dev/null || true
+      - name: Chromium
+        run: python3 -m pip install -q playwright==1.56.0 && python3 -m playwright install --with-deps chromium > pw.log 2>&1 || { tail -20 pw.log; exit 1; }
+      - name: Busca
+        env:
+          DATA: ${{ inputs.data }}
+          DEPURAR: ${{ inputs.depurar }}
+        run: |
+          if [ "$DEPURAR" = "sim" ]; then EXTRA="--depurar"; else EXTRA=""; fi
+          python3 espelho/tools/eventos/even3.py --dados dados --data "$DATA" $EXTRA
+      - name: Guardar no ramo eventos
+        if: always()
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd dados
+          [ -f even3/ultimo.json ] || { echo "sem resultado"; exit 0; }
+          git init -q
+          git checkout -q -b eventos
+          git config user.name "Órbita (eventos)"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A .
+          git commit -q -m "Even3: busca de $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -q -f "https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git" eventos
+      - name: Manter o agendamento ligado
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api -X PUT "repos/${GITHUB_REPOSITORY}/actions/workflows/even3.yml/enable" >/dev/null 2>&1 && echo "ligado: even3.yml" || echo "não deu para religar even3.yml"

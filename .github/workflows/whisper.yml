@@ -1,0 +1,67 @@
+# Whisper (transcrição das aulas gravadas no app Órbita): compila o whisper.cpp (MIT) com a ponte JNI do app
+# (espelho/tools/aulas/whisper-jni/, cópia da do repositório do app) para arm64-v8a com o NDK do executor e guarda as
+# bibliotecas no ramo `dados` (android-extra/jniLibs/arm64-v8a/), de onde o `tools/publico.py puxar` do repositório do
+# app as copia. Veio de lá em 17/11/2026 (os minutos do Actions privado acabaram). Duas variantes:
+# liborbita_whisper.so (armv8-a) e liborbita_whisper_v82.so (armv8.2-a com dotprod e fp16). Só à mão.
+name: Whisper (bibliotecas da transcrição)
+on:
+  workflow_dispatch:
+    inputs:
+      versao:
+        description: "Versão (tag) do whisper.cpp"
+        default: "v1.9.5"
+      guardar:
+        description: "Guardar no ramo dados (sim) ou só conferir que compila (não)"
+        default: "sim"
+permissions:
+  contents: write
+concurrency:
+  group: dados
+  cancel-in-progress: false
+jobs:
+  compilar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      VERSAO: ${{ inputs.versao || 'v1.9.5' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            espelho/tools/aulas
+            tools/dados
+      - name: Estado anterior (ramo dados)
+        run: sh tools/dados/ramo.sh abrir
+      - name: Baixar o whisper.cpp
+        run: git clone --depth 1 --branch "$VERSAO" https://github.com/ggml-org/whisper.cpp.git /tmp/whisper.cpp
+      - name: Compilar para arm64-v8a (duas variantes)
+        run: |
+          NDK="${ANDROID_NDK_LATEST_HOME:-$ANDROID_NDK_HOME}"
+          [ -d "$NDK" ] || { echo "::error::NDK não encontrado no runner"; exit 1; }
+          echo "::notice::NDK: $NDK"
+          STRIP="$NDK/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip"
+          NM="$NDK/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-nm"
+          SAIDA=espelho/android-extra/jniLibs/arm64-v8a
+          mkdir -p "$SAIDA"
+          for v in "orbita_whisper|armv8-a" "orbita_whisper_v82|armv8.2-a+dotprod+fp16"; do
+            NOME=${v%%|*}; ARCH=${v##*|}
+            cmake -S espelho/tools/aulas/whisper-jni -B "/tmp/b-$NOME" -DWHISPER_DIR=/tmp/whisper.cpp -DORBITA_NOME="$NOME" \
+              -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE="$NDK/build/cmake/android.toolchain.cmake" \
+              -DANDROID_ABI=arm64-v8a -DANDROID_PLATFORM=android-26 -DGGML_CPU_ARM_ARCH="$ARCH" > "/tmp/cmake-$NOME.log" 2>&1 \
+              || { tail -40 "/tmp/cmake-$NOME.log" | sed 's/^/::error::/'; exit 1; }
+            cmake --build "/tmp/b-$NOME" -j4 --target "$NOME" > "/tmp/build-$NOME.log" 2>&1 \
+              || { grep -E "error" -A3 "/tmp/build-$NOME.log" | head -40 | sed 's/^/::error::/'; exit 1; }
+            "$STRIP" --strip-unneeded "/tmp/b-$NOME/lib$NOME.so" -o "$SAIDA/lib$NOME.so"
+            N=$("$NM" -D --defined-only "$SAIDA/lib$NOME.so" | grep -c "Java_br_alediov_odontoquest_Whisper_")
+            [ "$N" = "5" ] || { echo "::error::lib$NOME.so: $N métodos JNI (esperava 5)"; exit 1; }
+            echo "::notice::lib$NOME.so ($ARCH): $(du -h "$SAIDA/lib$NOME.so" | cut -f1), $N métodos JNI"
+          done
+          { echo "whisper.cpp $VERSAO ($(git -C /tmp/whisper.cpp rev-parse --short HEAD))"; date -u +%Y-%m-%dT%H:%MZ; } > "$SAIDA/../VERSAO.txt"
+      - name: Guardar no ramo dados
+        if: inputs.guardar != 'não'
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: sh tools/dados/ramo.sh guardar "whisper.cpp $VERSAO"
+      - name: O que falta
+        run: echo "::notice::Para chegar ao app, no repositório dele - python3 tools/publico.py puxar - e depois o APK."
