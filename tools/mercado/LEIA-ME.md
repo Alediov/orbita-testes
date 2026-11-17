@@ -123,3 +123,29 @@ começa sem posição e entra na próxima operação da carteira em cada moeda; 
 Ordem limite é o melhor caso (a ordem sempre executa, ao preço da carteira). As versões das carteiras seguidas antes
 delas começam na rodada em que apareceram (o app mostra a data). O resumo cresce ~3 a 4 MB por ano com 30 carteiras;
 o app guarda no aparelho enquanto couber (senão, só na memória).
+
+## Evolução do copy trading (16/11/2026)
+
+Pedido do Alediov (depois dos Robôs, "o Copy trading: jeito de copiar, multiplicador, atraso, quem copiar, a regra de
+largar a carteira"): `evolucao_copia.py`, chamado em toda rodada depois das agregadas. A espécie é a **carteira de
+carteiras** (o controle é "As 5 melhores"): cada versão divide US$ 1.000 fictícios entre as carteiras da regra dela.
+Genes: `jeito` (qual das 18 contas de cópia segue a carteira: alavancagem, atraso, saídas, amplificada, entrada fixa,
+parar de copiar), `quem` (as melhores, só robôs, só pessoas, todas), `n` 1–8, `minDias` 3–21 e `olhar` 0/7/14/30 dias
+(só nas melhores), `troca` a cada 3/7/14 dias e `largar` (a fatia que cai 10/15/20/30% do topo dela vira dinheiro
+parado até a troca).
+
+- **Sem rede**: as contas são refeitas pelas séries diárias. `est["bancoEv"]` guarda a série de TODOS os jeitos de cada
+  carteira já seguida (cresce com o tempo; o `banco` das agregadas, que só tem o jeito padrão, dá o começo, a saída e
+  o selo). Cada troca paga 0,15% de cada lado, como nas agregadas. Uma conta é só os genes e o dia em que começou.
+- **Liga** (ao vivo, desde a 1ª rodada): 24 versões + o controle; toda segunda (Brasília) a nota da semana (retorno −
+  ½ pior queda, com 5 dias ou mais), saem as 6 piores pela média das 4 últimas notas e entram aprovadas do laboratório,
+  2 filhas, 1 mutante e sorteadas. Campeã = venceu o controle 4 semanas seguidas; não substitui "As 5 melhores".
+- **Laboratório** (no passado, "aproximado"): só começa com 28 dias de banco (`labEspera` diz quantos faltam; com o
+  teste começado em 02/11/2026, em 30/11). Uma vez por dia, 10 gerações de 24, do 1º dia do banco até hoje: 3 janelas
+  de treino (média − ½ desvio; cada janela = retorno ao mês − ½ pior queda) e o último quarto como prova.
+- A genética (genes, cruzar, mutar, nomes com a família) é a mesma dos Robôs: `tools/papel/genetica.py`.
+- Saída: `resumo.json` → `evolucao` (o formato do `evolucao.json`, com a forma `copy` e a espécie `carteiras`; a versão
+  ao vivo traz também `membros`, `custos` e `largadas`). O app mostra na aba Testes → Evolução, junto com os Robôs.
+- Limites: o selo robô/pessoa é o de hoje; as carteiras que saíram antes de 16/11/2026 só têm a série do jeito padrão;
+  tudo diário (a troca e o largar olham o fechamento do dia).
+- Teste: `python3 tools/mercado/teste_evolucao_copia.py` (um banco inventado, a evolução dia a dia).

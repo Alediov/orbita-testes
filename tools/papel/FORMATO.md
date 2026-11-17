@@ -756,6 +756,11 @@ ranking), `motivo` }] e a forma segue. Tempo máximo por rodada: `ORCAMENTO_S` (
 
 ## Evolução (`evolucao.json`, 16/11/2026)
 
+(O **copy trading** também evolui, desde 16/11/2026: o bloco `evolucao` do `resumo.json` do ramo `mercado` tem este
+mesmo formato, com `formas: [{ id: "copy", nome: "Copy trading", especies: [carteiras] }]`; a versão ao vivo traz mais
+`membros`, `custos` e `largadas`, os genes de dias usam `un: "d"`, e, enquanto o laboratório espera os 28 dias de
+séries, a espécie vem sem `lab` e com `labEspera: { faltam, dias, precisa }`. Regras em `tools/mercado/LEIA-ME.md`.)
+
 Pedido do Alediov: versões que evoluem sozinhas (as piores saem, as melhores se cruzam, às vezes uma mutação), para
 achar os melhores parâmetros de cada estratégia. Regras e números no começo do `evolucao.py`. Começa pelos Robôs (BTC):
 três **espécies**, cada uma com os seus **genes** (os parâmetros que mudam):

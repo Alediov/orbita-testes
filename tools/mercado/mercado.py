@@ -49,6 +49,7 @@ except ImportError:  # pragma: no cover (checkout sem tools/papel)
 
     def cdi_ano_da_serie(cdi, padrao):
         return padrao
+import evolucao_copia as EV  # noqa: E402 (usa a genética de tools/papel/genetica.py)
 
 MIN = 60_000
 HORA = 3_600_000
@@ -81,6 +82,15 @@ ALAV_VARIANTES = (3, 5)
 NOME_VARIANTE = {"": "todas as operações", "s": "saídas de segurança", "l": "ordem limite", "m": "só as moedas boas",
                  "a2": "amplificada × 2", "a3": "amplificada × 3", "f": "entrada fixa de US$ 50",
                  "p20": "para ao cair 20%", "p25": "para ao cair 25%", "p30": "para ao cair 30%"}
+
+
+def nome_do_jeito(k):
+    """O rótulo de uma conta de cópia ("3x1s" → "3× · saídas de segurança"), para os genes da Evolução."""
+    m = re.match(r"^(\d+)x(\d+)(.*)$", k)
+    if not m:
+        return k
+    a, atraso, v = m.groups()
+    return f"{a}×" + (f" · {atraso} min de atraso" if atraso != "1" else "") + (f" · {NOME_VARIANTE[v]}" if v in NOME_VARIANTE and v else "")
 
 
 def combos(variantes=True):
@@ -597,7 +607,7 @@ def selo_de(c):
     return PF.selo(c["perfil"]["robo"]["nota"]) if c.get("perfil") else K.selo(c.get("medidas"))
 
 
-def montar_resumo(est, agora, fonte_cdi, cdi_ano, exemplo=False, rodada=None):
+def montar_resumo(est, agora, fonte_cdi, cdi_ano, exemplo=False, rodada=None, evolucao=None):
     taxa_cdi = cdi_ano_da_serie(est["cdi"], cdi_ano)
 
     def metricas_de(conta):
@@ -647,6 +657,8 @@ def montar_resumo(est, agora, fonte_cdi, cdi_ano, exemplo=False, rodada=None):
         "agregadas": AG.resumo_agregadas(est, agora, metricas_de),
         "passado": PS.resumo(est, metricas_de),
         "contrario": CT.resumo(est, agora, metricas_de),
+        # as carteiras de carteiras que evoluem (evolucao_copia.py; o app mostra na aba Testes → Evolução)
+        "evolucao": EV.resumo(evolucao[0], evolucao[1], agora, metricas_de) if evolucao else None,
     }
 
 
@@ -698,6 +710,12 @@ def rodada(cli, pasta, agora=None, forcar_escolha=False, exemplo=False, prazo_mi
     except Exception as e:  # noqa: BLE001
         erros.append(f"agregadas: {e}")
         log(traceback.format_exc())
+    evolucao = None
+    try:  # depois das agregadas: usa o banco delas (o começo, a saída e o selo de cada carteira)
+        evolucao = EV.rodar(est, agora, combos(), PADRAO, nome_do_jeito, exemplo, log)
+    except Exception as e:  # noqa: BLE001
+        erros.append(f"evolução: {e}")
+        log(traceback.format_exc())
     if time.monotonic() < prazo - 3 * 60:
         try:
             PS.avancar(cli, est, agora, log, min(prazo - 3 * 60, time.monotonic() + passado_min * 60), sys.modules[__name__])
@@ -708,7 +726,7 @@ def rodada(cli, pasta, agora=None, forcar_escolha=False, exemplo=False, prazo_mi
     info = {"em": agora, "pedidos": cli.pedidos, "peso": cli.peso, "segundos": round(time.monotonic() - t0, 1),
             "operacoes": n, "escolha": bool(precisa), "erros": erros[:10]}
     est["rodadas"] = (est["rodadas"] + [info])[-60:]
-    resumo = montar_resumo(est, agora, fonte, cdi_ano, exemplo, info)
+    resumo = montar_resumo(est, agora, fonte, cdi_ano, exemplo, info, evolucao)
     os.makedirs(pasta, exist_ok=True)
     with open(os.path.join(pasta, "estado.json"), "w") as f:
         json.dump(est, f, separators=(",", ":"))

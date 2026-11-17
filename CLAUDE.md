@@ -182,6 +182,11 @@ acabavam; aqui os executores padrão não têm limite.
   `versoes`: o app tem a aba própria Testes → Evolução). Cada versão tem nome de gente com a família (a filha leva o
   sobrenome da mãe e o do pai; repetido ganha II, III) e clones (o mesmo resultado) contam como uma. O copy trading entra
   depois. Teste: `teste_evolucao.py`.
+- **Evolução do copy trading** (pedido do Alediov, 16/11/2026; `tools/mercado/evolucao_copia.py`, LEIA-ME): a espécie
+  "carteira de carteiras" (controle = As 5 melhores) com os genes jeito de copiar, quem, quantas, dias mínimos, olhar para
+  trás, troca e largar; contas refeitas pelas séries diárias (`bancoEv` no estado); liga desde a 1ª rodada, laboratório
+  com 28 dias de séries. `evolucao` no resumo do ramo `mercado`. A genética comum saiu do `evolucao.py` para
+  `tools/papel/genetica.py`. Teste: `teste_evolucao_copia.py`. Faltam Cofres e Funding.
 - Os exemplos que o app usa sem rede ficam no repositório do app (`tools/mercado/exemplos/`); refazer aqui
   (`python3 tools/papel/falso.py`) e copiar para lá (`tools/mercado/exemplos/papel/`) quando o formato mudar.
 - Os workflows (`mercado.yml`, `papel.yml`, `memes.yml`, `ideias.yml`) religam os agendamentos pela API a cada rodada (num
