@@ -384,7 +384,8 @@ class Evolucao:
         self.e["contador"] += 1
         nome, sob = self.batizar(tipo, pais)
         ind = {"id": f"{self.esp['prefixo']}{self.e['contador']}", "nome": nome, "sob": sob, "genes": genes, "tipo": tipo,
-               "pais": list(pais), "origem": origem or {k: "novo" for k in genes}, "g": g}
+               "pais": list(pais), "g": g,
+               "origem": origem or {k: ("base" if tipo == "semente" else "novo") for k in genes}}
         if de:
             ind["de"] = de
         self.e["arvore"][ind["id"]] = {"n": nome, "s": sob, "t": tipo, "p": list(pais), "g": g}
