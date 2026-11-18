@@ -212,6 +212,14 @@ acabavam; aqui os executores padrão não têm limite.
   refeita com UM PASSO POR DIA por um banco de dias (financiamento somado, fechamento e máxima do perpétuo, à vista) que
   o `funding.py` escreve a cada rodada. Saída: `evolucao` no `cofres.json` e no `funding.json`. Testes:
   `teste_cofres_evolucao.py` e `teste_funding_evolucao.py`. Faltam as Previsões e as Opções.
+- **O que o app baixa sai sem o teste no passado, por enquanto** (18/11/2026; `tools/papel/publicar.py`, ligado em
+  `tools/papel/publicar.json`): o app (até a 0.3.99) guarda o `resumo.json` e as formas no localStorage, junto do
+  progresso dos estudos, e os dois deixaram de caber (o progresso do Alediov voltava a cada abertura). `papel.py` e
+  `mercado.py` tiram o `historico` de cada versão e de cada carteira e deixam as 6 últimas operações por conta só NA
+  HORA DE GRAVAR o arquivo do app (3,0 → 1,7 milhão de caracteres; marca `semPassado`); o estado dos ramos guarda
+  tudo e os exemplos não mudam. Para voltar inteiro (depois do APK que tira isso do localStorage): `semPassado` =
+  false e `ultimas` = 0. Enquanto estiver ligado, forma nova ou bloco novo grande no que o app baixa: medir antes.
+  Teste: `python3 tools/papel/teste_publicar.py`.
 - Os exemplos que o app usa sem rede ficam no repositório do app (`tools/mercado/exemplos/`); refazer aqui
   (`python3 tools/papel/falso.py`) e copiar para lá (`tools/mercado/exemplos/papel/`) quando o formato mudar.
 - Os workflows (`mercado.yml`, `papel.yml`, `memes.yml`, `ideias.yml`, `dados.yml`, `even3.yml`) religam os agendamentos pela API a cada rodada (num
