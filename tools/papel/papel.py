@@ -38,6 +38,7 @@ sys.path.insert(0, AQUI)  # antes do mercado: os dois têm um falso.py
 
 import hl  # noqa: E402
 from conta import DIA, cdi_ano_da_serie, com_metricas, dia_de  # noqa: E402
+import publicar  # noqa: E402
 
 FORMAS = ["cofres", "funding", "robos", "apostas", "looping", "opcoes", "pools", "previsao"]
 # as que só rodam quando pedidas (`--formas`): os memecoins têm o job próprio, 3 vezes por dia (`memes.yml`), e a
@@ -172,6 +173,7 @@ def rodada(cli, pasta, agora=None, formas=None, prazo_min=20.0, exemplo=False, b
             com_metricas(saida, est["ref"]["cdi"], cdi_ano_da_serie(est["ref"]["cdi"], CDI_ANO))
             if exemplo:
                 saida["exemplo"] = True
+            publicar.emagrecer_forma(saida)      # sem o teste no passado enquanto o app guarda isto no localStorage
             gravar_json(os.path.join(pasta, f"{nome}.json"), saida)
             est["formas"][nome] = ctx.est
             ind_formas[nome] = {"arquivo": f"{nome}.json", "agora": agora, "nome": mod.NOME, "ok": True}

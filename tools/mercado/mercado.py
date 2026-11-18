@@ -43,6 +43,11 @@ from sim import (Conta, Mercado, Patrimonio, Velas, dia_de, operacoes_da_carteir
 # as métricas comuns de todas as formas (tools/papel/conta.py); no fim do caminho, para não esconder o falso.py daqui
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "papel"))
 try:
+    import publicar  # noqa: E402
+except ImportError:  # pragma: no cover (checkout sem tools/papel)
+    class publicar:  # noqa: N801
+        emagrecer_resumo = staticmethod(lambda r, cfg=None: r)
+try:
     from conta import cdi_ano_da_serie, metricas  # noqa: E402
 except ImportError:  # pragma: no cover (checkout sem tools/papel)
     metricas = None
@@ -730,6 +735,7 @@ def rodada(cli, pasta, agora=None, forcar_escolha=False, exemplo=False, prazo_mi
     os.makedirs(pasta, exist_ok=True)
     with open(os.path.join(pasta, "estado.json"), "w") as f:
         json.dump(est, f, separators=(",", ":"))
+    publicar.emagrecer_resumo(resumo)        # sem o teste no passado enquanto o app guarda isto no localStorage
     with open(os.path.join(pasta, "resumo.json"), "w") as f:
         json.dump(resumo, f, ensure_ascii=False, separators=(",", ":"))
     antigo = []
