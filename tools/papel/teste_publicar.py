@@ -28,6 +28,8 @@ ex = dict(copy.deepcopy(forma), exemplo=True)
 assert publicar.emagrecer_forma(copy.deepcopy(ex), LIGADO) == ex
 exr = dict(copy.deepcopy(resumo), exemplo=True)
 assert publicar.emagrecer_resumo(copy.deepcopy(exr), LIGADO) == exr
-# a config de verdade (ao lado) está ligada enquanto o app não muda de lugar
-assert publicar.config().get("semPassado") is True and publicar.config().get("ultimas") == 6
+# a config de verdade (ao lado): desligada desde 19/11/2026 (o app 0.4.3 guarda os Testes fora do localStorage) e,
+# com ela, o que é publicado sai inteiro
+assert publicar.config().get("semPassado") is False and publicar.config().get("ultimas") == 0
+assert publicar.emagrecer_forma(copy.deepcopy(forma)) == forma and publicar.emagrecer_resumo(copy.deepcopy(resumo)) == resumo
 print("teste_publicar.py: ok")
