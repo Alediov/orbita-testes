@@ -1,5 +1,5 @@
 {
-  "_leia": "18/11/2026: o app guarda os Testes no localStorage, junto do progresso dos estudos, e os dois deixaram de caber. Até o APK que muda isso de lugar, o que é publicado sai sem o teste no passado (historico) e com as 6 últimas operações de cada conta. Para voltar inteiro: semPassado = false e ultimas = 0. Detalhes em tools/papel/publicar.py.",
-  "semPassado": true,
-  "ultimas": 6
+  "_leia": "19/11/2026: religado (o app 0.4.3 guarda os Testes no armazém do aparelho, fora do localStorage; instalado no celular e no tablet). O que é publicado volta inteiro. Se um dia precisar emagrecer de novo: semPassado = true e ultimas = 6. Detalhes em tools/papel/publicar.py.",
+  "semPassado": false,
+  "ultimas": 0
 }
