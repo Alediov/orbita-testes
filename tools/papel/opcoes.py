@@ -54,6 +54,8 @@ calls cobertas, strangle e a mensal negativas, Sharpe negativo em todas e o CDI 
 - **A conta por dentro** (`extra.porDentro`), o empate (`extra.empate`: quantas semanas de prêmio pagam os custos e
   quanto os prêmios já deixaram) e a pior semana (`extra.piorSemana`: o pior vencimento e quantas semanas de prêmio
   médio ele apagou).
+- **Evolução** (19/11/2026, `opcoes_evolucao.py`): a espécie "venda de prêmio" (controle = put15), refeita pela
+  `Conta` com o `MercadoHist` sobre um banco de horas (velas e DVOL, `est["bancoEv"]`); bloco `evolucao` da saída.
 - **Teste de estresse** (`estresse` na versão): queda de 15% e 30% num fim de semana (2 dias, volatilidade × 1,3) e,
   nas que seguram a moeda ou vendem call, alta de 15% e 30% (volatilidade × 1,1), sobre as posições abertas agora (ou,
   sem elas, as que a versão venderia agora pela cadeia), em US$, em % da conta e em semanas de prêmio médio do passado.
@@ -67,6 +69,7 @@ Amostras conferidas (Teste de alcance, 03/11/2026): book summary
 from __future__ import annotations
 
 import copy
+import sys
 import datetime as dt
 import math
 import re
@@ -872,11 +875,12 @@ class Conta:
             self.acc["semanasCaro"] += 1
             return True, "Sem a volatilidade realizada (poucas velas): vende como a versão sem filtro. "
         razao = iv / rv
-        caro = razao >= VRP_MIN
+        vmin = getattr(self, "vrp_min", VRP_MIN)  # a Evolução (opcoes_evolucao.py) põe o mínimo de cada versão
+        caro = razao >= vmin
         self.filtro = {"em": int(t), "iv": round(iv, 4), "rv": round(rv, 4), "rv7": round(rv7, 4) if rv7 else None,
                        "razao": round(razao, 3), "vendeu": caro}
         txt = (f"implícita {pct_br(iv, 0)} × realizada de {VRP_DIAS} dias {pct_br(rv, 0)} "
-               f"(razão {num_br(razao, 2)}, mínimo {num_br(VRP_MIN, 1)})")
+               f"(razão {num_br(razao, 2)}, mínimo {num_br(vmin, 2)})")
         if caro:
             self.acc["semanasCaro"] += 1
             return True, f"Prêmio caro, {txt}. "
@@ -1284,6 +1288,34 @@ def rodar(ctx):
                 log(f"  opções: teste no passado refeito ({dia_de(t0)} a {dia_de(fim)}, volatilidade: {fonte_iv}, "
                     f"sorriso: {hist['sorriso']})")
 
+        # ---------------------------------------------------------------- a Evolução (19/11/2026, opcoes_evolucao.py)
+        # o banco de horas anda com as velas de 31 dias desta rodada e o DVOL desde a última hora guardada; sem banco,
+        # baixa os 180 dias uma vez (ou aproveita os do teste no passado, se ele foi refeito agora)
+        evolucao = None
+        try:
+            import opcoes_evolucao as OE
+            pr = {m: dict(precos_vivo.get(m) or {}) for m in MOEDAS}
+            dv = {}
+            if refazer:
+                for m in MOEDAS:
+                    pr[m] = {**(precos.get(m) or {}), **pr[m]}
+                dv = {m: dict(dvol.get(m) or {}) for m in MOEDAS}
+            elif OE.precisa_semear(est) and ctx.restante() >= HIST_TEMPO_MIN:
+                ini_s = agora - HIST_DIAS * DIA
+                for m in MOEDAS:
+                    pr[m] = {**velas_1h(ctx.cli, m, ini_s - (VRP_DIAS + 2) * DIA, agora, erros), **pr[m]}
+                    dv[m] = ler_dvol(fonte, m, ini_s - (VRP_DIAS + 2) * DIA, agora, log, erros)
+                log("  opções: evolução: banco semeado com os 180 dias")
+            else:
+                for m in cadeias:
+                    u = OE.ultima_hora(est, m)
+                    dv[m] = ler_dvol(fonte, m, (u or agora - (VRP_DIAS + 1) * DIA) - 2 * HORA, agora, log, erros)
+            evolucao = OE.avancar(ctx, est, sys.modules[__name__], pr, dv, agora,
+                                  sorriso={m: s for m, s in sorriso.items() if s}, aave=aave)
+        except Exception as e:  # noqa: BLE001 (a evolução com problema não derruba a forma)
+            erros.append(f"evolução: {e}")
+            log(f"  opções: evolução: {e}")
+
         # ---------------------------------------------------------------- saída
         cdi = (getattr(ctx, "ref", None) or {}).get("cdi") or {}
         cdi_ano = CT.cdi_ano_da_serie(cdi, 0.149)
@@ -1352,7 +1384,7 @@ def rodar(ctx):
                      "janelas": {"dias": JANELA_DIAS, "passo": JANELA_PASSO}}
         if comeca:
             cfg_saida["aoVivoComeca"] = comeca
-        return {"frase": FRASE, "comoFunciona": COMO_FUNCIONA, "padrao": "put15", "versoes": versoes,
+        return {"frase": FRASE, "comoFunciona": COMO_FUNCIONA, "padrao": "put15", "versoes": versoes, "evolucao": evolucao,
                 "eventos": est["eventos"], "itens": sorted(itens, key=lambda x: x["vence"]), "avisos": AVISOS,
                 "config": cfg_saida, "erros": erros}
     finally:

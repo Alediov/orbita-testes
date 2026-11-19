@@ -35,6 +35,9 @@ melhor oferta de compra, o que se receberia vendendo agora):
    passada, mede na seguinte). Só o endereço público e contagens; nunca o apelido. `aproximado: true`.
 6. **Réguas** (`cdi`, `usdc`): o CDI do Banco Central e o dólar digital parado.
 
+**Evolução** (19/11/2026, `previsao_evolucao.py`): a espécie "colheita" (controle = fav90), refeita pelo observatório
+de calibração; bloco `evolucao` da saída (FORMATO.md, "Evolução").
+
 Teste no passado (aproximado, só fav90, fav95 e azarão): os mesmos mercados encerrados do observatório (até 180 dias),
 com o preço de cada dia antes do fim (o histórico de 12 em 12 h) e 1 centavo de deslize; `historico.janelas` de 30 dias.
 """
@@ -1397,6 +1400,14 @@ def rodar(ctx):
               "regra": {"n": SEG_N, "atrasoMin": SEG_ATRASO // 60_000, "deslize": SEG_DESLIZE, "minimo": SEG_MIN_US}}
     est["eventos"] = ev.para_json()
     est["estruturas"] = sorted(R.vistas)
+    # a Evolução (19/11/2026, previsao_evolucao.py): a colheita refeita pelo observatório de calibração, sem rede a mais
+    evolucao = None
+    try:
+        import previsao_evolucao as PE
+        evolucao = PE.avancar(ctx, est, agora)
+    except Exception as e:  # noqa: BLE001 (a evolução com problema não derruba a forma)
+        R.erros.append(f"evolução: {e}")
+        ctx.log(f"  previsão: evolução: {e}")
     rede.somar_pedidos(ctx, fonte, antes)
     sem_dados = [{"fonte": k, "motivo": v} for k, v in R.sem.items()]
     if not abertos and "gamma" not in R.sem:
@@ -1404,7 +1415,7 @@ def rodar(ctx):
     return {
         "frase": FRASE, "comoFunciona": COMO_FUNCIONA, "padrao": PADRAO, "versoes": versoes,
         "eventos": ev.para_json(), "itens": itens[:ITENS_MAX], "avisos": AVISOS,
-        "calibracao": calib, "casas": casas, "seguir": seguir, "semDados": sem_dados,
+        "calibracao": calib, "casas": casas, "seguir": seguir, "semDados": sem_dados, "evolucao": evolucao,
         "abertos": {"lidos": len(abertos), "porCategoria": _contar_cat(abertos)},
         "config": {"frequencia": "a cada 6 h", "moeda": "US$", "aposta": APOSTA, "bloqueio": "abril de 2026",
                    "soObservacao": True,

@@ -788,6 +788,28 @@ começou, refeita do zero a cada rodada por um banco de dias que a forma guarda 
 Nos dois o controle é a versão padrão REFEITA pelo simulador da evolução (aproximado): não bate centavo a centavo com a
 conta da versão no teste.)
 
+(As **Opções** e as **Previsões** também, desde 19/11/2026 (as duas últimas do plano): o `opcoes.json` e o
+`previsao.json` trazem o bloco `evolucao`, `formas: [{ id: "opcoes", nome: "Opções", especies: [premio] }]` e
+`formas: [{ id: "previsao", nome: "Previsão", especies: [colheita] }]`; `null` enquanto não há dados.
+
+- **Opções** (`opcoes_evolucao.py`), espécie `premio` ("Venda de prêmio", 🛡️, controle `put15` = "Put 0,15"). Genes:
+  `moeda` (BTC | ETH), `tipo` (put | call coberta | strangle coberto | a roda), `delta` 0,10–0,40, `prazo` (semana |
+  mês), `stop` 0/2/3/4× (só na semanal; 0 = nunca recompra), `caro` 0/1,1/1,2/1,35 (só vende com implícita ÷ realizada
+  de 30 dias acima disso; 0 = sempre) e `caixa` (a garantia na Aave). Sementes: put30, call15, strangle, putmes,
+  putstop, eth_put15, put30C, put30vrp e roda. Banco (`bancoEv` no estado das Opções): de cada moeda, o fechamento e o
+  DVOL de cada hora, até 200 dias; semeado uma vez pelos 180 dias (ou pelo teste no passado, quando ele é refeito na
+  rodada) e andado a cada rodada pelas velas de 31 dias e pelo DVOL desde a última hora guardada. O simulador é a
+  própria `Conta` com o `MercadoHist` (Black-Scholes, DVOL, sorriso medido, oferta estimada, taxas, Aave), um passo a
+  cada 4 h (`regras.passoHoras`). `aoVivo.membros` = as opções abertas ("put de US$ 84.000") ou "BTC comprado",
+  `custos` = taxas da Deribit e do à vista, `largadas` = recompras, `exercidas`.
+- **Previsões** (`previsao_evolucao.py`), espécie `colheita` ("Colheita", 🌽, controle `fav90` = "Favorito ≥ 90%").
+  Genes: `lado` (favorito | azarão), `piso` 80–97% e `teto` 97/98/99% (só no favorito), `faixa` 2–10/5–15/10–25% (só no
+  azarão), `dias` 1/3/7/14/30, `cat` (todas ou uma categoria), `vol` US$ 5 mil/20 mil/100 mil, `aposta` US$ 10/20/40 e
+  `max` 10/25/50 abertas. Sementes: fav95, azarao, fav90_3d e fav85. Sem banco próprio: o observatório de calibração
+  (`cal.mercados`, um por evento), entrada pelo preço do dia + 1 centavo, saída pela resolução. Só os mercados que já
+  acabaram entram (uma posição aparece quando o mercado dela acaba). `aoVivo.membros` = "N abertas", `acertos`,
+  `resolvidas`; `regras.mercados` = quantos mercados o observatório tem.)
+
 Pedido do Alediov: versões que evoluem sozinhas (as piores saem, as melhores se cruzam, às vezes uma mutação), para
 achar os melhores parâmetros de cada estratégia. Regras e números no começo do `evolucao.py`. Começa pelos Robôs (BTC):
 três **espécies**, cada uma com os seus **genes** (os parâmetros que mudam):

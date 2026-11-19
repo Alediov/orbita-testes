@@ -211,7 +211,15 @@ acabavam; aqui os executores padrão não têm limite.
   rodízio, alavancagem até 3×, sempre dentro ou seletiva, a média, entrar e sair, a troca do rodízio e o caixa na Aave),
   refeita com UM PASSO POR DIA por um banco de dias (financiamento somado, fechamento e máxima do perpétuo, à vista) que
   o `funding.py` escreve a cada rodada. Saída: `evolucao` no `cofres.json` e no `funding.json`. Testes:
-  `teste_cofres_evolucao.py` e `teste_funding_evolucao.py`. Faltam as Previsões e as Opções.
+  `teste_cofres_evolucao.py` e `teste_funding_evolucao.py`.
+- **Evolução das Opções e das Previsões** (19/11/2026, as duas últimas do plano; FORMATO.md, "Evolução"):
+  `opcoes_evolucao.py`, a espécie "venda de prêmio" (controle = Put 0,15; genes: moeda, tipo, delta, prazo, recompra,
+  prêmio caro e a Aave), refeita pela própria `Conta` das Opções com o `MercadoHist` de 4 em 4 h sobre um banco de horas
+  (velas e DVOL, `bancoEv`, até 200 dias, semeado uma vez com os 180 dias); `previsao_evolucao.py`, a espécie
+  "colheita" (controle = Favorito ≥ 90%; genes: lado, faixa de preço, dias para o fim, categoria, volume, aposta e
+  abertas), refeita pelo observatório de calibração, sem rede a mais. `_filtro_caro` lê o mínimo de cada versão
+  (`vrp_min`). Saída: `evolucao` no `opcoes.json` e no `previsao.json`. Testes: `teste_opcoes_evolucao.py` (o
+  simulador bate com o teste no passado de hora em hora a menos de 1 ponto) e `teste_previsao_evolucao.py`.
 - **O que o app baixa: inteiro de novo desde 19/11/2026** (`tools/papel/publicar.py`, ligado em
   `tools/papel/publicar.json`): em 18/11 o app (até a 0.3.99) guardava o `resumo.json` e as formas no localStorage,
   junto do progresso dos estudos, e os dois deixaram de caber (o progresso do Alediov voltava a cada abertura); por
