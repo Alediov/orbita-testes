@@ -1,0 +1,400 @@
+  HTTP 500 em Polymarket Gamma /markets; espera 5s
+  HTTP 500 em Polymarket Gamma /markets; espera 10s
+  previsão: gamma /markets (encerrados): HTTP 500 em Polymarket Gamma /markets: {"type":"internal error","error":"internal server error"}
+  evolução (previsão): laboratório na geração 10, melhor 0.01252
+  previsao: ok (8 versões, 55 pedidos, 41.9 s)
+fim: 339 pedidos, 290 s
+rodada 2026-11-20 01:25Z
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/R9gkG4aoXSueRxSQvw45U6XnVJDwtNdhzuk9; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/4DC5poPWecYjPDcYRuwRfa3Z82DuC8kuvrGo; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/Akc4THYTGZaFZ2RtYnh7NywNLoW1nwznypnw; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/AXPSqzrbeD9B1YnYpoh3AM4npGKQfuPARd37c; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/7CVGQnSS5jJpwfQCY3Q24zeeMiFeUkJE3mev; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/Ao4k1N8LJCe8Xw8DWsxgMfSYQ1nNiXxBqSRJ3; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/8yUjf5EwQsaKFJuxMqNFZNT5PiGDeUko34jFE; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/HSVoc8Mcw5RHy7J5ByGwTgj2eGPqo87RMcEMS; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/ANE9mZWZTFV8keWbAwAkJbyKbHoGt7NU5uVu; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/3YRzht9iKKBUTyZ1kmGAngKbrd79nEQ6xhUgg; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/GfMzq2fKbwUu2gEWuctsdVFWFwMF74VV3Rwr; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/9FMz7ypDB7rzdghj27LgsBMgfN8xmQbVbr5d; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/EBzuqcjzbY4vo9gBgjeddzCJrThxR8fCqKoH; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/BPN7G1fUf5xFkeXffLxNnXHxpVvegfop8v7RZ; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/AdSqiMecqXANSQFFTVQGBRcrDTEWkAW1Va5p; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/5Ekphrift1KNJF2KHNvyEownn9YFEuzLLZbDv; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/4QD6c1UUeJMZDZnpxdP1GCfAeuv6w17ER65fE; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/J67j1ynrJTNrbwCMxLwgoWxs1EAYUFi9QCbG; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/9UHHa6cS4rDm7PigNkV9rLNB1socEkT3kv1q3; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/3GriAHZPVRtfHdk9aoS7YKXZP7LgixdqVLamp; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/5FLZP9NYv5RLFCs37ehzPWCBgrHDgjJy8Pru2; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/F1v3UPPbdBu3DwMzsfQ6nfoYKdLcp5TJeoazv; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/EfhUd3J1tBKNkgpfDqJ9MhYaezHjv9yK5kwm; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/CG5G3nztQAKgPfYvx3nqiYew8zmsQYVT9qGZS; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/7sx6oaJJ6ETwxr1XpdGb8sgryLKC4oCGzrES; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/BnsKF8u9ktrmmZb1gSaiGyaCrZD4Np1wnRzJ; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/D3WyZ1fsCzvXwxHho7iSqp7t6q78VYhBeNU3p; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/5u8ojhYSF441LiCTNEHFyLH9yJ5Uzw1thTP92; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/6ddZgH8M5VaSuHqegjfpGgyrtpwSNAV2Hk7GJ; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/6LQmnrtRnfktxWaMJY37vopeduGx9gpF8H3g; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/5fWNJcn2zpNyhnR2Cmd9Hi7TdvV88B6CttHo; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/JBa6v9wPLMb4Tesk4i9x1VA9qY6w6RsWiRWcd; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/4mSLKrjFLDsKx9KVZWMpJJVAPXZ4gK9t767CQ; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/DDoRDL3x4ia7xDkDMeNLCjZKeX2XSq3pGvGG; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/BDX48cTC1HDdwksXXojdBBQ2r9jxMD7g3wTJ; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/8W228Rjp7rJY18LVGBs9HTMZysJboVg3JERg; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/AjpB58sUb6kCVPNFbwNDtC4X13LyU4Jic2yhZ; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/DN6s99LSA9vGHFTi88cKKVUEypCBxYa7ZdpQr; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/GYPxF34uVnusU3FAhDWXXk8dQqVqtzbkZgG2; espera 30s
+  memes: amostra de 2026-11-18 analisada (80 tokens)
+  memes: ok (8 versões, 157 pedidos, 1438.4 s)
+fim: 158 pedidos, 1440 s
+rodada 2026-11-20 07:31Z
+  cofre × líder: 5 de 5 cofres em dia
+  evolução (cofres): banco com 79 cofres; 77 andaram até hoje
+  evolução (cofres): laboratório na geração 40, melhor 0.01738
+  cofres: ok (10 versões, 159 pedidos, 125.2 s)
+  evolução (funding): laboratório na geração 40, melhor 0.00444
+  funding: ok (13 versões, 30 pedidos, 43.2 s)
+  robos: gbtc10 642 velas de 1m, patrimônio 823,21
+  robos: gbtc20r 642 velas de 1m, patrimônio 847,81
+  robos: dca 642 velas de 1m, patrimônio 980,15
+  robos: dcaqueda 642 velas de 1m, patrimônio 980,12
+  robos: dcam1 642 velas de 1m, patrimônio 828,17
+  robos: gvol2 642 velas de 1m, patrimônio 854,12
+  robos: gvol4 642 velas de 1m, patrimônio 864,98
+  robos: dcaC 642 velas de 1m, patrimônio 988,21
+  robos: tcruz 642 velas de 1m, patrimônio 1.000,00
+  robos: trompe 642 velas de 1m, patrimônio 1.000,00
+  robos: tmovel 642 velas de 1m, patrimônio 1.000,00
+  robos: rfaixa 642 velas de 1m, patrimônio 938,15
+  robos: rfaixavol 642 velas de 1m, patrimônio 938,15
+  robos: rbandas 642 velas de 1m, patrimônio 1.031,22
+  robos: rbandastend 642 velas de 1m, patrimônio 1.000,00
+  robos: rrsi 642 velas de 1m, patrimônio 938,15
+  robos: segbtc 642 velas de 1m, patrimônio 818,97
+  robos: geth10 642 velas de 1m, patrimônio 789,31
+  robos: tcruzeth 642 velas de 1m, patrimônio 1.000,00
+  robos: segeth 642 velas de 1m, patrimônio 816,31
+  robos: gneutra1 642 velas de 1m, patrimônio 865,24
+  robos: gneutra3 642 velas de 1m, patrimônio 595,71
+  robos: dcam3 642 velas de 1m, patrimônio 473,21
+  robos: gsaida1 642 velas de 1m, patrimônio 950,87
+  robos: gsaida3 642 velas de 1m, patrimônio 861,69
+  robos: tcruzls 642 velas de 1m, patrimônio 1.059,65
+  robos: rbandasls 642 velas de 1m, patrimônio 1.020,72
+  robos: irbandas 642 velas de 1m, patrimônio 966,44
+  robos: irsi 642 velas de 1m, patrimônio 1.059,65
+  robos: icruzls 642 velas de 1m, patrimônio 938,46
+  robos: gsol1 642 velas de 1m, patrimônio 908,23
+  robos: ghype1 642 velas de 1m, patrimônio 986,59
+  robos: ok (32 versões, 10 pedidos, 12.0 s)
+  HTTP 500 em OddsPapi /historical-odds; espera 5s
+  apostas: A Betano (betano.bet.br) veio sem odds em 5 jogos seguidos (as apostas estão suspensas no Brasil); o papel passa a usar a Betano (internacional) (betano).
+  apostas: ok (9 versões, 7 pedidos, 59.3 s)
+  looping: Morpho (blue-api): HTTP 400 em Morpho GraphQL; tentando a DefiLlama
+  looping: moonwell: DefiLlama: nenhum pool de USDC na Base do projeto moonwell
+  looping: ok (13 versões, 12 pedidos, 11.4 s)
+  evolução (opções): laboratório na geração 20, melhor 0.0673
+  opcoes: ok (18 versões, 16 pedidos, 6.1 s)
+  pools: gauge: RPC eth_call: execution reverted
+  HTTP 429 em GeckoTerminal /networks/base/pools/0x66dcd42e6314b287110922ae36cb2a8bdeecc; espera 30s
+  HTTP 429 em GeckoTerminal /networks/base/pools/0x988b949de9d3a3d2172f22c19694c7a5148c9; espera 30s
+  HTTP 429 em GeckoTerminal /networks/base/pools/0xf668e21993f0acd7ab00bb1cfbaed0df28a3c; espera 30s
+  pools arrojadas: 40 na lista, 14 no pré-filtro, 0 no filtro; do dia: nenhum (controle: AMZNc / USDC 0.167%)
+  HTTP 429 em GeckoTerminal /networks/base/pools/0x532e0f46d1e528507fc9454d5847c231f23bd; espera 30s
+  pools: ok (66 versões, 69 pedidos, 189.0 s)
+  HTTP 500 em Polymarket Gamma /markets; espera 5s
+  HTTP 500 em Polymarket Gamma /markets; espera 10s
+  previsão: gamma /markets (encerrados): HTTP 500 em Polymarket Gamma /markets: {"type":"internal error","error":"internal server error"}
+  evolução (previsão): laboratório na geração 20, melhor 0.01903
+  previsao: ok (8 versões, 72 pedidos, 43.7 s)
+fim: 376 pedidos, 493 s
+rodada 2026-11-20 12:07Z
+  CDI do Banco Central: HTTP Error 304: Not Modified; ficam os 621 dias já guardados e, depois deles, 13.65% ao ano
+  HTTP 429 em GeckoTerminal /networks/solana/pools/75yCS4i1neAa5qpzbXPRHXag4qKUkBr9E9sYR; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/75yCS4i1neAa5qpzbXPRHXag4qKUkBr9E9sYR; espera 60s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/J4oS2aJjsWhRbqXjkk1WGZosWfGsBuCMtNqNa; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/BfUyNestWm7cjbHvHnQMNLYWMJ1GWBJa4bPn3; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/GKteHbdjZCSGbgK8VT1QKQedCYfS5RJviPaja; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/FW6qN2ESeUUQygGTLtggAuYMyYQqjLzKYe6f; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/7bFrTxEr71qnvQfpdZWKJ4dMVsrx5xDH2J5Dg; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/FYCB4bwFSdyiwGNrmSjb5apSQtQxLntcgho7W; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/B4qRu99u9WbaU8LFEVpCEGq66Q1TxPKcbNiX; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/D9j7Eo3fqXmwY4oAYGJ2qTKzo92tSC2wFs2g; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/4Gc9YaSiGviN5qXVTNfUykiYVgmK553nnC5j2; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/94PLBQDqUwrrGVXWzQw5W4aMwcxXwLfDQC6f; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/HxgKA2CtTSMNX1tBx5YN7B5YS7gu5ecxjrnHs; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/7YfcQEWawGSkv5pa4Toba8h7huKSifP4BkrvY; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/8uHfqZzhrGLExTcVNgH2Vry8Nx8N35TwG1sN; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/ok4QTV595ebkP58BvkNA3cdAXES8tYN4Av3x; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/4HjndAJqLrZPAww2dn1u8sZ6QwUr9YSzg6jk1; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/HoxnJmFuhCVqv5PVTyhcVg7UTTBVp6CyCGz6; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/6wB9jhAocdfhWkZs91f9omizDn5vFMUTxfih; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/6QsEf5RfpTDygAV2ULRFrZFrtp3TD7w174pF; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/GpkNbmKnrxYMFUN7R14LUTVivJkAf6bpjPQt; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/GnyYvnBSJuu4MSXfQAN2DvCMEf4T1URLa3CHy; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/3zutjHL49yuvomyunq7tTzGRxaDEqPC5kc7W; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/418SsSqmFmK6N9uwujsc9xpf8BBVh8YYJtRM; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/AvqvpCGJ6qKTb3ffxDXnJWzv23hhAt1g8kzT; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/J6YZu6DHXZBWncwN37ZHTJyWKuNFn4BWApBQz; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/4XT1G6m6fbvh6by2VNniMfZj8D1ZRFqxoakZ; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/2sSNuWkg8kG2C12gUSJqV9MVLsWxCkn24qw2; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/6iRERNFpJACzfRxzkxJ8HKoCdtu6QMpvxKGA; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/A8T8jY8f8dQoVeRN1RV59YeWQv6YFDWamfXG; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/5EX5QUZB47n6SUp1U4Tu1hev84vgSbkXWsRo; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/9vnWr9xrChrTDYwNZvPRHrunPYKw54XTbkyAM; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/DoKbuCpjbkC9bkMu7AFjTt5Yw62wfETgnuuM; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/BVmBkTX5sV7EZpKAD5Kpht1FNHME4YShpYK9; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/13m47tAAJWCNX1NQGEwZdYtHktMyMHywZWK4; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/4abWxxEURyT8jiPRjZBUJscqj7NHrKqJHGV8b; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/9ZUun6JbH4uzZqU4T1Vx7JjwZvF98H4DHFGdv; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/BJFX4gE47a7fuwT8FmAPmUpLA9DxnWo8KtccS; espera 30s
+  memes: amostra de 2026-11-18 analisada (76 tokens)
+  memes: ok (8 versões, 152 pedidos, 1428.5 s)
+fim: 153 pedidos, 1443 s
+rodada 2026-11-20 17:40Z
+  evolucao: 4319 velas de 1 h de @142 (2026-05-24 a 2026-11-20)
+  evolucao: 4319 velas de 1 h de BTC (2026-05-24 a 2026-11-20)
+  evolucao: grade geração 50 (10 hoje)
+  evolucao: bandas geração 50 (10 hoje)
+  evolucao: tendencia geração 50 (10 hoje)
+  evolucao: 37 contas ao vivo no perpétuo (1414 velas de 1m)
+  evolucao: 38 contas ao vivo no à vista (1414 velas de 1m)
+  evolucao: ok (0 versões, 14 pedidos, 99.8 s)
+fim: 15 pedidos, 102 s
+rodada 2026-11-20 20:33Z
+  cofre × líder: o tempo acabou; os outros alcançam na próxima
+  cofre × líder: 4 de 5 cofres em dia
+  cofres: ok (10 versões, 159 pedidos, 129.8 s)
+  funding: ok (13 versões, 30 pedidos, 43.4 s)
+  robos: gbtc10 782 velas de 1m, patrimônio 780,10
+  robos: gbtc20r 782 velas de 1m, patrimônio 821,43
+  robos: dca 782 velas de 1m, patrimônio 973,26
+  robos: dcaqueda 782 velas de 1m, patrimônio 973,23
+  robos: dcam1 782 velas de 1m, patrimônio 784,46
+  robos: gvol2 782 velas de 1m, patrimônio 810,15
+  robos: gvol4 782 velas de 1m, patrimônio 827,57
+  robos: dcaC 782 velas de 1m, patrimônio 983,61
+  robos: tcruz 782 velas de 1m, patrimônio 1.000,00
+  robos: trompe 782 velas de 1m, patrimônio 1.000,00
+  robos: tmovel 782 velas de 1m, patrimônio 1.000,00
+  robos: rfaixa 782 velas de 1m, patrimônio 915,88
+  robos: rfaixavol 782 velas de 1m, patrimônio 915,88
+  robos: rbandas 782 velas de 1m, patrimônio 966,58
+  robos: rbandastend 782 velas de 1m, patrimônio 1.000,00
+  robos: rrsi 782 velas de 1m, patrimônio 915,88
+  robos: segbtc 782 velas de 1m, patrimônio 775,58
+  robos: geth10 782 velas de 1m, patrimônio 722,71
+  robos: tcruzeth 782 velas de 1m, patrimônio 1.000,00
+  robos: segeth 782 velas de 1m, patrimônio 746,46
+  robos: gneutra1 782 velas de 1m, patrimônio 823,75
+  robos: gneutra3 782 velas de 1m, patrimônio 471,25
+  robos: dcam3 782 velas de 1m, patrimônio 342,73
+  robos: gsaida1 782 velas de 1m, patrimônio 919,71
+  robos: gsaida3 782 velas de 1m, patrimônio 777,54
+  robos: tcruzls 782 velas de 1m, patrimônio 1.108,82
+  robos: rbandasls 782 velas de 1m, patrimônio 967,30
+  robos: irbandas 782 velas de 1m, patrimônio 1.017,19
+  robos: irsi 782 velas de 1m, patrimônio 1.108,82
+  robos: icruzls 782 velas de 1m, patrimônio 889,28
+  robos: gsol1 782 velas de 1m, patrimônio 856,44
+  robos: ghype1 782 velas de 1m, patrimônio 916,26
+  robos: ok (32 versões, 10 pedidos, 12.9 s)
+  apostas: ok (9 versões, 1 pedidos, 0.3 s)
+  looping: Morpho (blue-api): HTTP 400 em Morpho GraphQL; tentando a DefiLlama
+  looping: moonwell: DefiLlama: nenhum pool de USDC na Base do projeto moonwell
+  looping: ok (13 versões, 12 pedidos, 8.8 s)
+  HTTP 503 em Deribit get_book_summary_by_currency; espera 5s
+  HTTP 503 em Deribit get_book_summary_by_currency; espera 10s
+  opções: cadeia de BTC: Deribit get_book_summary_by_currency: system_maintenance
+  HTTP 503 em Deribit get_book_summary_by_currency; espera 5s
+  HTTP 503 em Deribit get_book_summary_by_currency; espera 10s
+  opções: cadeia de ETH: Deribit get_book_summary_by_currency: system_maintenance
+  opcoes: ERRO nenhuma cadeia de opções respondeu: cadeia de BTC: Deribit get_book_summary_by_currency: system_maintenance; cadeia de ETH: Deribit get_book_summary_by_currency: system_maintenance
+    Traceback (most recent call last):
+      File "/home/runner/work/orbita-testes/orbita-testes/tools/papel/papel.py", line 168, in rodada
+        saida = mod.rodar(ctx)
+      File "/home/runner/work/orbita-testes/orbita-testes/tools/papel/opcoes.py", line 1222, in rodar
+        raise rede.Erro("nenhuma cadeia de opções respondeu: " + "; ".join(erros[:2]))
+    rede.Erro: nenhuma cadeia de opções respondeu: cadeia de BTC: Deribit get_book_summary_by_currency: system_maintenance; cadeia de ETH: Deribit get_book_summary_by_currency: system_maintenance
+  pools: gauge: RPC eth_call: execution reverted
+  pools: ok (66 versões, 59 pedidos, 61.4 s)
+  HTTP 500 em Polymarket Gamma /markets; espera 5s
+  HTTP 500 em Polymarket Gamma /markets; espera 10s
+  previsão: gamma /markets (encerrados): HTTP 500 em Polymarket Gamma /markets: {"type":"internal error","error":"internal server error"}
+  previsao: ok (8 versões, 58 pedidos, 39.1 s)
+fim: 336 pedidos, 329 s
+rodada 2026-11-21 00:56Z
+  HTTP 429 em GeckoTerminal /networks/solana/pools/GwBqv9frr8RFjzWYHcCqyEb3G85o1qXWpeqJu; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/GwBqv9frr8RFjzWYHcCqyEb3G85o1qXWpeqJu; espera 60s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/9XWo6Px5hDrkDB2VPjNkdaaMTnpJLMhu6VUYy; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/9XWo6Px5hDrkDB2VPjNkdaaMTnpJLMhu6VUYy; espera 60s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/PctDn2QmKw7pfnNqUNg8UA5hiRPD2Jo4oyCJt; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/BTWxd5f47DBAsaT9eE91gZwENM45PteqYZg12; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/33niMUYbxCdKwSSq6L8kgZ8fV45xLE1Nqxd75; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/GyzYYWLA6mVKcrhirdBaSEtFbJAfvpFLxzYzY; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/J98LJTYCSuPFGZx9FXYXBSMaG9eVna1UeyXYa; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/DAkBrfrEP4ojQKvz3qdWn4WRtvXFKkmBssHRg; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/3Jqh1g4Ex6NH71SVvauEGnh6aVEmUtMwC2mm3; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/HiBcvfNFKHL2vP8GGqZxTxRtG5qfMKFqWvQU7; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/2Da3djKxFknqSGWqiYLjphzMn3uVi8XWvDb6r; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/FgqnbmT7NoCnPugcf7fr4kTwCe595F72WNXZM; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/4HAc3XMpe475nW8G9E1BqfeAwfe7zwcKzR5vR; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/DxYYrjcDrSk29Qz8ZPB1foRWNkzGdrHhUxuBX; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/CDGXdAFqM99irmEt9MUzEHfzqUDXbor2h4rFW; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/5GHpxpnUJcnKAYNgzAB4La5maGrpvAtNkVEin; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/7PUCwcr1Xphqu3Wk55jTJB6cgvwhGWJatxNRA; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/DtpBamncwqJymfCM2eHaxqk8zS7cQjtP8LeLP; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/382Lcbx4rtHQy9vVVpBrPPChH1nrXCxvyKbL5; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/C2bPJ8on8nx1Su78Sxc47zMWBCyUvPJrjuSAb; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/CVM3FfKPR78q4Y6Y8zu6mA2fxit9WT9JBNQsP; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/54LkNw9kxL5hxfxS4hgf222vZrXRMDG22ABju; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/9nBJVXevYARyR1RLCywdhjQv8Suw5CCZ98eDA; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/C2epXZu79BesagqKSPcwnWcubaFUDLVdiUjzg; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/3AqR16g9pCU3itWXLaq7QUtX1Up7KBs4NbTnw; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/FqxBj7vE9vyDR6yjzi37PAHwWYNJcvSq1HEzv; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/3ayTRCta2im8DsmD5AZemSYYgPdEwpDyzGSQ5; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/GEG33kaXPmr34oJLc3JQSEGQ19mKwY97Ec2Hj; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/B9KW42Xgs5bfMG2ZrLdHBkvpNCSnBYQPdcMj8; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/EsS8Ko4cgTGnuxLK2oXazFWDhMav4XF1UgoV5; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/EPochAvCLcntX4ckKhySy83Dwg1uGVmdAF1Mx; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/EdPYpmj22cWrMEGmXGJuWdvEaGYNoBo5nLzcf; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/9jLgnvKAXsmhyEV5QXeoTNpg3MxpTTJgFdt7d; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/2haYDZDbRYQJWRTTfcG14u4GFKcC7D4mbQ6kC; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/BGyR3xoxHgUyquwP5ybM9oDnvRnKihQATr2oa; espera 30s
+  memes: 103 tokens vistos de novo depois de 7 dias
+  memes: ok (8 versões, 140 pedidos, 1426.7 s)
+fim: 141 pedidos, 1429 s
+rodada 2026-11-21 07:26Z
+  cofre × líder: 5 de 5 cofres em dia
+  evolução (cofres): banco com 79 cofres; 77 andaram até hoje
+  evolução (cofres): laboratório na geração 50, melhor 0.01752
+  cofres: ok (10 versões, 163 pedidos, 133.1 s)
+  evolução (funding): laboratório na geração 50, melhor 0.00444
+  funding: ok (13 versões, 30 pedidos, 43.0 s)
+  robos: gbtc10 653 velas de 1m, patrimônio 777,88
+  robos: gbtc20r 653 velas de 1m, patrimônio 821,58
+  robos: dca 653 velas de 1m, patrimônio 972,90
+  robos: dcaqueda 653 velas de 1m, patrimônio 972,87
+  robos: dcam1 653 velas de 1m, patrimônio 782,21
+  robos: gvol2 653 velas de 1m, patrimônio 807,85
+  robos: gvol4 653 velas de 1m, patrimônio 826,33
+  robos: dcaC 653 velas de 1m, patrimônio 983,43
+  robos: tcruz 653 velas de 1m, patrimônio 1.000,00
+  robos: trompe 653 velas de 1m, patrimônio 1.000,00
+  robos: tmovel 653 velas de 1m, patrimônio 1.000,00
+  robos: rfaixa 653 velas de 1m, patrimônio 915,88
+  robos: rfaixavol 653 velas de 1m, patrimônio 915,88
+  robos: rbandas 653 velas de 1m, patrimônio 966,58
+  robos: rbandastend 653 velas de 1m, patrimônio 1.000,00
+  robos: rrsi 653 velas de 1m, patrimônio 915,88
+  robos: segbtc 653 velas de 1m, patrimônio 773,35
+  robos: geth10 653 velas de 1m, patrimônio 740,59
+  robos: tcruzeth 653 velas de 1m, patrimônio 1.000,00
+  robos: segeth 653 velas de 1m, patrimônio 765,21
+  robos: gneutra1 653 velas de 1m, patrimônio 821,13
+  robos: gneutra3 653 velas de 1m, patrimônio 463,39
+  robos: dcam3 653 velas de 1m, patrimônio 334,49
+  robos: gsaida1 653 velas de 1m, patrimônio 904,17
+  robos: gsaida3 653 velas de 1m, patrimônio 735,57
+  robos: tcruzls 653 velas de 1m, patrimônio 1.111,92
+  robos: rbandasls 653 velas de 1m, patrimônio 948,63
+  robos: irbandas 653 velas de 1m, patrimônio 1.020,39
+  robos: irsi 653 velas de 1m, patrimônio 1.111,92
+  robos: icruzls 653 velas de 1m, patrimônio 886,18
+  robos: gsol1 653 velas de 1m, patrimônio 856,57
+  robos: ghype1 653 velas de 1m, patrimônio 894,95
+  robos: ok (32 versões, 12 pedidos, 14.3 s)
+  apostas: ok (9 versões, 7 pedidos, 17.6 s)
+  looping: moonwell: DefiLlama: nenhum pool de USDC na Base do projeto moonwell
+  looping: teste no passado refeito (2025-11-20 a 2026-11-20)
+  looping: staking − juro do ether no ano: média 0,14% ao ano (de -1,79% a 13,04%); montar custa ~0,13% do dinheiro por × a mais
+  looping: ok (13 versões, 4 pedidos, 1.2 s)
+  evolução (opções): laboratório na geração 30, melhor 0.07629
+  opcoes: ok (18 versões, 16 pedidos, 7.5 s)
+  pools: gauge: RPC eth_call: execution reverted
+  HTTP 429 em GeckoTerminal /networks/base/pools/0x988b949de9d3a3d2172f22c19694c7a5148c9; espera 30s
+  HTTP 429 em GeckoTerminal /networks/base/pools/0x988b949de9d3a3d2172f22c19694c7a5148c9; espera 60s
+  HTTP 429 em GeckoTerminal /networks/base/pools; espera 30s
+  HTTP 429 em GeckoTerminal /networks/base/pools; espera 60s
+  pools arrojadas: 40 na lista, 13 no pré-filtro, 0 no filtro; do dia: nenhum (controle: MUc / USDC 0.025%)
+  pools: ok (66 versões, 68 pedidos, 245.8 s)
+  HTTP 500 em Polymarket Gamma /markets; espera 5s
+  HTTP 500 em Polymarket Gamma /markets; espera 10s
+  previsão: gamma /markets (encerrados): HTTP 500 em Polymarket Gamma /markets: {"type":"internal error","error":"internal server error"}
+  evolução (previsão): laboratório na geração 30, melhor 0.01903
+  previsao: ok (8 versões, 65 pedidos, 41.8 s)
+fim: 366 pedidos, 506 s
+rodada 2026-11-21 11:42Z
+  HTTP 429 em GeckoTerminal /networks/solana/pools/FJaTUipJEzqjQQcHtXqZ46RgJ6dMJi1g3Weaw; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/3W8qW64vTA86pKzhiu4KHi7DqVdScjwutX5mY; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/B8Eg7hYQapuMjrB55Snde7C66kMA9Y44nKzLr; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/26bRa6Wv8u1GmaE2nfBqiqizz2uC83bSupykb; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/CfhxCfNPdssG5GgQZNjRFCGUFrmWHJSNLCZFj; espera 30s
+  memes: 19 tokens vistos de novo depois de 7 dias
+  HTTP 429 em RPC getTokenAccountsByOwner; espera 5s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 5s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 10s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 5s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 10s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 5s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 10s
+  HTTP 429 em RPC getTokenAccountsByOwner; espera 5s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 5s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 10s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 5s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 10s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 5s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 10s
+  HTTP 429 em RPC getTokenAccountsByOwner; espera 5s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 5s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 10s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 5s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 10s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 5s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 10s
+  HTTP 429 em RPC getTokenAccountsByOwner; espera 5s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 5s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 10s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 5s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 10s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 5s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 10s
+  HTTP 429 em RPC getTokenAccountsByOwner; espera 5s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 5s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 10s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 5s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 10s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 5s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 10s
+  HTTP 429 em RPC getTokenAccountsByOwner; espera 5s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 5s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 10s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 5s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 10s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 5s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 10s
+  HTTP 429 em RPC getTokenAccountsByOwner; espera 5s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 5s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 10s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 5s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 10s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 5s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 10s
+  HTTP 429 em RPC getTokenAccountsByOwner; espera 5s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 5s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 10s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 5s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 10s
+  memes: amostra nova: 32 de 32 lançamentos em 570 s
+  memes: ok (8 versões, 284 pedidos, 1463.5 s)
+fim: 285 pedidos, 1465 s
+rodada 2026-11-21 16:42Z
+  evolucao: 4319 velas de 1 h de @142 (2026-05-25 a 2026-11-21)
+  evolucao: 4319 velas de 1 h de BTC (2026-05-25 a 2026-11-21)
+  evolucao: grade geração 60 (10 hoje)
+  evolucao: bandas geração 60 (10 hoje)
+  evolucao: tendencia geração 60 (10 hoje)
+  evolucao: 37 contas ao vivo no perpétuo (1382 velas de 1m)
+  evolucao: 38 contas ao vivo no à vista (1382 velas de 1m)
+  evolucao: ok (0 versões, 15 pedidos, 99.6 s)
+fim: 16 pedidos, 101 s
