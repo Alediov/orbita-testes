@@ -267,16 +267,17 @@ def teste_rodadas():
         # formato
         assert d["padrao"] == "valor3" and d["nome"] == "Apostas de valor"
         ids = [v["id"] for v in d["versoes"]]
-        assert ids == ["valor3", "valor5", "valor8", "kelly", "favoritos", "azaroes", "gratis", "semfiltro", "bdm", "bdmG15", "bdmG5"]
+        assert ids == ["valor3", "valor5", "valor8", "kelly", "favoritos", "azaroes", "gratis", "semfiltro", "bdm", "bdmG15", "bdmG5",
+                       "bdmFav", "bdmH15", "bdmConv"]
         riscos = {v["id"]: v["risco"] for v in d["versoes"]}
         assert riscos["azaroes"] == riscos["kelly"] == "alto" and riscos["gratis"] == "baixo" and riscos["valor3"] == "médio"
         assert {v["grupo"] for v in d["versoes"]} == {"Valor", "Referência", "Aposta grátis", "Seguir palpites"}
         vs = {v["id"]: v for v in d["versoes"]}
         bdm = vs["bdm"]
         assert bdm["historico"] is None and bdm["soAoVivo"] and bdm["aoVivo"]["extra"]["palpitesVistos"] > 0
-        for k in ("bdmG15", "bdmG5"):   # 21/11/2026: o gatilho da odd mínima (só ao vivo, como a bdm)
+        for k in ("bdmG15", "bdmG5", "bdmFav", "bdmH15", "bdmConv"):   # 21/11/2026: o gatilho da odd mínima (só ao vivo, como a bdm)
             assert vs[k]["historico"] is None and vs[k]["soAoVivo"] and vs[k]["aoVivo"]["serie"][0][1] == 1000.0, k
-        for v in [v for v in d["versoes"] if v["id"] not in ("bdm", "bdmG15", "bdmG5")]:
+        for v in [v for v in d["versoes"] if v["id"] not in A.BDM_CONTAS]:
             for nome in ("aoVivo", "historico"):
                 c = v[nome]
                 assert c and c["serie"][0][1] == 1000.0, (v["id"], nome)
@@ -547,11 +548,85 @@ def teste_bdm_rodadas():
         assert n15 <= n5 and any((p.get("gat") or {}).get("bdmG15") for p in feitas), (n15, n5)
         assert A.preco_gatilho([(1, 2.0), (5, 2.4)], [[(1, 1.9)], [(1, 3.6)], [(1, 4.4)]], 1, 9, 0, 0.15)[0] == 5
         assert A.preco_gatilho([(1, 2.0)], [[(1, 1.9)], [(1, 3.6)], [(1, 4.4)]], 1, 9, 0, 0.15) is None
+        # 21/11/2026: o controle (uma aposta por jogo com palpite, no favorito), o histórico (odd >= a justa do
+        # histórico × 1,15) e a convergência (só com o histórico a favor, na mesma odd da bdm)
+        fav = V["contas"]["bdmFav"]
+        assert B["fav"] and fav["acc"]["n"] + len(fav["abertas"]) == sum(1 for v in B["fav"].values() if v == "apostado")
+        assert {pk.get("fx") for pk in feitas} <= set(B["fav"]) | {None}
+        for k in ("bdmH15", "bdmConv"):
+            for pk in B["p"].values():
+                m = (pk.get("gat") or {}).get(k)
+                assert m is None or m in ("apostado", "sem histórico", "não chegou à odd mínima", "histórico não concorda",
+                                          "histórico diz que a odd não paga", "sem saldo na conta"), (k, m)
+                if m == "apostado":
+                    assert pk.get("hist"), pk
+                    if k == "bdmConv":
+                        assert pk["hist"]["forte"] and pk["hist"]["p"] * pk["o"] >= 1 - 1e-9, pk
+        for ap in V["contas"]["bdmH15"]["abertas"]:
+            assert ap["o"] >= (1 / ap["ph"]) * 1.15 - 1e-6, ap
+        vs = {x["id"]: x for x in d["versoes"]}
+        assert vs["bdmFav"]["aoVivo"]["extra"]["jogos"] == len(B["fav"])
+        assert vs["bdmH15"]["aoVivo"]["extra"]["comHistorico"] > 0
+        assert any(s["motivo"] == "sem histórico" for s in vs["bdmConv"]["aoVivo"]["extra"]["situacoes"])
         # nenhum pedido a mais: um /historical-odds por jogo, com ou sem palpite
         hist = sum(1 for f in V["fx"].values() if f["st"] in ("feito", "semOdds"))
         assert cli.contagem["oddspapi"] <= hist + 60, (cli.contagem, hist)
     finally:
         shutil.rmtree(pasta, ignore_errors=True)
+
+
+def teste_bdm_historico():
+    """21/11/2026: a chance pelo histórico (o mandante em casa, o visitante fora, os confrontos diretos e o desconto
+    pela média da liga), a convergência, o preço mínimo e o favorito."""
+    H = 3600 * 1000
+    js = []
+    t = 0
+    for k in range(24):   # o resto da liga: vitórias de fora (a média de vitória em casa fica baixa)
+        t += H
+        js.append((t, f"P{k}", f"Q{k}", 0, 1))
+    # 8 jogos do Alfa em casa: 6 vitórias; 8 do Beta fora: 5 derrotas; 3 confrontos (2 vitórias do Alfa)
+    for k in range(8):
+        t += H
+        js.append((t, "Alfa", f"X{k}", 2, 0) if k < 6 else (t, "Alfa", f"X{k}", 0, 1))
+    for k in range(8):
+        t += H
+        js.append((t, f"Y{k}", "Beta", 3, 1) if k < 5 else (t, f"Y{k}", "Beta", 1, 1))
+    t += H
+    js.append((t, "Alfa", "Beta", 1, 0))
+    t += H
+    js.append((t, "Beta", "Alfa", 0, 2))   # o Alfa venceu fora: conta como vitória dele
+    t += H
+    js.append((t, "Beta", "Alfa", 1, 0))
+    n_base = len(js)
+    vit_casa = sum(1 for j in js if j[3] > j[4])
+    base = vit_casa / n_base
+    r = A.chance_historico(js, "Alfa FC", "Beta", t + 1, "1x2", 0)
+    assert r and r["n"] == [8, 8, 3], r
+    # em casa, os 8 últimos: 5 vitórias e 2 derrotas contra os X + o 1 × 0 no Beta = 6 de 8; fora, os 8 últimos do
+    # Beta: 4 derrotas contra os Y + o 1 × 0 do Alfa = 5 de 8 (os jogos do Beta em casa não entram); confrontos: o
+    # Alfa venceu 2 de 3 (o 0 × 2 fora conta como vitória dele)
+    assert r["taxas"] == [0.75, 0.625, round(2 / 3, 3)], r
+    esperado = (6 + 5 + 2 + base * A.HIST_PESO) / (8 + 8 + 3 + A.HIST_PESO)
+    assert abs(r["p"] - round(esperado, 4)) < 1e-9 and r["forte"] and r["base"] == round(base, 4)
+    # o empate: as taxas ficam abaixo da média, sem convergência
+    e = A.chance_historico(js, "Alfa", "Beta", t + 1, "1x2", 1)
+    assert e and not e["forte"]
+    # só o que veio antes do palpite conta; poucos jogos = sem histórico; time desconhecido também
+    assert A.chance_historico(js, "Alfa", "Beta", js[30][0], "1x2", 0) is None
+    assert A.chance_historico(js, "Gama", "Beta", t + 1, "1x2", 0) is None
+    assert A.time_na_liga("Man City", [(1, "Man City", "Man United", 0, 0)]) == "Man City"
+    assert A.time_na_liga("Manchester", [(1, "Man City", "Man United", 0, 0)]) is None  # os dois batem: ambíguo
+    # gols: mais de 2,5 nos jogos do Beta fora (3 × 1) e nunca nos do Alfa em casa
+    g = A.chance_historico(js, "Alfa", "Beta", t + 1, "ou", 0)
+    assert g["taxas"][0] == 0 and g["taxas"][1] == round(4 / 8, 3)
+    # o preço mínimo e o favorito
+    assert A.preco_minimo([(1, 1.8), (5, 2.05), (9, 2.3)], 1, 8, 2.0) == (5, 2.05)
+    assert A.preco_minimo([(1, 1.8), (9, 2.3)], 1, 8, 2.0) is None
+    sh = [[(1, 2.1)], [(1, 3.3)], [(1, 3.6)]]
+    ph = [[(2, 2.0)], [(2, 3.5)], [(2, 4.0)]]
+    x = A.favorito_em(sh, ph, 1, 9)
+    assert x[0] == 2 and x[1] == 0 and x[2] == 2.1 and abs(sum(x[3]) - 1) < 1e-9
+    assert A.favorito_em(sh, ph, 1, 2) is None
 
 
 def teste_avulsa():
@@ -580,5 +655,6 @@ if __name__ == "__main__":
     teste_bdm_palpites()
     teste_bdm_arquivos()
     teste_bdm_rodadas()
+    teste_bdm_historico()
     teste_avulsa()
     print("ok")

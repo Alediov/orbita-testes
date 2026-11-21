@@ -367,6 +367,26 @@ Futebol, só no papel (`apostas.py`). Diferenças das outras formas:
   visto e o início em que a odd da casa ≥ a justa da Pinnacle sem a margem × (1 + 0,15 ou 0,05) (`preco_gatilho`).
   Cada palpite guarda `gat` { versão: "apostado" | "não chegou ao gatilho" | "sem saldo na conta" }. Os eventos das
   três trazem o nome da versão.
+- **Controle, histórico e convergência** (21/11/2026, pedido do Alediov, as melhorias 1 a 3 da análise do prompt
+  dele). Mais três contas do grupo "Seguir palpites" (`soAoVivo`, R$ 20 fixos, mesmo `/historical-odds`, nenhum
+  pedido a mais à OddsPapi):
+  - `bdmFav` "Favorito nos jogos do Theo": o controle. Uma aposta por jogo com palpite casado, no favorito do 1X2 (a
+    maior chance justa da Pinnacle) no 1º momento, a partir da hora do 1º palpite desse jogo, em que as duas casas têm
+    os três preços (`favorito_em`). `bdm.fav` { fixture: "apostado" | motivo }; `extra.jogos`/`jogosApostados`.
+  - `bdmH15` "Theo + histórico 15%": o método do prompt. `chance_historico`: pelas planilhas do football-data das 2
+    últimas temporadas (baixadas só nas rodadas com jogo do Theo para fechar, uma vez por liga, rótulo de pedido
+    `times`; nada guardado no estado), os últimos `HIST_N` (8) jogos do mandante EM CASA, os do visitante FORA e os
+    últimos `HIST_H2H` (4) confrontos diretos, todos de antes da hora em que o palpite foi visto; p = (acertos nos três
+    + média da liga × `HIST_PESO` (6)) ÷ (jogos + 6), o desconto conservador; menos de `HIST_MIN` (5) jogos de um lado,
+    time não achado (`time_na_liga`, ambíguo = não achado) ou liga sem planilha (Libertadores) = "sem histórico". Entra
+    no 1º momento em que a odd da casa ≥ (1 ÷ p) × 1,15 (`preco_minimo`); a aposta guarda `ph` (a chance do histórico)
+    e o `p` é o da Pinnacle naquela hora, para o valor e o CLV serem medidos contra o mercado.
+  - `bdmConv` "Theo + convergência": na odd da hora da `bdm`, só se `forte` (as taxas do mandante em casa, do
+    visitante fora e dos confrontos, este só com 2 ou mais, acima da média da liga para a seleção) e p × odd ≥ 1.
+  Cada palpite guarda `hist` {p, base, taxas [casa, fora, confrontos], n, forte} e `gat` com os motivos ("sem
+  histórico", "não chegou à odd mínima", "histórico não concorda", "histórico diz que a odd não paga"); o `extra` das
+  contas tem `situacoes` [{motivo, n}], `comHistorico` e `convergentes`; os `ultimos` da `bdm` ganham
+  `chanceHistorico` e `convergencia`; `config.bdm.historico` traz os parâmetros.
 
 ## Looping (`looping.json`)
 

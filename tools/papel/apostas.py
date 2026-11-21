@@ -144,6 +144,16 @@ BDM_MERCADOS = {             # mercado → (nome, seleções aceitas)
 BDM_MOTIVOS = {"ao_vivo": "plano para o ao vivo", "condicional": "palpite condicional", "cartoes": "cartões",
                "sem_jogo": "sem jogo definido", "outro": "fora do plano"}
 URL_ESPN = "https://site.api.espn.com/apis/site/v2/sports/soccer/{liga}/scoreboard?dates={dia}"
+# 21/11/2026 (pedido do Alediov): o "histórico" do prompt dele, pelas planilhas do football-data (as mesmas do teste no
+# passado, baixadas só nas rodadas com jogo do Theo para fechar): os últimos jogos do mandante EM CASA, os do visitante
+# FORA e os confrontos diretos, separados como no prompt (Etapa 2), e a frequência da seleção nos três somada com
+# HIST_PESO jogos "na média da liga" (o desconto conservador: com amostra pequena a chance puxa para a média)
+HIST_N = 8                   # últimos jogos do mandante em casa e do visitante fora
+HIST_H2H = 4                 # confrontos diretos (qualquer mando), nas 2 últimas temporadas
+HIST_PESO = 6                # jogos na média da liga somados à amostra
+HIST_MIN = 5                 # jogos mínimos de cada lado (menos: "sem histórico")
+HIST_BASE = 380              # jogos da liga para a média (≈ uma temporada)
+HIST_TEMPORADAS_TIMES = 2
 
 # ---------------------------------------------------------------------------------------------------- versões
 # id, nome, grupo, risco, regra, frase
@@ -178,8 +188,20 @@ VERSOES = [
      "antes do jogo: a Odd Mínima de gatilho do seu prompt. Com a Pinnacle como justa, é raro."),
     ("bdmG5", "Theo + gatilho 5%", "Seguir palpites", "médio", {"tipo": "bdm", "stake": "bdm", "gatilho": 0.05},
      "O mesmo com um gatilho mais curto, 5% acima da justa: entra mais vezes e mostra se a espera pela odd ajuda."),
+    # 21/11/2026 (pedido do Alediov): o controle, o método do prompt dele com o histórico e a convergência (Etapa 3)
+    ("bdmFav", "Favorito nos jogos do Theo", "Seguir palpites", "médio", {"tipo": "bdm", "stake": "bdm", "modo": "favorito"},
+     "Controle: nos mesmos jogos em que o Theo palpitou, R$ 20 no favorito do 1X2 (a maior chance pela Pinnacle), na "
+     "hora em que o palpite apareceu. Se Seguir o Theo não ganhar desta conta, as escolhas dele não acrescentam nada."),
+    ("bdmH15", "Theo + histórico 15%", "Seguir palpites", "médio",
+     {"tipo": "bdm", "stake": "bdm", "modo": "historico", "gatilho": 0.15},
+     "O método do seu prompt: a chance do palpite sai dos últimos jogos (o mandante em casa, o visitante fora e os "
+     "confrontos diretos, com desconto quando a amostra é pequena) e só entra se a odd da casa chegar à justa desse "
+     "histórico + 15% antes do jogo."),
+    ("bdmConv", "Theo + convergência", "Seguir palpites", "médio", {"tipo": "bdm", "stake": "bdm", "modo": "convergencia"},
+     "Só quando o histórico concorda com o Theo: o mandante em casa, o visitante fora e os confrontos diretos acima da "
+     "média da liga para a seleção, e a chance do histórico dizendo que a odd paga. Na odd da hora do palpite."),
 ]
-BDM_CONTAS = ("bdm", "bdmG15", "bdmG5")
+BDM_CONTAS = ("bdm", "bdmG15", "bdmG5", "bdmFav", "bdmH15", "bdmConv")
 SO_AO_VIVO = set(BDM_CONTAS)
 PADRAO = "valor3"
 
@@ -226,6 +248,9 @@ AVISOS = [
     "no 1X2 ou no mais/menos de 2,5 gols) e mostra quantos palpites ficaram de fora e por quê. Nas versões com "
     "gatilho, a odd justa é a da Pinnacle sem a margem, não a frequência histórica: é mais dura, e 15% acima dela "
     "quase nunca aparece nas ligas grandes.",
+    "Theo + histórico e Theo + convergência: o histórico vem das planilhas gratuitas do football-data, que não cobrem "
+    "a Libertadores e chegam com uns 2 dias de atraso; sem pelo menos 5 jogos de cada time no mando certo, o palpite "
+    "fica de fora dessas duas contas (\"sem histórico\"). Escanteios e cartões não entram: não há odds gratuitas.",
 ]
 
 
@@ -1221,6 +1246,93 @@ def preco_gatilho(hs, ph, t, ini, i, g):
     return None
 
 
+def preco_minimo(hs, t, ini, omin):
+    """(instante, odd da casa) no 1º momento a partir de `t` (antes do início) em que a odd da casa chega a `omin`;
+    None se não chegar."""
+    for x in sorted({t} | {ts for ts, _ in hs or [] if t < ts < ini}):
+        o = preco_em(hs, x)
+        if o and o >= omin - 1e-9:
+            return x, o
+    return None
+
+
+def favorito_em(sh, ph, t, ini):
+    """(instante, índice, odd da casa, chances justas) do favorito do 1X2 (a maior chance justa da Pinnacle) no 1º
+    momento a partir de `t` (antes do início) em que as duas casas têm os três preços; None se não houver."""
+    momentos = sorted({t} | {ts for h in [*sh, *ph] for ts, _ in h or [] if t < ts < ini})
+    for x in momentos:
+        so = [preco_em(h, x) for h in sh]
+        po = [preco_em(h, x) for h in ph]
+        if all(so) and all(po):
+            p = sem_margem(po)
+            if p:
+                i = max(range(len(p)), key=lambda k: p[k])
+                return x, i, so[i], p
+    return None
+
+
+def jogos_historico(lista):
+    """Os jogos de uma planilha (ler_planilha) no formato curto do histórico: [(ms, casa, fora, gols casa, gols fora)],
+    sem repetidos, em ordem."""
+    vistos, out = set(), []
+    for j in sorted(lista, key=lambda x: x["inicio"]):
+        if j["id"] in vistos:
+            continue
+        vistos.add(j["id"])
+        out.append((j["inicio"], j["casa"], j["fora"], j["placar"][0], j["placar"][1]))
+    return out
+
+
+def time_na_liga(nome, jogos):
+    """O nome do time nas planilhas que corresponde a `nome` (o da OddsPapi); None se nenhum ou mais de um bate."""
+    nomes = {j[1] for j in jogos} | {j[2] for j in jogos}
+    n = _norm(nome)
+    exatos = [x for x in nomes if _norm(x) == n]
+    if exatos:
+        return exatos[0]
+    cands = [x for x in nomes if mesmo_time(nome, x)]
+    return cands[0] if len(cands) == 1 else None
+
+
+def saida(mk, gc, gf):
+    """O índice da seleção que saiu num placar: 1X2 (0 casa, 1 empate, 2 fora) ou gols (0 mais de 2,5, 1 menos)."""
+    if mk == "1x2":
+        return 0 if gc > gf else 1 if gc == gf else 2
+    return 0 if gc + gf > 2.5 else 1
+
+
+def chance_historico(jogos, casa, fora, antes, mk, s):
+    """A chance da seleção `s` do mercado `mk` em casa × fora pelo histórico de antes de `antes` (o método do prompt
+    do Alediov): a frequência nos últimos HIST_N jogos do mandante em casa, nos do visitante fora e nos últimos HIST_H2H
+    confrontos diretos, somada com HIST_PESO jogos na média da liga. `forte` = as três amostras (o confronto direto só
+    com 2 jogos ou mais) acima da média da liga: a convergência. None sem histórico suficiente."""
+    js = [j for j in jogos if j[0] < antes]
+    if not js:
+        return None
+    tc, tf = time_na_liga(casa, js), time_na_liga(fora, js)
+    if not tc or not tf or tc == tf:
+        return None
+    em_casa = [j for j in js if j[1] == tc][-HIST_N:]
+    fora_ = [j for j in js if j[2] == tf][-HIST_N:]
+    if len(em_casa) < HIST_MIN or len(fora_) < HIST_MIN:
+        return None
+    h2h = [j for j in js if {j[1], j[2]} == {tc, tf}][-HIST_H2H:]
+    base_js = js[-HIST_BASE:]
+    base = sum(1 for j in base_js if saida(mk, j[3], j[4]) == s) / len(base_js)
+    # nos jogos do visitante fora, o lado dele também é o "fora": o mesmo índice vale
+    kc = sum(1 for j in em_casa if saida(mk, j[3], j[4]) == s)
+    kf = sum(1 for j in fora_ if saida(mk, j[3], j[4]) == s)
+    kh = sum(1 for j in h2h if (saida(mk, j[3], j[4]) if j[1] == tc else saida(mk, j[4], j[3])) == s)
+    n = len(em_casa) + len(fora_) + len(h2h)
+    p = (kc + kf + kh + base * HIST_PESO) / (n + HIST_PESO)
+    if p <= 0:
+        return None
+    taxas = [kc / len(em_casa), kf / len(fora_), kh / len(h2h) if len(h2h) >= 2 else None]
+    forte = all(t is None or t > base for t in taxas)
+    return {"p": round(p, 4), "base": round(base, 4), "taxas": [None if t is None else round(t, 3) for t in taxas],
+            "n": [len(em_casa), len(fora_), len(h2h)], "forte": forte}
+
+
 def resumo_bdm(B, conta=None):
     """Os números próprios da conta Seguir o BDM (vão no `extra` dela)."""
     c = B.get("cont") or {}
@@ -1233,7 +1345,9 @@ def resumo_bdm(B, conta=None):
                         "inicio": x.get("i"), "dia": x["dia"], "mercado": nome_mercado(x), "selecao": texto_selecao(x),
                         "oddCitada": x.get("oc"), "odd": x.get("o"), "situacao": x.get("st"),
                         "motivo": x.get("motivo") if x.get("st") == "fora" else None,
-                        "resultado": x.get("r"), "placar": x.get("pl"), "clv": x.get("clv")})
+                        "resultado": x.get("r"), "placar": x.get("pl"), "clv": x.get("clv"),
+                        "chanceHistorico": (x.get("hist") or {}).get("p"),
+                        "convergencia": (x.get("hist") or {}).get("forte")})
     fora = sorted(((m, n) for m, n in (c.get("fora") or {}).items()), key=lambda kv: -kv[1])
     cit = [x for x in ap if x.get("oc")]
     return {"palpitesVistos": vistos, "noTeste": no, "cobertura": round(no / vistos, 4) if vistos else None,
@@ -1242,6 +1356,24 @@ def resumo_bdm(B, conta=None):
             "oddCitadaMedia": round(sum(x["oc"] for x in cit) / len(cit), 3) if cit else None,
             "oddPegaMedia": round(sum(x["o"] for x in cit) / len(cit), 3) if cit else None,
             "ultimos": ultimos, "desde": B.get("desde")}
+
+def resumo_theo(B, cid):
+    """Os números das outras contas do Theo (vão no `extra`): o que aconteceu com cada palpite nesta conta."""
+    if cid == "bdmFav":
+        f = B.get("fav") or {}
+        return {"jogos": len(f), "jogosApostados": sum(1 for v in f.values() if v == "apostado")}
+    cont = {}
+    for pk in (B.get("p") or {}).values():
+        m = (pk.get("gat") or {}).get(cid)
+        if m:
+            cont[m] = cont.get(m, 0) + 1
+    out = {"situacoes": [{"motivo": m, "n": n} for m, n in sorted(cont.items(), key=lambda kv: -kv[1])]}
+    if cid in ("bdmH15", "bdmConv"):
+        hs = [pk["hist"] for pk in (B.get("p") or {}).values() if pk.get("hist")]
+        out["comHistorico"] = len(hs)
+        out["convergentes"] = sum(1 for h in hs if h.get("forte"))
+    return out
+
 
 # ---------------------------------------------------------------------------------------------------- OddsPapi: orçamento
 class Esgotado(Exception):
@@ -1310,6 +1442,28 @@ class Vivo:
                        ("soft", {"vazios": {}, "descartadas": {}, "usada": None}), ("pulados", 0), ("semOdds", 0)):
             V.setdefault(k, copy.deepcopy(pad))
         self.espn_cache, self.espn_pedidos = {}, 0
+        self.hist_times = {}
+
+    # ------------------------------------------------------------------ histórico dos times (football-data)
+    def historico_liga(self, chave):
+        """Os jogos das 2 últimas temporadas da liga `chave` (formato de jogos_historico), baixados uma vez por rodada
+        e só quando um palpite precisa; [] se a liga não tem planilha ou a planilha falhou."""
+        if chave in self.hist_times:
+            return self.hist_times[chave]
+        div = next((d for k, _n, d, _e in LIGAS if k == chave), None)
+        lista = []
+        if div:
+            temps, ini = temporadas(self.agora, HIST_TEMPORADAS_TIMES)
+            urls = [URL_FD_NOVA.format(pais=div)] if div in PLANILHAS_NOVAS else [URL_FD.format(temp=t, div=div) for t in temps]
+            for url in urls:
+                try:
+                    lista.extend(ler_planilha(self.fonte.texto(url, "times"), chave, ini, self.agora))
+                except ERROS_API as e:
+                    if getattr(e, "status", None) == 404 and url.endswith(f"{temps[-1]}/{div}.csv"):
+                        continue
+                    self.erros.append(f"histórico dos times ({NOME_LIGA[chave]}): {e}")
+        self.hist_times[chave] = jogos_historico(lista)
+        return self.hist_times[chave]
 
     # ------------------------------------------------------------------ campeonatos
     def torneios(self):
@@ -1614,6 +1768,8 @@ class Vivo:
             for k in [k for k, pk in B["p"].items() if pk["dia"] < d1 and pk.get("st") not in ("esperando", "apostado")]:
                 del B["p"][k]
             B["ignorados"] = B.get("ignorados", [])[-300:]
+            if B.get("fav"):
+                B["fav"] = {k: v for k, v in B["fav"].items() if k in V["fx"]}
 
     # ------------------------------------------------------------------ Seguir o BDM
     def _bdm(self):
@@ -1680,14 +1836,16 @@ class Vivo:
 
     def bdm_apostar(self, f, pin, soft, rotulo):
         """As apostas das contas do Theo no jogo `f` (já terminado). A `bdm` na odd da hora em que o palpite foi visto;
-        as de gatilho (21/11/2026) no 1º momento, até o início, em que a odd da casa chega à justa × (1 + gatilho)."""
+        as de gatilho (21/11/2026) no 1º momento, até o início, em que a odd da casa chega à justa × (1 + gatilho); a
+        do histórico no 1º momento em que chega à justa do histórico × 1,15; a de convergência na odd da hora, só se o
+        histórico concorda; e o controle, uma vez por jogo, no favorito do 1X2 na hora do 1º palpite."""
         B = self.V.get("bdm")
         contas = [self.contas[k] for k in BDM_CONTAS if k in self.contas]
         if not B or not contas:
             return
-        for pk in B["p"].values():
-            if pk.get("fx") != f["id"] or pk.get("st") != "esperando":
-                continue
+        pks = [pk for pk in B["p"].values() if pk.get("fx") == f["id"] and pk.get("st") == "esperando"]
+        fo1 = [preco_em(h, f["i"]) for h in pin.get("1x2") or []]
+        for pk in pks:
             mk = pk["mk"]
             ph, sh = pin.get(mk), soft.get(mk)
             if not ph or not sh:
@@ -1702,9 +1860,38 @@ class Vivo:
             fo = [preco_em(h, f["i"]) for h in ph]
             pf = sem_margem(fo) if all(fo) else None
             gat = pk.setdefault("gat", {})
+            hist = None
+            if any(c.regra.get("modo") in ("historico", "convergencia") for c in contas):
+                hist = chance_historico(self.historico_liga(f["l"]), f["c"], f["f"], pk["visto"], mk, i)
+                if hist:
+                    pk["hist"] = hist
             for c in contas:
-                g = c.regra.get("gatilho")
-                if g:
+                modo, g = c.regra.get("modo"), c.regra.get("gatilho")
+                if modo == "favorito":
+                    continue
+                if modo == "historico":
+                    if not hist:
+                        gat[c.id] = "sem histórico"
+                        continue
+                    y = preco_minimo(sh[i], pk["visto"], f["i"], (1 / hist["p"]) * (1 + g))
+                    if not y:
+                        gat[c.id] = "não chegou à odd mínima"
+                        continue
+                    t, o = y
+                    po = [preco_em(h, t) for h in ph]
+                    pc = (sem_margem(po) if all(po) else None) or p
+                elif modo == "convergencia":
+                    (t, o, _po), pc = x, p
+                    if not hist:
+                        gat[c.id] = "sem histórico"
+                        continue
+                    if not hist["forte"]:
+                        gat[c.id] = "histórico não concorda"
+                        continue
+                    if hist["p"] * o < 1:
+                        gat[c.id] = "histórico diz que a odd não paga"
+                        continue
+                elif g:
                     y = preco_gatilho(sh[i], ph, pk["visto"], f["i"], i, g)
                     if not y:
                         gat[c.id] = "não chegou ao gatilho"
@@ -1723,6 +1910,8 @@ class Vivo:
                       "sel": nome_sel(f["c"], f["f"], mk, i), "o": round(o, 3), "p": round(pc[i], 5),
                       "v": round(valor(o, pc[i]), 5), "st": st, "c": rotulo, "g": False,
                       "clv": round(clv(o, pf[i]), 5) if pf else None, "oc": pk.get("oc"), "pk": pk["id"], "t": t}
+                if modo == "historico":
+                    ap["ph"] = hist["p"]
                 c.abrir(ap)
                 if c.id == "bdm":
                     pk.update(o=ap["o"], clv=ap["clv"])
@@ -1731,6 +1920,29 @@ class Vivo:
                     gat[c.id] = "apostado"
             if pk.get("st") == "esperando":
                 pk["st"] = "apostado"
+        # o controle: uma aposta por jogo, no favorito do 1X2, na hora do 1º palpite do Theo nesse jogo
+        cf = self.contas.get("bdmFav")
+        fav = B.setdefault("fav", {})
+        if cf is None or not pks or f["id"] in fav:
+            return
+        if not pin.get("1x2") or not soft.get("1x2"):
+            fav[f["id"]] = "sem odds do 1X2"
+            return
+        y = favorito_em(soft["1x2"], pin["1x2"], min(pk["visto"] for pk in pks), f["i"])
+        if not y:
+            fav[f["id"]] = "sem odds antes do jogo"
+            return
+        t, i, o, pc = y
+        st = cf._stake(o, pc[i])
+        if not st:
+            fav[f["id"]] = "sem saldo na conta"
+            return
+        pf1 = sem_margem(fo1) if fo1 and all(fo1) else None
+        cf.abrir({"j": f["id"], "jogo": f"{f['c']} × {f['f']}", "l": f["l"], "i": f["i"], "mk": "1x2", "s": i,
+                  "sel": nome_sel(f["c"], f["f"], "1x2", i), "o": round(o, 3), "p": round(pc[i], 5),
+                  "v": round(valor(o, pc[i]), 5), "st": st, "c": rotulo, "g": False,
+                  "clv": round(clv(o, pf1[i]), 5) if pf1 else None, "t": t})
+        fav[f["id"]] = "apostado"
 
     def _bdm_liquidou(self, ap, res, pl, t, c=None):
         cid = c.id if c else "bdm"
@@ -1885,6 +2097,8 @@ def rodar(ctx):
             c.extra(NOME_SOFT.get(V["soft"].get("usada") or "", None))
             if c.id == "bdm":
                 c.curva.extra.update(resumo_bdm(V.get("bdm") or {}))
+            elif c.id in BDM_CONTAS:
+                c.curva.extra.update(resumo_theo(V.get("bdm") or {}, c.id))
             guard[c.id] = c.para_json()
         V.pop("semChave", None)
     else:
@@ -1896,6 +2110,8 @@ def rodar(ctx):
                 c.extra()
                 if c.id == "bdm":
                     c.curva.extra.update(resumo_bdm(V.get("bdm") or {}))
+                elif c.id in BDM_CONTAS:
+                    c.curva.extra.update(resumo_theo(V.get("bdm") or {}, c.id))
     d0 = dia_de(agora - 10 * DIA)
     for d in [d for d in evdia if d < d0]:
         del evdia[d]
@@ -1941,7 +2157,9 @@ def rodar(ctx):
                           if v - cont0.get(k, 0)},
         "bdm": {"aposta": round(BDM_APOSTA * CAPITAL, 2), "mercados": ["1X2", "mais/menos de 2,5 gols"],
                 "fonte": "config/bdm/<data>.json (palpites extraídos no repositório do app)",
-                "desde": (V.get("bdm") or {}).get("desde")},
+                "desde": (V.get("bdm") or {}).get("desde"),
+                "historico": {"fonte": "football-data.co.uk", "jogosEmCasa": HIST_N, "jogosFora": HIST_N,
+                              "confrontos": HIST_H2H, "pesoDaMedia": HIST_PESO, "minimo": HIST_MIN}},
     }
     avisos = list(AVISOS)
     if not tem_chave:

@@ -97,7 +97,11 @@ acabavam; aqui os executores padrão não têm limite.
 - **Seguir o Theo + gatilho** (21/11/2026): o Theo trocou o BDM pela "Análise de Futebol" diária, que também vira
   `config/bdm/<data>.json` (a tarefa da madrugada do repositório do app extrai: os minutos do Actions de lá acabaram);
   versões `bdmG15`/`bdmG5` das apostas: os mesmos palpites só quando a odd da casa chega à justa (Pinnacle sem a margem)
-  × 1,15 ou × 1,05 antes do jogo (a "Odd Mínima de gatilho" do prompt dele). FORMATO.md, "Seguir o Theo".
+  × 1,15 ou × 1,05 antes do jogo (a "Odd Mínima de gatilho" do prompt dele). Mais três (21/11/2026, as melhorias 1 a
+  3): `bdmFav` (controle: o favorito do 1X2 nos mesmos jogos), `bdmH15` (a chance pelo histórico do football-data:
+  mandante em casa, visitante fora e confrontos diretos com desconto pela média da liga, e a odd mínima = essa justa
+  × 1,15) e `bdmConv` (só quando o histórico concorda). FORMATO.md, "Seguir o Theo" e "Controle, histórico e
+  convergência".
 - **Seguir o BDM** (pedido do Alediov, 09/11/2026; só esta conta, nenhum mercado novo): versão `bdm` das apostas, que
   segue os palpites do programa diário "Bom Dia Mercado" do Theo Borges. O repositório PRIVADO extrai os palpites da
   transcrição (que o celular baixa; `tools/ideias/bdm.py` + `ideias-bdm.yml` de lá, com a IA gratuita do filtro) e
