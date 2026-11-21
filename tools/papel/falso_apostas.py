@@ -345,6 +345,14 @@ class Falso:
     # ------------------------------------------------------------------ ESPN
     def json_url(self, url, tipo="espn"):
         self._contar_ap(tipo)
+        r = re.search(r"/soccer/([^/]+)/summary\?event=([\w-]+)", url)
+        if r:
+            if r.group(1) not in ESPN_COD:
+                raise odds.Erro("HTTP 404 em ESPN", 404)
+            j = self.futebol.por_id(r.group(2))
+            if not j or j["inicio"] + 2 * HORA > self.agora:
+                raise odds.Erro("HTTP 404 em ESPN", 404)
+            return resumo_espn(j)
         m = re.search(r"/soccer/([^/]+)/scoreboard\?dates=(\d{8})", url)
         if not m or m.group(1) not in ESPN_COD:
             raise odds.Erro("HTTP 404 em ESPN", 404)
@@ -358,9 +366,9 @@ class Falso:
                         "status": {"type": {"completed": fim, "state": "post" if fim else "pre"}},
                         "competitions": [{"competitors": [
                             {"homeAway": "home", "score": str(j["placar"][0]) if fim else "0",
-                             "team": {"displayName": ESPN.get(j["casa"], j["casa"])}},
+                             "team": {"id": id_time(j["casa"]), "displayName": ESPN.get(j["casa"], j["casa"])}},
                             {"homeAway": "away", "score": str(j["placar"][1]) if fim else "0",
-                             "team": {"displayName": ESPN.get(j["fora"], j["fora"])}}]}]})
+                             "team": {"id": id_time(j["fora"]), "displayName": ESPN.get(j["fora"], j["fora"])}}]}]})
         return {"events": evs}
 
     # ------------------------------------------------------------------ BDM (config/bdm/)
@@ -421,6 +429,36 @@ class Falso:
 BDM_PUBLICA_H = 11  # UTC (8h em Brasília)
 COMPETICAO = {"bra": "Brasileirão", "eng": "Premier League", "esp": "La Liga", "ita": "Série A", "ger": "Bundesliga",
               "fra": "Ligue 1", "lib": "Libertadores"}
+
+
+def id_time(nome):
+    return str(zlib.crc32(nome.encode()) % 100000)
+
+
+def resumo_espn(j):
+    """O resumo de um jogo da ESPN (só o que o observatório dos cartões lê): os lances (`keyEvents`) com os cartões de
+    cada tempo (Poisson, mais no 2º, como na vida real), os gols, um cartão nos acréscimos do 1º tempo ("45'+2'") e,
+    em 1 de cada 20 jogos, nenhuma lista de lances (a ESPN às vezes não tem)."""
+    r = random.Random(semente("cartoes", j["id"]))
+    if r.random() < 0.05:
+        return {"header": {"id": j["id"]}}
+    evs = []
+    for per, lam, ini in ((1, 1.7, 0), (2, 2.5, 45)):
+        for _ in range(_sorteio_poisson(r, lam)):
+            mn = ini + r.randint(1, 47)
+            lado = j["fora"] if r.random() < 0.55 else j["casa"]
+            dv = f"{min(mn, ini + 45)}'" + (f"+{mn - ini - 45}'" if mn > ini + 45 else "")
+            evs.append({"type": {"id": "94", "text": "Yellow Card" if r.random() < 0.94 else "Red Card"},
+                        "clock": {"value": mn * 60, "displayValue": dv}, "period": {"number": per},
+                        "team": {"id": id_time(lado), "displayName": lado}})
+    for lado, n in ((j["casa"], j["placar"][0]), (j["fora"], j["placar"][1])):
+        for _ in range(n):
+            mn = r.randint(1, 90)
+            evs.append({"type": {"id": "70", "text": "Goal" if r.random() < 0.8 else "Penalty - Scored"},
+                        "clock": {"value": mn * 60, "displayValue": f"{mn}'"}, "period": {"number": 1 if mn <= 45 else 2},
+                        "team": {"id": id_time(lado), "displayName": lado}})
+    evs.sort(key=lambda e: e["clock"]["value"])
+    return {"header": {"id": j["id"]}, "keyEvents": evs}
 
 
 def _iso_br(ms):

@@ -45,6 +45,7 @@ import os
 import re
 import unicodedata
 
+import cartoes
 import odds
 from conta import CAPITAL, DIA, FUSO_MS, HORA, Curva, Eventos, dia_de, num_br, pct_br
 
@@ -348,7 +349,18 @@ def _norm(s):
 
 
 # ---------------------------------------------------------------------------------------------------- a conta
-ACC = ("n", "ganhas", "apostado", "resultado", "oddS", "clvS", "clvN", "clvPos", "seq", "pior", "anuladas")
+# recortes (21/11/2026, pedido do Alediov, pelas tabelas "Desempenho por…" da planilha dele): por seleção, por faixa de
+# odd e por campeonato; cada um com [apostas, ganhas, apostado, resultado, soma de 1/odd, soma do CLV, apostas com CLV]
+FAIXAS_ODD = [(1.5, "até 1,49"), (2.0, "1,50 a 1,99"), (3.0, "2,00 a 2,99"), (1e9, "3,00 ou mais")]
+NOME_SELECAO = {("1x2", 0): "Vitória do mandante", ("1x2", 1): "Empate", ("1x2", 2): "Vitória do visitante",
+                ("ou", 0): "Mais de 2,5 gols", ("ou", 1): "Menos de 2,5 gols"}
+
+
+def faixa_odd(o):
+    return next(n for lim, n in FAIXAS_ODD if o < lim)
+
+
+ACC = ("n", "ganhas", "apostado", "resultado", "oddS", "clvS", "clvN", "clvPos", "seq", "pior", "anuladas", "invS", "invN")
 
 
 class Conta:
@@ -364,10 +376,48 @@ class Conta:
         self.acc = {k: float(a.get(k, 0)) for k in ACC}
         self.semana = e.get("semana")
         self.casas = dict(e.get("casas") or {})
+        self.rec = {k: dict(v) for k, v in (e.get("rec") or {}).items()}
+        self.recDesde = e.get("recDesde")
 
     def para_json(self):
         return {"curva": self.curva.para_json(), "caixa": self.caixa, "abertas": self.abertas, "acc": self.acc,
-                "semana": self.semana, "casas": self.casas}
+                "semana": self.semana, "casas": self.casas, "rec": self.rec, "recDesde": self.recDesde}
+
+    def _recortar(self, ap, venceu, res):
+        chaves = {"selecao": f"{ap['mk']}:{ap['s']}", "faixa": faixa_odd(ap["o"]), "liga": ap["l"]}
+        for tipo, k in chaves.items():
+            v = self.rec.setdefault(tipo, {}).setdefault(k, [0, 0, 0.0, 0.0, 0.0, 0.0, 0])
+            v[0] += 1
+            v[1] += 1 if venceu else 0
+            v[2] += ap["st"]
+            v[3] += res
+            v[4] += 1 / ap["o"]
+            if ap.get("clv") is not None:
+                v[5] += ap["clv"]
+                v[6] += 1
+
+    def recortes(self):
+        """{"selecao": [...], "faixa": [...], "liga": [...]} com apostas, acerto, o acerto que empata, retorno e CLV."""
+        out = {}
+        for tipo, d in self.rec.items():
+            linhas = []
+            for k, v in d.items():
+                if tipo == "selecao":
+                    mk, i = k.split(":")
+                    nome = NOME_SELECAO.get((mk, int(i)), k)
+                elif tipo == "liga":
+                    nome = NOME_LIGA.get(k, k)
+                else:
+                    nome = k
+                n = int(v[0])
+                linhas.append({"k": k, "nome": nome, "n": n, "acerto": round(v[1] / n, 4) if n else None,
+                               "empate": round(v[4] / n, 4) if n else None, "resultado": round(v[3], 2),
+                               "roi": round(v[3] / v[2], 4) if v[2] else None,
+                               "clv": round(v[5] / v[6], 4) if v[6] else None})
+            ordem = [n for _l, n in FAIXAS_ODD] if tipo == "faixa" else None
+            linhas.sort(key=(lambda x: ordem.index(x["k"])) if ordem else (lambda x: (-x["n"], x["nome"])))
+            out[tipo] = linhas
+        return out
 
     @property
     def gratis(self):
@@ -447,6 +497,10 @@ class Conta:
         a["apostado"] += ap["st"]
         a["resultado"] += res
         a["oddS"] += ap["o"]
+        a["invS"] += 1 / ap["o"]
+        a["invN"] += 1
+        if not g:
+            self._recortar(ap, venceu, res)
         if venceu:
             a["ganhas"] += 1
             a["seq"] = 0
@@ -519,6 +573,13 @@ class Conta:
              "anuladas": int(a["anuladas"])}
         if self.gratis:
             x["ganhoGratis"] = round(a["resultado"], 2)
+        else:
+            # o acerto que empata: a média de 1 ÷ odd das apostas (a chance que as odds pegas pediam)
+            x["acertoEmpate"] = round(a["invS"] / a["invN"], 4) if a["invN"] else None
+            if self.rec:
+                x["recortes"] = self.recortes()
+                if self.recDesde:
+                    x["recortesDesde"] = self.recDesde
         self.curva.extra = x
         return x
 
@@ -2088,6 +2149,10 @@ def rodar(ctx):
         if not guard:
             ev.add(agora, "aviso", "Começou o acompanhamento ao vivo pela OddsPapi: até 8 jogos por dia, "
                                    "começando pelo Brasileirão.", None)
+        for c in contas.values():
+            # os recortes começaram em 21/11/2026: nas contas que já tinham apostas, contam daqui em diante
+            if c.recDesde is None and c.acc["n"] > 0 and not c.rec:
+                c.recDesde = agora
         bdm_dias = arquivos_bdm(fonte, agora)
         vivo = Vivo(fonte, V, agora, contas, ev, evdia, log, erros, bdm_dias)
         vivo.rodar()
@@ -2112,6 +2177,13 @@ def rodar(ctx):
                     c.curva.extra.update(resumo_bdm(V.get("bdm") or {}))
                 elif c.id in BDM_CONTAS:
                     c.curva.extra.update(resumo_theo(V.get("bdm") or {}, c.id))
+    # ---------------------------------------------------------------- cartões no intervalo (só observando)
+    C = est.setdefault("cartoes", {})
+    try:
+        cartoes.coletar(fonte, C, agora, ctx.restante, log, erros)
+    except Exception as e:  # noqa: BLE001  (o observatório nunca derruba as apostas)
+        erros.append(f"cartões: {type(e).__name__}: {e}")
+        log(f"  cartões: {type(e).__name__}: {e}")
     d0 = dia_de(agora - 10 * DIA)
     for d in [d for d in evdia if d < d0]:
         del evdia[d]
@@ -2176,4 +2248,4 @@ def rodar(ctx):
     ctx.est.update(est)
     return {"frase": FRASE, "comoFunciona": COMO_FUNCIONA, "padrao": PADRAO, "versoes": versoes,
             "eventos": est["eventos"], "itens": itens_pendentes(contas) if contas else [], "avisos": avisos,
-            "config": config, "erros": erros}
+            "config": config, "erros": erros, "cartoes": cartoes.resumo(C, agora)}

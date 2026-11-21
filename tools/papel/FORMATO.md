@@ -388,6 +388,30 @@ Futebol, só no papel (`apostas.py`). Diferenças das outras formas:
   contas tem `situacoes` [{motivo, n}], `comHistorico` e `convergentes`; os `ultimos` da `bdm` ganham
   `chanceHistorico` e `convergencia`; `config.bdm.historico` traz os parâmetros.
 
+- **Recortes e o acerto que empata** (21/11/2026, pedido do Alediov, pelas tabelas "Desempenho por…" da planilha de
+  apostas dele): toda conta (menos a grátis), no ao vivo e no passado, ganha no `extra`:
+  - `acertoEmpate`: a média de 1 ÷ odd das apostas (o acerto que as odds pegas pediam; acima dele, a conta ganha);
+  - `recortes` { `selecao` | `faixa` | `liga`: [{k, nome, n, acerto, empate, resultado, roi, clv}] }: por seleção
+    ("Vitória do mandante", "Empate", "Vitória do visitante", "Mais de 2,5 gols", "Menos de 2,5 gols"), por faixa de
+    odd (`FAIXAS_ODD`: até 1,49, 1,50 a 1,99, 2,00 a 2,99, 3,00 ou mais, nessa ordem) e por campeonato (os outros por
+    número de apostas). Cada recorte soma as apostas da conta;
+  - `recortesDesde` (ms): nas contas ao vivo que já tinham apostas em 21/11/2026, os recortes contam dali em diante.
+  Dia da semana, mês, mandante e visitante ficaram de fora de propósito: com dezenas de apostas, só mostram sorte.
+- **Cartões no intervalo** (21/11/2026; `cartoes.py`, bloco `cartoes` no topo do `apostas.json`; SÓ observação, sem
+  conta: não há odds gratuitas de cartões). O método do prompt "Cartões" do Alediov: mais cartões no 2º tempo, apostado
+  no intervalo, só se o 1º tempo terminou sem cartão. Pelo placar público da ESPN: a lista de jogos de cada dia
+  (`scoreboard?dates=`) dos 12 campeonatos que o prompt aceita (`LIGAS`; código desconhecido = 404 = 7 dias parado,
+  em `ligasForaDaEspn`) e, de cada jogo terminado, os lances do resumo (`summary?event=`, `keyEvents`: tipo, período
+  ou minuto, time; cartão = "card"/"yellow"/"red" como palavra; prorrogação fora). De ontem para trás até 30 dias, no
+  máximo 24 listas, 40 resumos e 150 s por rodada (deixando 400 s para as formas seguintes); um dia só fica lido quando
+  todos os jogos acabaram. Estado `cartoes` { jogos { id: [ms, liga, casa, fora, cartões 1º tempo, 2º tempo, da casa,
+  de fora] } (120 dias), pend, dias, pausa, semLances }. Saída: `desde`, `jogos`, `zero1t`, `esperando`, `semLances`,
+  `oddRef` (1,9, a odd típica dele) e `empateRef`, `media` {jogo, t1, t2, t2SemCartao1t}, `regras` [{id o15|o25|o35,
+  linha, nome, comZero, todos}] com {n, k, taxa, lo, hi (Wilson 95%), justa = 1 ÷ taxa}, `ligas` [{liga, nome, jogos,
+  zero1t, media, o15}], `times` (os 8 com mais cartões por jogo, 4 jogos ou mais: time, liga, jogos, media, contra) e
+  `ultimos` (os 10 últimos jogos sem cartão no 1º tempo: jogo, liga, inicio, t2). O 1º lance e a 1ª lista de jogos de
+  verdade vão para o log (estrutura): os nomes dos campos foram escritos sem acesso à ESPN daqui.
+
 ## Looping (`looping.json`)
 
 Aave v3 na Base (`looping.py`): juros diários do GraphQL do Aave (`supplyAPYHistory`/`borrowAPYHistory`, 365 dias), o

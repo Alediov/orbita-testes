@@ -102,6 +102,11 @@ acabavam; aqui os executores padrão não têm limite.
   mandante em casa, visitante fora e confrontos diretos com desconto pela média da liga, e a odd mínima = essa justa
   × 1,15) e `bdmConv` (só quando o histórico concorda). FORMATO.md, "Seguir o Theo" e "Controle, histórico e
   convergência".
+- **Recortes e cartões** (21/11/2026, pela planilha de apostas do Alediov): toda conta das apostas ganha
+  `acertoEmpate` e `recortes` (seleção, faixa de odd, campeonato) no `extra`; `cartoes.py` é o observatório dos
+  cartões no intervalo (0 cartão no 1º tempo → mais de 1,5/2,5/3,5 no 2º, pelos lances da ESPN, sem conta), bloco
+  `cartoes` do `apostas.json`. Teste: `teste_cartoes.py`. FORMATO.md, "Recortes e o acerto que empata" e "Cartões no
+  intervalo".
 - **Seguir o BDM** (pedido do Alediov, 09/11/2026; só esta conta, nenhum mercado novo): versão `bdm` das apostas, que
   segue os palpites do programa diário "Bom Dia Mercado" do Theo Borges. O repositório PRIVADO extrai os palpites da
   transcrição (que o celular baixa; `tools/ideias/bdm.py` + `ideias-bdm.yml` de lá, com a IA gratuita do filtro) e

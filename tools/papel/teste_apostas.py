@@ -57,6 +57,21 @@ def teste_contas():
     # liquidação
     assert A.ganhou("1x2", 0, [2, 1]) and A.ganhou("1x2", 1, [1, 1]) and A.ganhou("1x2", 2, [0, 3])
     assert A.ganhou("ou", 0, [2, 1]) and A.ganhou("ou", 1, [1, 1]) and not A.ganhou("ou", 0, [2, 0])
+    # recortes (21/11/2026): por seleção, faixa de odd e campeonato, e o acerto que empata (média de 1 ÷ odd)
+    c = A.Conta(next(x for x in A.VERSOES if x[0] == "valor3"), 0)
+    for o, s_, l, pl in ((2.0, 0, "eng", [2, 0]), (4.0, 2, "eng", [2, 0]), (1.8, 1, "esp", [1, 1])):
+        ap = {"j": "x", "jogo": "A × B", "l": l, "i": 0, "mk": "ou" if s_ == 1 else "1x2", "s": s_, "sel": "", "o": o,
+              "p": 0.5, "v": 0, "st": 10.0, "c": "Bet365", "g": False, "clv": 0.02}
+        c.abrir(ap)
+        c.liquidar(ap, pl, HORA)
+    x = c.extra()
+    assert perto(x["acertoEmpate"], (1 / 2.0 + 1 / 4.0 + 1 / 1.8) / 3, 1e-4) and x["apostas"] == 3
+    r = x["recortes"]
+    assert [y["k"] for y in r["faixa"]] == ["1,50 a 1,99", "2,00 a 2,99", "3,00 ou mais"]
+    assert {y["nome"] for y in r["selecao"]} == {"Vitória do mandante", "Vitória do visitante", "Menos de 2,5 gols"}
+    eng = next(y for y in r["liga"] if y["k"] == "eng")
+    assert eng["n"] == 2 and eng["acerto"] == 0.5 and eng["resultado"] == 0.0 and eng["clv"] == 0.02
+    assert A.Conta(next(v for v in A.VERSOES if v[0] == "valor3"), 0, c.para_json()).recortes() == c.recortes()
     # textos
     assert A.reais(10.5, True) == "+R$ 10,50" and A.reais(-1234.5, True) == "−R$ 1.234,50"
 
@@ -254,6 +269,7 @@ def teste_rodadas():
             d = _forma(pasta)
             conferir_forma(d, "apostas")
         assert cli.contagem["csv"] == 32, cli.contagem  # refeito uma vez, 7 dias depois
+        assert d["cartoes"]["jogos"] > 0 and not [e for e in d.get("erros", []) if "cartões" in str(e)], d.get("erros")
         # um buraco de 30 h: a rodada alcança
         cli.agora += 30 * HORA
         ind = rodar(cli, pasta)
@@ -285,6 +301,14 @@ def teste_rodadas():
                     assert k in c["extra"], (v["id"], nome, k)
             h = v["historico"]
             assert h["aproximado"] is False and "Bet365" in h["nota"] and h["de"] < h["ate"]
+            # 21/11/2026: o acerto que empata e os recortes (cada recorte soma as apostas da conta)
+            hx = h["extra"]
+            if v["id"] != "gratis" and hx["apostas"]:
+                assert 0 < hx["acertoEmpate"] < 1 and set(hx["recortes"]) == {"selecao", "faixa", "liga"}, v["id"]
+                for tipo, linhas in hx["recortes"].items():
+                    assert sum(x["n"] for x in linhas) == hx["apostas"], (v["id"], tipo)
+                fx = [x["k"] for x in hx["recortes"]["faixa"]]
+                assert fx == [n for _l, n in A.FAIXAS_ODD if n in fx], fx
             dias = [x for x, _ in h["serie"]]
             assert len(dias) == len(set(dias)) and dias == sorted(dias)
             assert len(dias) > 400  # um ponto por dia desde 2024
