@@ -1,0 +1,221 @@
+{
+ "versao": 1,
+ "fonte": "even3",
+ "data": "2026-11-08",
+ "geradoEm": "2026-11-07T23:02:16+00:00",
+ "erro": null,
+ "criterios": "online, começa na data, inscrições abertas (REALIZAR INSCRIÇÃO e um ingresso vigente), certificado para o participante dito na página",
+ "totalLista": 22,
+ "analisados": 22,
+ "eventos": [
+  {
+   "id": "e3-798210",
+   "nome": "Workshop - Fisioterapia aplicada à saúde da mulher e da gestante",
+   "resumo": "O Workshop – Fisioterapia Aplicada à Saúde da Mulher e da Gestante é voltado a acadêmicos e profissionais de Fisioterapia que desejam aprofundar seus conhecimentos sobre disfunções pélvicas, saúde da mulher e assistência fisioterapêutica à gestante, incluindo aquelas com gestações de alto risco.",
+   "url": "https://www.even3.com.br/workshop-fisioterapia-aplicada-a-saude-da-mulher-e-da-gestante-798210/",
+   "urlFinal": null,
+   "data": "2026-11-08",
+   "dataFim": null,
+   "inicio": "09:00",
+   "fim": "16:00",
+   "formato": "online",
+   "preco": "R$ 62,91 a R$ 89,91",
+   "gratuito": false,
+   "ingressos": [
+    {
+     "nome": "Apenas acesso ao vivo",
+     "valor": "R$ 62,91",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Acesso ao vivo + gravação da aula por 6 meses",
+     "valor": "R$ 89,91",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "📜 Certificado de participação",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-803786",
+   "nome": "Workshop Nacional de Gestão do Atendimento ao Cliente: Jornada de Serviço, Reclamações e Recuperação da Experiência",
+   "resumo": "Workshop Nacional de Gestão do Atendimento ao Cliente: Jornada de Serviço, Reclamações e Recuperação da Experiência",
+   "url": "https://www.even3.com.br/workshop-nacional-de-gestao-do-atendimento-ao-cliente-jornada-de-servico-reclamacoes-e-recuperacao-da-experiencia-803786/",
+   "urlFinal": null,
+   "data": "2026-11-08",
+   "dataFim": null,
+   "inicio": "14:00",
+   "fim": "18:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Participação Geral",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "A certificação de participação deve refletir o cumprimento dos critérios efetivos da atividade.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  }
+ ],
+ "descartados": {
+  "formato presencial": 133,
+  "inscrições fechadas": 19,
+  "sem certificado para o participante": 1
+ },
+ "foraLista": [
+  {
+   "nome": "Lírio Beiz",
+   "url": "https://www.even3.com.br/lirio-beiz-795305/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Apresentações de alto impacto: O papel do design e da inteligência artificial na prática discente",
+   "url": "https://www.even3.com.br/apresentacoes-de-alto-impacto-o-papel-do-design-e-da-inteligencia-artificial-na-pratica-discente-796371/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Desvendando Abdomén Agudo Inflamatório, e a sua Anatomia",
+   "url": "https://www.even3.com.br/desvendando-abdomen-agudo-inflamatorio-796364/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "teste de plataforma",
+   "url": "https://www.even3.com.br/teste-de-plataforma-795081/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "COMO TER UMA VIDA FINANCEIRA ESTÁVEL",
+   "url": "https://www.even3.com.br/como-ter-uma-vida-financeira-estavel-795196/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "DO SENSORIAL À OCUPAÇÃO: Setting terapêutico, Integração Sensorial e participação ocupacional na infância e adolescência",
+   "url": "https://www.even3.com.br/do-sensorial-a-ocupacao-setting-terapeutico-integracao-sensorial-e-participacao-ocupacional-na-infancia-e-adolescencia-783297/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "teste",
+   "url": "https://www.even3.com.br/teste-796376/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Introdução ao Worldbuilding",
+   "url": "https://www.even3.com.br/introducao-ao-worldbuilding-795176/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Coloração descobricada.",
+   "url": "https://www.even3.com.br/coloracao-descobricada-795002/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Grupo de Apoio Domingos 19h novembro 2026",
+   "url": "https://www.even3.com.br/grupo-de-apoio-domingos-19h-novembro-2026-804677/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Capacitação em Saúde Indígena em Contexto Urbano | ACS",
+   "url": "https://www.even3.com.br/capacitacao-em-saude-indigena-em-contexto-urbano-acs-795198/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "SBV estudantes",
+   "url": "https://www.even3.com.br/sbv-estudantes-794997/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Treinamento de Biossegurança",
+   "url": "https://www.even3.com.br/treinamento-de-biosseguranca-795103/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "palestra",
+   "url": "https://www.even3.com.br/palestra-794993/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Dispneia: como organizar o raciocínio clínico.",
+   "url": "https://www.even3.com.br/dispneia-como-organizar-o-raciocinio-clinico-794994/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "2ª Reunião do Projeto de Extensão Polo Aberto",
+   "url": "https://www.even3.com.br/2-reuniao-do-projeto-de-extensao-polo-aberto-795313/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "JORNADA NORTE-NORDESTE DE ENGENHARIAS",
+   "url": "https://www.even3.com.br/jornada-norte-nordeste-de-engenharias-794966/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "CAMPEONATO FF",
+   "url": "https://www.even3.com.br/campeonato-ff-794973/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Workshop Mega-hair",
+   "url": "https://www.even3.com.br/workshop-mega-hair-794991/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "PALESTRA DIREITOS DAS CRIANÇAS",
+   "url": "https://www.even3.com.br/palestra-direitos-das-criancas-806614/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  }
+ ],
+ "totalDia": 155,
+ "modos": {
+  "off": 133,
+  "on": 22
+ },
+ "odontologia": 0,
+ "duracaoS": 65
+}

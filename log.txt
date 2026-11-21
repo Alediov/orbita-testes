@@ -1,0 +1,800 @@
+===== 2026-11-21T15:26:07+00:00 =====
+[   0.0s] Even3 · eventos de 2026-11-22 (agora em Brasília: 2026-11-21 12:24)
+[   0.8s] sitemap: 6517 eventos futuros
+[   0.8s] índice: 6517 no sitemap, 6412 já conhecidas, 2102 para ler
+[  35.8s]   erro em https://www.even3.com.br/hands-on-de-sutura-08531b51-3b9a-4722-a96f-9ca162ab1c2f/: HTTP Error 500: Internal Server Error
+[  37.5s]   erro em https://www.even3.com.br/respeito-igualdade-e-prevencao-a-violencia-contra-a-mulher-803785/: HTTP Error 500: Internal Server Error
+[  68.4s] índice: 2100 lidas, 2 erros
+[  68.4s] 2026-11-22: 139 eventos começam no dia (modos {'off': 114, 'on': 25}); sem data no índice: 16
+[  68.4s] abrindo 25 páginas online do dia
+[  87.9s] · A crítica da mídia e o texto de opinião — fora: inscrições fechadas (ingressos: encerrado)
+[  87.9s] · no Prato e na Taça — fora: inscrições fechadas (ingressos: não disponível)
+[  87.9s] · Arte e Ancestralidade — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  87.9s] · Aniversário — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  87.9s] · Curso sobre as barreiras enfrentadas pela educação especial — fora: inscrições fechadas (ingressos: não disponível)
+[  87.9s] · CURSO LAYOUT - MATCOM — fora: inscrições fechadas (ingressos: encerrado)
+[  87.9s] · Descomplicando a Lei de Informática da ZFM — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  87.9s] · A necessidade de agradar: quando a aprovação dos outros guia nossas es — fora: sem certificado para o participante
+[  87.9s] · A psicanálise é social e política: diálogos para adiar o fim do mundo — fora: inscrições fechadas (ingressos: encerrado)
+[  87.9s] · Museu Virtual — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  87.9s] · Manaus: Ontem, Hoje e Amanhã — fora: inscrições fechadas (ingressos: não disponível)
+[  87.9s] · Ambiente Seguro: Segurança na Assistencial — fora: inscrições fechadas (ingressos: encerrado)
+[  87.9s] · CONFRATERNIZAÇÃO FINAL DE ANO ORAL SIN — fora: inscrições fechadas (ingressos: não disponível)
+[  87.9s] · ciepex — fora: inscrições fechadas (ingressos: não disponível)
+[  87.9s] · NIPAC — fora: sem certificado para o participante
+[  87.9s] · Bate-papo Logicom 2026 — fora: inscrições fechadas (ingressos: não disponível)
+[  87.9s] · Quiz semana da qualidade — fora: inscrições fechadas (ingressos: não disponível)
+[  87.9s] · Curso de especialista em português — fora: inscrições fechadas (ingressos: não disponível)
+[  87.9s] · teste — fora: inscrições fechadas (ingressos: encerrado)
+[  87.9s] · ChatGPT na pratica: IA no dia a dia escolar. — fora: inscrições fechadas (ingressos: não disponível)
+[  87.9s] · Curso: Além do Sintoma — fora: inscrições fechadas (ingressos: em breve, encerrado)
+[  87.9s] · VIII Simpósio Ilheense do Câncer de Mama — fora: inscrições fechadas (ingressos: não disponível)
+[  88.0s] · Abertura oficial Ciclo Formativo Virtual de Educação Física — fora: inscrições fechadas (ingressos: não disponível)
+[  88.0s] · Simpósio Internacional de Fisioterapia - UNASP — fora: sem certificado para o participante
+[  88.0s] · Engenharia civil — fora: inscrições fechadas (ingressos: não disponível)
+[  88.0s] fim: 0 eventos aceitos (0 de Odontologia) de 25 online no dia; descartados {'formato presencial': 114, 'inscrições fechadas': 22, 'sem certificado para o participante': 3}; erro: None
+[  88.0s] apaguei 2026-11-06.json (mais de 14 dias)
+
+===== 2026-11-20T16:12:09+00:00 =====
+[   0.0s] Even3 · eventos de 2026-11-21 (agora em Brasília: 2026-11-20 13:11)
+[   1.0s] sitemap: 6669 eventos futuros
+[   1.0s] índice: 6669 no sitemap, 6422 já conhecidas, 940 para ler
+[  27.1s]   erro em https://www.even3.com.br/hands-on-de-sutura-08531b51-3b9a-4722-a96f-9ca162ab1c2f/: HTTP Error 500: Internal Server Error
+[  27.1s]   erro em https://www.even3.com.br/respeito-igualdade-e-prevencao-a-violencia-contra-a-mulher-803785/: HTTP Error 500: Internal Server Error
+[  27.1s] índice: 938 lidas, 2 erros
+[  27.1s] 2026-11-21: 250 eventos começam no dia (modos {'off': 222, 'on': 28}); sem data no índice: 17
+[  27.1s] abrindo 28 páginas online do dia
+[  49.1s] · Curso de Extensão em Fundamentos da Produção Científica e Escrita Acad — fora: inscrições fechadas (ingressos: encerrado)
+[  49.1s] · INSCRIÇÃO PARA VOLUNTARIADO Cruz Vermelha Brasileira - polo Soure — fora: inscrições fechadas (ingressos: não disponível)
+[  49.1s] · Agricultura Sustentável: conceitos, fundamentos e apliações práticas — fora: inscrições fechadas (ingressos: não disponível)
+[  49.1s] · teste nti — fora: inscrições fechadas (ingressos: não disponível)
+[  49.1s] · Aula 8 | Curso de Formação Política para Psicólogas — fora: inscrições fechadas (ingressos: encerrado)
+[  49.1s] · Ebook XV Ciclo de Palestras Parasitologia em Foco e IV Simpósio de Doe — fora: inscrições fechadas (ingressos: não disponível)
+[  49.1s] · Formação em Psiconefrologia - TURMA 3 — fora: inscrições fechadas (ingressos: encerrado)
+[  49.1s] · Tech In Sertão - 6ª Edição — fora: sem certificado para o participante
+[  49.1s] · Teste — fora: inscrições fechadas (ingressos: não disponível)
+[  49.1s] · Aula aberta Lifim — fora: inscrições fechadas (ingressos: encerrado)
+[  49.1s] · Divulgando CiêncIA nos dias atuais: fazendo uso de ferramentas de Inte — fora: inscrições fechadas (ingressos: encerrado)
+[  49.1s] · Formação em Psicogerontologia — fora: sem certificado para o participante
+[  49.1s] · CAO 2026 — fora: inscrições fechadas (ingressos: não disponível)
+[  49.1s] · Even3 — fora: inscrições fechadas (ingressos: não disponível)
+[  49.1s] · Jornada Acadêmica 2026. 2 - UNIGAMA DIGITAL — fora: inscrições fechadas (ingressos: encerrado)
+[  49.1s] · Sankofa: Psicologia e política — fora: inscrições fechadas (ingressos: em breve)
+[  49.1s] ✓ GLOBALIZA AÊ! — 10:00–12:00 · Gratuito · None · cert None
+[  49.1s] · Ventilação mecânica e gasometria arterial — fora: inscrições fechadas (ingressos: encerrado)
+[  49.1s] · Retiro Geração Kadosh — fora: inscrições fechadas (ingressos: não disponível)
+[  49.1s] · teste — fora: inscrições fechadas (ingressos: não disponível)
+[  49.1s] · Fórum Internacional de Educação — fora: inscrições fechadas (ingressos: encerrado)
+[  49.1s] · INTEGRAÇÃO DE SEGURANÇA RDANTAS — fora: inscrições fechadas (ingressos: não disponível)
+[  49.1s] · teste — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  49.1s] · Tokdaborboleta — fora: inscrições fechadas (ingressos: não disponível)
+[  49.1s] · Imersão em Comportamento de Felinos Domésticos — fora: inscrições fechadas (ingressos: encerrado)
+[  49.1s] · Palestra Manejo da dor em animais silvestres — fora: inscrições fechadas (ingressos: não disponível)
+[  49.1s] · INTELIGÊNCIA ARTIFICIAL NA GESTÃO DE OBRAS: O FUTURO JÁ COMEÇOU — fora: sem certificado para o participante
+[  49.1s] · Bright Future — fora: inscrições fechadas (ingressos: não disponível)
+[  49.1s] fim: 1 eventos aceitos (0 de Odontologia) de 28 online no dia; descartados {'formato presencial': 222, 'inscrições fechadas': 24, 'sem certificado para o participante': 3}; erro: None
+[  49.1s] apaguei 2026-11-05.json (mais de 14 dias)
+
+===== 2026-11-19T16:36:59+00:00 =====
+[   0.0s] Even3 · eventos de 2026-11-20 (agora em Brasília: 2026-11-19 13:35)
+[   1.1s] sitemap: 6752 eventos futuros
+[   1.1s] índice: 6752 no sitemap, 6444 já conhecidas, 935 para ler
+[  42.1s]   erro em https://www.even3.com.br/hands-on-de-sutura-08531b51-3b9a-4722-a96f-9ca162ab1c2f/: HTTP Error 500: Internal Server Error
+[  42.8s]   erro em https://www.even3.com.br/respeito-igualdade-e-prevencao-a-violencia-contra-a-mulher-803785/: HTTP Error 500: Internal Server Error
+[  42.8s] índice: 933 lidas, 2 erros
+[  42.8s] 2026-11-20: 244 eventos começam no dia (modos {'off': 211, 'on': 33}); sem data no índice: 16
+[  42.8s] abrindo 33 páginas online do dia
+[  69.4s] · A Saúde no trabalho NR1 — fora: inscrições fechadas (ingressos: não disponível)
+[  69.4s] · Webnario — fora: inscrições fechadas (ingressos: não disponível)
+[  69.4s] · Certificado Assinantes | Psicologia, Redes Sociais e Manipulação das S — fora: inscrições fechadas (ingressos: encerrado)
+[  69.4s] · Noções básicas da pesquisa científica — fora: sem certificado para o participante
+[  69.4s] · V Jornada Acadêmica de Psicologia: Psicologia do Envelhecimento — um o — fora: sem certificado para o participante
+[  69.4s] · Certificado | Psicologia, Redes Sociais e Manipulação das Subjetividad — fora: inscrições fechadas (ingressos: encerrado)
+[  69.4s] · VI SIMPÓSIO PRODECA: Infância e Adolescência na Era Digital, Desafios  — fora: inscrições fechadas (ingressos: não disponível)
+[  69.4s] · Mente Empreendedora — fora: inscrições fechadas (ingressos: não disponível)
+[  69.4s] · 1temporada da vandinha e Wanderley — fora: inscrições fechadas (ingressos: não disponível)
+[  69.4s] · FOCO MÍDIA FILMES — fora: inscrições fechadas (ingressos: não disponível)
+[  69.4s] · Bazar da Second Hand — fora: inscrições fechadas (ingressos: não disponível)
+[  69.4s] · AgroUp — fora: inscrições fechadas (ingressos: não disponível)
+[  69.5s] · Aprenda a profissão de Massoterapia — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  69.5s] · AULA ABERTA - Sibo e os impactos em praticantes de atividade física — fora: inscrições fechadas (ingressos: encerrado)
+[  69.5s] · Ciclo em Foco: acompanhamento menstrual e promoção do autocuidado. — fora: sem certificado para o participante
+[  69.5s] · XII PROFT 2026 — fora: inscrições fechadas (ingressos: encerrado)
+[  69.5s] · MAC Sustentável 2026 - SEM FRONTEIRAS: Diálogos Globais de Pesquisa — fora: sem certificado para o participante
+[  69.5s] · Anestesiologia e Cirurgia em Grandes animais — fora: sem certificado para o participante
+[  69.5s] · Curso de alongamento — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  69.5s] · Aniversario da estela — fora: inscrições fechadas (ingressos: encerrado)
+[  69.5s] · Teste apresentação — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  69.5s] · RETIRADA DE LUCROS E PROLABORE — fora: inscrições fechadas (ingressos: não disponível)
+[  69.5s] · TESTE — fora: inscrições fechadas (ingressos: não disponível)
+[  69.5s] · Prova — fora: inscrições fechadas (ingressos: não disponível)
+[  69.5s] · Desafio 21 dias — fora: inscrições fechadas (ingressos: não disponível)
+[  69.5s] · Doces sonhos — fora: inscrições fechadas (ingressos: não disponível)
+[  69.5s] · Educação — fora: inscrições fechadas (ingressos: encerrado)
+[  69.5s] · ANDRESSA ESTHEFANI DOS SANTOS — fora: inscrições fechadas (ingressos: não disponível)
+[  69.5s] · Encontro LATCCPI – Liga Acadêmica de Terapia Cognitivo Comportamental  — fora: sem certificado para o participante
+[  69.5s] · Reunião Matinal — fora: inscrições fechadas (ingressos: não disponível)
+[  69.5s] · Deep Thunderstorm for Sleep — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  69.5s] · Masterclass ZENTYA: Herramientas digitales para trabajar sin internet — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  69.5s] ✓ "Scarlett Marton e Nietzsche: Uma conversa sobre seus três livros mais — 19:00–20:00 · Gratuito · YouTube · cert None
+[  69.5s] fim: 1 eventos aceitos (0 de Odontologia) de 33 online no dia; descartados {'formato presencial': 211, 'inscrições fechadas': 26, 'sem certificado para o participante': 6}; erro: None
+[  69.5s] apaguei 2026-11-04.json (mais de 14 dias)
+
+===== 2026-11-18T16:35:37+00:00 =====
+[   0.0s] Even3 · eventos de 2026-11-19 (agora em Brasília: 2026-11-18 13:34)
+[   4.4s] sitemap: 6818 eventos futuros
+[   4.4s] índice: 6818 no sitemap, 6519 já conhecidas, 1308 para ler
+[   7.0s]   erro em https://www.even3.com.br/servidores-e-concorrentes-ao-premio-4-premio-de-comunicacao-811125/: HTTP Error 404: Not Found
+[  14.6s]   erro em https://www.even3.com.br/i-jornada-de-atualizacao-em-praticas-medicas-da-afya-santa-ines-com-enfoque-para-o-clinico-811290/: HTTP Error 404: Not Found
+[  37.5s]   erro em https://www.even3.com.br/curso-de-reproducao-assistida-806673/: HTTP Error 404: Not Found
+[  58.0s]   erro em https://www.even3.com.br/hands-on-de-sutura-08531b51-3b9a-4722-a96f-9ca162ab1c2f/: HTTP Error 500: Internal Server Error
+[  62.8s]   erro em https://www.even3.com.br/respeito-igualdade-e-prevencao-a-violencia-contra-a-mulher-803785/: HTTP Error 500: Internal Server Error
+[  67.7s] índice: 1303 lidas, 5 erros
+[  67.8s] 2026-11-19: 298 eventos começam no dia (modos {'off': 259, 'on': 39}); sem data no índice: 18
+[  67.8s] abrindo 39 páginas online do dia
+[  97.3s] · Webinar WIN Latam - WINfluence - Selfie sin filtros: Una reflexión sob — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  97.3s] · II Congresso de Psicologia e Direito Dialogando: Interfaces da Saúde M — fora: sem certificado para o participante
+[  97.3s] · CREW ESTÁCIO NA PISTA (CAMISAS) — fora: inscrições fechadas (ingressos: não disponível)
+[  97.3s] · III Congresso Internacional de Tecnologias Emergentes (CITE) — fora: inscrições fechadas (ingressos: encerrado)
+[  97.3s] · COMPRAS PY — fora: inscrições fechadas (ingressos: não disponível)
+[  97.3s] ✓ 2º Congresso Nacional de Biomedicina - CONABIOM — 09:00–22:00 · Gratuito (há ingressos pagos) · WhatsApp · cert 10
+[  97.3s] · Emagrecer na era dos Análogos de GLP-1 — fora: sem certificado para o participante
+[  97.3s] ✓ II Workshop de Urgencias y Emergencia Cardiovasculares Quirúrgicas y C — 18:00–None · R$ 22,50 · None · cert None
+[  97.3s] · AREA DE ATUAÇÃO DO FARMACÊUTICO — fora: inscrições fechadas (ingressos: não disponível)
+[  97.3s] · Congresso Internacional de Medicina e Inovação em Saúde - CONAMED — fora: sem certificado para o participante
+[  97.3s] · Laboratorizando: Dificuldades de Aprendizagem — fora: inscrições fechadas (ingressos: em breve)
+[  97.3s] · VII Jornada de Letras – Formas da personagem: estratégias, cenas e voz — fora: sem certificado para o participante
+[  97.3s] · IV EXPOLIGAS: O que o Recém-formado precisa saber — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  97.3s] · Oficina Integrada para o Manejo Clínico, Diagnóstico Laboratorial, Imu — fora: sem certificado para o participante
+[  97.3s] · Além do diagnóstico compreender, acolher e potencializarna Educação in — fora: inscrições fechadas (ingressos: não disponível)
+[  97.3s] · Workshop: Territorialidade Amazônica e Clima — fora: sem certificado para o participante
+[  97.3s] · Biosfera Amazônica — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  97.3s] · Administração — fora: inscrições fechadas (ingressos: não disponível)
+[  97.3s] · Aula Aberta Oncoliga: Reabilitação e qualidade de vida após o câncer — fora: inscrições fechadas (ingressos: encerrado)
+[  97.3s] ✓ Ciclo de Palestras em Cardiologia: Bases Cardiológicas de casos clínic — 19:30–21:00 · Gratuito · None · cert None
+[  97.3s] · Descomplicando o CEP: Da Pesquisa à Submissão — fora: inscrições fechadas (ingressos: encerrado)
+[  97.3s] · proibição das bets — fora: inscrições fechadas (ingressos: encerrado)
+[  97.3s] · Revisão N3 Medexplique — fora: sem certificado para o participante
+[  97.3s] · ESTÁGIO ELETIVO SUPERVISIONADO — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  97.3s] · Simpósio da Clínica Medic Imagem Diagnósticos – CMID-26. — fora: sem certificado para o participante
+[  97.3s] · COMPRAS PY IMPORTS — fora: sem certificado para o participante
+[  97.3s] · Além do diagnóstico compreender, acolher e potencializar na Educação i — fora: inscrições fechadas (ingressos: não disponível)
+[  97.3s] · Desfile de primavera — fora: inscrições fechadas (ingressos: não disponível)
+[  97.3s] · Aprendendo Torá sigulote — fora: inscrições fechadas (ingressos: não disponível)
+[  97.3s] · Jornada que Transforma — Ensino, Pesquisa e Extensão em Movimento. — fora: sem certificado para o participante
+[  97.3s] · INGRESSÃO BI CAAT — fora: inscrições fechadas (ingressos: não disponível)
+[  97.3s] · Nova diretoria para 2027 — fora: inscrições fechadas (ingressos: não disponível)
+[  97.3s] · REVISÃO MEDEXPLIQUE N3 — fora: inscrições fechadas (ingressos: em breve)
+[  97.3s] · "Fenomenologia da Adição: Clínica e Valores" — fora: sem certificado para o participante
+[  97.3s] · Evento Test — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  97.3s] · Mentoria Friggi — fora: inscrições fechadas (ingressos: não disponível)
+[  97.3s] · A cura da criança interior — fora: inscrições fechadas (ingressos: não disponível)
+[  97.3s] ✓ Acessibilidade Digital: o que acontece por trás de uma experiência inc — 19:00–21:00 · Gratuito · Google Meet · cert None
+[  97.3s] · Fundamentos da Dosagem de Concreto: Do Traço à Resistência (ABCP e Cal — fora: sem certificado para o participante
+[  97.3s] fim: 4 eventos aceitos (0 de Odontologia) de 39 online no dia; descartados {'formato presencial': 259, 'inscrições fechadas': 23, 'sem certificado para o participante': 12}; erro: None
+
+===== 2026-11-17T13:38:44+00:00 =====
+[   0.0s] Even3 · eventos de 2026-11-18 (agora em Brasília: 2026-11-17 10:34)
+[   1.0s] sitemap: 6879 eventos futuros
+[   1.0s] índice: 6879 no sitemap, 6561 já conhecidas, 4548 para ler
+[  82.9s]   erro em https://www.even3.com.br/respeito-igualdade-e-prevencao-a-violencia-contra-a-mulher-803785/: HTTP Error 500: Internal Server Error
+[  95.6s]   erro em https://www.even3.com.br/hands-on-de-sutura-08531b51-3b9a-4722-a96f-9ca162ab1c2f/: HTTP Error 500: Internal Server Error
+[ 205.3s] índice: 4546 lidas, 2 erros
+[ 205.3s] 2026-11-18: 336 eventos começam no dia (modos {'off': 279, 'on': 57}); sem data no índice: 16
+[ 205.3s] abrindo 57 páginas online do dia
+[ 237.5s] ✓ Webnário: Avaliação das feridas: ferramentas e estratégias para o cuid — 19:00–21:00 · Gratuito · Google Meet · cert None
+[ 237.5s] · Residências de Enfermagem em Cardiologia — fora: sem certificado para o participante
+[ 237.5s] · Pornografia: Expectativas irreais e cobranças de desempenho — fora: sem certificado para o participante
+[ 237.5s] · Nossas Raízes, Nosso Futuro: Negritude em foco. — fora: sem certificado para o participante
+[ 237.5s] · Saúde Mental no Câncer de Mama — fora: inscrições fechadas (ingressos: não disponível)
+[ 237.5s] · Curso de Extensão Assinantes | Diálogos entre Jung e Espinosa: contrib — fora: sem certificado para o participante
+[ 237.5s] · Entre o Ideal e o Possível. Os Desafios Reais de Quem Faz Inclusão — fora: sem certificado para o participante
+[ 237.5s] · Mediação e Arbitragem para a Administração: Introdução Estratégica — fora: sem certificado para o participante
+[ 237.5s] · Palestra: Riqueza Descoberta - Educação e Literatura Antirracista — fora: sem certificado para o participante
+[ 237.5s] · Programa Teórico Anual da Comissão de Ligas da SBGG — fora: sem certificado para o participante
+[ 237.5s] · Diagnóstico audiológico no Transtorno do Espectro Autista — fora: inscrições fechadas (ingressos: encerrado)
+[ 237.5s] · Curso de Extensão | Diálogos entre Jung e Espinosa: contribuições da P — fora: sem certificado para o participante
+[ 237.5s] ✓ 3ª edição do Minicurso de Oncologia Veterinária — 18:00–21:30 · R$ 36,19 a R$ 212,30 · None · cert 12
+[ 237.5s] · IV Congresso Nacional Interdisciplinar em Saúde Coletiva - CONASCO — fora: inscrições fechadas (ingressos: encerrado)
+[ 237.5s] · Fênix telecom associados — fora: inscrições fechadas (ingressos: não disponível)
+[ 237.5s] · Saúde masculina e o profissional da saúde no Novembro Azul — fora: sem certificado para o participante
+[ 237.5s] · Residência ARQ 01 | Revit com Mentoria (Turma Fundadora) — fora: inscrições fechadas (ingressos: em breve)
+[ 237.5s] · Segurança Cibernética Quântica: Primeiros Passos — fora: sem certificado para o participante
+[ 237.5s] · Trocas Clínicas: O Miasma entre Histeria e Feminilidade — fora: sem certificado para o participante
+[ 237.5s] ✓ MasterClass - Quem Cuida de Quem Cuida? O que está acontecendo com a s — 19:00–20:00 · R$ 7,50 · None · cert 4
+[ 237.5s] ✓ GLOBALIZA AÊ! — 20:00–22:00 · Gratuito · None · cert None
+[ 237.5s] · AULA INAUGURAL - Pós-graduação em Psicomotricidade na Prática nos Cont — fora: sem certificado para o participante
+[ 237.5s] · Pietro Guedes Brito — fora: inscrições fechadas (ingressos: não disponível)
+[ 237.5s] · Novembro da Privacidade e Segurança da Informação: Privacidade e prote — fora: inscrições fechadas (ingressos: em breve)
+[ 237.5s] · II Encontro de Bolsistas do Programa Unesp: Por Uma Geração Sem Nicoti — fora: inscrições fechadas (ingressos: encerrado)
+[ 237.5s] · Aplicação prática da LGPD em Arquivos Permanentes analógicos e digitai — fora: sem certificado para o participante
+[ 237.5s] · Webinar: Tecnologia Eliminando Barreiras: Inovação, Autonomia e Inclus — fora: sem certificado para o participante
+[ 237.5s] · Seminário Final do ProLEEI – ''Palavras que abraçam e histórias que en — fora: sem certificado para o participante
+[ 237.5s] · I JORNADA INTERNACIONAL DE PSICOSSOCIOLOGIA, CONSUMO E SUSTENTABILIDAD — fora: inscrições fechadas (ingressos: encerrado)
+[ 237.6s] · Encontro Estudantil Lafiped: o método RTA na criança asmática — fora: sem certificado para o participante
+[ 237.6s] · Encantar para vender: como transformar a experiência do cliente em mai — fora: sem certificado para o participante
+[ 237.6s] · A360 NA PRÁTICA - Contratos do Contas a Pagar — fora: sem certificado para o participante
+[ 237.6s] · Treinamento ABACT: Legislação, Obrigações e Procedimentos para o Merca — fora: inscrições fechadas (ingressos: encerrado)
+[ 237.6s] ✓ XIX Jornada de Fisioterapia do CAISM/UNICAMP — 08:00–15:00 · Gratuito · None · cert None
+[ 237.6s] · Além do Trauma: Prevenção de Acidentes Pediátricos na Prática Clínica  — fora: sem certificado para o participante
+[ 237.6s] · II Processo e(m) Debate: vírus autoritário e processo civil: Luís Corr — fora: sem certificado para o participante
+[ 237.6s] · 2° Edição Simpósio Online de Clínica e Emergência de Grandes Animais [odonto fraco] — fora: sem certificado para o participante
+[ 237.6s] · MASTERCLASS - GESTÃO ESTRATÉGICA DE MATERIAIS — fora: inscrições fechadas (ingressos: encerrado)
+[ 237.6s] · I Colóquio Carpeaux — fora: sem certificado para o participante
+[ 237.6s] · Semana Nacional saúde única — fora: inscrições fechadas (ingressos: não disponível)
+[ 237.6s] · SIVA EaD 2027/1 - Mostre Seu Talento Unicive - 2ª Edição — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[ 237.6s] · GEROGERI SUMMIT NOVEMBRO — fora: sem certificado para o participante
+[ 237.6s] · Congresso Brasileiro de Urgências e Traumatologia Ocular no Pronto Ate — fora: inscrições fechadas (ingressos: não disponível)
+[ 237.6s] · Consciência Negra 2026: Literatura, Memória e Identidade - UninCor — fora: sem certificado para o participante
+[ 237.6s] · Treinamento PowerB Online - Novembro 2026 — fora: inscrições fechadas (ingressos: encerrado)
+[ 237.6s] · CURSO DE ADOÇÃO — fora: inscrições fechadas (ingressos: não disponível)
+[ 237.6s] · Geoconceito Debate: Consciência Negra - Formação de professores de Geo — fora: inscrições fechadas (ingressos: encerrado)
+[ 237.6s] · Além do diagnóstico — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[ 237.6s] · Sua Carreira Não É um Trilho, É uma Trilha! — fora: sem certificado para o participante
+[ 237.6s] · O samba é terapia popular: A proposta de clínica passante — fora: sem certificado para o participante
+[ 237.6s] · I Semana da Consciência Negra — fora: sem certificado para o participante
+[ 237.6s] ✓ Ciclo de Palestras em Nefrologia: Diálise Peritoneal — 19:30–21:00 · Gratuito · None · cert None
+[ 237.6s] · teste — fora: inscrições fechadas (ingressos: não disponível)
+[ 237.6s] · Upgrade ISO 9001: 2026 — fora: sem certificado para o participante
+[ 237.6s] · Meet & Greet - Can Yaman 2026 — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[ 237.6s] · Da Avaliação Diagnóstica à Ação Pedagógica: o PIBID e a Transformação  — fora: sem certificado para o participante
+[ 237.6s] · Policlínica Itinerante: Diálogos Sobre o Trabalho em Saúde - Diálogos  — fora: sem certificado para o participante
+[ 237.6s] fim: 6 eventos aceitos (0 de Odontologia) de 57 online no dia; descartados {'formato presencial': 279, 'sem certificado para o participante': 31, 'inscrições fechadas': 20}; erro: None
+
+===== 2026-11-16T17:00:46+00:00 =====
+[   0.0s] Even3 · eventos de 2026-11-17 (agora em Brasília: 2026-11-16 13:58)
+[   3.1s] sitemap: 6955 eventos futuros
+[   3.2s] índice: 6955 no sitemap, 6833 já conhecidas, 1103 para ler
+[  11.0s]   erro em https://www.even3.com.br/da-avaliacao-diagnostica-a-acao-pedagogica-o-pibid-e-a-transformacao-das-aprendizagens-experiencias-e-resultados-de-intervencoes-pedagogicas-orientadas-por-avaliacoes-diagnosticas-na-escola-municipal-rachel-mader-goncalves-809982/: HTTP Error 404: Not Found
+[  30.2s]   erro em https://www.even3.com.br/ii-ciclo-de-conferencias-e-debates-em-ciencias-sociais-e-humanas-807137/: HTTP Error 404: Not Found
+[  55.5s]   erro em https://www.even3.com.br/hands-on-de-sutura-08531b51-3b9a-4722-a96f-9ca162ab1c2f/: HTTP Error 500: Internal Server Error
+[  57.3s]   erro em https://www.even3.com.br/respeito-igualdade-e-prevencao-a-violencia-contra-a-mulher-803785/: HTTP Error 500: Internal Server Error
+[  57.9s] índice: 1099 lidas, 4 erros
+[  57.9s] 2026-11-17: 321 eventos começam no dia (modos {'off': 276, 'on': 45}); sem data no índice: 17
+[  57.9s] abrindo 45 páginas online do dia
+[ 114.2s] ✓ Curso O Futuro das Cores: Tintas Automotivas Sustentáveis — 19:00–21:00 · Gratuito · Microsoft Teams · cert None
+[ 114.2s] · Expertise em práticas injetáveis, hipodermóclise e ultrassonografia — fora: sem certificado para o participante
+[ 114.2s] · Certificado | Introdução à Psicologia Comunitária — fora: inscrições fechadas (ingressos: encerrado)
+[ 114.2s] · Webinário Conexão Viral — fora: sem certificado para o participante
+[ 114.2s] · chá de bebê — fora: inscrições fechadas (ingressos: não disponível)
+[ 114.2s] ✓ MedOn - Congresso Médico 100% online — 19:00–22:00 · Gratuito · None · cert None
+[ 114.2s] · Educação Especial em Movimento: Práticas, Acolhimento e Inclusão no Mu — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[ 114.2s] ✓ Ciclo de Palestras em Medicina de Emergência: Tempo é músculo, tempo é — 19:30–21:00 · Gratuito · Even3 (área do participante) · cert None
+[ 114.2s] · Inscrições dos organizadores da Jornada Farmacêutica — fora: sem certificado para o participante
+[ 114.2s] · Aula ( sábado Letivo) — fora: inscrições fechadas (ingressos: não disponível)
+[ 114.2s] · III Congresso CESPAM de Produção Animal — fora: inscrições fechadas (ingressos: em breve, encerrado)
+[ 114.2s] · I Workshop de Intensificação da Cria na Bovinocultura de Corte — fora: sem certificado para o participante
+[ 114.2s] · Inclusão no Transtornos de Aprendizagem: Construindo pontes — fora: sem certificado para o participante
+[ 114.2s] · Seminário Final do ProLEEI – ''Palavras que abraçam e histórias que en — fora: sem certificado para o participante
+[ 114.2s] · Psicologia e Política - Subjetividade, poder e as lutas que atravessam — fora: inscrições fechadas (ingressos: encerrado)
+[ 114.2s] · As principais habilidades do líder de 2027 — fora: inscrições fechadas (ingressos: em breve)
+[ 114.2s] · Copa — fora: inscrições fechadas (ingressos: não disponível)
+[ 114.2s] · Curso de Capacitação Científica Básica ABLCP-AEMED 2026 — fora: sem certificado para o participante
+[ 114.2s] · IV CICLO DE PALESTRAS E DEBATES - EDUCAÇÃO SEM FRONTEIRAS: CONECTANDO  — fora: sem certificado para o participante
+[ 114.2s] · I Seminário Internacional de Fenomenologia e Existencialismo: Angústia — fora: sem certificado para o participante
+[ 114.3s] · Certificado Assinantes | Introdução à Psicologia Comunitária — fora: inscrições fechadas (ingressos: encerrado)
+[ 114.3s] · PPWR - Novas Regras da UE para Embalagens — fora: sem certificado para o participante
+[ 114.3s] · Frequencia de aula dia 17 de outubro — fora: inscrições fechadas (ingressos: não disponível)
+[ 114.3s] · Aniversário — fora: inscrições fechadas (ingressos: não disponível)
+[ 114.3s] · International Symposium on Deamonification Processes - DEAMS — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[ 114.3s] · Oficinas de Planejamento da Rede Estadual de Telessaúde e Saúde Digita — fora: inscrições fechadas (ingressos: em breve)
+[ 114.3s] · Palestra: Interiores, bem-estar e humanização — fora: inscrições fechadas (ingressos: em breve)
+[ 114.3s] · Quinzena da Imagem — fora: inscrições fechadas (ingressos: não disponível)
+[ 114.3s] ✓ Semana do ACS e do ACE — 14:00–17:40 · Gratuito · None · cert None
+[ 114.3s] · Webinário - Os desafios estratégicos da Amazônia Azul na Margem Equato — fora: sem certificado para o participante
+[ 114.3s] ✓ IMERSÃO PRÁTICA PENAL - RECURSOS E HABEAS CORPUS - ELEBORAÇÃO E SUSTEN — 10:00–17:00 · R$ 141,30 · Google Meet · cert None
+[ 114.3s] · CURSO NR 10 GESTÃO EFICIENTE — fora: inscrições fechadas (ingressos: encerrado)
+[ 114.3s] · II SAVet - Simpósio de Anestesiologia Veterinária — fora: sem certificado para o participante
+[ 114.3s] ✓ INOVA AMAZONAS — 08:00–12:00 · Gratuito · Google Meet, Even3 (área do participante) · cert 3
+[ 114.3s] · Fórum IBROSS, ONA e IES - Notificação de eventos adversos e melhoria d — fora: sem certificado para o participante
+[ 114.3s] · Lavínia workshop — fora: inscrições fechadas (ingressos: não disponível)
+[ 114.3s] · Curso de Perícia Judicial 60h - TURMA 3 2026 — fora: inscrições fechadas (ingressos: encerrado)
+[ 114.3s] · Workshop — fora: sem certificado para o participante
+[ 114.3s] · Oficina de Coerência, coesão e revisão textual de artigos cientificos. — fora: sem certificado para o participante
+[ 114.3s] · O lado invisível do maternar - Tempo, cuidado e saúde mental na matern — fora: sem certificado para o participante
+[ 114.4s] · III Congresso Internacional em Administração Pública (CIAP) e o IV Con — fora: inscrições fechadas (ingressos: encerrado)
+[ 114.4s] · Palestra: Instalações e Comando Eléricos — fora: inscrições fechadas (ingressos: em breve)
+[ 114.4s] · Encontro dos Núcleos de Estudos em Agroecologia e Produção Orgânica da — fora: sem certificado para o participante
+[ 114.4s] ✓ Programa de Difusão Científica — 20:30–21:30 · Gratuito · None · cert None
+[ 114.4s] · Energias Renováveis e Recursos Minerais na Amazônia Azul — fora: sem certificado para o participante
+[ 114.4s] fim: 7 eventos aceitos (0 de Odontologia) de 45 online no dia; descartados {'formato presencial': 276, 'sem certificado para o participante': 18, 'inscrições fechadas': 20}; erro: None
+
+===== 2026-11-15T14:45:11+00:00 =====
+[   0.0s] Even3 · eventos de 2026-11-16 (agora em Brasília: 2026-11-15 11:43)
+[   3.7s] sitemap: 7002 eventos futuros
+[   3.7s] índice: 7002 no sitemap, 6891 já conhecidas, 1194 para ler
+[  42.9s]   erro em https://www.even3.com.br/respeito-igualdade-e-prevencao-a-violencia-contra-a-mulher-803785/: HTTP Error 500: Internal Server Error
+[  44.3s]   erro em https://www.even3.com.br/hands-on-de-sutura-08531b51-3b9a-4722-a96f-9ca162ab1c2f/: HTTP Error 500: Internal Server Error
+[  44.7s] índice: 1192 lidas, 2 erros
+[  45.0s] 2026-11-16: 374 eventos começam no dia (modos {'off': 333, 'on': 41}); sem data no índice: 17
+[  45.0s] abrindo 41 páginas online do dia
+[  77.6s] · Apertando a mente- Corpo, autoestima e bem-estar: desafios após o diag — fora: inscrições fechadas (ingressos: encerrado)
+[  77.6s] ✓ CRFTO ENSINA + TIRANDO DÚVIDAS NO REGISTRO DE RECEITAS NO SNCR — 15:00–17:00 · Gratuito · Google Meet · cert 3
+[  77.6s] · Evento Demonstração 13/11 — fora: inscrições fechadas (ingressos: em breve)
+[  77.6s] · MasterClass Astro*Vocação - astrologia Vocacional — fora: sem certificado para o participante
+[  77.6s] · VI CONGRESSO NACIONAL DE ANIMAIS SILVESTRES — fora: sem certificado para o participante
+[  77.6s] · Feliz aniversário Zico — fora: inscrições fechadas (ingressos: não disponível)
+[  77.6s] · Chá Revelação — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  77.6s] · II Simpósio Virtual de Engenharia, Tecnologia e Inovação – II SVETI 20 — fora: sem certificado para o participante
+[  77.6s] · XVIII Seminário de Pesquisas em Andamento (SPA) do Programa de Pós-Gra — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  77.6s] ✓ DAY ONE - ALEKSANDRO BARBOZA SIQUEIRA — 19:30–21:30 · Gratuito · YouTube, Even3 (área do participante) · cert None
+[  77.6s] · Esporotricose — fora: inscrições fechadas (ingressos: não disponível)
+[  77.7s] ✓ Curso Responsabilidade Técnica por Laboratório de Ensino — 09:00–12:00 · Gratuito · Microsoft Teams · cert None
+[  77.7s] · Inteligência Artificial na Indústria de Alimentos: Aplicações práticas — fora: inscrições fechadas (ingressos: em breve)
+[  77.7s] · Aula Gastrosquise — fora: sem certificado para o participante
+[  77.7s] · Roda de Conversa: Entre perdas, medos e afetos: uma roda de conversa s — fora: sem certificado para o participante
+[  77.7s] · Atendimento domiciliar e TRM: Conceitos do PNF — fora: inscrições fechadas (ingressos: encerrado)
+[  77.7s] · XVII Encontro Nacional dos Estudantes de Secretariado — fora: inscrições fechadas (ingressos: encerrado)
+[  77.7s] · Embaixadoras da divas make — fora: inscrições fechadas (ingressos: não disponível)
+[  77.7s] · Recrutamento de guilda — fora: inscrições fechadas (ingressos: não disponível)
+[  77.7s] · Semana de Tecnologia da FATEC Zona Sul "Dom Paulo Evaristo Arns" - 202 — fora: sem certificado para o participante
+[  77.7s] · Ciclo de Palestras - "Pesca e Conservação da Biodiversidade Marinha" — fora: sem certificado para o participante
+[  77.7s] · Luz nas trevas: conversas para humanos — fora: sem certificado para o participante
+[  77.7s] · Quiz da Isabeli quem conhece ela — fora: inscrições fechadas (ingressos: não disponível)
+[  77.7s] · Treinamento MAV — fora: inscrições fechadas (ingressos: não disponível)
+[  77.7s] · bla bla — fora: inscrições fechadas (ingressos: não disponível)
+[  77.7s] · Anos 80 — fora: inscrições fechadas (ingressos: não disponível)
+[  77.7s] · Palestra | Muitas Vozes, Uma Só Luta: Igualdade Racial, Respeito e Gar — fora: sem certificado para o participante
+[  77.7s] · aprenda a cresser — fora: inscrições fechadas (ingressos: não disponível)
+[  77.7s] · 15 anos da karla — fora: inscrições fechadas (ingressos: não disponível)
+[  77.7s] · 5° Edição Simpósio de Urgência e Emergência de Pequenos Animais — fora: sem certificado para o participante
+[  77.7s] ✓ Lançamento do Programa de Formação de Professores no âmbito do Pacto E — 19:00–None · Gratuito · YouTube, Even3 (área do participante) · cert 66
+[  77.7s] · 4° Simpósio fertilizantes, corretivos e inoculantes — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  77.7s] · A Lógica das Emoções - Lançamento — fora: inscrições fechadas (ingressos: não disponível)
+[  77.7s] · 2° Edição Falando em Brangus — fora: sem certificado para o participante
+[  77.7s] · Curso de Extenção sobre Educação Escolar Quilombola — fora: inscrições fechadas (ingressos: não disponível)
+[  77.7s] · A CELEBRAÇÃO DA PALAVRA DE DEUS NA AUSÊNCIA DO PRESBÍTERO — fora: inscrições fechadas (ingressos: não disponível)
+[  77.7s] · PALESTRA ORATORIA — fora: inscrições fechadas (ingressos: não disponível)
+[  77.7s] · Clarice Lispector: escrita de si, memória e construção da subjetividad — fora: inscrições fechadas (ingressos: em breve)
+[  77.7s] ✓ VII Seminário da Pós-Graduação em Gestão de Serviços de Saúde da UFMG — 15:00–22:00 · Gratuito · None · cert None
+[  77.7s] · Circularidade e Ecoeficiência no Descomissionamento — fora: inscrições fechadas (ingressos: encerrado)
+[  77.7s] · Saúde em Gestão: IA e Reforma Tributária — fora: sem certificado para o participante
+[  77.7s] fim: 5 eventos aceitos (0 de Odontologia) de 41 online no dia; descartados {'formato presencial': 333, 'inscrições fechadas': 24, 'sem certificado para o participante': 12}; erro: None
+
+===== 2026-11-14T14:08:18+00:00 =====
+[   0.0s] Even3 · eventos de 2026-11-15 (agora em Brasília: 2026-11-14 11:07)
+[   3.0s] sitemap: 7236 eventos futuros
+[   3.0s] índice: 7236 no sitemap, 7236 já conhecidas, 845 para ler
+[  29.4s]   erro em https://www.even3.com.br/inscricoes-liga-academica-de-saude-do-trabalhador-810227/: HTTP Error 404: Not Found
+[  29.8s]   erro em https://www.even3.com.br/hands-on-de-sutura-08531b51-3b9a-4722-a96f-9ca162ab1c2f/: HTTP Error 500: Internal Server Error
+[  30.0s]   erro em https://www.even3.com.br/respeito-igualdade-e-prevencao-a-violencia-contra-a-mulher-803785/: HTTP Error 500: Internal Server Error
+[  30.0s] índice: 842 lidas, 3 erros
+[  30.0s] 2026-11-15: 160 eventos começam no dia (modos {'off': 144, 'on': 16}); sem data no índice: 18
+[  30.0s] abrindo 16 páginas online do dia
+[  55.8s] · GRAVAÇÃO - Amamentar sem dor [odonto fraco] — fora: inscrições fechadas (ingressos: encerrado)
+[  55.8s] ✓ Workshop Nacional de Avaliação de Investimentos Operacionais: Fluxos I — 14:00–18:00 · Gratuito · None · cert None
+[  55.8s] · Teste — fora: inscrições fechadas (ingressos: encerrado)
+[  55.8s] · Imersão Talt 29 de Setembro — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  55.8s] · Bloco de Reprodução em Bovinos - GERA FCAV — fora: inscrições fechadas (ingressos: não disponível)
+[  55.8s] ✓ Destravando o centro cirúrgico: Confiança, competência e segurança par — 18:00–22:00 · Gratuito · Zoom · cert 4
+[  55.8s] · Festa 40 anos de Marinha — fora: inscrições fechadas (ingressos: não disponível)
+[  55.8s] · RECEPCIONA PRO - A Arte de receber bem — fora: inscrições fechadas (ingressos: encerrado)
+[  55.8s] · AEE na prática: afinal, como complementar sem repetir? — fora: inscrições fechadas (ingressos: não disponível)
+[  55.8s] · teste — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  55.8s] · NOITE DOS QUADRADOS — fora: inscrições fechadas (ingressos: em breve)
+[  55.8s] · Descomplicando a Anotação de Enfermagem — fora: inscrições fechadas (ingressos: não disponível)
+[  55.8s] · Guarda Mirim Ferrense — fora: inscrições fechadas (ingressos: não disponível)
+[  55.8s] · Conect Skin: A trilha perfeita para o gerenciamento de pele — fora: inscrições fechadas (ingressos: encerrado)
+[  55.8s] · Chá rifa de casa nova — fora: inscrições fechadas (ingressos: não disponível)
+[  55.8s] · Voa Talks — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  55.8s] fim: 2 eventos aceitos (0 de Odontologia) de 16 online no dia; descartados {'formato presencial': 144, 'inscrições fechadas': 14}; erro: None
+
+===== 2026-11-14T13:36:22+00:00 =====
+[   0.0s] Even3 · eventos de 2026-11-15 (agora em Brasília: 2026-11-14 10:34)
+[   4.8s] sitemap: 7236 eventos futuros
+[   4.8s] índice: 7236 no sitemap, 6371 já conhecidas, 2476 para ler
+[  11.4s]   erro em https://www.even3.com.br/inscricoes-liga-academica-de-saude-do-trabalhador-810227/: HTTP Error 404: Not Found
+[  64.9s]   erro em https://www.even3.com.br/respeito-igualdade-e-prevencao-a-violencia-contra-a-mulher-803785/: HTTP Error 500: Internal Server Error
+[  68.5s]   erro em https://www.even3.com.br/hands-on-de-sutura-08531b51-3b9a-4722-a96f-9ca162ab1c2f/: HTTP Error 500: Internal Server Error
+[  93.1s] índice: 2473 lidas, 3 erros
+[  93.1s] 2026-11-15: 160 eventos começam no dia (modos {'off': 144, 'on': 16}); sem data no índice: 18
+[  93.1s] abrindo 16 páginas online do dia
+[ 114.7s] · GRAVAÇÃO - Amamentar sem dor [odonto fraco] — fora: inscrições fechadas (ingressos: encerrado)
+[ 114.7s] ✓ Workshop Nacional de Avaliação de Investimentos Operacionais: Fluxos I — 14:00–18:00 · Gratuito · None · cert None
+[ 114.7s] · Teste — fora: inscrições fechadas (ingressos: encerrado)
+[ 114.7s] · Imersão Talt 29 de Setembro — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[ 114.7s] · Bloco de Reprodução em Bovinos - GERA FCAV — fora: inscrições fechadas (ingressos: não disponível)
+[ 114.8s] ✓ Destravando o centro cirúrgico: Confiança, competência e segurança par — 18:00–22:00 · Gratuito · Zoom · cert 4
+[ 114.8s] · Festa 40 anos de Marinha — fora: inscrições fechadas (ingressos: não disponível)
+[ 114.8s] · RECEPCIONA PRO - A Arte de receber bem — fora: inscrições fechadas (ingressos: encerrado)
+[ 114.8s] · AEE na prática: afinal, como complementar sem repetir? — fora: inscrições fechadas (ingressos: não disponível)
+[ 114.8s] · teste — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[ 114.8s] · NOITE DOS QUADRADOS — fora: inscrições fechadas (ingressos: em breve)
+[ 114.8s] · Descomplicando a Anotação de Enfermagem — fora: inscrições fechadas (ingressos: não disponível)
+[ 114.8s] · Guarda Mirim Ferrense — fora: inscrições fechadas (ingressos: não disponível)
+[ 114.8s] · Conect Skin: A trilha perfeita para o gerenciamento de pele — fora: inscrições fechadas (ingressos: encerrado)
+[ 114.8s] · Chá rifa de casa nova — fora: inscrições fechadas (ingressos: não disponível)
+[ 114.8s] · Voa Talks — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[ 114.8s] fim: 2 eventos aceitos (0 de Odontologia) de 16 online no dia; descartados {'formato presencial': 144, 'inscrições fechadas': 14}; erro: None
+
+===== 2026-11-12T01:42:51+00:00 =====
+[   0.0s] Even3 · eventos de 2026-11-12 (agora em Brasília: 2026-11-11 22:41)
+[   4.9s] sitemap: 7266 eventos futuros
+[   4.9s] índice: 7266 no sitemap, 6940 já conhecidas, 1163 para ler
+[  44.8s]   erro em https://www.even3.com.br/hands-on-de-sutura-08531b51-3b9a-4722-a96f-9ca162ab1c2f/: HTTP Error 500: Internal Server Error
+[  45.0s]   erro em https://www.even3.com.br/respeito-igualdade-e-prevencao-a-violencia-contra-a-mulher-803785/: HTTP Error 500: Internal Server Error
+[  45.4s] índice: 1161 lidas, 2 erros
+[  45.5s] 2026-11-12: 275 eventos começam no dia (modos {'off': 236, 'on': 39}); sem data no índice: 17
+[  45.5s] abrindo 39 páginas online do dia
+[  83.0s] · Aulão Preparatório ENADE26- "Análise de requisitos" - TI -Unisul — fora: sem certificado para o participante
+[  83.0s] · Hanseníase na Atenção Primária: Como Prosseguir com o Diagnóstico Prec — fora: sem certificado para o participante
+[  83.0s] · Webinar Ensino Agir - Cultura Organizacional como Pilar da Segurança d — fora: sem certificado para o participante
+[  83.0s] · Minicurso Novas configurações do mundo do trabalho e plataformização d — fora: inscrições fechadas (ingressos: encerrado)
+[  83.0s] · COMUNICAÇÃO PROFISSIONAL E RELACIONAMENTO INTERPESSOAL — fora: sem certificado para o participante
+[  83.0s] ✓ Mesa redonda - Educação Bilíngue, Multilinguismo e Translinguagem — 19:00–21:00 · Gratuito · None · cert None
+[  83.0s] · Conexão Funpresp-Jud 2026 | Um ano de Evolução, Simplificação e Valor — fora: sem certificado para o participante
+[  83.0s] · Misofonia — fora: inscrições fechadas (ingressos: encerrado)
+[  83.0s] · II Simpósio Brasileiro sobre Violência Sexual contra Meninos e Homens — fora: sem certificado para o participante
+[  83.0s] · Detox digital — fora: inscrições fechadas (ingressos: encerrado)
+[  83.1s] · Cìrculo de conversación: cuidado en la universidad — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  83.1s] ✓ Workshop Nacional de Continuidade de Operações Administrativas: Proces — 14:00–18:00 · Gratuito · None · cert None
+[  83.1s] · Aposte no Seu Futuro — fora: sem certificado para o participante
+[  83.1s] · V CEEI-CICLO DE ESTUDOS E EXPERIÊNCIAS SOBRE EDUCAÇÃO INCLUSIVA -Parte — fora: sem certificado para o participante
+[  83.1s] · CONGRESSO NACIONAL DE CIÊNCIAS EXATAS E ENGENHARIAS — fora: inscrições fechadas (ingressos: encerrado)
+[  83.1s] · Webinário: Envelhecer com Direitos – Dignidade, Cidadania e Futuro — fora: sem certificado para o participante
+[  83.1s] ✓ CIPCEn-2026: 7º Congresso Internacional de Produção Científica em Enfe — 07:45–18:00 · Gratuito (há ingressos pagos) · None · cert 10
+[  83.1s] · Sensibilização de Estudantes de Saúde para a Coleta do Quesito Raça/Co — fora: sem certificado para o participante
+[  83.1s] ✓ Da Teoria à Rotina: a Gestão do Bem-estar Animal no Parque das Aves — 19:00–21:00 · Gratuito (há ingressos pagos) · None · cert None
+[  83.1s] · Curso Defesa de TCC — fora: sem certificado para o participante
+[  83.1s] · Palestra: Nutrição e Autismo: o que a ciência mostra que funciona — fora: inscrições fechadas (ingressos: encerrado)
+[  83.1s] ✓ Ciclo de Palestra em Endocrinologia e Metabologia: DIABETES TIPO 2 — 19:30–21:00 · Gratuito · Even3 (área do participante) · cert None
+[  83.1s] ✓ Ciclo de Palestra em Endocrinologia e Metabologia: DIABETES TIPO 2: O  — 19:30–21:00 · Gratuito · Even3 (área do participante) · cert None
+[  83.1s] · Tec Talk - Qualidade na Indústria Farmacêutica: desafios, liderança e  — fora: sem certificado para o participante
+[  83.1s] · LISTA DE ESPERA - Semana da Biomedicina - LABEC — fora: inscrições fechadas (ingressos: encerrado)
+[  83.1s] · 21 dias para melhor versão — fora: inscrições fechadas (ingressos: não disponível)
+[  83.1s] · 2º Seminário Internacional do GEELLE – Grupo de Estudos sobre Educação — fora: inscrições fechadas (ingressos: em breve)
+[  83.1s] · PROTOCOLO XABCDE NA AVALIAÇÃO DO TRAUMA! — fora: sem certificado para o participante
+[  83.1s] · APIs: A Linguagem Secreta da Tecnologia — fora: sem certificado para o participante
+[  83.1s] · Direitos Humanos: arte e ciência -experiência do projeto de extensão — fora: inscrições fechadas (ingressos: em breve)
+[  83.1s] · Desafios contemporâneos para o Serviço Social — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  83.1s] ✓ Ameaças Transnacionais e Segurança na Amazônia: A Cooperação Militar S — 19:00–21:00 · Gratuito · YouTube · cert 2
+[  83.1s] · Curso de pós-graduação Lato Senso em História e Cultura Afro-brasileir — fora: inscrições fechadas (ingressos: não disponível)
+[  83.1s] · Laboratorizando: Plano de Negócio — fora: inscrições fechadas (ingressos: em breve)
+[  83.1s] · Palestra: ESG no Agronegócio — fora: inscrições fechadas (ingressos: em breve)
+[  83.1s] · teclado online — fora: inscrições fechadas (ingressos: não disponível)
+[  83.1s] · Sessão conjunta LAENDO E LAPEI: Endodontia no paciente idoso: Cuidados [ODONTO] — fora: sem certificado para o participante
+[  83.2s] · II Seminário Acadêmico e Científico de Educação a Distância e Ensino O — fora: inscrições fechadas (ingressos: encerrado)
+[  83.2s] · Novembro da Privacidade e Segurança da Informação: Segurança dos dados — fora: inscrições fechadas (ingressos: em breve)
+[  83.2s] fim: 7 eventos aceitos (0 de Odontologia) de 39 online no dia; descartados {'formato presencial': 236, 'sem certificado para o participante': 15, 'inscrições fechadas': 17}; erro: None
+
+===== 2026-11-11T00:19:26+00:00 =====
+[   0.0s] Even3 · eventos de 2026-11-11 (agora em Brasília: 2026-11-10 21:15)
+[   3.0s] sitemap: 7208 eventos futuros
+[   3.0s] índice: 7208 no sitemap, 6830 já conhecidas, 5843 para ler
+[   5.0s]   erro em https://www.even3.com.br/hands-on-de-sutura-08531b51-3b9a-4722-a96f-9ca162ab1c2f/: HTTP Error 500: Internal Server Error
+[   5.1s]   erro em https://www.even3.com.br/teste-plataforma-807564/: HTTP Error 404: Not Found
+[   8.8s]   erro em https://www.even3.com.br/ascensao-o-10-807516/: HTTP Error 404: Not Found
+[  14.2s]   erro em https://www.even3.com.br/alem-do-take-com-angela-dippe-807593/: HTTP Error 404: Not Found
+[  31.7s]   erro em https://www.even3.com.br/31-jornada-de-ginecologia-e-obstetricia-do-sudoeste-goiano-775664/: HTTP Error 404: Not Found
+[ 200.0s] índice: 5837 lidas, 6 erros
+[ 200.0s] 2026-11-11: 292 eventos começam no dia (modos {'off': 257, 'on': 35}); sem data no índice: 18
+[ 200.0s] abrindo 35 páginas online do dia
+[ 233.2s] · Rural Conecta - 2º Edição — fora: sem certificado para o participante
+[ 233.3s] · XIV Encontro da Transversalidade — fora: sem certificado para o participante
+[ 233.3s] ✓ VI Congresso Angolano de Medicina Veterinária OMVA — 10:00–17:00 · Gratuito · Even3 (área do participante) · cert None
+[ 233.3s] ✓ Ciclo de palestras em Angiologia e Cirurgia Vascular: Trombose do Viaj — 19:30–21:00 · Gratuito · Even3 (área do participante) · cert None
+[ 233.3s] · VII CONGRESSO DE DIREITO INTERNACIONAL E RELAÇÕES INTERNACIONAIS (CODI — fora: sem certificado para o participante
+[ 233.3s] · Minicurso: Transtornos e Dificuldades de Aprendizagem: Como identifica — fora: sem certificado para o participante
+[ 233.3s] · Webinar Avances en la articulación de la Medicina Tradicional, Complem — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[ 233.3s] · 23a Semana Nacional de Ciencias e Tecnologia - Educação a Distância — fora: sem certificado para o participante
+[ 233.3s] · Psicopatia Entre O Cérebro e Comportamento — fora: inscrições fechadas (ingressos: encerrado)
+[ 233.3s] · Engenharia de Prompts e Inteligência Artificial Generativa no Ensino S — fora: sem certificado para o participante
+[ 233.3s] · Aulão Preparatório ENADE26- "Tecnologia do Ambiente Construído" - A&U  — fora: sem certificado para o participante
+[ 233.3s] ✓ Workshop Nacional de Gestão da Mudança Organizacional: Partes Interess — 14:00–18:00 · Gratuito · None · cert None
+[ 233.3s] ✓ Congresso Interligas - III edição Faminas BH — 18:50–19:30 · R$ 7,50 · Google Meet · cert 10
+[ 233.3s] · XIV Colóquio de Estudos Vikings e Escandinavos (CEVE): Escandinavístic — fora: inscrições fechadas (ingressos: encerrado)
+[ 233.3s] · AVC: novas diretrizes, novos caminhos para salvar vidas — fora: sem certificado para o participante
+[ 233.3s] · Como elaborar o PEI? (Plano Educacional Individualizado). — fora: sem certificado para o participante
+[ 233.3s] · Webinar: Saúde mental no trabalho: Riscos psicossociais, liderança e i — fora: sem certificado para o participante
+[ 233.3s] · Autismo no ambiente de trabalho — fora: sem certificado para o participante
+[ 233.3s] · Educação Ambiental em diferentes espaços Práticas, experiências e cami — fora: sem certificado para o participante
+[ 233.3s] · Portal Energético Prana 11/11 — fora: inscrições fechadas (ingressos: encerrado)
+[ 233.3s] · II Congresso Nacional de Cirurgia Geral - INUMED — fora: sem certificado para o participante
+[ 233.3s] · Chaveiro mestre — fora: inscrições fechadas (ingressos: não disponível)
+[ 233.3s] · Aniversário — fora: inscrições fechadas (ingressos: não disponível)
+[ 233.3s] · Jornalismo em tempos de genocídio — fora: sem certificado para o participante
+[ 233.3s] · 17° Encuentro de la Red Latinoamericana de Desarrollo de Competencias  — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[ 233.3s] · 17° Encuentro de la Red Latinoamericana de Desarrollo de Competencias  — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[ 233.3s] · O Papel da Perícia no Mundo: Guia prático para ser Perito Assistente e — fora: inscrições fechadas (ingressos: em breve)
+[ 233.3s] · NÓS E REDES - INCT CALEIDOSCÓPIO INTERNUCLEAÇÕES Seminário Internacion — fora: sem certificado para o participante
+[ 233.3s] · Bloco de Reprodução em Bovinos - GERA FCAV — fora: sem certificado para o participante
+[ 233.3s] · ORGANIZACIÓN — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[ 233.3s] · III Fórum Ecossistemas de RH — fora: sem certificado para o participante
+[ 233.3s] · Empreendedor da Manutenção — fora: inscrições fechadas (ingressos: encerrado)
+[ 233.4s] ✓ Curso Análise Aplicada da Norma ABNT NBR ISO/IEC 17025:2017 — 18:00–22:00 · Gratuito · Microsoft Teams · cert None
+[ 233.4s] ✓ CUIDA: Você conhece sua profissão a luz da Lei 11.889/2008 ou apenas e [ODONTO] — 20:00–21:00 · Gratuito · None · cert None
+[ 233.4s] · Criação de Pequenos Ruminantes em Sistemas Integrados — fora: inscrições fechadas (ingressos: encerrado)
+[ 233.4s] fim: 6 eventos aceitos (1 de Odontologia) de 35 online no dia; descartados {'formato presencial': 257, 'sem certificado para o participante': 17, 'inscrições fechadas': 12}; erro: None
+
+===== 2026-11-10T02:26:08+00:00 =====
+[   0.0s] Even3 · eventos de 2026-11-10 (agora em Brasília: 2026-11-09 23:24)
+[   4.3s] sitemap: 7195 eventos futuros
+[   4.3s] índice: 7195 no sitemap, 7100 já conhecidas, 855 para ler
+[   5.7s]   erro em https://www.even3.com.br/niotes-de-verao-sonhos-de-natal-807111/: HTTP Error 404: Not Found
+[   7.3s]   erro em https://www.even3.com.br/labarea-r-tlco-s-cruz-vila-dionisio-80704m7-80704M7-807047/: HTTP Error 404: Not Found
+[  39.5s]   erro em https://www.even3.com.br/respeito-igualdade-e-prevencao-a-violencia-contra-a-mulher-803785/: HTTP Error 500: Internal Server Error
+[  39.5s] índice: 852 lidas, 3 erros
+[  39.5s] 2026-11-10: 232 eventos começam no dia (modos {'off': 195, 'on': 37}); sem data no índice: 14
+[  39.5s] abrindo 37 páginas online do dia
+[  81.9s] · CIPIEDU - CONGRESSO INTERNACIONAL DE PESQUISA E INOVAÇÃO NA EDUCAÇÃO — fora: sem certificado para o participante
+[  81.9s] · VI Seminário Internacional: Diferentes olhares do trabalho socioeducat — fora: sem certificado para o participante
+[  81.9s] · CURSO DE PERÍCIA TÉCNICA JUDICIAL EM AGRIMENSURA — fora: inscrições fechadas (ingressos: encerrado)
+[  81.9s] · ARTICULANDO AS RELAÇÕES INTRAPESSOAIS E INTERPESSOAIS — fora: inscrições fechadas (ingressos: em breve)
+[  81.9s] · Gagueira: da identificação precoce a vida adulta — fora: sem certificado para o participante
+[  81.9s] · CURSO EXTENSIVO DE PALEOGRAFIA 2 — fora: sem certificado para o participante
+[  81.9s] ✓ Paternidade Adotiva 10/11/26 — 20:00–22:00 · Gratuito · Zoom · cert None
+[  81.9s] · Minicurso - "Como viver? Uma introdução à filosofia da existência em K — fora: sem certificado para o participante
+[  81.9s] · Centro acadêmico — fora: inscrições fechadas (ingressos: não disponível)
+[  81.9s] ✓ Ciclo de Palestra em Medicina da Família e Comunidade: Dupla saúde - D — 19:30–21:00 · Gratuito · Even3 (área do participante) · cert None
+[  81.9s] · Como anda o cenário da Enfermagem Forense no Brasil? — fora: sem certificado para o participante
+[  81.9s] · O Uso de Terapias Integrativas em Pacientes Neurológicos — fora: inscrições fechadas (ingressos: em breve)
+[  81.9s] · Análise e Desenvolvimento de Sistemas — fora: sem certificado para o participante
+[  81.9s] · Projeto Jovens Pesquisadoras/e — fora: inscrições fechadas (ingressos: em breve)
+[  81.9s] · Apoie o LOBA Festival — fora: sem certificado para o participante
+[  82.0s] · Revista Brasileira Multidisciplinar de Investigação Científica — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  82.0s] · Siale - ll Seminário Internacional de Alfabetização e Letramento da UE — fora: inscrições fechadas (ingressos: não disponível)
+[  82.0s] · Minicurso de Fundamentos da Interpretação Geológica de Poços: Perfis,  — fora: inscrições fechadas (ingressos: encerrado)
+[  82.0s] · GRUPO DE APOIO A FAMILIARES E CÔNJUGES DE PESSOAS AUTISTAS ADULTAS NOV — fora: sem certificado para o participante
+[  82.0s] · I Seminário de Pesquisa sobre a Sociobiodiversidade nas Unidades de Co — fora: sem certificado para o participante
+[  82.0s] · Imersão em Gastroenterologia Pré-Simcav — fora: sem certificado para o participante
+[  82.0s] ✓ VII Simpósio do INTERGEN — 18:00–22:00 · Gratuito · None · cert None
+[  82.0s] · CLINTECH - 2ª EDIÇÃO — fora: sem certificado para o participante
+[  82.0s] · CREDENCIAMENTO NA LEI 14. 133/2021 COM USO DO SICX E CONTRATA+BRASIL — fora: sem certificado para o participante
+[  82.0s] · Clube de Gestores | Ciclo: Nov/2026 — fora: inscrições fechadas (ingressos: encerrado)
+[  82.0s] · Formatura — fora: inscrições fechadas (ingressos: não disponível)
+[  82.0s] · Da Bancada à Prateleira: Carreiras em Cosmetologia — fora: sem certificado para o participante
+[  82.0s] ✓ Workshop Nacional de Planejamento de Treinamento Organizacional: Neces — 14:00–18:00 · Gratuito · None · cert None
+[  82.0s] ✓ A Transformação dos Conflitos Modernos: Doutrinas de Defesa, Guerra de — 19:00–21:00 · Gratuito · YouTube · cert 2
+[  82.0s] · pictv — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  82.0s] · Rifa — fora: inscrições fechadas (ingressos: não disponível)
+[  82.0s] · Programa de Difusão Científica- UniLogos — fora: sem certificado para o participante
+[  82.0s] · Webinário: Novembro Azul no Território: Doenças Prevalentes e Cuidado  — fora: sem certificado para o participante
+[  82.1s] ✓ I Encontro Nacional de Citologia, Genética e Biologia Molecular Online — 08:00–22:00 · R$ 22,40 a R$ 71,91 · YouTube, Google Meet, Zoom, Even3 (área do participante), WhatsApp · cert 40
+[  82.1s] · ECA Digital — O que muda nos celulares da sua família? — fora: sem certificado para o participante
+[  82.2s] ✓ VII Jornada da Licenciatura em Ciências da Religião — 19:00–21:00 · R$ 22,50 · YouTube · cert None
+[  82.2s] · Ciclo de Debates - Indenização e as Fronteiras entre Compensar, Castig — fora: sem certificado para o participante
+[  82.2s] fim: 7 eventos aceitos (0 de Odontologia) de 37 online no dia; descartados {'formato presencial': 195, 'sem certificado para o participante': 18, 'inscrições fechadas': 12}; erro: None
+
+===== 2026-11-08T23:11:23+00:00 =====
+[   0.0s] Even3 · eventos de 2026-11-09 (agora em Brasília: 2026-11-08 20:09)
+[   5.0s] sitemap: 7260 eventos futuros
+[   5.0s] índice: 7260 no sitemap, 7146 já conhecidas, 954 para ler
+[  47.3s]   erro em https://www.even3.com.br/respeito-igualdade-e-prevencao-a-violencia-contra-a-mulher-803785/: HTTP Error 500: Internal Server Error
+[  47.3s] índice: 953 lidas, 1 erros
+[  47.3s] 2026-11-09: 338 eventos começam no dia (modos {'off': 296, 'on': 42}); sem data no índice: 13
+[  47.3s] abrindo 42 páginas online do dia
+[  85.3s] · Mapa da Oralidade Quilombola - Lagoa Nova — fora: sem certificado para o participante
+[  85.3s] · XIV Seminário de Programas Especiais em Educação - Seminário de Desfec — fora: sem certificado para o participante
+[  85.3s] ✓ Rastros Ocultos II Simpósio de Ciências Forense — 19:00–None · R$ 17,50 · Google Meet · cert None
+[  85.3s] · Enfermagem na APS autonomia responsabilidade e limites ético legais da — fora: inscrições fechadas (ingressos: não disponível)
+[  85.3s] · Desafio Academia de Monstrinhas [odonto fraco] — fora: inscrições fechadas (ingressos: encerrado)
+[  85.3s] · Grupo de apoio segunda 15h novembro 2026 — fora: sem certificado para o participante
+[  85.3s] ✓ ACADEMIAVET SUMMIT (2ª edição) — 20:00–22:00 · Gratuito (há ingressos pagos) · None · cert None
+[  85.3s] · BRASIL EM TEMPO DE REVISÃO — fora: inscrições fechadas (ingressos: encerrado)
+[  85.3s] · Semana de Saúde Integral Afya 2026 — fora: sem certificado para o participante
+[  85.3s] ✓ Planejamento Experimental e Análise de Dados com IA Generativa — 19:00–21:00 · Gratuito (há ingressos pagos) · None · cert 6
+[  85.3s] · reunião habilitados habilitandos novembro 2026 — fora: inscrições fechadas (ingressos: encerrado)
+[  85.3s] · WEBINAR DO GEPAE: Saneamento Circular — fora: sem certificado para o participante
+[  85.3s] · Programação de MAC em Simulação com IHM – Plataforma Sysmac Studio — fora: sem certificado para o participante
+[  85.3s] · Webinário sobre "Adoção Internacional na Prática: fluxos, competências — fora: sem certificado para o participante
+[  85.3s] · EXPOMADRE TESTE — fora: inscrições fechadas (ingressos: em breve)
+[  85.4s] · Artigo Cientifico — fora: inscrições fechadas (ingressos: encerrado)
+[  85.4s] · Simpósio Moacir Santos 100 Anos — fora: sem certificado para o participante
+[  85.4s] · Minicurso Formação e Rompimento de Vínculos — fora: inscrições fechadas (ingressos: encerrado)
+[  85.4s] · Fora do Script — fora: inscrições fechadas (ingressos: encerrado)
+[  85.4s] · LBGT EXPO BRASIL — fora: inscrições fechadas (ingressos: não disponível)
+[  85.4s] · Outros passados, outros brasis: O passado negro na Imprensa Negra Bras — fora: inscrições fechadas (ingressos: encerrado)
+[  85.4s] ✓ Ciclo de Palestras em Psiquiatria: Medicina do Sono — 19:30–21:00 · Gratuito · None · cert None
+[  85.4s] · congresso de odontologia [ODONTO] — fora: inscrições fechadas (ingressos: não disponível)
+[  85.4s] · Democracia sob ataque: a era do autoritarismo digital. [ISOC - Reunião — fora: sem certificado para o participante
+[  85.4s] · Interações, Vínculos e Rotinas de Cuidado na Educação Infantil — fora: inscrições fechadas (ingressos: em breve)
+[  85.4s] · Grupo de Apoio Segunda 19h - Novembro — fora: sem certificado para o participante
+[  85.4s] · Formação Educação Especial Inclusiva — fora: inscrições fechadas (ingressos: em breve)
+[  85.4s] ✓ Workshop Nacional de Planejamento da Capacidade Operacional: Filas, Di — 14:00–18:00 · Gratuito · None · cert None
+[  85.4s] ✓ Conhecendo os Moluscos: Da Diversidade à Biologia dos Gastrópodes Terr — 19:00–21:00 · R$ 29,25 a R$ 32,40 · Google Meet, Even3 (área do participante), WhatsApp · cert None
+[  85.4s] · Webinário - Como fazer triagem de risco para planejamento na UBS/Escol [ODONTO] — fora: inscrições fechadas (ingressos: encerrado)
+[  85.4s] · Quiz Comercial VS — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  85.4s] · Curso On-line de Integração Regional — fora: inscrições fechadas (ingressos: encerrado)
+[  85.4s] · IIP | Ateliê de escrita: Introdução à escrita livre — fora: sem certificado para o participante
+[  85.4s] · Live — fora: inscrições fechadas (ingressos: não disponível)
+[  85.4s] · Diplomacia comercial e os desafios jurídicos da soberania econômica — fora: sem certificado para o participante
+[  85.4s] · curso de extensão — fora: inscrições fechadas (ingressos: não disponível)
+[  85.4s] · Policlínica Itinerante: Diálogos Sobre o Trabalho em Saúde - Diálogos  — fora: sem certificado para o participante
+[  85.4s] · III Jornada do Programa de Iniciação Científica Uninter & VI Seminário — fora: inscrições fechadas (ingressos: encerrado)
+[  85.4s] · DOXA AI: da prática clínica à inovação em saúde — fora: inscrições fechadas (ingressos: encerrado)
+[  85.4s] · Curso Tecnologia e Química dos Aromas — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  85.5s] · Como o Cérebro Aprende — fora: sem certificado para o participante
+[  85.5s] ✓ Seminário sobre Inclusão de Pessoas com Deficiência em Universidades d — 08:00–16:30 · Gratuito · None · cert None
+[  85.5s] fim: 7 eventos aceitos (0 de Odontologia) de 42 online no dia; descartados {'formato presencial': 296, 'sem certificado para o participante': 14, 'inscrições fechadas': 21}; erro: None
+
+===== 2026-11-07T23:03:21+00:00 =====
+[   0.0s] Even3 · eventos de 2026-11-08 (agora em Brasília: 2026-11-07 20:02)
+[   3.2s] sitemap: 7502 eventos futuros
+[   3.2s] índice: 7502 no sitemap, 7217 já conhecidas, 981 para ler
+[   9.3s]   erro em https://www.even3.com.br/xxii-semat-806667/: HTTP Error 404: Not Found
+[  41.7s]   erro em https://www.even3.com.br/respeito-igualdade-e-prevencao-a-violencia-contra-a-mulher-803785/: HTTP Error 500: Internal Server Error
+[  42.2s] índice: 979 lidas, 2 erros
+[  42.3s] 2026-11-08: 155 eventos começam no dia (modos {'off': 133, 'on': 22}); sem data no índice: 14
+[  42.3s] abrindo 22 páginas online do dia
+[  65.4s] · Lírio Beiz — fora: inscrições fechadas (ingressos: não disponível)
+[  65.4s] · Apresentações de alto impacto: O papel do design e da inteligência art — fora: inscrições fechadas (ingressos: encerrado)
+[  65.4s] ✓ Workshop Nacional de Gestão do Atendimento ao Cliente: Jornada de Serv — 14:00–18:00 · Gratuito · None · cert None
+[  65.4s] · Desvendando Abdomén Agudo Inflamatório, e a sua Anatomia — fora: inscrições fechadas (ingressos: encerrado)
+[  65.4s] · teste de plataforma — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  65.4s] · COMO TER UMA VIDA FINANCEIRA ESTÁVEL — fora: inscrições fechadas (ingressos: não disponível)
+[  65.4s] · DO SENSORIAL À OCUPAÇÃO: Setting terapêutico, Integração Sensorial e p — fora: inscrições fechadas (ingressos: encerrado)
+[  65.5s] · teste — fora: inscrições fechadas (ingressos: encerrado)
+[  65.5s] · Introdução ao Worldbuilding — fora: inscrições fechadas (ingressos: não disponível)
+[  65.5s] · Coloração descobricada. — fora: inscrições fechadas (ingressos: não disponível)
+[  65.5s] ✓ Workshop - Fisioterapia aplicada à saúde da mulher e da gestante — 09:00–16:00 · R$ 62,91 a R$ 89,91 · None · cert None
+[  65.5s] · Grupo de Apoio Domingos 19h novembro 2026 — fora: sem certificado para o participante
+[  65.5s] · Capacitação em Saúde Indígena em Contexto Urbano | ACS — fora: inscrições fechadas (ingressos: não disponível)
+[  65.5s] · SBV estudantes — fora: inscrições fechadas (ingressos: não disponível)
+[  65.5s] · Treinamento de Biossegurança — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  65.5s] · palestra — fora: inscrições fechadas (ingressos: não disponível)
+[  65.5s] · Dispneia: como organizar o raciocínio clínico. — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  65.5s] · 2ª Reunião do Projeto de Extensão Polo Aberto — fora: inscrições fechadas (ingressos: não disponível)
+[  65.5s] · JORNADA NORTE-NORDESTE DE ENGENHARIAS — fora: inscrições fechadas (ingressos: não disponível)
+[  65.5s] · CAMPEONATO FF — fora: inscrições fechadas (ingressos: não disponível)
+[  65.5s] · Workshop Mega-hair — fora: inscrições fechadas (ingressos: não disponível)
+[  65.5s] · PALESTRA DIREITOS DAS CRIANÇAS — fora: inscrições fechadas (ingressos: em breve)
+[  65.5s] fim: 2 eventos aceitos (0 de Odontologia) de 22 online no dia; descartados {'formato presencial': 133, 'inscrições fechadas': 19, 'sem certificado para o participante': 1}; erro: None
+
+===== 2026-11-06T23:51:51+00:00 =====
+[   0.0s] Even3 · eventos de 2026-11-07 (agora em Brasília: 2026-11-06 20:50)
+[   1.2s] sitemap: 7591 eventos futuros
+[   1.2s] índice: 7591 no sitemap, 7478 já conhecidas, 923 para ler
+[   3.3s]   erro em https://www.even3.com.br/my-festta-806435/: HTTP Error 404: Not Found
+[   4.2s]   erro em https://www.even3.com.br/ascensao-odun-10-806456/: HTTP Error 404: Not Found
+[  10.1s]   erro em https://www.even3.com.br/direito-e-acao-799138/: HTTP Error 404: Not Found
+[  17.5s]   erro em https://www.even3.com.br/workshop-mobilidade-urbana-794836/: HTTP Error 404: Not Found
+[  26.2s]   erro em https://www.even3.com.br/respeito-igualdade-e-prevencao-a-violencia-contra-a-mulher-803785/: HTTP Error 500: Internal Server Error
+[  26.2s] índice: 918 lidas, 5 erros
+[  26.3s] 2026-11-07: 338 eventos começam no dia (modos {'off': 293, 'on': 45}); sem data no índice: 15
+[  26.3s] abrindo 45 páginas online do dia
+[  89.5s] ✓ X Simpósio Geneando — 09:00–12:00 · Gratuito · Zoom, WhatsApp · cert None
+[  89.5s] · Curso de Extensão em Redação — fora: inscrições fechadas (ingressos: encerrado)
+[  89.5s] · I FÓRUM INTERNACIONAL DE DOULAS DE FIM DE VIDA — fora: inscrições fechadas (ingressos: não disponível)
+[  89.5s] · Workshop Bioblitz Brasil 2026-2027 — fora: inscrições fechadas (ingressos: encerrado)
+[  89.5s] · O Paciente Além da Abordagem: Manejo Clínico e Integração na Formação  — fora: inscrições fechadas (ingressos: em breve)
+[  89.5s] ✓ O DESENHO PARA ALÉM DO LÁPIS — 11:30–17:00 · R$ 114,30 · None · cert 30
+[  89.5s] · MEUS ALUNOS USAM IA. E AGORA? Oficina de Inteligência Artificial na Do — fora: sem certificado para o participante
+[  89.5s] · Miguel — fora: inscrições fechadas (ingressos: não disponível)
+[  89.5s] · LIBRAS BÁSICO II by Márcia Rúbia — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  89.5s] · I Seminário de leitura e interpretação de textos filosóficos, Ufma/Gra — fora: inscrições fechadas (ingressos: não disponível)
+[  89.6s] ✓ IX Evento Científico de Gestão de Projetos e Portfólio do PMI-MG — 08:30–17:30 · Gratuito (há ingressos pagos) · None · cert None
+[  89.6s] · 2ª TURMA — TREINAMENTO INTRODUTÓRIO DE PROTEÇÃO DO SEP — fora: inscrições fechadas (ingressos: encerrado)
+[  89.6s] · Ciclo de Formação Afrocêntrica Zenaide Zen — fora: inscrições fechadas (ingressos: encerrado)
+[  89.6s] · Palestra: Inovação na Gestão - Encontro dedicado à reflexão sobre inov — fora: inscrições fechadas (ingressos: não disponível)
+[  89.6s] · TERÇAS LACANIANAS — fora: sem certificado para o participante
+[  89.6s] ✓ Conhecendo a TCR aula 4 — 09:00–12:00 · Gratuito · Google Meet · cert None
+[  89.6s] · WEBINAR INTERNACIONAL - Diálogos na História da Enfermagem Luso-Brasil — fora: inscrições fechadas (ingressos: não disponível)
+[  89.6s] · Teste — fora: inscrições fechadas (ingressos: não disponível)
+[  89.6s] · IV Simpósio de Análise do Comportamento e Questões Étnico-Raciais — fora: sem certificado para o participante
+[  89.6s] ✓ Encontro do Tecnólogo em Gestão de Turismo — 08:30–18:30 · Gratuito · None · cert 20
+[  89.6s] · RADIOGRAFIA DE TÓRAX NO ADULTO NA PRÁTICA CLÍNICA - ON LINE — fora: inscrições fechadas (ingressos: encerrado)
+[  89.6s] · Aula 7 | Curso de Formação Política para Psicólogas — fora: inscrições fechadas (ingressos: encerrado)
+[  89.6s] ✓ Curso: Psi, e agora? Formação, carreira e prática profissional — 08:30–17:00 · R$ 198,00 · None · cert 6
+[  89.6s] · Painel SMM: Guia Completo para Escolher o Melhor em 2026 — fora: inscrições fechadas (ingressos: não disponível)
+[  89.6s] · SETARI - Science, Engineering, Technology, Applied Research & Innovati — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  89.6s] · Classificação de riscos X Acolhimento — fora: inscrições fechadas (ingressos: encerrado)
+[  89.6s] · teste — fora: inscrições fechadas (ingressos: não disponível)
+[  89.6s] · Bordado Ancestral — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  89.7s] ✓ Relatórios no AEE - Escrever para garantir direitos — 09:00–12:00 · R$ 17,40 · Google Meet, WhatsApp · cert 10
+[  89.7s] · Destrave sua vida profissional: currículo, entrevista e carreira — fora: inscrições fechadas (ingressos: encerrado)
+[  89.7s] · Simpósio LAAP PUCRS - Avaliação Psicológica: diálogos entre contextos  — fora: inscrições fechadas (ingressos: encerrado)
+[  89.7s] · Como proteger sua saúde mental e física em tempos de ansiedade, depres — fora: inscrições fechadas (ingressos: encerrado)
+[  89.7s] · Atividade de História — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  89.7s] · I jornada transdisciplinar de saúde e educação do gertdisciplinar — fora: inscrições fechadas (ingressos: não disponível)
+[  89.7s] ✓ Workshop Nacional de Orçamento Empresarial e Controle de Desvios: Prem — 14:00–18:00 · Gratuito · None · cert None
+[  89.7s] · SINTIPOA - Simpósio Nacional de Tecnologia e Inspeção de Produtos de O — fora: inscrições fechadas (ingressos: encerrado)
+[  89.7s] ✓ Transformando alimentos em oportunidades: Desenvolvimento, segurança e — 09:00–11:30 · Gratuito · None · cert 4
+[  89.7s] · São Paulo tcs — fora: inscrições fechadas (ingressos: não disponível)
+[  89.7s] · Ganhe dinheiro investindo pouco — fora: inscrições fechadas (ingressos: não disponível)
+[  89.7s] · Os Reinos E Cidades Da África Centro-Oeste E Os Sistemas Culturais, Po — fora: inscrições fechadas (ingressos: encerrado)
+[  89.7s] · VII Simpósio Acadêmico de Naturologia — fora: sem certificado para o participante
+[  89.7s] · villa frére — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  89.7s] · Oficina Destrava para Redes Sociais — fora: sem certificado para o participante
+[  89.7s] · Abordagem fisioterapêutica no idoso longevo — fora: sem certificado para o participante
+[  89.7s] · SIMULADO ON-LINE TEAC 26 AO VIVO — fora: inscrições fechadas (ingressos: em breve)
+[  89.7s] fim: 9 eventos aceitos (0 de Odontologia) de 45 online no dia; descartados {'formato presencial': 293, 'inscrições fechadas': 30, 'sem certificado para o participante': 6}; erro: None
+
+===== 2026-11-06T00:35:03+00:00 =====
+[   0.0s] Even3 · eventos de 2026-11-06 (agora em Brasília: 2026-11-05 21:33)
+[   2.3s] sitemap: 7838 eventos futuros
+[   2.3s] índice: 7838 no sitemap, 7630 já conhecidas, 1056 para ler
+[   2.7s]   erro em https://www.even3.com.br/workshop-ensino-por-investigacao-806317/: HTTP Error 404: Not Found
+[   3.1s]   erro em https://www.even3.com.br/jornada-de-rh-neurodiversidade-e-sindrome-de-down-no-trabalho-806173/: HTTP Error 404: Not Found
+[   3.3s]   erro em https://www.even3.com.br/jornada-de-rh-geracao-z-e-o-novos-desafios-do-rh-806195/: HTTP Error 404: Not Found
+[   3.4s]   erro em https://www.even3.com.br/jornada-de-rh-acoes-de-sustentabilidade-nas-organizacoes-806209/: HTTP Error 404: Not Found
+[   3.8s]   erro em https://www.even3.com.br/jornada-de-rh-me-formei-e-agora-empreendedorismo-e-mercado-de-trabalho-806166/: HTTP Error 404: Not Found
+[  31.5s] índice: 1044 lidas, 12 erros
+[  31.5s] 2026-11-06: 347 eventos começam no dia (modos {'off': 300, 'on': 47}); sem data no índice: 27
+[  31.5s] abrindo 47 páginas online do dia
+[  74.1s] · Mídia teste — fora: inscrições fechadas (ingressos: não disponível)
+[  74.1s] · VI CONGRESSO DE INOVAÇÃO E INTERNACIONALIZAÇÃO 2026 — fora: sem certificado para o participante
+[  74.1s] · IV Simpósio Ligas Day — fora: inscrições fechadas (ingressos: em breve)
+[  74.2s] · Plenária IFB com Lula — fora: inscrições fechadas (ingressos: encerrado)
+[  74.2s] · Tratamento Cura e Alinhamento Energético — fora: inscrições fechadas (ingressos: não disponível)
+[  74.2s] · Aniversário da Escola de Enfermagem — fora: inscrições fechadas (ingressos: encerrado)
+[  74.2s] · I SEMINÁRIO INTERNACIONAL DO NERELPSI — fora: inscrições fechadas (ingressos: encerrado)
+[  74.2s] · Roda de conversa: E se a gente simplesmente escutasse? — fora: sem certificado para o participante
+[  74.2s] · Pré Natal de Risco: condutas da equipe multiprofissional — fora: inscrições fechadas (ingressos: encerrado)
+[  74.2s] · Ciclo Forma SAN Bahia - Segundo Encontro: Processos de Adesão e Perman — fora: sem certificado para o participante
+[  74.2s] · Fundo do mar — fora: inscrições fechadas (ingressos: em breve)
+[  74.2s] · Kennedy França Souza — fora: inscrições fechadas (ingressos: em breve)
+[  74.2s] · Limpeza Detalhada Seazone — fora: inscrições fechadas (ingressos: não disponível)
+[  74.2s] ✓ Congresso Nacional de Biomedicina — 19:30–18:30 · Gratuito · None · cert 30
+[  74.2s] · Calendário letivo — fora: inscrições fechadas (ingressos: não disponível)
+[  74.2s] ✓ Workshop Nacional de Formação de Preços e Margem de Contribuição: Cust — 14:00–18:00 · Gratuito · None · cert None
+[  74.2s] · Classificação de Riscos — fora: inscrições fechadas (ingressos: encerrado)
+[  74.2s] · PSS/SSAM — fora: inscrições fechadas (ingressos: não disponível)
+[  74.2s] · Capacitação Halton Refrin — fora: inscrições fechadas (ingressos: encerrado)
+[  74.2s] · Teste 2 — fora: inscrições fechadas (ingressos: não disponível)
+[  74.2s] · Teste — fora: inscrições fechadas (ingressos: não disponível)
+[  74.2s] · Diálogos de pesquisa apresenta "Performance arte pela liberdade de exp — fora: sem certificado para o participante
+[  74.2s] · LIBRAS BÁSICO I by Márcia Rúbia — fora: inscrições fechadas (ingressos: encerrado)
+[  74.2s] · ISNCRIÇÃO CIPA 2026/2027 — fora: inscrições fechadas (ingressos: não disponível)
+[  74.2s] · MENTORIA ONLINE - como transformar ideias, conexões e oportunidades em — fora: inscrições fechadas (ingressos: não disponível)
+[  74.2s] · O mercado de trabalho para o engenheiro civil nos EUA — fora: inscrições fechadas (ingressos: não disponível)
+[  74.2s] · Encontro Longevidade em ILPIs: Gestão Eficiente e Cuidado Centrado no  — fora: inscrições fechadas (ingressos: não disponível)
+[  74.2s] · Preparatório para a Prova de Título de Especialista em Fisioterapia em — fora: sem certificado para o participante
+[  74.2s] · Grupo de Apoio Sexta 19h - Novembro — fora: sem certificado para o participante
+[  74.2s] · Empreendedorismo na piscicultura ornamental: oportunidades e estratégi — fora: sem certificado para o participante
+[  74.2s] · Imersão Empreenda Farma — fora: sem certificado para o participante
+[  74.2s] · 3º Encontro de Egresso(a)s do PPCL e do ProfLetras/Uern/Mossoró — fora: sem certificado para o participante
+[  74.2s] · Café com IA - Karin Becker — fora: sem certificado para o participante
+[  74.2s] · Oficina de Capacitação – Meningites e Doenças Invasivas — fora: sem certificado para o participante
+[  74.2s] · Capacitação em Plantas Medicinais e Fitoterápicos na Atenção Primária  [odonto fraco] — fora: sem certificado para o participante
+[  74.2s] · Mentoria Destrave — fora: inscrições fechadas (ingressos: não disponível)
+[  74.2s] · REDD Convida — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[  74.2s] · Congresso Construindo Carreiras na Psicologia — fora: sem certificado para o participante
+[  74.2s] · Análise de Dados de Satélites Aplicada à Agricultura: Tecnologia e Tom — fora: sem certificado para o participante
+[  74.2s] · Clube do Livro: De Mãos Vazias - Compreendendo e Acolhendo a Perda e o — fora: sem certificado para o participante
+[  74.2s] · I SEMINÁRIO SOBRE FAMÍLIA E CRONICIDADE: as interfaces do ensino, pesq — fora: inscrições fechadas (ingressos: encerrado)
+[  74.2s] · Acolher para Transformar: inclusão e acolhimento de pessoas com necess — fora: sem certificado para o participante
+[  74.2s] · Casamento Bruna e jailson — fora: inscrições fechadas (ingressos: não disponível)
+[  74.2s] · Entre Memórias e Resistências: Consciência Negra, Cultura e Educação e — fora: sem certificado para o participante
+[  74.2s] · Sigilo profissional: princípios, responsabilidades e dilemas na assist — fora: sem certificado para o participante
+[  74.2s] · Webinar Teste - PAEQ — fora: inscrições fechadas (ingressos: não disponível)
+[  74.2s] · Curso de Neuroanatomia — fora: inscrições fechadas (ingressos: não disponível)
+[  74.2s] fim: 2 eventos aceitos (0 de Odontologia) de 47 online no dia; descartados {'formato presencial': 300, 'inscrições fechadas': 27, 'sem certificado para o participante': 18}; erro: None
+
+===== 2026-11-05T18:14:09+00:00 =====
+[   0.0s] Even3 · eventos de 2026-11-06 (agora em Brasília: 2026-11-05 15:11)
+[  22.5s] sitemap: 7648 eventos futuros
+[  22.5s] índice: 7648 no sitemap, 6913 já conhecidas, 1526 para ler
+[  24.7s]   erro em https://www.even3.com.br/psiquiatria-sobre-saude-mental-805281/: <urlopen error [Errno 104] Connection reset by peer>
+[  24.7s]   erro em https://www.even3.com.br/cafe-cientifico-assistencia-multiprofissional-ao-paciente-critico-805099/: <urlopen error [Errno 104] Connection reset by peer>
+[  24.9s]   erro em https://www.even3.com.br/documentos-fiscais-no-agro-805635/: <urlopen error [Errno 104] Connection reset by peer>
+[  25.3s]   erro em https://www.even3.com.br/teste-key-vault-805378/: <urlopen error [Errno 104] Connection reset by peer>
+[  25.6s]   erro em https://www.even3.com.br/expo-educa-empreende-4-edicao-9f9487c6-6c9d-4cc1-aaa0-a203d229dd58-805531/: <urlopen error [Errno 104] Connection reset by peer>
+[  80.9s] índice: 1505 lidas, 21 erros
+[  80.9s] 2026-11-06: 343 eventos começam no dia (modos {'off': 296, 'on': 47}); sem data no índice: 36
+[  80.9s] abrindo 47 páginas online do dia
+[ 135.0s] ✓ Workshop Nacional de Formação de Preços e Margem de Contribuição: Cust — 14:00–18:00 · Gratuito · None · cert None
+[ 135.0s] · MENTORIA ONLINE - como transformar ideias, conexões e oportunidades em — fora: inscrições fechadas (ingressos: não disponível)
+[ 135.0s] · Mídia teste — fora: inscrições fechadas (ingressos: não disponível)
+[ 135.0s] · Café com IA - Karin Becker — fora: sem certificado para o participante
+[ 135.0s] · Diálogos de pesquisa apresenta "Performance arte pela liberdade de exp — fora: sem certificado para o participante
+[ 135.0s] · Kennedy França Souza — fora: inscrições fechadas (ingressos: em breve)
+[ 135.0s] · Classificação de Riscos — fora: inscrições fechadas (ingressos: encerrado)
+[ 135.0s] · Clube do Livro: De Mãos Vazias - Compreendendo e Acolhendo a Perda e o — fora: sem certificado para o participante
+[ 135.0s] · Grupo de Apoio Sexta 19h - Novembro — fora: sem certificado para o participante
+[ 135.0s] · Calendário letivo — fora: inscrições fechadas (ingressos: não disponível)
+[ 135.0s] · Oficina de Capacitação – Meningites e Doenças Invasivas — fora: sem certificado para o participante
+[ 135.0s] · VI CONGRESSO DE INOVAÇÃO E INTERNACIONALIZAÇÃO 2026 — fora: sem certificado para o participante
+[ 135.0s] · REDD Convida — fora: inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)
+[ 135.0s] · Sigilo profissional: princípios, responsabilidades e dilemas na assist — fora: sem certificado para o participante
+[ 135.0s] · Análise de Dados de Satélites Aplicada à Agricultura: Tecnologia e Tom — fora: sem certificado para o participante
+[ 135.0s] · Acolher para Transformar: inclusão e acolhimento de pessoas com necess — fora: sem certificado para o participante
+[ 135.0s] · Tratamento Cura e Alinhamento Energético — fora: inscrições fechadas (ingressos: não disponível)
+[ 135.0s] · ISNCRIÇÃO CIPA 2026/2027 — fora: inscrições fechadas (ingressos: não disponível)
+[ 135.0s] · Empreendedorismo na piscicultura ornamental: oportunidades e estratégi — fora: sem certificado para o participante
+[ 135.0s] · Pré Natal de Risco: condutas da equipe multiprofissional — fora: inscrições fechadas (ingressos: encerrado)
+[ 135.0s] · LIBRAS BÁSICO I by Márcia Rúbia — fora: inscrições fechadas (ingressos: encerrado)
+[ 135.0s] · Teste — fora: inscrições fechadas (ingressos: não disponível)
+[ 135.0s] · Teste 2 — fora: inscrições fechadas (ingressos: não disponível)
+[ 135.0s] · Limpeza Detalhada Seazone — fora: inscrições fechadas (ingressos: não disponível)
+[ 135.0s] · Fundo do mar — fora: inscrições fechadas (ingressos: em breve)
+[ 135.0s] · PSS/SSAM — fora: inscrições fechadas (ingressos: não disponível)

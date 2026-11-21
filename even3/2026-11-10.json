@@ -1,0 +1,541 @@
+{
+ "versao": 1,
+ "fonte": "even3",
+ "data": "2026-11-10",
+ "geradoEm": "2026-11-10T02:24:46+00:00",
+ "erro": null,
+ "criterios": "online, começa na data, inscrições abertas (REALIZAR INSCRIÇÃO e um ingresso vigente), certificado para o participante dito na página",
+ "totalLista": 37,
+ "analisados": 37,
+ "eventos": [
+  {
+   "id": "e3-701190",
+   "nome": "I Encontro Nacional de Citologia, Genética e Biologia Molecular Online (I APROGEN)",
+   "resumo": "I Encontro Nacional de Citologia, Genética e Biologia Molecular Online (I APROGEN)",
+   "url": "https://www.even3.com.br/aprogen-701190/",
+   "urlFinal": null,
+   "data": "2026-11-10",
+   "dataFim": "2026-11-13",
+   "inicio": "08:00",
+   "fim": "22:00",
+   "formato": "online",
+   "preco": "R$ 22,40 a R$ 71,91",
+   "gratuito": false,
+   "ingressos": [
+    {
+     "nome": "Lote promocional de inscrições",
+     "valor": "R$ 22,50",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Técnico e graduando",
+     "valor": "R$ 31,50",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Técnico e graduando",
+     "valor": "R$ 35,91",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Pós-graduando",
+     "valor": "R$ 45,00",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Pós-graduando",
+     "valor": "R$ 62,91",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Profissional",
+     "valor": "R$ 54,00",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Profissional",
+     "valor": "R$ 71,91",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Inscrição coletiva com desconto (grupos de 10 estudantes)",
+     "valor": "R$ 22,50",
+     "situacao": "encerrado"
+    }
+   ],
+   "plataforma": "YouTube, Google Meet, Zoom, Even3 (área do participante), WhatsApp",
+   "certificado": {
+    "trecho": "Sua participação contará com certificado específico e comprovação de atividade acadêmico-científica.",
+    "horas": 40
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-803789",
+   "nome": "Workshop Nacional de Planejamento de Treinamento Organizacional: Necessidades, Trilhas e Avaliação de Aprendizagem",
+   "resumo": "Workshop Nacional de Planejamento de Treinamento Organizacional: Necessidades, Trilhas e Avaliação de Aprendizagem",
+   "url": "https://www.even3.com.br/workshop-nacional-de-planejamento-de-treinamento-organizacional-necessidades-trilhas-e-avaliacao-de-aprendizagem-803789/",
+   "urlFinal": null,
+   "data": "2026-11-10",
+   "dataFim": null,
+   "inicio": "14:00",
+   "fim": "18:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Participação Geral",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "A certificação de participação deve refletir o cumprimento dos critérios efetivos da atividade.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-802510",
+   "nome": "VII Simpósio do INTERGEN",
+   "resumo": "O Simpósio INTERGEN 2026 é uma iniciativa conjunta de grupos de estudos em Genética e Melhoramento de Plantas de diferentes instituições de ensino e pesquisa do Brasil, com o propósito de promover a integração acadêmica, o intercâmbio de conhecimentos e a aproximação entre estudantes, pesquisadores…",
+   "url": "https://www.even3.com.br/viisimposiodointergen-802510/",
+   "urlFinal": null,
+   "data": "2026-11-10",
+   "dataFim": null,
+   "inicio": "18:00",
+   "fim": "22:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Estudantes de Graduação",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Estudante de Pós Graduação",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Professores",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Profissinais",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "📜 Certificado: Haverá emissão de certificado de participação.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-806366",
+   "nome": "A Transformação dos Conflitos Modernos: Doutrinas de Defesa, Guerra de Informação e a Nova Geopolítica Multipolar",
+   "resumo": "A Transformação dos Conflitos Modernos: Doutrinas de Defesa, Guerra de Informação e a Nova Geopolítica Multipolar",
+   "url": "https://www.even3.com.br/a-transformacao-dos-conflitos-modernos-doutrinas-de-defesa-guerra-de-informacao-e-a-nova-geopolitica-multipolar-806366/",
+   "urlFinal": null,
+   "data": "2026-11-10",
+   "dataFim": null,
+   "inicio": "19:00",
+   "fim": "21:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Estudante da UEMA",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Estudante de outra instituição",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Público externo",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Militar das Forças Armadas",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Militar das Forças Auxiliares",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Professores",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "YouTube",
+   "certificado": {
+    "trecho": "O evento será aberto a todos os públicos e contará com certificado de participação de 2 horas.",
+    "horas": 2
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-771017",
+   "nome": "VII Jornada da Licenciatura em Ciências da Religião",
+   "resumo": "Como construir uma prática pedagógica plural, laica e reflexiva no Ensino Religioso diante dos desafios contemporâneos e das pressões dogmáticas?",
+   "url": "https://www.even3.com.br/vii-jornada-da-licenciatura-em-ciencias-da-religiao-771017/",
+   "urlFinal": null,
+   "data": "2026-11-10",
+   "dataFim": "2026-11-12",
+   "inicio": "19:00",
+   "fim": "21:00",
+   "formato": "online",
+   "preco": "R$ 22,50",
+   "gratuito": false,
+   "ingressos": [
+    {
+     "nome": "Participante Ouvinte",
+     "valor": "R$ 22,50",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Participante com Comunicação",
+     "valor": "R$ 27,00",
+     "situacao": "encerrado"
+    }
+   ],
+   "plataforma": "YouTube",
+   "certificado": {
+    "trecho": "Participante Ouvinte — R$ 25,00: Acesso a todas as transmissões, mesas redondas, conferências e emissão de certificado oficial de participação.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-802881",
+   "nome": "Ciclo de Palestra em Medicina da Família e Comunidade: Dupla saúde - Da prevenção a longevidade para mulheres e homens",
+   "resumo": "Ciclo de Palestra em Medicina da Família e Comunidade: Dupla saúde - Da prevenção a longevidade para mulheres e homens",
+   "url": "https://www.even3.com.br/-medicina-da-familia-802881/",
+   "urlFinal": null,
+   "data": "2026-11-10",
+   "dataFim": null,
+   "inicio": "19:30",
+   "fim": "21:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Médicos",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Estudantes de medicina",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Autoridades de mesa e Palestrante",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "Even3 (área do participante)",
+   "certificado": {
+    "trecho": "Haverá emissão de certificado, desde que cumpridos os pré-requisitos.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-798668",
+   "nome": "Paternidade Adotiva 10/11/26",
+   "resumo": "Você, homem, que por vezes sente que não tem com quem conversar sobre os desafios, dúvidas e emoções que envolvem a adoção...",
+   "url": "https://www.even3.com.br/paternidade-adotiva-101126-798668/",
+   "urlFinal": null,
+   "data": "2026-11-10",
+   "dataFim": null,
+   "inicio": "20:00",
+   "fim": "22:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Incrições",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "Zoom",
+   "certificado": {
+    "trecho": "🧡 Para receber o certificado, é preciso:",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  }
+ ],
+ "descartados": {
+  "formato presencial": 195,
+  "sem certificado para o participante": 18,
+  "inscrições fechadas": 12
+ },
+ "foraLista": [
+  {
+   "nome": "CIPIEDU - CONGRESSO INTERNACIONAL DE PESQUISA E INOVAÇÃO NA EDUCAÇÃO",
+   "url": "https://www.even3.com.br/cipiedu-2026-741594/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "VI Seminário Internacional: Diferentes olhares do trabalho socioeducativo",
+   "url": "https://www.even3.com.br/vi-seminario-internacional-da-socioeducacao-783113/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "CURSO DE PERÍCIA TÉCNICA JUDICIAL EM AGRIMENSURA",
+   "url": "https://www.even3.com.br/curso-de-pericia-tecnica-judicial-em-agrimensura-801474/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "ARTICULANDO AS RELAÇÕES INTRAPESSOAIS E INTERPESSOAIS",
+   "url": "https://www.even3.com.br/articulando-as-relacoes-intrapessoais-e-interpessoais-802423/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "Gagueira: da identificação precoce a vida adulta",
+   "url": "https://www.even3.com.br/gagueira-da-identificacao-precoce-a-vida-adulta-805257/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "CURSO EXTENSIVO DE PALEOGRAFIA 2",
+   "url": "https://www.even3.com.br/curso-extensivo-de-paleografia-2-773343/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Minicurso - \"Como viver? Uma introdução à filosofia da existência em Kierkegaard\" por Tales Macêdo - XXX SEMANA DE FILOS",
+   "url": "https://www.even3.com.br/minicurso-como-viver-uma-introducao-a-filosofia-da-existencia-em-kierkegaard-por-tales-macedo-xxx-semana-de-filosofia-805037/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Centro acadêmico",
+   "url": "https://www.even3.com.br/centro-academico-796820/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Como anda o cenário da Enfermagem Forense no Brasil?",
+   "url": "https://www.even3.com.br/como-anda-o-cenario-da-enfermagem-forense-no-brasil-796909/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "O Uso de Terapias Integrativas em Pacientes Neurológicos",
+   "url": "https://www.even3.com.br/o-uso-de-terapias-integrativas-em-pacientes-neurologicos-790868/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "Análise e Desenvolvimento de Sistemas",
+   "url": "https://www.even3.com.br/analise-e-desenvolvimento-de-sistemas-806225/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Projeto Jovens Pesquisadoras/e",
+   "url": "https://www.even3.com.br/projeto-jovens-pesquisadorase-806335/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "Apoie o LOBA Festival",
+   "url": "https://www.even3.com.br/apoie-o-loba-festival-736761/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Revista Brasileira Multidisciplinar de Investigação Científica",
+   "url": "https://www.even3.com.br/revista-brasileira-multidisciplinar-de-investigacao-cientifica-796823/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Siale - ll Seminário Internacional de Alfabetização e Letramento da UEMG.",
+   "url": "https://www.even3.com.br/siale-ll-seminario-internacional-de-alfabetizacao-e-letramento-da-uemg-796833/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Minicurso de Fundamentos da Interpretação Geológica de Poços: Perfis, Fácies e Correlação.",
+   "url": "https://www.even3.com.br/minicurso-de-fundamentos-da-interpretacao-geologica-de-pocos-perfis-facies-e-correlacao-803800/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "GRUPO DE APOIO A FAMILIARES E CÔNJUGES DE PESSOAS AUTISTAS ADULTAS NOVEMBRO",
+   "url": "https://www.even3.com.br/grupo-de-apoio-a-familiares-e-conjuges-de-pessoas-autistas-adultas-805647/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "I Seminário de Pesquisa sobre a Sociobiodiversidade nas Unidades de Conservação Federais do Maranhão",
+   "url": "https://www.even3.com.br/i-seminario-de-pesquisa-sobre-a-sociobiodiversidade-nas-unidades-de-conservacao-federais-do-maranhao-806419/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Imersão em Gastroenterologia Pré-Simcav",
+   "url": "https://www.even3.com.br/imersao-em-gastroenterologia-pre-simcav-787021/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "CLINTECH - 2ª EDIÇÃO",
+   "url": "https://www.even3.com.br/clintech-2-edicao-802065/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "CREDENCIAMENTO NA LEI 14. 133/2021 COM USO DO SICX E CONTRATA+BRASIL",
+   "url": "https://www.even3.com.br/credenciamento-na-lei-14-1332021-com-uso-do-sicx-e-contratabrasil-778809/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Clube de Gestores | Ciclo: Nov/2026",
+   "url": "https://www.even3.com.br/clubedegestoresciclonov2026-803191/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Formatura",
+   "url": "https://www.even3.com.br/formatura-796893/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Da Bancada à Prateleira: Carreiras em Cosmetologia",
+   "url": "https://www.even3.com.br/Carreiras-em-Cosmetologia-803537/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "pictv",
+   "url": "https://www.even3.com.br/pictv-796874/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Rifa",
+   "url": "https://www.even3.com.br/rifa-796793/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Programa de Difusão Científica- UniLogos",
+   "url": "https://www.even3.com.br/programa-de-difusao-cientifica-unilogos-805081/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Webinário: Novembro Azul no Território: Doenças Prevalentes e Cuidado Integral dos Homens Potiguares",
+   "url": "https://www.even3.com.br/webinario-novembro-azul-no-territorio-doencas-prevalente-e-cuidado-integral-dos-homens-potiguares-803992/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "ECA Digital — O que muda nos celulares da sua família?",
+   "url": "https://www.even3.com.br/ecadigital-805288/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Ciclo de Debates - Indenização e as Fronteiras entre Compensar, Castigar e Prevenir",
+   "url": "https://www.even3.com.br/ciclo-de-debates-indenizacao-e-as-fronteiras-entre-compensar-castigar-e-prevenir-807099/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  }
+ ],
+ "totalDia": 232,
+ "modos": {
+  "off": 195,
+  "on": 37
+ },
+ "odontologia": 0,
+ "duracaoS": 82
+}

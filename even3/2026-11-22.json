@@ -1,0 +1,175 @@
+{
+ "versao": 1,
+ "fonte": "even3",
+ "data": "2026-11-22",
+ "geradoEm": "2026-11-21T15:24:39+00:00",
+ "erro": null,
+ "criterios": "online, começa na data, inscrições abertas (REALIZAR INSCRIÇÃO e um ingresso vigente), certificado para o participante dito na página",
+ "totalLista": 25,
+ "analisados": 25,
+ "eventos": [],
+ "descartados": {
+  "formato presencial": 114,
+  "inscrições fechadas": 22,
+  "sem certificado para o participante": 3
+ },
+ "foraLista": [
+  {
+   "nome": "A crítica da mídia e o texto de opinião",
+   "url": "https://www.even3.com.br/a-critica-da-midia-e-o-texto-de-opiniao-801940/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "no Prato e na Taça",
+   "url": "https://www.even3.com.br/no-prato-e-na-taca-801699/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Arte e Ancestralidade",
+   "url": "https://www.even3.com.br/arte-e-ancestralidade-801706/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Aniversário",
+   "url": "https://www.even3.com.br/aniversario-801865/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Curso sobre as barreiras enfrentadas pela educação especial",
+   "url": "https://www.even3.com.br/curso-sobre-as-barreiras-enfrentadas-pela-educacao-especial-801658/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "CURSO LAYOUT - MATCOM",
+   "url": "https://www.even3.com.br/curso-layout-matcom-801724/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Descomplicando a Lei de Informática da ZFM",
+   "url": "https://www.even3.com.br/descomplicando-a-lei-de-informatica-da-zfm-801675/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "A necessidade de agradar: quando a aprovação dos outros guia nossas escolhas",
+   "url": "https://www.even3.com.br/a-necessidade-de-agradar-quando-a-aprovacao-dos-outros-guia-nossas-escolhas-811017/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "A psicanálise é social e política: diálogos para adiar o fim do mundo",
+   "url": "https://www.even3.com.br/a-psicanalise-e-social-e-politica-dialogos-para-adiar-o-fim-do-mundo-801900/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Museu Virtual",
+   "url": "https://www.even3.com.br/museu-virtual-801707/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Manaus: Ontem, Hoje e Amanhã",
+   "url": "https://www.even3.com.br/manaus-ontem-hoje-e-amanha-801668/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Ambiente Seguro: Segurança na Assistencial",
+   "url": "https://www.even3.com.br/ambiente-seguro-seguranca-na-assistencial-801852/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "CONFRATERNIZAÇÃO FINAL DE ANO ORAL SIN",
+   "url": "https://www.even3.com.br/confraternizacao-final-de-ano-oral-sin-801870/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "ciepex",
+   "url": "https://www.even3.com.br/ciepex-801988/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "NIPAC",
+   "url": "https://www.even3.com.br/nipac-801795/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Bate-papo Logicom 2026",
+   "url": "https://www.even3.com.br/bate-papo-logicom-2026-801963/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Quiz semana da qualidade",
+   "url": "https://www.even3.com.br/quiz-semana-da-qualidade-801680/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Curso de especialista em português",
+   "url": "https://www.even3.com.br/curso-de-especialista-em-portugues-802012/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "teste",
+   "url": "https://www.even3.com.br/teste-801743/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "ChatGPT na pratica: IA no dia a dia escolar.",
+   "url": "https://www.even3.com.br/chatgpt-na-pratica-ia-no-dia-a-dia-escolar-801977/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Curso: Além do Sintoma",
+   "url": "https://www.even3.com.br/curso-alem-do-sintoma-793908/",
+   "motivo": "inscrições fechadas (ingressos: em breve, encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "VIII Simpósio Ilheense do Câncer de Mama",
+   "url": "https://www.even3.com.br/viii-simposio-ilheense-do-cancer-de-mama-801947/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Abertura oficial Ciclo Formativo Virtual de Educação Física",
+   "url": "https://www.even3.com.br/abertura-oficial-ciclo-formativo-virtual-de-educacao-fisica-801996/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Simpósio Internacional de Fisioterapia - UNASP",
+   "url": "https://www.even3.com.br/simposio-internacional-de-fisioterapia-unasp-809647/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Engenharia civil",
+   "url": "https://www.even3.com.br/engenharia-civil-801923/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  }
+ ],
+ "totalDia": 139,
+ "modos": {
+  "off": 114,
+  "on": 25
+ },
+ "odontologia": 0,
+ "duracaoS": 88
+}

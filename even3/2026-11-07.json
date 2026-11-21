@@ -1,0 +1,592 @@
+{
+ "versao": 1,
+ "fonte": "even3",
+ "data": "2026-11-07",
+ "geradoEm": "2026-11-06T23:50:21+00:00",
+ "erro": null,
+ "criterios": "online, começa na data, inscrições abertas (REALIZAR INSCRIÇÃO e um ingresso vigente), certificado para o participante dito na página",
+ "totalLista": 45,
+ "analisados": 45,
+ "eventos": [
+  {
+   "id": "e3-790897",
+   "nome": "Curso: Psi, e agora? Formação, carreira e prática profissional",
+   "resumo": "Da formação à prática clínica e institucional”, desenvolvido especialmente para estudantes de Psicologia em fase de conclusão da graduação e profissionais recém-formados.",
+   "url": "https://www.even3.com.br/curso-psi-e-agora-formacao-carreira-e-pratica-profissional-790897/",
+   "urlFinal": null,
+   "data": "2026-11-07",
+   "dataFim": null,
+   "inicio": "08:30",
+   "fim": "17:00",
+   "formato": "online",
+   "preco": "R$ 198,00",
+   "gratuito": false,
+   "ingressos": [
+    {
+     "nome": "Inscrições",
+     "valor": "R$ 198,00",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Inscrições",
+     "valor": "R$ 220,00",
+     "situacao": "em breve"
+    },
+    {
+     "nome": "Inscrições",
+     "valor": "R$ 253,00",
+     "situacao": "em breve"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "Ao final, os participantes receberão certificado de 6 horas emitido pelo Instituto Caminhar.",
+    "horas": 6
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-797834",
+   "nome": "Encontro do Tecnólogo em Gestão de Turismo",
+   "resumo": "O Encontro do Curso Superior de Tecnologia em Gestão em Turismo do IFSul é um evento online dedicado a integrar estudantes, docentes, tutores e a comunidade externa.",
+   "url": "https://www.even3.com.br/encontro-do-tecnologo-em-gestao-de-turismo-797834/",
+   "urlFinal": null,
+   "data": "2026-11-07",
+   "dataFim": null,
+   "inicio": "08:30",
+   "fim": "18:30",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Geral",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Relato de Experiência",
+     "valor": "Gratuito",
+     "situacao": "encerrado"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "Certificado de 20h para quem acompanhar o evento.",
+    "horas": 20
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-713311",
+   "nome": "IX Evento Científico de Gestão de Projetos e Portfólio do PMI-MG",
+   "resumo": "O IX Evento Científico sobre Gestão de Projetos e Portfólio do PMI-MG é um espaço para discutir tópicos relevantes relacionados à gestão de projetos, inovação, conhecimento e liderança.",
+   "url": "https://www.even3.com.br/ix-evento-cientifico-PMI-MG-713311/",
+   "urlFinal": "https://www.even3.com.br/ix-evento-cientifico-pmi-mg-713311/",
+   "data": "2026-11-07",
+   "dataFim": null,
+   "inicio": "08:30",
+   "fim": "17:30",
+   "formato": "online",
+   "preco": "Gratuito (há ingressos pagos)",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Ouvinte - Sem certificado",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Inscrito sem publicação - Com Certificado",
+     "valor": "R$ 27,00",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Inscrito com submissão para avaliação a publicação (até 27/09 - data limite par…",
+     "valor": "Gratuito",
+     "situacao": "encerrado"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "Inscrito sem publicação - Com Certificado",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-805000",
+   "nome": "Conhecendo a TCR aula 4",
+   "resumo": "O quarto encontro promovido em parceria com o ITCR dá continuidade à construção teórica e prática dos conceitos da Terapia por Contingências de Reforçamento (TCR).",
+   "url": "https://www.even3.com.br/conhecendo-a-tcr-aula-4-805000/",
+   "urlFinal": null,
+   "data": "2026-11-07",
+   "dataFim": null,
+   "inicio": "09:00",
+   "fim": "12:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Membros Externos",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Membros Diretores/LAC",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "Google Meet",
+   "certificado": {
+    "trecho": "Certificado: SIM",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-804773",
+   "nome": "Relatórios no AEE - Escrever para garantir direitos",
+   "resumo": "Uma formação prática para compreender, organizar e elaborar relatórios pedagógicos no Atendimento Educacional Especializado.",
+   "url": "https://www.even3.com.br/relatorios-no-aee-escrever-para-garantir-direitos-804773/",
+   "urlFinal": null,
+   "data": "2026-11-07",
+   "dataFim": null,
+   "inicio": "09:00",
+   "fim": "12:00",
+   "formato": "online",
+   "preco": "R$ 17,40",
+   "gratuito": false,
+   "ingressos": [
+    {
+     "nome": "Aluno(a)",
+     "valor": "R$ 17,40",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "Google Meet, WhatsApp",
+   "certificado": {
+    "trecho": "📅 07 de novembro de 2026 🕘 9h às 12h 💻 Google Meet 🎓 Certificado de 10 horas",
+    "horas": 10
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-786688",
+   "nome": "Transformando alimentos em oportunidades: Desenvolvimento, segurança e comercialização de produtos",
+   "resumo": "Transformando alimentos em oportunidades: Desenvolvimento, segurança e comercialização de produtos",
+   "url": "https://www.even3.com.br/transformando-alimentos-em-oportunidades-desenvolvimento-seguranca-e-comercializacao-de-produtos-786688/",
+   "urlFinal": null,
+   "data": "2026-11-07",
+   "dataFim": null,
+   "inicio": "09:00",
+   "fim": "11:30",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Estudantes, produtores de alimentos",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "Certificado: Certificação de 4 horas para os participantes com presença confirmada.",
+    "horas": 4
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-802164",
+   "nome": "X Simpósio Geneando",
+   "resumo": "A genética está transformando as possibilidades de diagnóstico, tratamento e cuidado em saúde.",
+   "url": "https://www.even3.com.br/x-simposio-geneando-802164/",
+   "urlFinal": null,
+   "data": "2026-11-07",
+   "dataFim": null,
+   "inicio": "09:00",
+   "fim": "12:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Profissionais da saúde",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Estudantes da saúde",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "Zoom, WhatsApp",
+   "certificado": {
+    "trecho": "Certificados digitais: Serão concedidos aos participantes de pelo menos 2 das 3 palestras ao vivo.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-803915",
+   "nome": "O DESENHO PARA ALÉM DO LÁPIS",
+   "resumo": "Desenhar é explorar movimentos, produzir marcas, experimentar resistências, transformar matérias e descobrir diferentes possibilidades de expressão.",
+   "url": "https://www.even3.com.br/o-desenho-para-alem-do-lapis-803915/",
+   "urlFinal": null,
+   "data": "2026-11-07",
+   "dataFim": "2026-11-14",
+   "inicio": "11:30",
+   "fim": "17:00",
+   "formato": "online",
+   "preco": "R$ 114,30",
+   "gratuito": false,
+   "ingressos": [
+    {
+     "nome": "Inscrição com desconto",
+     "valor": "R$ 114,30",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "Formação on-line ao vivo | 7 e 14 de novembro de 2026 | Certificado de 30 horas",
+    "horas": 30
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-803783",
+   "nome": "Workshop Nacional de Orçamento Empresarial e Controle de Desvios: Premissas, Metas e Revisão de Cenários",
+   "resumo": "Workshop Nacional de Orçamento Empresarial e Controle de Desvios: Premissas, Metas e Revisão de Cenários",
+   "url": "https://www.even3.com.br/workshop-nacional-de-orcamento-empresarial-e-controle-de-desvios-premissas-metas-e-revisao-de-cenarios-803783/",
+   "urlFinal": null,
+   "data": "2026-11-07",
+   "dataFim": null,
+   "inicio": "14:00",
+   "fim": "18:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Participação Geral",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "A certificação de participação deve refletir o cumprimento dos critérios efetivos da atividade.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  }
+ ],
+ "descartados": {
+  "formato presencial": 293,
+  "inscrições fechadas": 30,
+  "sem certificado para o participante": 6
+ },
+ "foraLista": [
+  {
+   "nome": "Curso de Extensão em Redação",
+   "url": "https://www.even3.com.br/curso-de-extensao-em-redacao-788239/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "I FÓRUM INTERNACIONAL DE DOULAS DE FIM DE VIDA",
+   "url": "https://www.even3.com.br/i-forum-internacional-de-doulas-de-fim-de-vida-794723/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Workshop Bioblitz Brasil 2026-2027",
+   "url": "https://www.even3.com.br/workshop-bioblitz-brasil-2026-2027-793726/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "O Paciente Além da Abordagem: Manejo Clínico e Integração na Formação em Psicologia",
+   "url": "https://www.even3.com.br/o-paciente-alem-da-abordagem-manejo-clinico-e-integracao-na-formacao-em-psicologia-782187/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "MEUS ALUNOS USAM IA. E AGORA? Oficina de Inteligência Artificial na Docência",
+   "url": "https://www.even3.com.br/meus-alunos-usam-ia-e-agora-oficina-de-inteligencia-artificial-na-docencia-782237/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Miguel",
+   "url": "https://www.even3.com.br/miguel-794937/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "LIBRAS BÁSICO II by Márcia Rúbia",
+   "url": "https://www.even3.com.br/libras-basico-ii-by-marcia-rubia-794249/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "I Seminário de leitura e interpretação de textos filosóficos, Ufma/Grajaú.",
+   "url": "https://www.even3.com.br/i-seminario-de-leitura-e-interpretacao-de-textos-filosoficos-ufmagrajau-805931/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "2ª TURMA — TREINAMENTO INTRODUTÓRIO DE PROTEÇÃO DO SEP",
+   "url": "https://www.even3.com.br/2-turma-treinamento-introdutorio-de-protecao-do-sep-794517/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Ciclo de Formação Afrocêntrica Zenaide Zen",
+   "url": "https://www.even3.com.br/percurso-formativo-afrocentrico-sankofa-786293/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Palestra: Inovação na Gestão - Encontro dedicado à reflexão sobre inovação, gestão e os desafios do ambiente organizacio",
+   "url": "https://www.even3.com.br/palestra-inovacao-na-gestao-encontro-dedicado-a-reflexao-sobre-inovacao-gestao-e-os-desafios-do-ambiente-organizacional-contemporaneo-794649/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "TERÇAS LACANIANAS",
+   "url": "https://www.even3.com.br/tercaslacanianas-803653/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "WEBINAR INTERNACIONAL - Diálogos na História da Enfermagem Luso-Brasileira",
+   "url": "https://www.even3.com.br/webinar-internacional-dialogos-na-historia-da-enfermagem-luso-brasileira-794904/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Teste",
+   "url": "https://www.even3.com.br/teste-794538/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "IV Simpósio de Análise do Comportamento e Questões Étnico-Raciais",
+   "url": "https://www.even3.com.br/iv-simposio-de-analise-do-comportamento-e-questoes-etnico-raciais-786884/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "RADIOGRAFIA DE TÓRAX NO ADULTO NA PRÁTICA CLÍNICA - ON LINE",
+   "url": "https://www.even3.com.br/radiografia-de-torax-no-adulto-na-pratica-clinica-on-line-785910/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Aula 7 | Curso de Formação Política para Psicólogas",
+   "url": "https://www.even3.com.br/aula-7-curso-de-formacao-politica-para-psicologas-794926/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Painel SMM: Guia Completo para Escolher o Melhor em 2026",
+   "url": "https://www.even3.com.br/painel-smm-guia-completo-para-escolher-o-melhor-em-2026-794560/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "SETARI - Science, Engineering, Technology, Applied Research & Innovation",
+   "url": "https://www.even3.com.br/setari-science-engineering-technology-applied-research-innovation-794902/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Classificação de riscos X Acolhimento",
+   "url": "https://www.even3.com.br/classificacao-de-riscos-x-acolhimento-794884/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "teste",
+   "url": "https://www.even3.com.br/teste-794652/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Bordado Ancestral",
+   "url": "https://www.even3.com.br/bordado-ancestral-794756/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Destrave sua vida profissional: currículo, entrevista e carreira",
+   "url": "https://www.even3.com.br/destrave-sua-vida-profissional-curriculo-entrevista-e-carreira-785989/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Simpósio LAAP PUCRS - Avaliação Psicológica: diálogos entre contextos e práticas",
+   "url": "https://www.even3.com.br/avaliacao-psicologica-dialogos-entre-contextos-e-praticas-simposio-laap-pucrs-797940/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Como proteger sua saúde mental e física em tempos de ansiedade, depressão, burnout e ganho de peso",
+   "url": "https://www.even3.com.br/saude-771127/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Atividade de História",
+   "url": "https://www.even3.com.br/atividade-de-historia-794574/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "I jornada transdisciplinar de saúde e educação do gertdisciplinar",
+   "url": "https://www.even3.com.br/i-jornada-transdisciplinar-de-saude-e-educacao-do-gertdisciplinar-794708/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "SINTIPOA - Simpósio Nacional de Tecnologia e Inspeção de Produtos de Origem Animal",
+   "url": "https://www.even3.com.br/SINTIPOA-800941/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "São Paulo tcs",
+   "url": "https://www.even3.com.br/sao-paulo-tcs-794710/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Ganhe dinheiro investindo pouco",
+   "url": "https://www.even3.com.br/ganhe-dinheiro-investindo-pouco-794927/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Os Reinos E Cidades Da África Centro-Oeste E Os Sistemas Culturais, Políticos E Econômicos (Séc. X Ao Xix)",
+   "url": "https://www.even3.com.br/os-reinos-e-cidades-da-africa-centro-oeste-e-os-sistemas-culturais-politicos-e-economicos-sec-x-ao-xix-744633/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "VII Simpósio Acadêmico de Naturologia",
+   "url": "https://www.even3.com.br/vii-simposio-academico-de-naturologia-795339/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "villa frére",
+   "url": "https://www.even3.com.br/villa-frere-794817/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Oficina Destrava para Redes Sociais",
+   "url": "https://www.even3.com.br/oficina-destrava-para-redes-sociais-795272/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Abordagem fisioterapêutica no idoso longevo",
+   "url": "https://www.even3.com.br/abordagem-fisioterapeutica-no-idoso-longevo-804398/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "SIMULADO ON-LINE TEAC 26 AO VIVO",
+   "url": "https://www.even3.com.br/simulado-on-line-teac-26-ao-vivo-797177/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  }
+ ],
+ "totalDia": 338,
+ "modos": {
+  "off": 293,
+  "on": 45
+ },
+ "odontologia": 0,
+ "duracaoS": 90
+}

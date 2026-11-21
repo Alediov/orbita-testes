@@ -1,0 +1,460 @@
+{
+ "versao": 1,
+ "fonte": "even3",
+ "data": "2026-11-11",
+ "geradoEm": "2026-11-11T00:15:33+00:00",
+ "erro": null,
+ "criterios": "online, começa na data, inscrições abertas (REALIZAR INSCRIÇÃO e um ingresso vigente), certificado para o participante dito na página",
+ "totalLista": 35,
+ "analisados": 35,
+ "eventos": [
+  {
+   "id": "e3-806091",
+   "nome": "CUIDA: Você conhece sua profissão a luz da Lei 11.889/2008 ou apenas exerce sua função?",
+   "resumo": "CUIDA: Você conhece sua profissão a luz da Lei 11.889/2008 ou apenas exerce sua função?",
+   "url": "https://www.even3.com.br/cuida-lei11889-806091/",
+   "urlFinal": null,
+   "data": "2026-11-11",
+   "dataFim": null,
+   "inicio": "20:00",
+   "fim": "21:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Inscrição Gratuita",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "Certificado de Participação — Para inscritos previamente que cumprirem os critérios mínimos de participação e assinarem a lista de presença",
+    "horas": null
+   },
+   "odonto": {
+    "sim": true,
+    "nivel": "forte",
+    "motivos": [
+     "texto: “odontologia” (odontologia)",
+     "texto: “bucal” (bucal)",
+     "texto: “saude bucal” (saúde bucal)",
+     "texto: “conselho regional de odontologia” (CRO)"
+    ],
+    "porque": "o texto fala de CRO, odontologia, saúde bucal"
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-702236",
+   "nome": "VI Congresso Angolano de Medicina Veterinária OMVA",
+   "resumo": "O VI Congresso Angolano de Medicina Veterinária, organizado pela Ordem dos Médicos Veterinários de Angola (OMVA), constitui um dos mais importantes encontros científicos dedicados à medicina veterinária em Angola, promovendo a actualização técnico-científica, a partilha de conhecimento e o fortalec…",
+   "url": "https://www.even3.com.br/vi-congresso-angolano-de-medicina-veterinaria-omva-702236/",
+   "urlFinal": null,
+   "data": "2026-11-11",
+   "dataFim": "2026-11-13",
+   "inicio": "10:00",
+   "fim": "17:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Estudante",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Médico Veterinário",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Outro",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "Even3 (área do participante)",
+   "certificado": {
+    "trecho": "Certificado de participação",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-803790",
+   "nome": "Workshop Nacional de Gestão da Mudança Organizacional: Partes Interessadas, Comunicação e Adoção de Novas Rotinas",
+   "resumo": "Workshop Nacional de Gestão da Mudança Organizacional: Partes Interessadas, Comunicação e Adoção de Novas Rotinas",
+   "url": "https://www.even3.com.br/workshop-nacional-de-gestao-da-mudanca-organizacional-partes-interessadas-comunicacao-e-adocao-de-novas-rotinas-803790/",
+   "urlFinal": null,
+   "data": "2026-11-11",
+   "dataFim": null,
+   "inicio": "14:00",
+   "fim": "18:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Participação Geral",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "A certificação de participação deve refletir o cumprimento dos critérios efetivos da atividade.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-790829",
+   "nome": "Curso Análise Aplicada da Norma ABNT NBR ISO/IEC 17025:2017",
+   "resumo": "*Curso gratuito para profissionais da Química registrados em CRQs e estudantes de cursos da área da Química em todo o território nacional.",
+   "url": "https://www.even3.com.br/crqsp-normaabntisoiec17025-nov2026-790829/",
+   "urlFinal": null,
+   "data": "2026-11-11",
+   "dataFim": "2026-11-13",
+   "inicio": "18:00",
+   "fim": "22:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Profissional Registrado CRQ-SP",
+     "valor": "Gratuito",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Palestrante",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Estudante da área da Química em SP",
+     "valor": "Gratuito",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Profissional Registrado CRQ - demais regiões (fora de SP)",
+     "valor": "Gratuito",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Estudante da área da Química fora de SP",
+     "valor": "Gratuito",
+     "situacao": "encerrado"
+    }
+   ],
+   "plataforma": "Microsoft Teams",
+   "certificado": {
+    "trecho": "O certificado será emitido ao final do curso para os participantes que assistirem ao vivo ou acessarem todas as gravações.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-804887",
+   "nome": "Congresso Interligas - III edição Faminas BH",
+   "resumo": "Vêm aí dois dias de muito aprendizado, atualização científica e troca de experiências!",
+   "url": "https://www.even3.com.br/congresso-interligas-iii-edicao-faminas-bh-804887/",
+   "urlFinal": null,
+   "data": "2026-11-11",
+   "dataFim": "2026-11-12",
+   "inicio": "18:50",
+   "fim": "19:30",
+   "formato": "online",
+   "preco": "R$ 7,50",
+   "gratuito": false,
+   "ingressos": [
+    {
+     "nome": "Acadêmico",
+     "valor": "R$ 7,50",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "Google Meet",
+   "certificado": {
+    "trecho": "📃 Certificado de participação de 10 horas!",
+    "horas": 10
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-799491",
+   "nome": "Ciclo de palestras em Angiologia e Cirurgia Vascular: Trombose do Viajante",
+   "resumo": "O Conselho Regional de Medicina do Paraná (CRM-PR), por meio do Projeto de Educação Médica Continuada e em parceria com a Câmara Técnica de Angiologia e Cirurgia Vascular, promove o Ciclo de Palestras em Angiologia e Cirurgia Vascular, com o tema “Trombose do Viajante”.",
+   "url": "https://www.even3.com.br/trombose-do-viajante-799491/",
+   "urlFinal": null,
+   "data": "2026-11-11",
+   "dataFim": null,
+   "inicio": "19:30",
+   "fim": "21:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Médicos",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Estudantes de Medicina",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Autoridades de Mesa e Palestrante",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Público em Geral",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "Even3 (área do participante)",
+   "certificado": {
+    "trecho": "Haverá emissão de certificado, desde que cumpridos os pré-requisitos.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  }
+ ],
+ "descartados": {
+  "formato presencial": 257,
+  "sem certificado para o participante": 17,
+  "inscrições fechadas": 12
+ },
+ "foraLista": [
+  {
+   "nome": "Rural Conecta - 2º Edição",
+   "url": "https://www.even3.com.br/rural-conecta-798634/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "XIV Encontro da Transversalidade",
+   "url": "https://www.even3.com.br/xiv-encontro-da-transversalidade-803246/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "VII CONGRESSO DE DIREITO INTERNACIONAL E RELAÇÕES INTERNACIONAIS (CODIRI)",
+   "url": "https://www.even3.com.br/vii-congresso-de-direito-internacional-e-relacoes-internacionais-codiri-759520/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Minicurso: Transtornos e Dificuldades de Aprendizagem: Como identificar os primeiros sinais de TDAH, Dislexia e TEA no a",
+   "url": "https://www.even3.com.br/minicursotranstornosdificuldades-797473/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Webinar Avances en la articulación de la Medicina Tradicional, Complementaria e Integrativa (MTCI) en los servicios y si",
+   "url": "https://www.even3.com.br/avances-en-la-articulacion-de-la-medicina-tradicional-complementaria-e-integrativa-mtci-en-los-servicios-y-sistemas-de-salud-con-enfoque-intercultural-en-la-region-de-centro-america-y-el-caribe-804911/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "23a Semana Nacional de Ciencias e Tecnologia - Educação a Distância",
+   "url": "https://www.even3.com.br/23a-semana-nacional-de-ciencias-e-tecnologia-educacao-a-distancia-805917/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Psicopatia Entre O Cérebro e Comportamento",
+   "url": "https://www.even3.com.br/psicopatia-entre-o-cerebro-e-comportamento-803972/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Engenharia de Prompts e Inteligência Artificial Generativa no Ensino Superior: Aplicações Práticas do Método PROFES",
+   "url": "https://www.even3.com.br/engenharia-de-prompts-e-inteligencia-artificial-generativa-no-ensino-superior-aplicacoes-praticas-do-metodo-profes-805501/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Aulão Preparatório ENADE26- \"Tecnologia do Ambiente Construído\" - A&U -Unisul",
+   "url": "https://www.even3.com.br/aulao-preparatorio-enade26-tecnologia-do-ambiente-construido-au-unisul-789682/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "XIV Colóquio de Estudos Vikings e Escandinavos (CEVE): Escandinavística",
+   "url": "https://www.even3.com.br/ceve-2026-727960/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "AVC: novas diretrizes, novos caminhos para salvar vidas",
+   "url": "https://www.even3.com.br/avc-novas-diretrizes-novos-caminhos-para-salvar-vidas-804453/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Como elaborar o PEI? (Plano Educacional Individualizado).",
+   "url": "https://www.even3.com.br/como-elaborar-o-pei-plano-educacional-individualizado-797000/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Webinar: Saúde mental no trabalho: Riscos psicossociais, liderança e impactos na carreira",
+   "url": "https://www.even3.com.br/webinar-saude-mental-no-trabalho-riscos-psicossociais-lideranca-e-impactos-na-carreira-803482/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Autismo no ambiente de trabalho",
+   "url": "https://www.even3.com.br/autismo-no-ambiente-de-trabalho-797002/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Educação Ambiental em diferentes espaços Práticas, experiências e caminhos para a transformação.",
+   "url": "https://www.even3.com.br/educacao-ambiental-em-diferentes-espacos-praticas-experiencias-e-caminhos-para-a-transformacao-806973/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Portal Energético Prana 11/11",
+   "url": "https://www.even3.com.br/portal-energetico-prana-805353/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "II Congresso Nacional de Cirurgia Geral - INUMED",
+   "url": "https://www.even3.com.br/ii-congresso-nacional-de-cirurgia-geral-inumed-778848/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Chaveiro mestre",
+   "url": "https://www.even3.com.br/chaveiro-mestre-797046/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Aniversário",
+   "url": "https://www.even3.com.br/aniversario-796933/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Jornalismo em tempos de genocídio",
+   "url": "https://www.even3.com.br/jornalismo-em-tempos-de-genocidio-804880/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "17° Encuentro de la Red Latinoamericana de Desarrollo de Competencias y Organizaciones Sostenibles",
+   "url": "https://www.even3.com.br/17-encuentro-de-la-red-latinoamericana-de-desarrollo-de-competencias-y-organizaciones-sostenibles-754071/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "17° Encuentro de la Red Latinoamericana de Desarrollo de Competencias y Organizaciones Sostenibles Virtual",
+   "url": "https://www.even3.com.br/17-encuentro-de-la-red-latinoamericana-de-desarrollo-de-competencias-y-organizaciones-sostenibles-756212/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "O Papel da Perícia no Mundo: Guia prático para ser Perito Assistente e Judicial no Brasil.",
+   "url": "https://www.even3.com.br/o-papel-da-pericia-no-mundo-guia-pratico-para-ser-perito-assistente-e-judicial-no-brasil-799192/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "NÓS E REDES - INCT CALEIDOSCÓPIO INTERNUCLEAÇÕES Seminário Internacional Mulheres africanas, afrodescendentes e quilombo",
+   "url": "https://www.even3.com.br/nos-e-redes-inct-caleidoscopio-804372/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Bloco de Reprodução em Bovinos - GERA FCAV",
+   "url": "https://www.even3.com.br/bloco-de-reproducao-em-bovinos-gera-fcav-798084/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "ORGANIZACIÓN",
+   "url": "https://www.even3.com.br/organizacion-796931/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "III Fórum Ecossistemas de RH",
+   "url": "https://www.even3.com.br/III-forum-ecossistemas-de-rh-805664/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Empreendedor da Manutenção",
+   "url": "https://www.even3.com.br/empreendedor-da-manutencao-803085/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Criação de Pequenos Ruminantes em Sistemas Integrados",
+   "url": "https://www.even3.com.br/criacao/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  }
+ ],
+ "totalDia": 292,
+ "modos": {
+  "off": 257,
+  "on": 35
+ },
+ "odontologia": 1,
+ "duracaoS": 233
+}

@@ -1,0 +1,514 @@
+{
+ "versao": 1,
+ "fonte": "even3",
+ "data": "2026-11-23",
+ "geradoEm": "2026-11-03T12:44:34+00:00",
+ "erro": null,
+ "criterios": "online, começa na data, inscrições abertas (REALIZAR INSCRIÇÃO e um ingresso vigente), certificado para o participante dito na página",
+ "totalLista": 35,
+ "analisados": 35,
+ "eventos": [
+  {
+   "id": "e3-692305",
+   "nome": "Congresso Internacional Conexões Globais 2026",
+   "resumo": "Atendendo a pedidos de instituições, programas de pós-graduação e de muitos inscritos, a Comissão Organizadora ampliou o prazo de submissão de trabalhos para 07/11/2026, às 23h59 (horário de Brasília).",
+   "url": "https://www.even3.com.br/conexoesglobais2026-692305/",
+   "urlFinal": null,
+   "data": "2026-11-23",
+   "dataFim": "2026-11-25",
+   "inicio": "08:00",
+   "fim": "20:00",
+   "formato": "online",
+   "preco": "Gratuito (há ingressos pagos)",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "- Inscrição Categoria Ouvinte (Gratuita - sem certificado)",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Inscrição e Submissão de Trabalhos – Autores (com certificado e publicação nos…",
+     "valor": "R$ 26,91",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Inscrição e Submissão de Trabalhos – Autores (com certificado e publicação nos…",
+     "valor": "R$ 35,91",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Inscrição e Submissão de Trabalhos – Autores (com certificado e publicação nos…",
+     "valor": "R$ 53,91",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Inscrição e Submissão de Trabalhos – Autores (com certificado e publicação nos…",
+     "valor": "R$ 71,91",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Inscrição e Submissão de Trabalhos – Autores (com certificado e publicação nos…",
+     "valor": "R$ 89,91",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Inscrição e Submissão de Trabalhos – Autores (com certificado e publicação nos…",
+     "valor": "R$ 98,91",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Inscrição e Submissão de Trabalhos – Autores (com certificado e publicação nos…",
+     "valor": "R$ 107,91",
+     "situacao": "encerrado"
+    }
+   ],
+   "plataforma": "YouTube, Google Meet, Zoom",
+   "certificado": {
+    "trecho": "🎧 Ouvintes: participe com certificado de 30 horas e acesso a toda a programação: palestras e minicursos com convidados do Brasil, Portugal, Moçambique e Chile.",
+    "horas": 30
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-804837",
+   "nome": "ArcGIS na prática: ferramentas, oportunidades e aplicações",
+   "resumo": "Público-alvo: Aberto a todos os públicos, incluindo estudantes, profissionais, pesquisadores e demais interessados em geotecnologias.",
+   "url": "https://www.even3.com.br/arcgis-na-pratica-ferramentas-oportunidades-e-aplicacoes-804837/",
+   "urlFinal": null,
+   "data": "2026-11-23",
+   "dataFim": null,
+   "inicio": "14:00",
+   "fim": "17:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Lote 1 - 80 vagas",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "WhatsApp",
+   "certificado": {
+    "trecho": "Será disponibilizado certificado de participação com carga horária de 4 horas.",
+    "horas": 4
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-749638",
+   "nome": "5º SIMPÓSIO VIRTUAL DE ESTUDOS MULTIDISCIPLINARES EM RELAÇÕES ÉTNICO-RACIAIS E DIVERSIDADE",
+   "resumo": "5º SIMPÓSIO VIRTUAL DE ESTUDOS MULTIDISCIPLINARES EM RELAÇÕES ÉTNICO-RACIAIS E DIVERSIDADE",
+   "url": "https://www.even3.com.br/5-simposio-virtual--749638/",
+   "urlFinal": null,
+   "data": "2026-11-23",
+   "dataFim": "2026-11-25",
+   "inicio": "16:00",
+   "fim": "22:30",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Ouvinte",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Apresentador(a) de trabalho",
+     "valor": "Gratuito",
+     "situacao": "encerrado"
+    }
+   ],
+   "plataforma": "YouTube, Google Meet, Even3 (área do participante)",
+   "certificado": {
+    "trecho": "Os certificados serão disponibilizados na área de inscrição no site do evento no prazo de uma semana após o término do evento.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-791261",
+   "nome": "Curso Inteligência Artificial Aplicada à Qualidade e Segurança de Alimentos",
+   "resumo": "*Curso gratuito para profissionais da Química registrados em CRQs e estudantes de cursos da área da Química em todo o território nacional.",
+   "url": "https://www.even3.com.br/crqsp-iaaplicadaaqualidadeesegurancadealimentos-nov2026-791261/",
+   "urlFinal": null,
+   "data": "2026-11-23",
+   "dataFim": "2026-11-24",
+   "inicio": "18:30",
+   "fim": "22:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Profissional Registrado CRQ-SP",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Palestrante",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Estudante da área da Química em SP",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Profissional Registrado CRQ - demais regiões (fora de SP)",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Estudante da área da Química fora de SP",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "Microsoft Teams",
+   "certificado": {
+    "trecho": "📃 Certificados e Materiais Didáticos",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-802860",
+   "nome": "IA Generativa na Pesquisa em Ciências Humanas e Sociais",
+   "resumo": "Aprenda a utilizar inteligência artificial generativa na pesquisa em Ciências Humanas e Sociais, conectando fundamentos, ferramentas e aplicações práticas.",
+   "url": "https://www.even3.com.br/ia-generativa-na-pesquisa-em-ciencias-humanas-e-sociais-802860/",
+   "urlFinal": null,
+   "data": "2026-11-23",
+   "dataFim": "2026-11-26",
+   "inicio": "19:00",
+   "fim": "21:00",
+   "formato": "online",
+   "preco": "Gratuito (há ingressos pagos)",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Inscrição Gratuita",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Inscrição VIP",
+     "valor": "R$ 35,01",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Inscrição Premium",
+     "valor": "R$ 89,01",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Inscrição Expert",
+     "valor": "R$ 161,01",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "Certificado de participação de 6 horas.",
+    "horas": 6
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-reimaginar-a-educacao",
+   "nome": "Reimaginar a Educação: caminhos para construir nossos futuros em conjunto",
+   "resumo": "Em 4 encontros ao vivo (20h, EaD), este curso dialoga com o relatório da UNESCO Reimaginar nossos futuros juntos para repensar o que — e como — ensinamos.",
+   "url": "https://www.even3.com.br/reimaginar-a-educacao/",
+   "urlFinal": null,
+   "data": "2026-11-23",
+   "dataFim": "2026-12-14",
+   "inicio": "19:00",
+   "fim": "21:00",
+   "formato": "online",
+   "preco": "R$ 74,46",
+   "gratuito": false,
+   "ingressos": [
+    {
+     "nome": "Inscrição com Certificado",
+     "valor": "R$ 74,46",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "Google Meet",
+   "certificado": {
+    "trecho": "Certificado de participação em curso de extensão com carga horária de 20 horas — Faculdades EST.",
+    "horas": 20
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-802290",
+   "nome": "Curso Gratuito | Psicanálise Lacaniana",
+   "resumo": "Enquanto Freud apoiava a psicanálise em bases empíricas e biológicas, Lacan priorizava a primazia das ideias e utilizava conceitos complexos como a topologia para explicar a psique.",
+   "url": "https://www.even3.com.br/curso-gratuito-psicanalise-lacaniana-802290/",
+   "urlFinal": null,
+   "data": "2026-11-23",
+   "dataFim": "2027-01-23",
+   "inicio": null,
+   "fim": null,
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Curso Gratuito",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "Esse processo leva até 3 dias úteis e, após a aprovação, você receberá o certificado no e-mail cadastrado.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  }
+ ],
+ "descartados": {
+  "formato presencial": 172,
+  "inscrições fechadas": 21,
+  "sem certificado para o participante": 7
+ },
+ "foraLista": [
+  {
+   "nome": "Costelada da Mada",
+   "url": "https://www.even3.com.br/costelada-da-mada-802251/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Palestra sobre Reforma Tributária: O que muda para o Brasil",
+   "url": "https://www.even3.com.br/palestra-sobre-reforma-tributaria-o-que-muda-para-o-brasil-802019/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "MINI CURSO PSICOLOGIA- Psicologia da Saúde na Prática: da Avaliação à Intervenção em Clínicas e Hospitais",
+   "url": "https://www.even3.com.br/mini-curso-psicologia-psicologia-da-saude-na-pratica-da-avaliacao-a-intervencao-em-clinicas-e-hospitais-802024/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Dia B - Dia da Saúde Bucal: Webinário Triagem de Risco como Estratégia de Planejamento Terapêutico Coletivo",
+   "url": "https://www.even3.com.br/dia-b-dia-da-saude-bucal-webinario-triagem-de-risco-como-estrategia-de-planejamento-terapeutico-coletivo-802112/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": true
+  },
+  {
+   "nome": "SISaúde SDE: Alinhamento Técnico, Dificuldades Operacionais, Limitações do Sistema e Padronização dos Registros das Visi",
+   "url": "https://www.even3.com.br/sisaude-sde-alinhamento-tecnico-dificuldades-operacionais-limitacoes-do-sistema-e-padronizacao-dos-registros-das-visitas-802263/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Semana Acadêmica do IFRJ Mesquita 2026",
+   "url": "https://www.even3.com.br/semanamesquita2026-754991/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Curso de Informática Básica",
+   "url": "https://www.even3.com.br/curso-de-informatica-basica-802089/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Webinar Educação Lúdica em Ação",
+   "url": "https://www.even3.com.br/webinar-educacao-ludica-em-acao-802141/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Administração",
+   "url": "https://www.even3.com.br/administracao-802343/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "15 anos de Adriely",
+   "url": "https://www.even3.com.br/15-anos-de-adriely-802246/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Letter",
+   "url": "https://www.even3.com.br/gloria-c-sargent-802278/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Aniversário",
+   "url": "https://www.even3.com.br/aniversario-802312/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "I Workshop Virtual de Bacias Sedimentares da UFC: Novas Fronteiras Exploratórias, Bacias Maduras e Análogas",
+   "url": "https://www.even3.com.br/i-workshop-virtual-de-bacias-sedimentares-da-ufc-novas-fronteiras-exploratorias-bacias-maduras-e-analogas-794532/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Do terno ao branding: A construção da autoridade jurídica no digital",
+   "url": "https://www.even3.com.br/do-terno-ao-branding-a-construcao-da-autoridade-juridica-no-digital-802069/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Curso Online de Introdução à Inteligência Artificial Generativa Aplicada ao Geoprocessamento no QGIS",
+   "url": "https://www.even3.com.br/curso-online-de-introducao-a-inteligencia-artificial-generativa-aplicada-ao-geoprocessamento-no-qgis-790164/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Saúde e bem estar",
+   "url": "https://www.even3.com.br/saude-e-bem-estar-802245/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "A educação como prática formativa",
+   "url": "https://www.even3.com.br/a-educacao-como-pratica-formativa-802208/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Mãos que empreendem",
+   "url": "https://www.even3.com.br/maos-que-empreendem-802067/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "SIPAT 2026",
+   "url": "https://www.even3.com.br/sipat-2026-803118/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Célula Resgate",
+   "url": "https://www.even3.com.br/celula-resgate-802234/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Formulário: Hepatite — informação e prevenção",
+   "url": "https://www.even3.com.br/formulario-hepatite-informacao-e-prevencao-802291/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "UMAD SOCIAL",
+   "url": "https://www.even3.com.br/umad-social-802204/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "3ª Jornada de Engenharia de Software - UEPA",
+   "url": "https://www.even3.com.br/3-jornada-de-engenharia-de-software-uepa-796608/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "JURISDIÇÃO EXTRAORDINÁRIA TRABALHISTA - DESAFIOS PRÁTICOS",
+   "url": "https://www.even3.com.br/JET-desafios-praticos-804417/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Palestra online de comunicação",
+   "url": "https://www.even3.com.br/palestra-online-de-comunicacao-802113/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "II Simpósio do Programa de Pós-Graduação em Biologia Celular e Estrutural Aplicadas",
+   "url": "https://www.even3.com.br/ii-simposio-do-ppgbc--778347/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Treinamento AnyLogic Básico - 23 de Novembro",
+   "url": "https://www.even3.com.br/treinamento-anylogic-basico-23-de-novembro-776586/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "CONFERÊNCIA BOVINA DE REPRODUÇÃO E BEM-ESTAR: DESAFIOS EM UM AMBIENTE EM MUDANÇA",
+   "url": "https://www.even3.com.br/reproducao/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  }
+ ],
+ "totalDia": 207,
+ "modos": {
+  "off": 172,
+  "on": 35
+ },
+ "odontologia": 0,
+ "duracaoS": 392
+}

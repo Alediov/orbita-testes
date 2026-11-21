@@ -1,0 +1,561 @@
+{
+ "versao": 1,
+ "fonte": "even3",
+ "data": "2026-11-09",
+ "geradoEm": "2026-11-08T23:09:58+00:00",
+ "erro": null,
+ "criterios": "online, começa na data, inscrições abertas (REALIZAR INSCRIÇÃO e um ingresso vigente), certificado para o participante dito na página",
+ "totalLista": 42,
+ "analisados": 42,
+ "eventos": [
+  {
+   "id": "e3-unirila",
+   "nome": "Seminário sobre Inclusão de Pessoas com Deficiência em Universidades da UniRila",
+   "resumo": "O Seminário sobre Inclusão de Pessoas com Deficiência em Universidades da UniRila integra o projeto de pesquisa Inclusão de Pessoas com Deficiência na Educação Superior em Universidades da UNIRILA, coordenado pela Universidade Estadual de Mato Grosso do Sul (UEMS), com apoio da Fundação de Apoio ao…",
+   "url": "https://www.even3.com.br/UNIRILA/",
+   "urlFinal": "https://www.even3.com.br/unirila/",
+   "data": "2026-11-09",
+   "dataFim": null,
+   "inicio": "08:00",
+   "fim": "16:30",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Professor de Ensino Superior",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Professor de Educação báisca",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Estudante de Graduação",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Estudante de pós-graduação",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Pesquisador",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Ouvinte",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "Certificação: Com emissão de certificado de participação.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-803788",
+   "nome": "Workshop Nacional de Planejamento da Capacidade Operacional: Filas, Dimensionamento e Nível de Serviço",
+   "resumo": "Workshop Nacional de Planejamento da Capacidade Operacional: Filas, Dimensionamento e Nível de Serviço",
+   "url": "https://www.even3.com.br/workshop-nacional-de-planejamento-da-capacidade-operacional-filas-dimensionamento-e-nivel-de-servico-803788/",
+   "urlFinal": null,
+   "data": "2026-11-09",
+   "dataFim": null,
+   "inicio": "14:00",
+   "fim": "18:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Participação Geral",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "A certificação de participação deve refletir o cumprimento dos critérios efetivos da atividade.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-795139",
+   "nome": "Conhecendo os Moluscos: Da Diversidade à Biologia dos Gastrópodes Terrestres",
+   "resumo": "Aqui você encontrará maiores informações sobre o minicurso Conhecendo os Moluscos: Da Diversidade à Biologia dos Gastrópodes Terrestres.",
+   "url": "https://www.even3.com.br/conhecendo-os-moluscos-da-diversidade-a-biologia-dos-gastropodes-terrestres-795139/",
+   "urlFinal": null,
+   "data": "2026-11-09",
+   "dataFim": "2026-11-13",
+   "inicio": "19:00",
+   "fim": "21:00",
+   "formato": "online",
+   "preco": "R$ 29,25 a R$ 32,40",
+   "gratuito": false,
+   "ingressos": [
+    {
+     "nome": "Individual",
+     "valor": "R$ 32,40",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Dupla",
+     "valor": "R$ 29,25",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "Google Meet, Even3 (área do participante), WhatsApp",
+   "certificado": {
+    "trecho": "Os certificados serão enviados em até 30 dias após o fim do curso, podendo ser disponibilizados antecipadamente caso a Pesquisa de Satisfação que será enviada após o término do curso atinja 75% de participação confirmad…",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-799610",
+   "nome": "Planejamento Experimental e Análise de Dados com IA Generativa",
+   "resumo": "Aprenda a usar inteligência artificial generativa para planejar experimentos, avaliar efeitos e visualizar resultados.",
+   "url": "https://www.even3.com.br/planejamento-experimental-e-analise-de-dados-com-ia-799610/",
+   "urlFinal": null,
+   "data": "2026-11-09",
+   "dataFim": "2026-11-12",
+   "inicio": "19:00",
+   "fim": "21:00",
+   "formato": "online",
+   "preco": "Gratuito (há ingressos pagos)",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Inscrição Gratuita",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Inscrição VIP",
+     "valor": "R$ 34,11",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Inscrição Premium",
+     "valor": "R$ 89,01",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Inscrição Expert",
+     "valor": "R$ 161,01",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "Certificado de participação de 6 horas.",
+    "horas": 6
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-800801",
+   "nome": "Rastros Ocultos II Simpósio de Ciências Forense",
+   "resumo": "Aqui você encontrará todas as informações sobre o Simpósio de Ciências Forenses, um evento online promovido pela Ambiens Jr. que busca aproximar estudantes, pesquisadores e profissionais interessados nas ciências forenses, na investigação científica e na aplicação do conhecimento científico à resol…",
+   "url": "https://www.even3.com.br/rastros-ocultos-ii-simposio-de-ciencias-forense-800801/",
+   "urlFinal": null,
+   "data": "2026-11-09",
+   "dataFim": "2026-11-12",
+   "inicio": "19:00",
+   "fim": null,
+   "formato": "online",
+   "preco": "R$ 17,50",
+   "gratuito": false,
+   "ingressos": [
+    {
+     "nome": "Geral",
+     "valor": "R$ 17,50",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "Google Meet",
+   "certificado": {
+    "trecho": "Os certificados serão enviados em até 15 dias após o término do simpósio.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-793155",
+   "nome": "Ciclo de Palestras em Psiquiatria: Medicina do Sono",
+   "resumo": "O Conselho Regional de Medicina do Paraná (CRM-PR), por meio do Projeto de Educação Médica Continuada e em parceria com a Câmara Técnica de Psiquiatria do CRM-PR, promove o Ciclo de Palestras em Psiquiatria, com o tema “Medicina do Sono”.",
+   "url": "https://www.even3.com.br/psiquiatria-medicina-do-sono-793155/",
+   "urlFinal": null,
+   "data": "2026-11-09",
+   "dataFim": null,
+   "inicio": "19:30",
+   "fim": "21:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Médicos",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Estudante de Medicina",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Autoridade de mesa e Palestrantes",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "Haverá emissão de certificado, desde que cumpridos os pré-requisitos.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-733841",
+   "nome": "ACADEMIAVET SUMMIT (2ª edição)",
+   "resumo": "Durante o Academiavet Summit, especialistas compartilharam conteúdos técnicos, estratégicos e práticos para a rotina veterinária.",
+   "url": "https://www.even3.com.br/academiavet-summit-2-edicao-733841/",
+   "urlFinal": null,
+   "data": "2026-11-09",
+   "dataFim": "2026-11-13",
+   "inicio": "20:00",
+   "fim": "22:00",
+   "formato": "online",
+   "preco": "Gratuito (há ingressos pagos)",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Estudante — Acesso Gratuito",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Estudante — Acesso VIP",
+     "valor": "R$ 26,91",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Estudante — Acesso VIP",
+     "valor": "R$ 35,91",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Médico-veterinário — Acesso Gratuito",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Médico-veterinário — Acesso VIP",
+     "valor": "R$ 26,91",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Médico-veterinário — Acesso VIP",
+     "valor": "R$ 35,91",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "Acesso gratuito às palestras ao vivo do AcademiaVet Summit - Participação no congresso online durante os dias do evento - Certificado de participação - Acesso aos grupos e comunicações oficiais do evento - Participação…",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  }
+ ],
+ "descartados": {
+  "formato presencial": 296,
+  "sem certificado para o participante": 14,
+  "inscrições fechadas": 21
+ },
+ "foraLista": [
+  {
+   "nome": "Mapa da Oralidade Quilombola - Lagoa Nova",
+   "url": "https://www.even3.com.br/mapa-da-oralidade-quilombola-lagoa-nova-802119/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "XIV Seminário de Programas Especiais em Educação - Seminário de Desfecho do PIBID UFT (ciclo 2024–2026) e XII Seminário",
+   "url": "https://www.even3.com.br/xiv-seminario-de-programas-especiais-em-educacao-seminario-de-desfecho-do-pibid-uft-ciclo-20242026-e-xii-seminario-de-iniciacao-a-docencia-da-uft-799107/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Enfermagem na APS autonomia responsabilidade e limites ético legais da atuação profissional",
+   "url": "https://www.even3.com.br/enfermagem-na-aps-autonomia-responsabilidade-e-limites-etico-legais-da-atuacao-profissional-796707/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Desafio Academia de Monstrinhas",
+   "url": "https://www.even3.com.br/desafio-academia-de-monstrinhas-791698/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Grupo de apoio segunda 15h novembro 2026",
+   "url": "https://www.even3.com.br/grupo-de-apoio-segunda-15h-novembro-2026-804988/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "BRASIL EM TEMPO DE REVISÃO",
+   "url": "https://www.even3.com.br/brasil-em-tempo-de-revisao-796632/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Semana de Saúde Integral Afya 2026",
+   "url": "https://www.even3.com.br/semana-de-saude-integral-afya-2026-743129/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "reunião habilitados habilitandos novembro 2026",
+   "url": "https://www.even3.com.br/reuniao-habilitados-habilitandos-novembro-2026-805076/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "WEBINAR DO GEPAE: Saneamento Circular",
+   "url": "https://www.even3.com.br/webnar-do-gepae-806737/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Programação de MAC em Simulação com IHM – Plataforma Sysmac Studio",
+   "url": "https://www.even3.com.br/programacao-de-mac-em-simulacao-com-ihm-plataforma-sysmac-studio-705203/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Webinário sobre \"Adoção Internacional na Prática: fluxos, competências e atuação integrada\"",
+   "url": "https://www.even3.com.br/webinario-sobre-adocao-internacional-na-pratica-fluxos-competencias-e-atuacao-integrada-799391/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "EXPOMADRE TESTE",
+   "url": "https://www.even3.com.br/expomadre-teste-791737/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "Artigo Cientifico",
+   "url": "https://www.even3.com.br/artigo-cientifico-796592/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Simpósio Moacir Santos 100 Anos",
+   "url": "https://www.even3.com.br/simposio-moacir-santos-100-anos-800738/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Minicurso Formação e Rompimento de Vínculos",
+   "url": "https://www.even3.com.br/minicurso-formacao-e-rompimento-de-vinculos-793594/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Fora do Script",
+   "url": "https://www.even3.com.br/fora-do-script-802272/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "LBGT EXPO BRASIL",
+   "url": "https://www.even3.com.br/lbgt-expo-brasil-796674/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Outros passados, outros brasis: O passado negro na Imprensa Negra Brasileira (1833-1937)",
+   "url": "https://www.even3.com.br/outros-pasados-outros-brasis-o-passado-negro-na-imprensa-negra-brasileira-1833-1937-796556/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "congresso de odontologia",
+   "url": "https://www.even3.com.br/congresso-de-odontologia-796482/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": true
+  },
+  {
+   "nome": "Democracia sob ataque: a era do autoritarismo digital. [ISOC - Reunião do GT de Criptografia]",
+   "url": "https://www.even3.com.br/democracia-sob-ataque-a-era-do-autoritarismo-digital-isoc-reuniao-do-gt-de-criptografia-806174/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Interações, Vínculos e Rotinas de Cuidado na Educação Infantil",
+   "url": "https://www.even3.com.br/interacoes-vinculos-e-rotinas-de-cuidado-na-educacao-infantil-806676/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "Grupo de Apoio Segunda 19h - Novembro",
+   "url": "https://www.even3.com.br/grupo-de-apoio-segunda-19h-novembro-798358/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Formação Educação Especial Inclusiva",
+   "url": "https://www.even3.com.br/formacao-educacao-especial-inclusiva-804917/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "Webinário - Como fazer triagem de risco para planejamento na UBS/Escola (Parte 2)",
+   "url": "https://www.even3.com.br/webinario-como-fazer-triagem-de-risco-para-planejamento-na-ubsescola-parte-2-796461/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": true
+  },
+  {
+   "nome": "Quiz Comercial VS",
+   "url": "https://www.even3.com.br/quiz-comercial-vs-796577/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Curso On-line de Integração Regional",
+   "url": "https://www.even3.com.br/curso-de-integracao-regional-793506/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "IIP | Ateliê de escrita: Introdução à escrita livre",
+   "url": "https://www.even3.com.br/iip-atelie-de-escrita-803348/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Live",
+   "url": "https://www.even3.com.br/live-796750/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Diplomacia comercial e os desafios jurídicos da soberania econômica",
+   "url": "https://www.even3.com.br/diplomacia-comercial-e-os-desafios-juridicos-da-soberania-economica-806835/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "curso de extensão",
+   "url": "https://www.even3.com.br/curso-de-extensao-796544/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Policlínica Itinerante: Diálogos Sobre o Trabalho em Saúde - Diálogos com Especialistas",
+   "url": "https://www.even3.com.br/policlinica-itinerante-dialogos-sobre-o-trabalho-em-saude-dialogos-com-especialistas-806829/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "III Jornada do Programa de Iniciação Científica Uninter & VI Seminário Grupo de pesquisa História Educação e Sociedade -",
+   "url": "https://www.even3.com.br/iii-jornada-do-programa-de-iniciacao-cientifica-uninter-vi-seminario-grupo-de-pesquisa-historia-educacao-e-sociedade-uninter-793830/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "DOXA AI: da prática clínica à inovação em saúde",
+   "url": "https://www.even3.com.br/doxa-ai-da-pratica-clinica-a-inovacao-em-saude-796689/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Curso Tecnologia e Química dos Aromas",
+   "url": "https://www.even3.com.br/crqsp-tecnologiaequimicadosaromas-nov2026-790267/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Como o Cérebro Aprende",
+   "url": "https://www.even3.com.br/como-o-cerebro-aprende-785665/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  }
+ ],
+ "totalDia": 338,
+ "modos": {
+  "off": 296,
+  "on": 42
+ },
+ "odontologia": 0,
+ "duracaoS": 85
+}

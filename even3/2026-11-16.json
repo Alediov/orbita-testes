@@ -1,0 +1,482 @@
+{
+ "versao": 1,
+ "fonte": "even3",
+ "data": "2026-11-16",
+ "geradoEm": "2026-11-15T14:43:53+00:00",
+ "erro": null,
+ "criterios": "online, começa na data, inscrições abertas (REALIZAR INSCRIÇÃO e um ingresso vigente), certificado para o participante dito na página",
+ "totalLista": 41,
+ "analisados": 41,
+ "eventos": [
+  {
+   "id": "e3-790857",
+   "nome": "Curso Responsabilidade Técnica por Laboratório de Ensino",
+   "resumo": "*Curso gratuito para profissionais da Química registrados em CRQs e estudantes de cursos da área da Química em todo o território nacional.",
+   "url": "https://www.even3.com.br/crqsp-rtlaboratoriodeensino-nov2026-790857/",
+   "urlFinal": null,
+   "data": "2026-11-16",
+   "dataFim": null,
+   "inicio": "09:00",
+   "fim": "12:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Profissional Registrado CRQ-SP",
+     "valor": "Gratuito",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Palestrante",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Estudante da área da Química em SP",
+     "valor": "Gratuito",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Profissional Registrado CRQ - demais regiões (fora de SP)",
+     "valor": "Gratuito",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Estudante da área da Química fora de SP",
+     "valor": "Gratuito",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Público em Geral",
+     "valor": "Gratuito",
+     "situacao": "em breve"
+    }
+   ],
+   "plataforma": "Microsoft Teams",
+   "certificado": {
+    "trecho": "O certificado será emitido ao final do curso para os participantes que assistirem ao vivo ou acessarem todas as gravações.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-806474",
+   "nome": "CRFTO ENSINA + TIRANDO DÚVIDAS NO REGISTRO DE RECEITAS NO SNCR",
+   "resumo": "",
+   "url": "https://www.even3.com.br/crfto-ensina-atualizacoes-da-portaria-34498-e-sistema-nacional-de-controle-de-receituarios-sncr-806474/",
+   "urlFinal": null,
+   "data": "2026-11-16",
+   "dataFim": null,
+   "inicio": "15:00",
+   "fim": "17:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Farmacêuticos",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Acadêmicos de Farmácia",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Profissionais da Saúde",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "Google Meet",
+   "certificado": {
+    "trecho": "CERTIFICADO: 03 horas",
+    "horas": 3
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-753853",
+   "nome": "VII Seminário da Pós-Graduação em Gestão de Serviços de Saúde da UFMG",
+   "resumo": "Acesse o link a seguir e confira a programação oficial do VII Seminário da Pós-Graduação em Gestão de Serviços de Saúde da UFMG:",
+   "url": "https://www.even3.com.br/vii-seminario-da-pos-graduacao-em-gestao-de-servicos-de-saude-da-ufmg-753853/",
+   "urlFinal": null,
+   "data": "2026-11-16",
+   "dataFim": "2026-11-17",
+   "inicio": "15:00",
+   "fim": "22:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Discente do Mestrado Profissional em Gestão de Serviços de Saúde",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Egresso do Mestrado Profissional em Gestão de Serviços de Saúde",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Docentes",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Aluno do curso de Graduação em Gestão de Serviços de Saúde",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Profissionais e Público em Geral",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "As inscrições são gratuitas e haverá emissão de certificado perfazendo a carga horária do evento, que são 16 horas.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-535138",
+   "nome": "Lançamento do Programa de Formação de Professores no âmbito do Pacto EJA",
+   "resumo": "Após a inscrição, todas as aulas e atividades estarão liberadas para participação.",
+   "url": "https://www.even3.com.br/programa-de-formacao-em-servico-dos-professores-da-eja-535138/",
+   "urlFinal": "https://www.even3.com.br/e/programa-de-formacao-em-servico-dos-professores-da-eja-535138",
+   "data": "2026-11-16",
+   "dataFim": "2026-11-19",
+   "inicio": "19:00",
+   "fim": null,
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Participante",
+     "valor": "Gratuito",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Teste",
+     "valor": "Gratuito",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Participante 2",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "YouTube, Even3 (área do participante)",
+   "certificado": {
+    "trecho": "Os certificados serão processados somente ao final da formação, após a conclusão de todas as aulas e atividades. (33 Encontros)",
+    "horas": 66
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-dayonenovembro2026",
+   "nome": "DAY ONE - ALEKSANDRO BARBOZA SIQUEIRA",
+   "resumo": "Na última edição do Day One 2026, o convidado será Aleksandro Barboza Siqueira, executivo de Marketing, Vendas e Novos Negócios, com quase 20 anos de experiência nos segmentos de alimentos, lácteos, bebidas, amidos e commodities.",
+   "url": "https://www.even3.com.br/dayonenovembro2026/",
+   "urlFinal": null,
+   "data": "2026-11-16",
+   "dataFim": null,
+   "inicio": "19:30",
+   "fim": "21:30",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "INGRESSO ÚNICO",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "YouTube, Even3 (área do participante)",
+   "certificado": {
+    "trecho": "🎓 Certificado de horas complementares.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  }
+ ],
+ "descartados": {
+  "formato presencial": 333,
+  "inscrições fechadas": 24,
+  "sem certificado para o participante": 12
+ },
+ "foraLista": [
+  {
+   "nome": "Apertando a mente- Corpo, autoestima e bem-estar: desafios após o diagnóstico do câncer de mama",
+   "url": "https://www.even3.com.br/apertando-a-mente-corpo-autoestima-e-bem-estar-desafios-apos-o-diagnostico-do-cancer-de-mama-798867/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Evento Demonstração 13/11",
+   "url": "https://www.even3.com.br/evento1311/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "MasterClass Astro*Vocação - astrologia Vocacional",
+   "url": "https://www.even3.com.br/masterclass-astrovocacao-astrologia-vocacional-798574/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "VI CONGRESSO NACIONAL DE ANIMAIS SILVESTRES",
+   "url": "https://www.even3.com.br/VIcnamas-769109/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Feliz aniversário Zico",
+   "url": "https://www.even3.com.br/feliz-aniversario-zico-798539/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Chá Revelação",
+   "url": "https://www.even3.com.br/cha-revelacao-798792/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "II Simpósio Virtual de Engenharia, Tecnologia e Inovação – II SVETI 2026 / II Virtual Symposium on Engineering, Technolo",
+   "url": "https://www.even3.com.br/ii-simposio-virtual-de-engenharia-tecnologia-e-inovacao-ii-sveti-2026-ii-virtual-symposium-on-engineering-technology-and-innovation-807098/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "XVIII Seminário de Pesquisas em Andamento (SPA) do Programa de Pós-Graduação em Estudos da Tradução",
+   "url": "https://www.even3.com.br/XVIIISPAPGET-762651/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Esporotricose",
+   "url": "https://www.even3.com.br/esporotricose-798583/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Inteligência Artificial na Indústria de Alimentos: Aplicações práticas que todo gestor precisa conhecer",
+   "url": "https://www.even3.com.br/inteligencia-artificial-na-industria-de-alimentos-aplicacoes-praticas-que-todo-gestor-precisa-conhecer-804486/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "Aula Gastrosquise",
+   "url": "https://www.even3.com.br/aula-gastrosquise-806654/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Roda de Conversa: Entre perdas, medos e afetos: uma roda de conversa sobre luto, cuidado e resistência\"",
+   "url": "https://www.even3.com.br/roda-de-conversa-entre-perdas-medos-e-afetos-uma-roda-de-conversa-sobre-luto-cuidado-e-resistencia-809328/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Atendimento domiciliar e TRM: Conceitos do PNF",
+   "url": "https://www.even3.com.br/atendimento-domiciliar-e-trm-conceitos-do-pnf-798570/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "XVII Encontro Nacional dos Estudantes de Secretariado",
+   "url": "https://www.even3.com.br/xvii-encontro-nacional-dos-estudantes-de-secretariado-750436/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Embaixadoras da divas make",
+   "url": "https://www.even3.com.br/embaixadoras-da-divas-make-798527/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Recrutamento de guilda",
+   "url": "https://www.even3.com.br/recrutamento-de-guilda-798489/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Semana de Tecnologia da FATEC Zona Sul \"Dom Paulo Evaristo Arns\" - 2026-2",
+   "url": "https://www.even3.com.br/semana-de-tecnologia-da-fatec-zona-sul-dom-paulo-evaristo-arns-2026-2-794124/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Ciclo de Palestras - \"Pesca e Conservação da Biodiversidade Marinha\"",
+   "url": "https://www.even3.com.br/ciclo-de-palestras-pesca-e-conservacao-da-biodiversidade-marinha-805437/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Luz nas trevas: conversas para humanos",
+   "url": "https://www.even3.com.br/luz-nas-trevas-conversas-para-humanos-804871/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Quiz da Isabeli quem conhece ela",
+   "url": "https://www.even3.com.br/quiz-da-isabeli-quem-conhece-ela-798726/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Treinamento MAV",
+   "url": "https://www.even3.com.br/treinamento-mav-798758/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "bla bla",
+   "url": "https://www.even3.com.br/bla-bla-798626/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Anos 80",
+   "url": "https://www.even3.com.br/anos-80-798749/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Palestra | Muitas Vozes, Uma Só Luta: Igualdade Racial, Respeito e Garantia de Direitos",
+   "url": "https://www.even3.com.br/palestra-muitas-vozes-uma-so-luta-igualdade-racial-respeito-e-garantia-de-direitos-810155/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "aprenda a cresser",
+   "url": "https://www.even3.com.br/aprenda-a-cresser-798662/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "15 anos da karla",
+   "url": "https://www.even3.com.br/15-anos-da-karla-798911/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "5° Edição Simpósio de Urgência e Emergência de Pequenos Animais",
+   "url": "https://www.even3.com.br/5-edicao-simposio-de-urgencia-e-emergencia-de-pequenos-animais-802906/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "4° Simpósio fertilizantes, corretivos e inoculantes",
+   "url": "https://www.even3.com.br/4-simposio-fertilizantes-corretivos-e-inoculantes-798873/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "A Lógica das Emoções - Lançamento",
+   "url": "https://www.even3.com.br/a-logica-das-emocoes-lancamento-798884/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "2° Edição Falando em Brangus",
+   "url": "https://www.even3.com.br/2-edicao-falando-em-brangus-799390/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Curso de Extenção sobre Educação Escolar Quilombola",
+   "url": "https://www.even3.com.br/curso-de-extencao-sobre-educacao-escolar-quilombola-798903/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "A CELEBRAÇÃO DA PALAVRA DE DEUS NA AUSÊNCIA DO PRESBÍTERO",
+   "url": "https://www.even3.com.br/a-celebracao-da-palavra-de-deus-na-ausencia-do-presbitero-798554/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "PALESTRA ORATORIA",
+   "url": "https://www.even3.com.br/palestra-oratoria-798909/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Clarice Lispector: escrita de si, memória e construção da subjetividade",
+   "url": "https://www.even3.com.br/clarice-lispector-escrita-de-si-memoria-e-construcao-da-subjetividade-809210/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "Circularidade e Ecoeficiência no Descomissionamento",
+   "url": "https://www.even3.com.br/28490/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Saúde em Gestão: IA e Reforma Tributária",
+   "url": "https://www.even3.com.br/engajji-810392/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  }
+ ],
+ "totalDia": 374,
+ "modos": {
+  "off": 333,
+  "on": 41
+ },
+ "odontologia": 0,
+ "duracaoS": 78
+}

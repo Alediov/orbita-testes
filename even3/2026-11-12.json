@@ -1,0 +1,553 @@
+{
+ "versao": 1,
+ "fonte": "even3",
+ "data": "2026-11-12",
+ "geradoEm": "2026-11-12T01:41:28+00:00",
+ "erro": null,
+ "criterios": "online, começa na data, inscrições abertas (REALIZAR INSCRIÇÃO e um ingresso vigente), certificado para o participante dito na página",
+ "totalLista": 39,
+ "analisados": 39,
+ "eventos": [
+  {
+   "id": "e3-756848",
+   "nome": "CIPCEn-2026: 7º Congresso Internacional de Produção Científica em Enfermagem",
+   "resumo": "O Instituto Enfservic, tem a satisfação de anunciar a realização do CIPCEn-2025: 7º Congresso Internacional de Produção Científica em Enfermagem em formato online, traz o tema: \"Conectando Conhecimento: construindo o futuro da assistência no ensino e pesquisa\", evento a realizar-se nos dias 12 e 13…",
+   "url": "https://www.even3.com.br/7cipcenfermagem2026-756848/",
+   "urlFinal": null,
+   "data": "2026-11-12",
+   "dataFim": "2026-11-13",
+   "inicio": "07:45",
+   "fim": "18:00",
+   "formato": "online",
+   "preco": "Gratuito (há ingressos pagos)",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Estudante de Graduação, Pós-graduação ou Curso Técnico",
+     "valor": "R$ 36,40",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Estudante de Graduação, Pós-graduação ou Curso Técnico",
+     "valor": "R$ 45,51",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Estudante de Graduação, Pós-graduação ou Curso Técnico",
+     "valor": "R$ 54,61",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Estudante de Graduação, Pós-graduação ou Curso Técnico",
+     "valor": "R$ 63,71",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Profissional",
+     "valor": "R$ 54,61",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Profissional",
+     "valor": "R$ 63,71",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Profissional",
+     "valor": "R$ 72,81",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Profissional",
+     "valor": "R$ 81,91",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "Acesse o ícone verde realizar inscrição e Realize sua Inscrição e garantir o Certificado de Participação no Congresso e Palestras que você assistir ou Trabalho que apresentar.",
+    "horas": 10
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-803791",
+   "nome": "Workshop Nacional de Continuidade de Operações Administrativas: Processos Críticos, Contingências e Retomada",
+   "resumo": "Workshop Nacional de Continuidade de Operações Administrativas: Processos Críticos, Contingências e Retomada",
+   "url": "https://www.even3.com.br/workshop-nacional-de-continuidade-de-operacoes-administrativas-processos-criticos-contingencias-e-retomada-803791/",
+   "urlFinal": null,
+   "data": "2026-11-12",
+   "dataFim": null,
+   "inicio": "14:00",
+   "fim": "18:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Participação Geral",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "A certificação de participação deve refletir o cumprimento dos critérios efetivos da atividade.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-806374",
+   "nome": "Ameaças Transnacionais e Segurança na Amazônia: A Cooperação Militar Sul-Americana no Combate ao Narcotráfico e Crimes A",
+   "resumo": "Ameaças Transnacionais e Segurança na Amazônia: A Cooperação Militar Sul-Americana no Combate ao Narcotráfico e Crimes Ambientais",
+   "url": "https://www.even3.com.br/ameacas-transnacionais-e-seguranca-na-amazonia-a-cooperacao-militar-sul-americana-no-combate-ao-narcotrafico-e-crimes-ambientais-806374/",
+   "urlFinal": null,
+   "data": "2026-11-12",
+   "dataFim": null,
+   "inicio": "19:00",
+   "fim": "21:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Estudante da UEMA",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Estudante de outra instituição",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Público externo",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Militar das Forças Armadas",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Militar das Forças Auxiliares",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Professores",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "YouTube",
+   "certificado": {
+    "trecho": "O evento será aberto a todos os públicos e contará com certificado de participação de 2 horas.",
+    "horas": 2
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-807567",
+   "nome": "Da Teoria à Rotina: a Gestão do Bem-estar Animal no Parque das Aves",
+   "resumo": "",
+   "url": "https://www.even3.com.br/da-teoria-a-rotina-a-gestao-do-bem-estar-animal-no-parque-das-aves-807567/",
+   "urlFinal": null,
+   "data": "2026-11-12",
+   "dataFim": null,
+   "inicio": "19:00",
+   "fim": "21:00",
+   "formato": "online",
+   "preco": "Gratuito (há ingressos pagos)",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Ouvinte (Membros LAEAS)",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Ouvinte (Externo)",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Ouvinte com Emissão de Certificado",
+     "valor": "R$ 2,50",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "Ouvinte com Emissão de Certificado",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-804470",
+   "nome": "Mesa redonda - Educação Bilíngue, Multilinguismo e Translinguagem",
+   "resumo": "O Grupo de Pesquisa Linguística Aplicada Línguas Estrangeiras – LALE/UFVJM convida a comunidade acadêmica e a sociedade, especialmente professores, profissionais e estudantes de línguas, a participarem da mesa-redonda Educação Bilíngue, Multilinguismo e Translinguagem e a refletirem sobre a importâ…",
+   "url": "https://www.even3.com.br/mesa-redonda-educacao-bilingue-multilinguismo-e-translinguagem-804470/",
+   "urlFinal": null,
+   "data": "2026-11-12",
+   "dataFim": null,
+   "inicio": "19:00",
+   "fim": "21:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Geral",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "Para obtenção do certificado de participação é necessário se inscrever no Even3 (clique aqui) e assinar lista de presença no dia do evento.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-802728",
+   "nome": "Ciclo de Palestra em Endocrinologia e Metabologia: DIABETES TIPO 2",
+   "resumo": "O Conselho Regional de Medicina do Paraná (CRM-PR), por meio do Projeto de Educação Médica Continuada e em parceria com a Sociedade Brasileira de Endocrinologia e Metabologia (SBEM), promove o Ciclo de Palestras em Endocrinologia e Metabologia, com o tema “Diabetes tipo 2: o papel da insulinização…",
+   "url": "https://www.even3.com.br/diabetes-tipo-2-802728/",
+   "urlFinal": null,
+   "data": "2026-11-12",
+   "dataFim": null,
+   "inicio": "19:30",
+   "fim": "21:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Médicos",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Estudantes de medicina",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Autoridades de mesa e Palestrantes",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "Even3 (área do participante)",
+   "certificado": {
+    "trecho": "Haverá emissão de certificado, desde que cumpridos os pré-requisitos.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-801846",
+   "nome": "Ciclo de Palestra em Endocrinologia e Metabologia: DIABETES TIPO 2: O papel da Insulinização para diabetes tipo 2 na era",
+   "resumo": "Ciclo de Palestra em Endocrinologia e Metabologia: DIABETES TIPO 2: O papel da Insulinização para diabetes tipo 2 na era dos novos fármacos",
+   "url": "https://www.even3.com.br/endocrinologia-e-metabologia-801846/",
+   "urlFinal": null,
+   "data": "2026-11-12",
+   "dataFim": null,
+   "inicio": "19:30",
+   "fim": "21:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Médicos",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Estudantes de medicina",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Autoridades de mesa e Palestrantes",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "Even3 (área do participante)",
+   "certificado": {
+    "trecho": "Haverá emissão de certificado, desde que cumpridos os pré-requisitos.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  }
+ ],
+ "descartados": {
+  "formato presencial": 236,
+  "sem certificado para o participante": 15,
+  "inscrições fechadas": 17
+ },
+ "foraLista": [
+  {
+   "nome": "Aulão Preparatório ENADE26- \"Análise de requisitos\" - TI -Unisul",
+   "url": "https://www.even3.com.br/aulao-preparatorio-enade26-analise-de-requisitos-ti-unisul-789698/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Hanseníase na Atenção Primária: Como Prosseguir com o Diagnóstico Precoce e o Cuidado Integral",
+   "url": "https://www.even3.com.br/hanseniase-na-atencao-primaria-como-prosseguir-com-o-diagnostico-precoce-e-o-cuidado-integral-806528/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Webinar Ensino Agir - Cultura Organizacional como Pilar da Segurança do Paciente",
+   "url": "https://www.even3.com.br/webinar-ensino-agir-cultura-organizacional-como-pilar-da-seguranca-do-paciente-791466/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Minicurso Novas configurações do mundo do trabalho e plataformização das políticas sociais: impactos no trabalho profiss",
+   "url": "https://www.even3.com.br/minicurso-novas-configuracoes-do-mundo-do-trabalho-e-plataformizacao-das-politicas-sociais-impactos-no-trabalho-profissional-de-assistentes-sociais-796699/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "COMUNICAÇÃO PROFISSIONAL E RELACIONAMENTO INTERPESSOAL",
+   "url": "https://www.even3.com.br/comunicacao-profissional-e-relacionamento-interpessoal-794861/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Conexão Funpresp-Jud 2026 | Um ano de Evolução, Simplificação e Valor",
+   "url": "https://www.even3.com.br/conexao-funpresp-jud-2026-um-ano-de-evolucao-simplificacao-e-valor-805828/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Misofonia",
+   "url": "https://www.even3.com.br/misofonia-807136/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "II Simpósio Brasileiro sobre Violência Sexual contra Meninos e Homens",
+   "url": "https://www.even3.com.br/ii-simposio-brasileiro-sobre-violencia-sexual-contra-meninos-e-homens-781382/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Detox digital",
+   "url": "https://www.even3.com.br/detox-digital-802591/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Cìrculo de conversación: cuidado en la universidad",
+   "url": "https://www.even3.com.br/circulo-de-conversacion-cuidado-en-la-universidad-802155/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Aposte no Seu Futuro",
+   "url": "https://www.even3.com.br/aposte-no-seu-futuro-806150/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "V CEEI-CICLO DE ESTUDOS E EXPERIÊNCIAS SOBRE EDUCAÇÃO INCLUSIVA -Parte 2 e II WORKSHOP SOBRE PRÁTICAS DE INCLUSÃO",
+   "url": "https://www.even3.com.br/v-ciclo-de-estudos-e-experiencias-sobre-educacao-inclusiva-e-ii-workshop-sobre-praticas-de-inclusao-698966/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "CONGRESSO NACIONAL DE CIÊNCIAS EXATAS E ENGENHARIAS",
+   "url": "https://www.even3.com.br/congresso-nacional-de-ciencias-exatas-e-engenharias-765626/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Webinário: Envelhecer com Direitos – Dignidade, Cidadania e Futuro",
+   "url": "https://www.even3.com.br/webinario-envelhecer-com-direitos-dignidade-cidadania-e-futuro-805161/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Sensibilização de Estudantes de Saúde para a Coleta do Quesito Raça/Cor por Autodeclaração no SUS",
+   "url": "https://www.even3.com.br/sensibilizacao-de-estudantes-de-saude-para-a-coleta-do-quesito-racacor-por-autodeclaracao-no-sus-790962/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Curso Defesa de TCC",
+   "url": "https://www.even3.com.br/curso-defesa-de-tcc-797171/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Palestra: Nutrição e Autismo: o que a ciência mostra que funciona",
+   "url": "https://www.even3.com.br/palestra-nutricao-e-autismo-o-que-a-ciencia-mostra-que-funciona-797003/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Tec Talk - Qualidade na Indústria Farmacêutica: desafios, liderança e oportunidades de carreira.",
+   "url": "https://www.even3.com.br/tec-talk-qualidade-na-industria-farmaceutica-desafios-lideranca-e-oportunidades-de-carreira-806390/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "LISTA DE ESPERA - Semana da Biomedicina - LABEC",
+   "url": "https://www.even3.com.br/lista-de-espera-semana-da-biomedicina-labec-797127/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "21 dias para melhor versão",
+   "url": "https://www.even3.com.br/21-dias-para-melhor-versao-797188/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "2º Seminário Internacional do GEELLE – Grupo de Estudos sobre Educação Linguística em Línguas Estrangeiras | 2nd GEELLE",
+   "url": "https://www.even3.com.br/2-seminario-internacional-do-geelle-760648/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "PROTOCOLO XABCDE NA AVALIAÇÃO DO TRAUMA!",
+   "url": "https://www.even3.com.br/protocolo-xabcde-na-avaliacao-do-trauma-797165/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "APIs: A Linguagem Secreta da Tecnologia",
+   "url": "https://www.even3.com.br/apis-a-linguagem-secreta-da-tecnologia-804705/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Direitos Humanos: arte e ciência -experiência do projeto de extensão",
+   "url": "https://www.even3.com.br/direitos-humanos-arte-e-ciencia-experiencia-do-projeto-de-extensao-804479/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "Desafios contemporâneos para o Serviço Social",
+   "url": "https://www.even3.com.br/desafios-contemporaneos-para-o-servico-social-806080/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Curso de pós-graduação Lato Senso em História e Cultura Afro-brasileira",
+   "url": "https://www.even3.com.br/curso-de-pos-graduacao-lato-senso-em-historia-e-cultura-afro-brasileira-797180/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Laboratorizando: Plano de Negócio",
+   "url": "https://www.even3.com.br/laboratorizando-plano-de-negocio-806328/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "Palestra: ESG no Agronegócio",
+   "url": "https://www.even3.com.br/palestra-esg-no-agronegocio-806282/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "teclado online",
+   "url": "https://www.even3.com.br/teclado-online-797193/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Sessão conjunta LAENDO E LAPEI: Endodontia no paciente idoso: Cuidados, desafios sistêmicos, anatômicos e clínicos",
+   "url": "https://www.even3.com.br/SessaoabertaLAENDOELAPEI-806367/",
+   "motivo": "sem certificado para o participante",
+   "odonto": true
+  },
+  {
+   "nome": "II Seminário Acadêmico e Científico de Educação a Distância e Ensino Online (SACEDE)",
+   "url": "https://www.even3.com.br/ii-sacede/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Novembro da Privacidade e Segurança da Informação: Segurança dos dados corporativos",
+   "url": "https://www.even3.com.br/seguranca-dos-dados-corporativos-807856/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  }
+ ],
+ "totalDia": 275,
+ "modos": {
+  "off": 236,
+  "on": 39
+ },
+ "odontologia": 0,
+ "duracaoS": 83
+}
