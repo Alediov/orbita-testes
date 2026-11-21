@@ -1,0 +1,16 @@
+{
+ "canal": "craftgold",
+ "id": "r75FPuv01Vw",
+ "titulo": "ELA GANHOU MILHÕES DE DÓLARES E EU MONTEI O ROBO PARA TESTAR A ESTRATEGIA.",
+ "publicado": "2026-10-19T23:31:56+00:00",
+ "url": "https://www.youtube.com/watch?v=r75FPuv01Vw",
+ "duracao": 1442,
+ "descricao": "🤖 BTCopy (acompanhar os robôs): https://play.google.com/store/apps/details?id=com.saborbet.manager\n📊 Apor3 Certo: https://apor3certo.com\n\nVi uma estratégia de day trade num react do Marinho, montei um robô com ela e rodei 288 combinações de backtest pra ver se ela aguenta. 🤖\n\n🧮 A ESTRATÉGIA: média móvel de 34 períodos com três fechamentos (máxima, fechamento e mínima), entrada no pullback da volta da média, seguindo a tendência. Alvo fixo e stop curto do outro lado da média.\n\n🔬 O QUE EU TESTEI: 288 combinações, variando o período de 21 a 52 e o alvo de 4% a 8%, nos gráficos de 30 minutos, 1, 2, 4 e 8 horas. Testei também break-even e trailing stop (os dois PIORARAM o resultado).\n\n📉 O RESULTADO HONESTO: a melhor combinação ficou com cerca de 33% de acerto e 11 meses positivos contra 11 meses negativos. A estratégia tem alvo grande e loss curto, então ela erra muito e ganha pouco de cada vez.\n\n⚠️ O QUE EU NÃO FIZ, E PRECISO FALAR: eu NÃO rodei o teste fora da amostra (treinar em 70% do período e testar cego nos outros 30%). Sem isso, resultado otimizado pode ser só ruído do passado. Eu falo disso no vídeo e vou trazer esse teste num próximo.\n\n🤖 E TEM MAIS: eu mostro também como estão os 14 robôs na minha conta real da Binance, com 10 dólares de margem cada um, e a plataforma que eu programei pra fazer esses estudos.\n\n⚠️ Não é recomendação de investimento, de compra nem de operação. Backtest é teste no passado e não garante nada no futuro. Robô de trade opera com risco real e pode perder dinheiro.\n\n#robodetrade #backtest #daytrade #estrategiadetrade #binance #minindice #tradeautomatizado #criptomoedas #mediamovel #quant",
+ "transcricao": null,
+ "idioma": null,
+ "fonte": null,
+ "motivoSemTranscricao": "yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP",
+ "tentativas": 1,
+ "visto": "2026-11-09T16:29:56Z",
+ "atualizado": "2026-11-14T01:26:53Z"
+}

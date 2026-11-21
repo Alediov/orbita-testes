@@ -1,0 +1,517 @@
+{
+ "versao": 1,
+ "em": "2026-11-19T02:35:05Z",
+ "proxima": "2026-11-26T02:35:05Z",
+ "sobre": "Canais parecidos com os que a antena segue (tools/ideias/descobrir.py, 1×/semana). Só sugestões: seguir ou dispensar é no app.",
+ "buscas": [
+  "ganhar dinheiro com IA",
+  "renda extra com inteligência artificial",
+  "pools de liquidez",
+  "renda passiva DeFi",
+  "faucet bitcoin grátis",
+  "airdrop cripto grátis",
+  "apostas de valor futebol",
+  "trader esportivo"
+ ],
+ "fontes": {
+  "destaque": 0,
+  "busca": 84,
+  "citado": 2
+ },
+ "candidatos": 79,
+ "canais": [
+  {
+   "chave": "arbamnauta",
+   "nome": "Arbam",
+   "handle": "arbamnauta",
+   "channel_id": "UCVYomcwGfbA1eCqb3nsk86A",
+   "url": "https://www.youtube.com/@arbamnauta",
+   "nota": 84,
+   "parecidoCom": "Canal do Marinho",
+   "parecidoComChave": "marinho",
+   "parecenca": 0.205,
+   "videos30": 15,
+   "ultimo": 0.6,
+   "inscritos": 4690,
+   "origens": [
+    "busca"
+   ],
+   "motivo": "busca “pools de liquidez”",
+   "titulos": [
+    "CRIEI MEU PROPRIO TRADER DE IA",
+    "CRIEI MEU PROPRIO TRADER DE IA",
+    "POR QUE POUCAS PESSOAS ACERTAM O MERCADO CRIPTO...",
+    "Por que prefiro trade a pools de altíssimo risco"
+   ],
+   "primeiraVez": "2026-11-11T21:17:57Z",
+   "novo": false
+  },
+  {
+   "chave": "ramoncunha",
+   "nome": "Ramon Cunha",
+   "handle": "Ramon_Cunha",
+   "channel_id": "UCBcV3Bks6FkOHn6aiEN1_Tg",
+   "url": "https://www.youtube.com/@Ramon_Cunha",
+   "nota": 83,
+   "parecidoCom": "Canal do Marinho",
+   "parecidoComChave": "marinho",
+   "parecenca": 0.188,
+   "videos30": 15,
+   "ultimo": 0.2,
+   "inscritos": 59100,
+   "origens": [
+    "busca"
+   ],
+   "motivo": "busca “pools de liquidez”",
+   "titulos": [
+    "Do Pix à Dolarização Pela Binance (Passo a Passo)",
+    "Você Precisa de Mais Renda ou Mais Rentabilidade?",
+    "60% de Rentabilidade Nessa Pool da NVidia",
+    "Trade Com Ações Americanas Pela OKX (E TUDO AUTOMATIZADO)"
+   ],
+   "primeiraVez": "2026-11-11T21:17:57Z",
+   "novo": false
+  },
+  {
+   "chave": "dantasinteligenciaartifi",
+   "nome": "Dantas Renda extra com IA",
+   "handle": "dantasinteligenciaartifical",
+   "channel_id": "UCFa0L3uDOgBnxoT17Z4KgEQ",
+   "url": "https://www.youtube.com/@dantasinteligenciaartifical",
+   "nota": 65,
+   "parecidoCom": "Craft Gold",
+   "parecidoComChave": "craftgold",
+   "parecenca": 0.101,
+   "videos30": 6,
+   "ultimo": 0.2,
+   "inscritos": 3,
+   "origens": [
+    "busca"
+   ],
+   "motivo": "busca “ganhar dinheiro com IA”; busca “renda extra com inteligência artificial”",
+   "titulos": [
+    "Aplicativo que paga para gravar tarefas do dia a dia #rendaextra #ganhardinheiro",
+    "Ganhar dinheiro gravando tarefas do dia a dia #rendaextra #ganhardinheiro",
+    "Ganhe de R$20 à R$70 por Hora gravando tarefas do dia a dia ! (HUB + Minute)",
+    "Ganhar dinheiro pra fazer tarefas de casa ? #rendaextra #ganhardinheiro"
+   ],
+   "primeiraVez": "2026-11-19T02:35:05Z",
+   "novo": true
+  },
+  {
+   "chave": "ganhecomfaucet",
+   "nome": "Ganhe com faucet",
+   "handle": "ganhecomfaucet",
+   "channel_id": "UCfchcFpj4uO07Sd8hYejL2g",
+   "url": "https://www.youtube.com/@ganhecomfaucet",
+   "nota": 60,
+   "parecidoCom": "Cripto BR",
+   "parecidoComChave": "criptobr",
+   "parecenca": 0.137,
+   "videos30": 4,
+   "ultimo": 6.3,
+   "inscritos": 1230,
+   "origens": [
+    "busca"
+   ],
+   "motivo": "busca “faucet bitcoin grátis”",
+   "titulos": [
+    "🔥 FAUCET DO CANAL, GANHE COM FAUCET. GANHE BTC CADA 2 MINUTOS! #btc #solana",
+    "CRYPTOFLARE PAGANDO DIRETO NA FAUCETPAY!",
+    "FAUCET LOOTIZY PAGOU NA HORA, GANHE CRIPTOMOEDAS GRATIS. FAZENDO TAREFAS.",
+    "🔥 LARVEL FAUCET PAGANDO NA HORA DIRETO NA FAUCETPAY!"
+   ],
+   "primeiraVez": "2026-11-11T21:17:57Z",
+   "novo": false
+  },
+  {
+   "chave": "tonyrendaextra",
+   "nome": "Renda Extra com IA",
+   "handle": "tonyrendaextra",
+   "channel_id": "UCW8pUg1HYjkrzxkmW8gm-Kg",
+   "url": "https://www.youtube.com/@tonyrendaextra",
+   "nota": 58,
+   "parecidoCom": "Craft Gold",
+   "parecidoComChave": "craftgold",
+   "parecenca": 0.076,
+   "videos30": 15,
+   "ultimo": 0.5,
+   "inscritos": 4059,
+   "origens": [
+    "busca"
+   ],
+   "motivo": "busca “renda extra com inteligência artificial”",
+   "titulos": [
+    "Nunca Pague no Pix na Black Friday Antes de Conferir Isso ⚠️ #shorts",
+    "Black Friday ou Black Fraude? O Truque da Metade do Dobro e Como Conferir Antes de Comprar",
+    "O Preço Sobe ANTES da Black Friday? (O Truque da Metade do Dobro) #shorts",
+    "Amanhã é Dia 17: E Se o Apagão Não Vier? (O Prejuízo Que Ninguém Conta) #shorts"
+   ],
+   "primeiraVez": "2026-11-11T21:17:57Z",
+   "novo": false
+  },
+  {
+   "chave": "jhonatasilvai",
+   "nome": "Jhonatas Silva",
+   "handle": "jhonatasilvai",
+   "channel_id": "UCtWjL95b4wsQZ4IWYlvvdlQ",
+   "url": "https://www.youtube.com/@jhonatasilvai",
+   "nota": 57,
+   "parecidoCom": "Craft Gold",
+   "parecidoComChave": "craftgold",
+   "parecenca": 0.065,
+   "videos30": 14,
+   "ultimo": 0.2,
+   "inscritos": 384000,
+   "origens": [
+    "busca"
+   ],
+   "motivo": "busca “ganhar dinheiro com IA”",
+   "titulos": [
+    "SHOPEE VIDEO: COMO FIZ 900 REAIS EM MINUTOS USANDO A SHOPEE (Como vender como afiliado)",
+    "COMO GANHAR DINHEIRO USANDO O PINTEREST (Pelo celular, Sem aparecer, em 2h por dia) | Jhonatas Silva",
+    "A MINA DE OURO DO GTA6: Veja como GANHAR DINHEIRO SEM JOGAR (Agora é a hora!) | Jhonatas Silva",
+    "TIKTOK SHOP SEM 1.000 SEGUIDORES: COMO RECEBER COMISSÃO EM MENOS DE 24H | Jhonatas Silva"
+   ],
+   "primeiraVez": "2026-11-19T02:35:05Z",
+   "novo": true
+  },
+  {
+   "chave": "rogeriomenezesx",
+   "nome": "Rogério Menezes",
+   "handle": "rogeriomenezesx",
+   "channel_id": "UCgZHUsIfZnqHPNg03vht7pg",
+   "url": "https://www.youtube.com/@rogeriomenezesx",
+   "nota": 57,
+   "parecidoCom": "Cripto BR",
+   "parecidoComChave": "criptobr",
+   "parecenca": 0.071,
+   "videos30": 12,
+   "ultimo": 2.0,
+   "inscritos": 25700,
+   "origens": [
+    "busca"
+   ],
+   "motivo": "busca “pools de liquidez”",
+   "titulos": [
+    "BITCOIN E MERCADO AMERICANO - CHEGOU A HORA!",
+    "BITCOIN E MERCADO AMERICANO EM MEDO EXTREMO",
+    "BITCOIN E AÇÕES AMERICANAS RESPIRAM! QUEDA NO BRENT!",
+    "BITCOIN EM QUEDA! MERCANO AMERICANO SEM REAÇÃO"
+   ],
+   "primeiraVez": "2026-11-11T21:17:57Z",
+   "novo": false
+  },
+  {
+   "chave": "nettunotrader",
+   "nome": "Nettuno - Trader Esportivo",
+   "handle": "NettunoTrader",
+   "channel_id": "UC9MMn_6qKyuk4RjDRJV0CKA",
+   "url": "https://www.youtube.com/@NettunoTrader",
+   "nota": 55,
+   "parecidoCom": "Theo Borges",
+   "parecidoComChave": "theoborges",
+   "parecenca": 0.054,
+   "videos30": 15,
+   "ultimo": 1.3,
+   "inscritos": 330000,
+   "origens": [
+    "busca"
+   ],
+   "motivo": "busca “trader esportivo”",
+   "titulos": [
+    "O significado da Capa da revista The Economist 2027 . #economist #simbolo #significado #futuro",
+    "Dia de red, melhor não discutir com o motorista turco do ônibus em Dubai... . #ocaminhonaoofinal",
+    "O café mais caro do mundo? Abu Dhabi uma das cidades mais caras do mundo e no Museu do Louvre, um",
+    "O mercado Black de Apostas encontra seus caminhos... . #bets #apostasesportivas #aposta"
+   ],
+   "primeiraVez": "2026-11-11T21:17:57Z",
+   "novo": false
+  },
+  {
+   "chave": "dinheirocomiabrq8v",
+   "nome": "Dinheiro com IA",
+   "handle": "dinheirocomiabr-q8v",
+   "channel_id": "UC1hR2rnLEr4whKKIsDiMU3A",
+   "url": "https://www.youtube.com/@dinheirocomiabr-q8v",
+   "nota": 53,
+   "parecidoCom": "Craft Gold",
+   "parecidoComChave": "craftgold",
+   "parecenca": 0.048,
+   "videos30": 15,
+   "ultimo": 0.1,
+   "inscritos": 2,
+   "origens": [
+    "busca"
+   ],
+   "motivo": "busca “ganhar dinheiro com IA”",
+   "titulos": [
+    "Como ganhar R$ 3.600/mês com o Manus criando relatórios de concorrentes (tutorial completo na tela)",
+    "Como o Manus pesquisou 10 concorrentes sozinho na tela (veja na tela)",
+    "Como transformar 4 clientes no Manus em R$ 3.600 por mês (Short teaser)",
+    "Como apagar um texto cortou o vídeo na tela no Descript (veja na tela)"
+   ],
+   "primeiraVez": "2026-11-19T02:35:05Z",
+   "novo": true
+  },
+  {
+   "chave": "rendacomianapratica",
+   "nome": "Renda Com IA na Prática",
+   "handle": "rendacomianapratica",
+   "channel_id": "UCfSnIFEHQ2outrrEqYYgTnw",
+   "url": "https://www.youtube.com/@rendacomianapratica",
+   "nota": 52,
+   "parecidoCom": "Craft Gold",
+   "parecidoComChave": "craftgold",
+   "parecenca": 0.203,
+   "videos30": 0,
+   "ultimo": 36.8,
+   "inscritos": 1,
+   "origens": [
+    "busca"
+   ],
+   "motivo": "busca “renda extra com inteligência artificial”",
+   "titulos": [
+    "Como Criar um E-book de 10 Páginas com IA Usando o Gamma | Passo a Passo ",
+    "2032: A Inteligência Artificial Vai Acabar com os Empregos",
+    "Como Usar IA para Criar Renda Extra pelo Celular",
+    "Como fazer seu celular ou notebook   gerar renda ! #ganhardinheiro #negóciosdigitais #rendaextra"
+   ],
+   "primeiraVez": "2026-11-11T21:17:57Z",
+   "novo": false
+  },
+  {
+   "chave": "lmpbravodasapostas",
+   "nome": "LMP Bravo",
+   "handle": "LMPBravodasAPOSTAS",
+   "channel_id": "UCk9fXOH4sM6C8dRpWztXKFQ",
+   "url": "https://www.youtube.com/@LMPBravodasAPOSTAS",
+   "nota": 47,
+   "parecidoCom": "Theo Borges",
+   "parecidoComChave": "theoborges",
+   "parecenca": 0.023,
+   "videos30": 15,
+   "ultimo": 0.3,
+   "inscritos": 55800,
+   "origens": [
+    "busca"
+   ],
+   "motivo": "busca “apostas de valor futebol”",
+   "titulos": [
+    "Múltipla dupla possibilidade com 15 jogos e ODD 10!",
+    "Quarta-feira para descer ao submundo com Vamos Apostar 2139.",
+    "Terça-feira para finalizar as Seleções com Vamos Apostar 2138.",
+    "Segunda-feira de Liga das Nações com Vamos Apostar 2137."
+   ],
+   "primeiraVez": "2026-11-19T02:35:05Z",
+   "novo": true
+  },
+  {
+   "chave": "rendacomiay5q",
+   "nome": "Renda com IA",
+   "handle": "RendacomIA-y5q",
+   "channel_id": "UC47HCgMIr0dOnKktoz1ADNA",
+   "url": "https://www.youtube.com/@RendacomIA-y5q",
+   "nota": 47,
+   "parecidoCom": "Craft Gold",
+   "parecidoComChave": "craftgold",
+   "parecenca": 0.197,
+   "videos30": 0,
+   "ultimo": 39.7,
+   "inscritos": 22,
+   "origens": [
+    "busca"
+   ],
+   "motivo": "busca “ganhar dinheiro com IA”",
+   "titulos": [
+    "💰 12 NEGÓCIOS QUE QUASE NINGUÉM QUER FAZER, MAS PODEM DAR MUITO DINHEIRO EM 2026! 🚀",
+    "Ebook Renda com IA na prática",
+    "Renda com IA #caminhoparaumavidamelhor",
+    "50 GB por R$ 19,90?! Encontrei um dos Planos de Celular Mais Baratos do Brasil"
+   ],
+   "primeiraVez": "2026-11-11T21:17:57Z",
+   "novo": false
+  }
+ ],
+ "ignorados": {
+  "sem postar": 41,
+  "outro idioma": 2,
+  "nota baixa": 4
+ },
+ "avaliados": [
+  {
+   "nome": "Arbam",
+   "nota": 84,
+   "parecenca": 0.205,
+   "perto": "marinho",
+   "videos30": 15,
+   "pt": 0.27,
+   "peso": 0.35
+  },
+  {
+   "nome": "Ramon Cunha",
+   "nota": 83,
+   "parecenca": 0.188,
+   "perto": "marinho",
+   "videos30": 15,
+   "pt": 0.25,
+   "peso": 0.48
+  },
+  {
+   "nome": "Dantas Renda extra com IA",
+   "nota": 65,
+   "parecenca": 0.101,
+   "perto": "craftgold",
+   "videos30": 6,
+   "pt": 0.23,
+   "peso": 0.71
+  },
+  {
+   "nome": "Ganhe com faucet",
+   "nota": 60,
+   "parecenca": 0.137,
+   "perto": "criptobr",
+   "videos30": 4,
+   "pt": 0.16,
+   "peso": 0.5
+  },
+  {
+   "nome": "Renda Extra com IA",
+   "nota": 58,
+   "parecenca": 0.076,
+   "perto": "craftgold",
+   "videos30": 15,
+   "pt": 0.23,
+   "peso": 0.38
+  },
+  {
+   "nome": "Jhonatas Silva",
+   "nota": 57,
+   "parecenca": 0.065,
+   "perto": "craftgold",
+   "videos30": 14,
+   "pt": 0.25,
+   "peso": 0.44
+  },
+  {
+   "nome": "Rogério Menezes",
+   "nota": 57,
+   "parecenca": 0.071,
+   "perto": "criptobr",
+   "videos30": 12,
+   "pt": 0.1,
+   "peso": 0.44
+  },
+  {
+   "nome": "Nettuno - Trader Esportivo",
+   "nota": 55,
+   "parecenca": 0.054,
+   "perto": "theoborges",
+   "videos30": 15,
+   "pt": 0.18,
+   "peso": 0.5
+  },
+  {
+   "nome": "Dinheiro com IA",
+   "nota": 53,
+   "parecenca": 0.048,
+   "perto": "craftgold",
+   "videos30": 15,
+   "pt": 0.3,
+   "peso": 0.4
+  },
+  {
+   "nome": "Renda Com IA na Prática",
+   "nota": 52,
+   "parecenca": 0.203,
+   "perto": "craftgold",
+   "videos30": 0,
+   "pt": 0.3,
+   "peso": 0.5
+  },
+  {
+   "nome": "LMP Bravo",
+   "nota": 47,
+   "parecenca": 0.023,
+   "perto": "theoborges",
+   "videos30": 15,
+   "pt": 0.27,
+   "peso": 0.38
+  },
+  {
+   "nome": "Renda com IA",
+   "nota": 47,
+   "parecenca": 0.197,
+   "perto": "craftgold",
+   "videos30": 0,
+   "pt": 0.42,
+   "peso": 0.35
+  },
+  {
+   "nome": "⚡Top Crypto ⚡ Lista de Faucets 2026",
+   "nota": 47,
+   "parecenca": 0.1,
+   "perto": "criptobr",
+   "videos30": 2,
+   "pt": 0.21,
+   "peso": 0.35
+  },
+  {
+   "nome": "Renda Extra com IA",
+   "nota": 28,
+   "parecenca": 0.058,
+   "perto": "craftgold",
+   "videos30": 0,
+   "pt": 0.31,
+   "peso": 0.81
+  },
+  {
+   "nome": "IA: do zero à renda",
+   "nota": 17,
+   "parecenca": 0.045,
+   "perto": "craftgold",
+   "videos30": 0,
+   "pt": 0.09,
+   "peso": 0.4
+  },
+  {
+   "nome": "Alex Jr Trader Esportivo",
+   "nota": 16,
+   "parecenca": 0.032,
+   "perto": "theoborges",
+   "videos30": 0,
+   "pt": 0.23,
+   "peso": 0.48
+  },
+  {
+   "nome": "BEBETO, trader esportivo",
+   "nota": 12,
+   "parecenca": 0.023,
+   "perto": "theoborges",
+   "videos30": 0,
+   "pt": 0.32,
+   "peso": 0.38
+  }
+ ],
+ "dispensados": 0,
+ "vistos": {
+  "UCYFernhiwoC2qOrOIkNY8Xg": "2026-11-11T21:10:32Z",
+  "UC6iL_ebwOrIzvUx7uG5E8-A": "2026-11-11T21:10:32Z",
+  "UCBcV3Bks6FkOHn6aiEN1_Tg": "2026-11-11T21:17:57Z",
+  "UCVYomcwGfbA1eCqb3nsk86A": "2026-11-11T21:17:57Z",
+  "UCZecy2-Ech9LZM3MkVB1_JA": "2026-11-11T21:17:57Z",
+  "UCW8pUg1HYjkrzxkmW8gm-Kg": "2026-11-11T21:17:57Z",
+  "UCfchcFpj4uO07Sd8hYejL2g": "2026-11-11T21:17:57Z",
+  "UCgZHUsIfZnqHPNg03vht7pg": "2026-11-11T21:17:57Z",
+  "UC9MMn_6qKyuk4RjDRJV0CKA": "2026-11-11T21:17:57Z",
+  "UCfSnIFEHQ2outrrEqYYgTnw": "2026-11-11T21:17:57Z",
+  "UC47HCgMIr0dOnKktoz1ADNA": "2026-11-11T21:17:57Z",
+  "UCeOlO_8twGQEm3SUpP_8qJQ": "2026-11-11T21:17:57Z",
+  "UCINztrlU6mXEH0H4r31oEGw": "2026-11-11T21:17:57Z",
+  "UCFa0L3uDOgBnxoT17Z4KgEQ": "2026-11-19T02:35:05Z",
+  "UCtWjL95b4wsQZ4IWYlvvdlQ": "2026-11-19T02:35:05Z",
+  "UC1hR2rnLEr4whKKIsDiMU3A": "2026-11-19T02:35:05Z",
+  "UCk9fXOH4sM6C8dRpWztXKFQ": "2026-11-19T02:35:05Z"
+ },
+ "erros": []
+}
