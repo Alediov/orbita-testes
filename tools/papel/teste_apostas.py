@@ -267,13 +267,16 @@ def teste_rodadas():
         # formato
         assert d["padrao"] == "valor3" and d["nome"] == "Apostas de valor"
         ids = [v["id"] for v in d["versoes"]]
-        assert ids == ["valor3", "valor5", "valor8", "kelly", "favoritos", "azaroes", "gratis", "semfiltro", "bdm"]
+        assert ids == ["valor3", "valor5", "valor8", "kelly", "favoritos", "azaroes", "gratis", "semfiltro", "bdm", "bdmG15", "bdmG5"]
         riscos = {v["id"]: v["risco"] for v in d["versoes"]}
         assert riscos["azaroes"] == riscos["kelly"] == "alto" and riscos["gratis"] == "baixo" and riscos["valor3"] == "médio"
         assert {v["grupo"] for v in d["versoes"]} == {"Valor", "Referência", "Aposta grátis", "Seguir palpites"}
-        bdm = d["versoes"][-1]
+        vs = {v["id"]: v for v in d["versoes"]}
+        bdm = vs["bdm"]
         assert bdm["historico"] is None and bdm["soAoVivo"] and bdm["aoVivo"]["extra"]["palpitesVistos"] > 0
-        for v in d["versoes"][:-1]:
+        for k in ("bdmG15", "bdmG5"):   # 21/11/2026: o gatilho da odd mínima (só ao vivo, como a bdm)
+            assert vs[k]["historico"] is None and vs[k]["soAoVivo"] and vs[k]["aoVivo"]["serie"][0][1] == 1000.0, k
+        for v in [v for v in d["versoes"] if v["id"] not in ("bdm", "bdmG15", "bdmG5")]:
             for nome in ("aoVivo", "historico"):
                 c = v[nome]
                 assert c and c["serie"][0][1] == 1000.0, (v["id"], nome)
@@ -507,7 +510,7 @@ def teste_bdm_rodadas():
         V = _estado(pasta)["vivo"]
         v = next(x for x in d["versoes"] if x["id"] == "bdm")
         e = v["aoVivo"]["extra"]
-        assert v["nome"] == "Seguir o BDM" and v["historico"] is None and v["soAoVivo"]
+        assert v["nome"] == "Seguir o Theo" and v["historico"] is None and v["soAoVivo"]
         assert e["palpitesVistos"] > 20 and 0 < e["noTeste"] < e["palpitesVistos"]
         assert e["cobertura"] == round(e["noTeste"] / e["palpitesVistos"], 4)
         assert e["noTeste"] + e["esperando"] + sum(f["n"] for f in e["fora"]) >= e["palpitesVistos"]
@@ -534,6 +537,16 @@ def teste_bdm_rodadas():
                 i = A.indice_bdm(p, True)
                 assert A.mesmo_time(lado, f["c"] if i == 0 else f["f"]), (p, f)
         assert any(ev["versao"] == "bdm" and "odd citada" in ev["texto"] for ev in d["eventos"])
+        # 21/11/2026: o gatilho da odd mínima. Cada aposta das contas com gatilho tem a odd >= a justa × (1 + g), é
+        # da mesma lista de palpites, e a de 15% aposta no máximo o que a de 5% aposta
+        for k, g in (("bdmG15", 0.15), ("bdmG5", 0.05)):
+            for ap in V["contas"][k]["abertas"] + [a for a in V["contas"][k].get("fechadas", [])]:
+                assert ap["o"] >= (1 / ap["p"]) * (1 + g) - 1e-6 and ap["pk"] in B["p"], (k, ap)
+        n15 = sum(1 for p in B["p"].values() if (p.get("gat") or {}).get("bdmG15") == "apostado")
+        n5 = sum(1 for p in B["p"].values() if (p.get("gat") or {}).get("bdmG5") == "apostado")
+        assert n15 <= n5 and any((p.get("gat") or {}).get("bdmG15") for p in feitas), (n15, n5)
+        assert A.preco_gatilho([(1, 2.0), (5, 2.4)], [[(1, 1.9)], [(1, 3.6)], [(1, 4.4)]], 1, 9, 0, 0.15)[0] == 5
+        assert A.preco_gatilho([(1, 2.0)], [[(1, 1.9)], [(1, 3.6)], [(1, 4.4)]], 1, 9, 0, 0.15) is None
         # nenhum pedido a mais: um /historical-odds por jogo, com ou sem palpite
         hist = sum(1 for f in V["fx"].values() if f["st"] in ("feito", "semOdds"))
         assert cli.contagem["oddspapi"] <= hist + 60, (cli.contagem, hist)

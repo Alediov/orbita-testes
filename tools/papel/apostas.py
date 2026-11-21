@@ -165,11 +165,22 @@ VERSOES = [
      "o valor não volta, só o lucro (a conta mostra 1.000 + o que ganhou)."),
     ("semfiltro", "Sem filtro", "Referência", "médio", {"tipo": "casa", "faixa": (1.01, 1000.0), "stake": "fixo"},
      "Referência: aposta R$ 10 no time da casa em todo jogo, sem olhar valor; mostra a margem da casa comendo a banca."),
-    ("bdm", "Seguir o BDM", "Seguir palpites", "médio", {"tipo": "bdm", "stake": "bdm"},
-     "Aposta R$ 20 (2% da banca inicial) em cada palpite do Bom Dia Mercado, do Theo Borges, que o teste sabe "
-     "precificar (1X2 e mais/menos de 2,5 gols), na odd da hora em que o palpite apareceu. Só ao vivo."),
+    ("bdm", "Seguir o Theo", "Seguir palpites", "médio", {"tipo": "bdm", "stake": "bdm"},
+     "Aposta R$ 20 (2% da banca inicial) em cada palpite do Theo Borges (a Análise de Futebol diária, antes o Bom Dia "
+     "Mercado) que o teste sabe precificar (1X2 e mais/menos de 2,5 gols), na odd da hora em que o palpite apareceu. "
+     "Só ao vivo."),
+    # 21/11/2026 (pedido do Alediov, pelo prompt que ele usava no AI Studio): a "Odd Mínima de gatilho" = a odd justa
+    # mais um fator de erro de 15 a 20%; abaixo dela, espera a odd subir ou não entra. Aqui a odd justa é a da Pinnacle
+    # sem a margem (no prompt era a frequência histórica da página do clube, que o teste não alcança) e a espera vai até
+    # o início do jogo: entra no 1º momento em que a odd da casa chega ao gatilho.
+    ("bdmG15", "Theo + gatilho 15%", "Seguir palpites", "médio", {"tipo": "bdm", "stake": "bdm", "gatilho": 0.15},
+     "Os mesmos palpites, mas só entra se a odd da casa chegar a 15% acima da odd justa (a da Pinnacle sem a margem) "
+     "antes do jogo: a Odd Mínima de gatilho do seu prompt. Com a Pinnacle como justa, é raro."),
+    ("bdmG5", "Theo + gatilho 5%", "Seguir palpites", "médio", {"tipo": "bdm", "stake": "bdm", "gatilho": 0.05},
+     "O mesmo com um gatilho mais curto, 5% acima da justa: entra mais vezes e mostra se a espera pela odd ajuda."),
 ]
-SO_AO_VIVO = {"bdm"}
+BDM_CONTAS = ("bdm", "bdmG15", "bdmG5")
+SO_AO_VIVO = set(BDM_CONTAS)
 PADRAO = "valor3"
 
 FRASE = ("Aposta (no papel) quando a odd da casa paga mais do que a chance real do jogo vale; a chance real vem das "
@@ -210,9 +221,11 @@ AVISOS = [
     "só para ver como o método se sairia.",
     "O ao vivo segue poucos jogos por dia por causa do limite gratuito da OddsPapi; as médias do ao vivo demoram mais "
     "para firmar que as do teste no passado.",
-    "Seguir o BDM: os palpites são lidos de uma transcrição automática do vídeo por uma IA, que pode errar o jogo, o "
-    "mercado ou a odd; o papel aposta só no que dá para conferir (o jogo achado num dos campeonatos acompanhados, antes "
-    "do início, no 1X2 ou no mais/menos de 2,5 gols) e mostra quantos palpites ficaram de fora e por quê.",
+    "Seguir o Theo: os palpites são lidos da transcrição automática do vídeo, que pode errar o jogo, o mercado ou a "
+    "odd; o papel aposta só no que dá para conferir (o jogo achado num dos campeonatos acompanhados, antes do início, "
+    "no 1X2 ou no mais/menos de 2,5 gols) e mostra quantos palpites ficaram de fora e por quê. Nas versões com "
+    "gatilho, a odd justa é a da Pinnacle sem a margem, não a frequência histórica: é mais dura, e 15% acima dela "
+    "quase nunca aparece nas ligas grandes.",
 ]
 
 
@@ -1193,6 +1206,21 @@ def preco_bdm(hs, ph, t, ini):
     return None
 
 
+def preco_gatilho(hs, ph, t, ini, i, g):
+    """(instante, odd da casa, probabilidades justas) no 1º momento a partir de `t` (antes do início) em que a odd da
+    casa no lado `i` chega à justa da Pinnacle (sem a margem) × (1 + g): a Odd Mínima de gatilho; None se não chegar."""
+    momentos = sorted({t} | {ts for h in [hs, *ph] for ts, _ in h or [] if t < ts < ini})
+    for x in momentos:
+        o = preco_em(hs, x)
+        po = [preco_em(h, x) for h in ph]
+        if not o or not all(po):
+            continue
+        p = sem_margem(po)
+        if p and p[i] > 0 and o >= (1 / p[i]) * (1 + g) - 1e-9:
+            return x, o, p
+    return None
+
+
 def resumo_bdm(B, conta=None):
     """Os números próprios da conta Seguir o BDM (vão no `extra` dela)."""
     c = B.get("cont") or {}
@@ -1557,8 +1585,8 @@ class Vivo:
             t = max(ap["i"] + 2 * HORA, c.curva.t)
             if pl:
                 res = c.liquidar(ap, pl, t, self.ev)
-                if c.id == "bdm":
-                    self._bdm_liquidou(ap, res, pl, t)
+                if c.id in BDM_CONTAS:
+                    self._bdm_liquidou(ap, res, pl, t, c)
                 if c.id == PADRAO or c.gratis:
                     d = dia_de(ap["i"])
                     if c.gratis or self.evdia.get(d, 0) < EV_POR_DIA:
@@ -1602,7 +1630,7 @@ class Vivo:
 
     def bdm_ver(self):
         """Os palpites novos de config/bdm/: guarda com a hora em que a rodada os viu e separa o que fica fora."""
-        if "bdm" not in self.contas:
+        if not any(k in self.contas for k in BDM_CONTAS):
             return
         B = self._bdm()
         comeco = "desde" not in B
@@ -1651,10 +1679,11 @@ class Vivo:
             f["bdm"] = True
 
     def bdm_apostar(self, f, pin, soft, rotulo):
-        """As apostas da conta Seguir o BDM no jogo `f` (já terminado), na odd da hora em que o palpite foi visto."""
+        """As apostas das contas do Theo no jogo `f` (já terminado). A `bdm` na odd da hora em que o palpite foi visto;
+        as de gatilho (21/11/2026) no 1º momento, até o início, em que a odd da casa chega à justa × (1 + gatilho)."""
         B = self.V.get("bdm")
-        c = self.contas.get("bdm")
-        if not B or not c:
+        contas = [self.contas[k] for k in BDM_CONTAS if k in self.contas]
+        if not B or not contas:
             return
         for pk in B["p"].values():
             if pk.get("fx") != f["id"] or pk.get("st") != "esperando":
@@ -1670,30 +1699,50 @@ class Vivo:
             if not p:
                 self._bdm_fora(pk, "sem odds antes do jogo")
                 continue
-            t, o, _po = x
-            st = c._stake(o, p[i])
-            if not st:
-                self._bdm_fora(pk, "sem saldo na conta")
-                continue
             fo = [preco_em(h, f["i"]) for h in ph]
             pf = sem_margem(fo) if all(fo) else None
-            ap = {"j": f["id"], "jogo": f"{f['c']} × {f['f']}", "l": f["l"], "i": f["i"], "mk": mk, "s": i,
-                  "sel": nome_sel(f["c"], f["f"], mk, i), "o": round(o, 3), "p": round(p[i], 5),
-                  "v": round(valor(o, p[i]), 5), "st": st, "c": rotulo, "g": False,
-                  "clv": round(clv(o, pf[i]), 5) if pf else None, "oc": pk.get("oc"), "pk": pk["id"], "t": t}
-            c.abrir(ap)
-            pk.update(st="apostado", o=ap["o"], clv=ap["clv"])
-            B["cont"]["noTeste"] += 1
+            gat = pk.setdefault("gat", {})
+            for c in contas:
+                g = c.regra.get("gatilho")
+                if g:
+                    y = preco_gatilho(sh[i], ph, pk["visto"], f["i"], i, g)
+                    if not y:
+                        gat[c.id] = "não chegou ao gatilho"
+                        continue
+                    t, o, pc = y
+                else:
+                    (t, o, _po), pc = x, p
+                st = c._stake(o, pc[i])
+                if not st:
+                    if c.id == "bdm":
+                        self._bdm_fora(pk, "sem saldo na conta")
+                    else:
+                        gat[c.id] = "sem saldo na conta"
+                    continue
+                ap = {"j": f["id"], "jogo": f"{f['c']} × {f['f']}", "l": f["l"], "i": f["i"], "mk": mk, "s": i,
+                      "sel": nome_sel(f["c"], f["f"], mk, i), "o": round(o, 3), "p": round(pc[i], 5),
+                      "v": round(valor(o, pc[i]), 5), "st": st, "c": rotulo, "g": False,
+                      "clv": round(clv(o, pf[i]), 5) if pf else None, "oc": pk.get("oc"), "pk": pk["id"], "t": t}
+                c.abrir(ap)
+                if c.id == "bdm":
+                    pk.update(o=ap["o"], clv=ap["clv"])
+                    B["cont"]["noTeste"] += 1
+                else:
+                    gat[c.id] = "apostado"
+            if pk.get("st") == "esperando":
+                pk["st"] = "apostado"
 
-    def _bdm_liquidou(self, ap, res, pl, t):
+    def _bdm_liquidou(self, ap, res, pl, t, c=None):
+        cid = c.id if c else "bdm"
         pk = (self.V.get("bdm") or {}).get("p", {}).get(ap.get("pk") or "")
-        if pk:
+        if pk and cid == "bdm":
             pk.update(st="liquidado", r=round(res, 2), pl=list(pl))
+        nome = next((v[1] for v in VERSOES if v[0] == cid), "Seguir o Theo")
         liga = NOME_LIGA.get(ap["l"], "")
         cit = f" (odd citada no vídeo: {odd_txt(ap['oc'])})" if ap.get("oc") else ""
-        txt = (f"Seguir o BDM — {ap['jogo']}{f' ({liga})' if liga else ''}: {ap['sel']} a {odd_txt(ap['o'])} na "
+        txt = (f"{nome} — {ap['jogo']}{f' ({liga})' if liga else ''}: {ap['sel']} a {odd_txt(ap['o'])} na "
                f"{ap['c']}{cit}. {'Ganhou' if res > 0 else 'Perdeu'}: {reais(res, True)} ({pl[0]} × {pl[1]}).")
-        self.ev.add(t, "ganhou" if res > 0 else "perdeu", txt, "bdm")
+        self.ev.add(t, "ganhou" if res > 0 else "perdeu", txt, cid)
 
     def bdm_fechar(self):
         """Os palpites que não vão mais virar aposta saem de "esperando" com o motivo."""

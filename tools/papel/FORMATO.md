@@ -358,6 +358,15 @@ Futebol, só no papel (`apostas.py`). Diferenças das outras formas:
   `oddCitada`, `odd`, `situacao` esperando | apostado | liquidado | anulado | fora, `motivo`, `resultado` (R$),
   `placar`, `clv` }) e `desde`. Os eventos dela (`versao` "bdm") trazem cada aposta liquidada com a odd citada.
   `config.bdm` { `aposta`, `mercados`, `fonte`, `desde` }.
+- **Seguir o Theo** (21/11/2026): a versão `bdm` passou a se chamar "Seguir o Theo": depois da suspensão das bets, o
+  Theo trocou o Bom Dia Mercado pela "Análise de Futebol" diária (os favoritos do dia, sem odd), que agora também vira
+  `config/bdm/<data>.json` (extraída pela tarefa da madrugada do repositório do app, porque os minutos do Actions de lá
+  acabaram). Versões novas `bdmG15` e `bdmG5` (`grupo` "Seguir palpites", `soAoVivo`; pedido do Alediov, pelo prompt
+  que ele usava no AI Studio: a "Odd Mínima de gatilho" = a odd justa + um fator de erro de 15 a 20%; abaixo dela,
+  esperar a odd subir ou não entrar): os mesmos palpites, mas só entra no 1º momento entre a hora em que o palpite foi
+  visto e o início em que a odd da casa ≥ a justa da Pinnacle sem a margem × (1 + 0,15 ou 0,05) (`preco_gatilho`).
+  Cada palpite guarda `gat` { versão: "apostado" | "não chegou ao gatilho" | "sem saldo na conta" }. Os eventos das
+  três trazem o nome da versão.
 
 ## Looping (`looping.json`)
 

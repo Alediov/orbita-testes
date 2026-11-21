@@ -94,6 +94,10 @@ acabavam; aqui os executores padrão não têm limite.
   (6) **Memecoins** (`VERSAO` 2, recomeçou): o PumpPortal manda lançamentos de outras plataformas (filtro `pool` "pump")
   e a DexScreener não lista os tokens pequenos (GeckoTerminal confere; nenhum dos dois = "sem dados", fora das apostas).
   Detalhes no `tools/papel/FORMATO.md`.
+- **Seguir o Theo + gatilho** (21/11/2026): o Theo trocou o BDM pela "Análise de Futebol" diária, que também vira
+  `config/bdm/<data>.json` (a tarefa da madrugada do repositório do app extrai: os minutos do Actions de lá acabaram);
+  versões `bdmG15`/`bdmG5` das apostas: os mesmos palpites só quando a odd da casa chega à justa (Pinnacle sem a margem)
+  × 1,15 ou × 1,05 antes do jogo (a "Odd Mínima de gatilho" do prompt dele). FORMATO.md, "Seguir o Theo".
 - **Seguir o BDM** (pedido do Alediov, 09/11/2026; só esta conta, nenhum mercado novo): versão `bdm` das apostas, que
   segue os palpites do programa diário "Bom Dia Mercado" do Theo Borges. O repositório PRIVADO extrai os palpites da
   transcrição (que o celular baixa; `tools/ideias/bdm.py` + `ideias-bdm.yml` de lá, com a IA gratuita do filtro) e
