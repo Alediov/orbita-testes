@@ -456,6 +456,15 @@ Futebol, só no papel (`apostas.py`). Diferenças das outras formas:
   12+ faltas no 1º tempo) e o bloco ganha `faltas` {jogos, muitas, t1, t2, zeroComMuitas}. A 1ª rodada registra a
   estrutura de um item da narração e das estatísticas no log.
 
+- **Gols no intervalo e no fim** (22/11/2026, pedido do Alediov; só observando): `gols_e_fim` lê os gols dos lances
+  (`scoringPlay`; sem ele, "Goal"/"Penalty - Scored" e nunca "Missed"/"Saved"), o minuto (`minuto`: 45'+2' = 47) e os
+  chutes da narração; confere com o placar final do cabeçalho do resumo (não bate = None). No estado, a 11ª posição do
+  jogo: [gols 1º, gols 2º, gols depois dos 75', empatado aos 75' (1/0), chutes de 60' a 75', chutes 1º]. Saída:
+  `cartoes.gols` {jogos, tarde (75), janela [60, 75], media {t1, t2, depois75}, zero1t, chutes1tMediana, regras [g2
+  (gol no 2º tempo), g2m15 (mais de 1,5): `todos`, `zero` (0×0 no intervalo), `zeroPressao`/`zeroCalmo` (chutes no 1º
+  acima / até a mediana)], fim {todos, empate (empatado aos 75'), empates, chutesMediana, empatePressao/empateCalmo
+  (chutes de 60' a 75' acima / até a mediana)}}; cada taxa no formato {n, k, taxa, lo, hi, justa}.
+
 - **theo.json, o arquivo do Placar** (22/11/2026, pedido do Alediov: "o Placar com mais detalhes do que o Theo
   escolheu"): a cada rodada das apostas o `papel.py` grava, ao lado do `apostas.json`, o `theo.json` (a forma devolve
   `_arquivos` {nome: dados}; o `papel.py` grava e tira da saída). `theo_publico`: {v 1, agora, dias (21), palpites

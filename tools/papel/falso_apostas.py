@@ -464,9 +464,12 @@ def resumo_espn(j):
             mn = r.randint(1, 90)
             evs.append({"type": {"id": "70", "text": "Goal" if r.random() < 0.8 else "Penalty - Scored"},
                         "clock": {"value": mn * 60, "displayValue": f"{mn}'"}, "period": {"number": 1 if mn <= 45 else 2},
-                        "team": {"id": id_time(lado), "displayName": lado}})
+                        "team": {"id": id_time(lado), "displayName": lado}, "scoringPlay": True})
     evs.sort(key=lambda e: e["clock"]["value"])
-    out = {"header": {"id": j["id"]}, "keyEvents": evs, "gameInfo": {"officials": oficiais}}
+    out = {"header": {"id": j["id"], "competitions": [{"competitors": [
+        {"homeAway": "home", "score": str(j["placar"][0]), "team": {"id": id_time(j["casa"])}},
+        {"homeAway": "away", "score": str(j["placar"][1]), "team": {"id": id_time(j["fora"])}}]}]},
+        "keyEvents": evs, "gameInfo": {"officials": oficiais}}
     # 22/11/2026: a narração lance a lance (escanteios, faltas e chutes; 1 de cada 10 sem ela) e o total de escanteios
     # de cada time nas estatísticas (1 de cada 20 sem); um sorteio à parte, para os cartões de antes não mudarem
     r2 = random.Random(semente("narracao", j["id"]))

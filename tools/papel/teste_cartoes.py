@@ -295,10 +295,47 @@ def teste_escanteios():
     assert o15["comFaltas"]["n"] == R["faltas"]["zeroComMuitas"] <= o15["comZero"]["n"]
 
 
+def teste_gols():
+    """22/11/2026: o gol no 2º tempo depois do 0×0 no intervalo e o gol depois dos 75', com a pressão pelos chutes."""
+    assert C.minuto({"clock": {"displayValue": "45'+2'"}}) == 47 and C.minuto({"clock": {"displayValue": "90'+3'"}}) == 93
+    assert C.minuto({"time": {"value": 600.0}}) == 10 and C.minuto({}) is None
+    assert C.eh_gol({"type": {"text": "Own Goal"}}) and C.eh_gol({"type": {"text": "Penalty - Scored"}})
+    assert not C.eh_gol({"type": {"text": "Penalty - Missed"}}) and not C.eh_gol({"type": {"text": "Goal"}, "scoringPlay": False})
+    gol = lambda dv, per, tid: {"type": {"text": "Goal"}, "scoringPlay": True, "clock": {"displayValue": dv},  # noqa: E731
+                                "period": {"number": per}, "team": {"id": tid}}
+    chute = lambda dv, per: {"time": {"displayValue": dv}, "text": "Attempt saved. X.", "play": {"period": {"number": per}}}  # noqa: E731
+    cab = lambda a, b: {"competitions": [{"competitors": [{"team": {"id": "1"}, "score": str(a)}, {"team": {"id": "2"}, "score": str(b)}]}]}  # noqa: E731
+    r = {"header": cab(1, 1), "keyEvents": [gol("70'", 2, "1"), gol("90'+2'", 2, "2")],
+         "commentary": [chute("10'", 1), chute("44'", 1), chute("61'", 2), chute("75'", 2), chute("76'", 2), chute("60'", 2)]}
+    assert C.gols_e_fim(r, "1", "2") == [0, 2, 1, 0, 2, 2]     # 1×0 aos 75': não empatado; 2 chutes de 61' a 75'
+    r["keyEvents"][0]["clock"]["displayValue"] = "80'"
+    assert C.gols_e_fim(r, "1", "2")[2:4] == [2, 1]           # 0×0 aos 75' e dois gols depois
+    r["header"] = cab(2, 1)
+    assert C.gols_e_fim(r, "1", "2") is None                  # os lances não batem com o placar
+    assert C.gols_e_fim({"header": cab(0, 0), "keyEvents": []}, "1", "2") == [0, 0, 0, 1, None, None]
+    # na coleta e no resumo
+    cli = T.Cli()
+    fonte = cli if hasattr(cli, "oddspapi") else falso_apostas.Avulsa(cli)
+    est = {}
+    for k in range(8):
+        C.coletar(fonte, est, cli.agora + k * 6 * HORA, lambda: 3000, [].append, [])
+    js = [j for j in est["jogos"].values() if j[10]]
+    assert len(js) > 0.8 * len(est["jogos"])
+    for j in js[:40]:
+        assert j[10][0] + j[10][1] == sum(fonte.futebol.por_id(next(k for k, v in est["jogos"].items() if v is j))["placar"])
+    G = C.resumo(est, cli.agora)["gols"]
+    assert G["jogos"] == len(js) and G["zero1t"] == sum(1 for j in js if j[10][0] == 0) and G["chutes1tMediana"] > 0
+    g2 = G["regras"][0]
+    assert g2["id"] == "g2" and g2["zero"]["n"] == G["zero1t"] and g2["zeroPressao"]["n"] + g2["zeroCalmo"]["n"] <= g2["zero"]["n"]
+    F = G["fim"]
+    assert F["todos"]["n"] == len(js) and F["empate"]["n"] == F["empates"] and F["empatePressao"]["n"] + F["empateCalmo"]["n"] <= F["empates"]
+
+
 if __name__ == "__main__":
     teste_lances()
     teste_coleta()
     teste_arbitros_de_fora()
     teste_arbitros_na_coleta()
     teste_escanteios()
+    teste_gols()
     print("ok")

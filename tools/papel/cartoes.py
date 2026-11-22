@@ -39,6 +39,12 @@ esc. total, faltas 1º, faltas 2º, chutes 1º, chutes 2º] (None no que a ESPN 
 das 5 ligas grandes (HC e AC, o jogo inteiro, 2 temporadas, 1×/dia) dão o histórico de cada liga. As faltas do 1º tempo
 entram nos cartões (o recorte "0 cartão e muitas faltas no 1º tempo"). Os nomes dos campos foram escritos sem acesso à
 ESPN daqui: a 1ª rodada registra a estrutura de um item da narração e das estatísticas.
+
+Gols no intervalo e no fim (22/11/2026, pedido do Alediov): pelos gols dos lances (`keyEvents`, `scoringPlay`) e pelos
+chutes da narração, a 11ª posição do jogo: [gols 1º, gols 2º, gols depois dos 75', empatado aos 75' (1/0), chutes
+entre 60' e 75', chutes 1º] (None se os gols dos lances não batem com o placar final do resumo). Mede: depois de 0×0 no
+intervalo, o gol no 2º tempo (com mais ou menos chutes no 1º que a mediana dos jogos) e, empatado aos 75', o gol depois
+(com mais ou menos chutes entre 60' e 75').
 """
 from __future__ import annotations
 
@@ -115,6 +121,8 @@ LINHAS_ESC = [(8.5, "e85"), (9.5, "e95"), (10.5, "e105")]     # no jogo
 LINHAS_ESC2 = [(3.5, "s35"), (4.5, "s45")]                    # no 2º tempo
 POUCOS_ESC1 = 3              # "1º tempo com poucos escanteios": até 3 (os dois times)
 MUITAS_FALTAS = 12           # "muitas faltas no 1º tempo" (os dois times)
+TARDE = 75                   # "gol no fim": depois dos 75'
+JANELA_PRESSAO = (60, 75)    # os chutes que contam como pressão antes do fim
 PLANILHAS = {"eng": "E0", "esp": "SP1", "ita": "I1", "ger": "D1", "fra": "F1"}
 RE_N_ESC = re.compile(r"^\s*corner\b|escanteio|corner kick", re.I)
 RE_N_FALTA = re.compile(r"^\s*foul by\b|^\s*falta\b|^foul$", re.I)
@@ -438,6 +446,82 @@ def _cita(texto, tokens):
     return bool(tokens) and all(t in s for t in tokens[:2])
 
 
+def minuto(ev):
+    """O minuto do lance (45'+2' = 47, 90'+3' = 93); None sem minuto."""
+    clk = ev.get("clock") or ev.get("time") or {}
+    dv = str(clk.get("displayValue") or "")
+    m = re.match(r"\s*(\d+)\s*'?\s*(?:\+\s*(\d+))?", dv)
+    if m:
+        return int(m.group(1)) + int(m.group(2) or 0)
+    v = clk.get("value")
+    return int(v // 60) if isinstance(v, (int, float)) and not isinstance(v, bool) else None
+
+
+def eh_gol(ev):
+    if not isinstance(ev, dict):
+        return False
+    if isinstance(ev.get("scoringPlay"), bool):
+        return ev["scoringPlay"]
+    t = _tipo(ev)
+    return bool(re.search(r"goal|penalty - scored", t)) and not re.search(r"missed|saved|disallowed|no goal", t)
+
+
+def placar_final(r, id_casa, id_fora):
+    """(gols da casa, de fora) do cabeçalho do resumo; None se não vier."""
+    comp = (((r or {}).get("header") or {}).get("competitions") or [{}])[0] if isinstance(r, dict) else {}
+    out = {}
+    for c in comp.get("competitors") or []:
+        try:
+            out[str((c.get("team") or {}).get("id") or c.get("id") or "")] = int(float(str(c.get("score"))))
+        except (TypeError, ValueError, AttributeError):
+            pass
+    return (out[id_casa], out[id_fora]) if id_casa in out and id_fora in out else None
+
+
+def gols_e_fim(r, id_casa, id_fora):
+    """[gols 1º, gols 2º, gols depois dos 75', empatado aos 75' (1/0), chutes entre 60' e 75', chutes 1º] (os chutes None
+    sem narração); None se os gols dos lances não batem com o placar final."""
+    evs = lances(r)
+    fim = placar_final(r, id_casa, id_fora)
+    if evs is None or fim is None:
+        return None
+    g = [0, 0]
+    lado = {id_casa: 0, id_fora: 0}
+    ate75 = {id_casa: 0, id_fora: 0}
+    tarde = 0
+    for ev in evs:
+        if not eh_gol(ev):
+            continue
+        t, mn = tempo(ev), minuto(ev)
+        if t is None or mn is None:
+            continue  # prorrogação
+        g[t - 1] += 1
+        tid = str(((ev.get("team") or {}).get("id")) or "")
+        if tid in lado:
+            lado[tid] += 1
+            if mn <= TARDE:
+                ate75[tid] += 1
+        if t == 2 and mn > TARDE:
+            tarde += 1
+    if (lado[id_casa], lado[id_fora]) != tuple(fim) or sum(g) != sum(fim):
+        return None
+    ch_janela = ch1 = None
+    itens = (r or {}).get("commentary")
+    if isinstance(itens, list) and itens:
+        ch_janela = ch1 = 0
+        for it in itens:
+            if not isinstance(it, dict) or _tipo_narracao(it) != "chute":
+                continue
+            pl = it.get("play") if isinstance(it.get("play"), dict) else {}
+            x = {"period": it.get("period") or pl.get("period"), "clock": it.get("time") or pl.get("clock") or {}}
+            t, mn = tempo(x), minuto(x)
+            if t == 1:
+                ch1 += 1
+            if t == 2 and mn is not None and JANELA_PRESSAO[0] < mn <= JANELA_PRESSAO[1]:
+                ch_janela += 1
+    return [g[0], g[1], tarde, int(ate75[id_casa] == ate75[id_fora]), ch_janela, ch1]
+
+
 # ---------------------------------------------------------------------------------------------------- a coleta
 def coletar(fonte, C, agora, restante, log, erros):
     """Anda o observatório: pede as listas de jogos dos dias que faltam (do mais novo para trás) e os resumos dos jogos
@@ -533,7 +617,7 @@ def coletar(fonte, C, agora, restante, log, erros):
                 f"{estrutura(((r.get('boxscore') or {}).get('teams') or [{}])[0], 3)}")
             C["viuNarracao"] = True
         C["jogos"][eid] = [ms, liga, casa, fora, *n, arbitro(r) or arbitro_core(fonte, C, liga, eid, agora, log),
-                           narracao(r, ic, iff, casa, fora)]
+                           narracao(r, ic, iff, casa, fora), gols_e_fim(r, ic, iff)]
     try:
         completar_arbitros(fonte, C, agora, restante, log, erros)
     except Exception as e:  # noqa: BLE001  (os árbitros nunca derrubam a coleta)
@@ -835,6 +919,47 @@ def resumo_escanteios(C):
     return out
 
 
+def _gols(j):
+    return j[10] if len(j) > 10 and isinstance(j[10], list) and len(j[10]) == 6 else None
+
+
+def _mediana(vs):
+    vs = sorted(vs)
+    n = len(vs)
+    return None if not n else (vs[n // 2] if n % 2 else (vs[n // 2 - 1] + vs[n // 2]) / 2)
+
+
+def resumo_gols(C):
+    """O bloco `gols` (FORMATO.md, "Gols no intervalo e no fim")."""
+    js = [_gols(j) for j in C.get("jogos", {}).values() if _gols(j)]
+    out = {"jogos": len(js), "tarde": TARDE, "janela": list(JANELA_PRESSAO)}
+    if not js:
+        return out
+    out["media"] = {"t1": round(sum(g[0] for g in js) / len(js), 2), "t2": round(sum(g[1] for g in js) / len(js), 2),
+                    "depois75": round(sum(g[2] for g in js) / len(js), 2)}
+    zero = [g for g in js if g[0] == 0]
+    m1 = _mediana([g[5] for g in js if g[5] is not None])
+    out["zero1t"], out["chutes1tMediana"] = len(zero), m1
+    regras = []
+    for ln, rid, nome in ((0.5, "g2", "Gol no 2º tempo"), (1.5, "g2m15", "Mais de 1,5 gol no 2º tempo")):
+        x = {"id": rid, "linha": ln, "nome": nome, "todos": taxa_valores([g[1] for g in js], ln),
+             "zero": taxa_valores([g[1] for g in zero], ln)}
+        if m1 is not None:
+            x["zeroPressao"] = taxa_valores([g[1] for g in zero if g[5] is not None and g[5] > m1], ln)
+            x["zeroCalmo"] = taxa_valores([g[1] for g in zero if g[5] is not None and g[5] <= m1], ln)
+        regras.append(x)
+    out["regras"] = regras
+    emp = [g for g in js if g[3] == 1]
+    mj = _mediana([g[4] for g in js if g[4] is not None])
+    fim = {"todos": taxa_valores([g[2] for g in js], 0.5), "empate": taxa_valores([g[2] for g in emp], 0.5),
+           "empates": len(emp), "chutesMediana": mj}
+    if mj is not None:
+        fim["empatePressao"] = taxa_valores([g[2] for g in emp if g[4] is not None and g[4] > mj], 0.5)
+        fim["empateCalmo"] = taxa_valores([g[2] for g in emp if g[4] is not None and g[4] <= mj], 0.5)
+    out["fim"] = fim
+    return out
+
+
 def _media_hist(hist, k, antes):
     """(jogos, média) do árbitro `k` no histórico das planilhas, só com os jogos de antes de `antes`."""
     xs = [c for ms, c in (hist or {}).get(k) or [] if ms < antes - 6 * HORA]
@@ -882,7 +1007,7 @@ def resumo(C, agora):
            "esperando": len(C.get("pend") or {}), "semLances": int(C.get("semLances", 0)),
            "oddRef": ODD_REF, "empateRef": round(1 / ODD_REF, 4), "fonte": "ESPN (lances de cada jogo)",
            "ligasForaDaEspn": [NOME[k] for k, t in (C.get("pausa") or {}).items() if agora < int(t or 0)],
-           "escanteios": resumo_escanteios(C)}
+           "escanteios": resumo_escanteios(C), "gols": resumo_gols(C)}
     if not js:
         return out
     n = len(js)

@@ -111,7 +111,9 @@ acabavam; aqui os executores padrão não têm limite.
   chance, empate anula e a confiança" e "O árbitro nos cartões" (a ESPN de verdade não traz o árbitro: desde 22/11 vem da API core da ESPN, das
   planilhas inglesas, da football-data.org e da API-Football, as duas com chave grátis nos segredos `FOOTBALLDATA_KEY` e
   `APIFOOTBALL_KEY`; a chave só no papel.yml). Também em 22/11: escanteios, faltas e chutes de cada tempo pela narração
-  lance a lance do mesmo resumo da ESPN (`cartoes.escanteios`, o recorte `comFaltas`; FORMATO.md, "Escanteios").
+  lance a lance do mesmo resumo da ESPN (`cartoes.escanteios`, o recorte `comFaltas`; FORMATO.md, "Escanteios") e os
+  gols depois do 0×0 no intervalo e no fim, pela pressão dos chutes (`cartoes.gols`; FORMATO.md, "Gols no intervalo e
+  no fim"); no app, a parte virou "Observatório".
 - **Seguir o BDM** (pedido do Alediov, 09/11/2026; só esta conta, nenhum mercado novo): versão `bdm` das apostas, que
   segue os palpites do programa diário "Bom Dia Mercado" do Theo Borges. O repositório PRIVADO extrai os palpites da
   transcrição (que o celular baixa; `tools/ideias/bdm.py` + `ideias-bdm.yml` de lá, com a IA gratuita do filtro) e
