@@ -1,0 +1,49 @@
+{
+ "versao": 1,
+ "data": "2026-11-20",
+ "video": {
+  "id": "bAbyVXN8Bgs",
+  "publicado": "2026-11-19T12:00:17+00:00"
+ },
+ "palpites": [
+  {
+   "id": "bAbyVXN8Bgs-1",
+   "mandante": "Al Taee",
+   "visitante": "Al Nassr",
+   "competicao": "Saudi Pro League",
+   "inicio": "2026-11-20T14:30:00-03:00",
+   "mercado": "ou",
+   "linha": 2.5,
+   "selecao": "mais",
+   "oddCitada": null,
+   "fora": false,
+   "motivo": null
+  },
+  {
+   "id": "bAbyVXN8Bgs-2",
+   "mandante": "Bayern de Munique",
+   "visitante": "Colônia",
+   "competicao": "Bundesliga",
+   "inicio": "2026-11-20",
+   "mercado": "ou",
+   "linha": 2.5,
+   "selecao": "mais",
+   "oddCitada": null,
+   "fora": false,
+   "motivo": null
+  },
+  {
+   "id": "bAbyVXN8Bgs-3",
+   "mandante": "Bayern de Munique",
+   "visitante": "Colônia",
+   "competicao": "Bundesliga",
+   "inicio": "2026-11-20",
+   "mercado": "1x2",
+   "linha": null,
+   "selecao": "mandante",
+   "oddCitada": null,
+   "fora": false,
+   "motivo": null
+  }
+ ]
+}
