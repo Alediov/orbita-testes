@@ -25,8 +25,8 @@ Outras fontes, todas gratuitas, preenchem o nome (`completar_arbitros`, a ordem 
 3. a football-data.org (chave grátis no segredo `FOOTBALLDATA_KEY`, cabeçalho `X-Auth-Token`; 10 pedidos por minuto):
    `referees` dos jogos do Brasileirão A e das ligas grandes da Europa, até 10 dias por pedido;
 4. a API-Football (chave grátis no segredo `APIFOOTBALL_KEY`, cabeçalho `x-apisports-key`; 100 pedidos por dia):
-   `fixture.referee` de todos os jogos de um dia num pedido só. Há relato de que o plano grátis não abre a temporada
-   atual: se ela recusar pelo plano, para por 7 dias e o log diz.
+   `fixture.referee` de todos os jogos de um dia num pedido só. O plano grátis só abre de ontem a amanhã: pede ontem e
+   hoje a cada rodada enquanto faltar árbitro (os dias mais velhos ficam com a football-data.org).
 As chaves só por variável de ambiente (papel.yml), nunca em arquivo, URL ou log. O casamento com os jogos da ESPN é pela
 data (±36 h) e pelos dois times (`apostas.mesmo_time`); o nome vira uma chave "inicial + sobrenome" (`chave_arbitro`),
 porque a planilha escreve "A Taylor" e as APIs "Anthony Taylor".
@@ -97,7 +97,8 @@ FDORG_COMP = {"bra": "BSA", "eng": "PL", "esp": "PD", "ita": "SA", "ger": "BL1",
 FDORG_DIAS = 10              # o máximo de dias por pedido
 FDORG_RODADA = 3
 URL_APIF = "https://v3.football.api-sports.io/fixtures?date={dia}&timezone=UTC"
-APIF_RODADA = 6              # dias por rodada
+APIF_RODADA = 2              # dias por rodada (ontem e hoje)
+APIF_VOLTA = 2               # o plano grátis só abre de ontem a amanhã
 APIF_DIA = 90                # pedidos por dia (o limite grátis é 100)
 CHAVE_PAUSA = 7 * DIA        # fonte com chave que recusou (plano, chave errada): tenta de novo em 7 dias
 CASAR_JANELA = 36 * HORA
@@ -578,17 +579,23 @@ def completar_arbitros(fonte, C, agora, restante, log, erros, env=None):
             falta = [ms for ms in falta if ms >= fim]
         corte = (dt.datetime.fromtimestamp(agora / 1000, dt.timezone.utc) - dt.timedelta(days=GUARDA_DIAS + 2)).date().isoformat()
         F["tentados"] = sorted(x for x in tentados if x >= corte)
-    # 4. API-Football (chave grátis): um dia por pedido, todos os campeonatos
+    # 4. API-Football (chave grátis): um dia por pedido, todos os campeonatos. O plano grátis só abre de ontem a amanhã
+    # (a 1ª resposta de verdade, 22/11/2026: "Free plans do not have access to this date, try from 2026-11-21 to
+    # 2026-11-23"): pede só ontem e hoje, a cada rodada enquanto faltar árbitro (ele aparece algumas horas depois)
     chave = (env.get("APIFOOTBALL_KEY") or "").strip()
     F = A["fontes"].setdefault("apif", {})
+    F.pop("tentados", None)
+    if re.search(r"access to this date", str(F.get("motivo") or ""), re.I):  # a parada de 7 dias da 1ª versão
+        F.pop("pausa", None)
+        F.pop("motivo", None)
     if chave and agora >= int(F.get("pausa") or 0):
         hoje = dia_de(agora)
         if F.get("dia") != hoje:
             F["dia"], F["hoje"] = hoje, 0
-        dias = sorted({_dia_espn(j[0]) for j in _faltam(C)}, reverse=True)
-        tentados = set(F.get("tentados") or [])
+        janela = {_dia_espn(agora - k * DIA) for k in range(APIF_VOLTA)}
+        dias = sorted({_dia_espn(j[0]) for j in _faltam(C)} & janela, reverse=True)
         feitos = 0
-        for d in [x for x in dias if x not in tentados]:
+        for d in dias:
             if feitos >= APIF_RODADA or F["hoje"] >= APIF_DIA or restante() < TEMPO_MIN:
                 break
             iso = f"{d[:4]}-{d[4:6]}-{d[6:]}"
@@ -600,20 +607,20 @@ def completar_arbitros(fonte, C, agora, restante, log, erros, env=None):
                 erros.append(f"cartões: API-Football: {e}")
                 break
             errs = (r or {}).get("errors")
-            if errs:  # a API-Football responde 200 com o motivo em `errors` (plano, chave, limite)
-                F["pausa"] = agora + CHAVE_PAUSA
+            if errs:  # 200 com o motivo em `errors`: a data fora do plano passa; chave ou limite param 1 dia
                 F["motivo"] = str(errs)[:200]
-                log(f"  cartões: a API-Football recusou: {F['motivo']}; tenta de novo em 7 dias")
+                if re.search(r"access to this date|try from", F["motivo"], re.I):
+                    log(f"  cartões: a API-Football não abre {iso} no plano grátis")
+                    continue
+                F["pausa"] = agora + DIA
+                log(f"  cartões: a API-Football recusou: {F['motivo']}; tenta de novo amanhã")
                 break
             if not F.get("viu"):
                 log(f"  cartões: formato da API-Football: {estrutura(((r or {}).get('response') or [{}])[0], 3)}")
                 F["viu"] = True
             n = casar(C, ler_apif(r))
             _contar_fonte(A, "apif", n)
-            tentados.add(d)
             log(f"  cartões: API-Football {iso}: {n} árbitros")
-        corte = _dia_espn(agora - (GUARDA_DIAS + 2) * DIA)
-        F["tentados"] = sorted(x for x in tentados if x >= corte)
 
 
 # ---------------------------------------------------------------------------------------------------- as contas

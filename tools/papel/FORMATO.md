@@ -435,7 +435,8 @@ Futebol, só no papel (`apostas.py`). Diferenças das outras formas:
   football-data.co.uk (`Referee` e HY+AY+HR+AR, 1×/dia, a temporada atual e a anterior; também o histórico `arb.hist`
   {chave: [[início, cartões]]}), a football-data.org (`FOOTBALLDATA_KEY`, cabeçalho `X-Auth-Token`; 10 dias por pedido,
   até 3 por rodada; os dias de 2 ou mais dias atrás só uma vez) e a API-Football (`APIFOOTBALL_KEY`, cabeçalho
-  `x-apisports-key`; um dia por pedido, até 6 por rodada e 90 por dia; `errors` na resposta = para 7 dias). Os segredos
+  `x-apisports-key`; um dia por pedido; o plano grátis só abre de ontem a amanhã, então pede ontem e hoje a cada rodada
+  enquanto faltar árbitro, até 90 por dia; outro `errors` na resposta, como a chave, para 1 dia). Os segredos
   ficam só no `papel.yml` (variável de ambiente), nunca na URL, no estado ou no log (`odds.Cliente.json_chave`). O
   casamento é pela data (±36 h) e pelos dois times; o nome vira `chave_arbitro` (inicial + último sobrenome: "A Taylor"
   = "Anthony Taylor"). O árbitro com histórico nas planilhas tem a média só por ele (os jogos de antes, sem contar o

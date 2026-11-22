@@ -151,8 +151,8 @@ def teste_arbitros_de_fora():
 class _SemOficiais:
     """O placar de mentira com o resumo SEM a arbitragem (como a ESPN de verdade) e a API core respondendo."""
 
-    def __init__(self, base, core="ref"):
-        self.base, self.core, self.urls, self.chaves = base, core, [], []
+    def __init__(self, base, core="ref", apif="plano"):
+        self.base, self.core, self.apif, self.urls, self.chaves = base, core, apif, [], []
 
     def __getattr__(self, k):
         return getattr(self.base, k)
@@ -175,7 +175,11 @@ class _SemOficiais:
         self.chaves.append((tipo, cab, chave, url))
         if tipo == "fdorg":
             return {"matches": []}
-        return {"errors": {"plan": "Free plans do not have access to this season"}, "response": []}
+        if self.apif == "plano":
+            return {"errors": {"plan": "Free plans do not have access to this date, try from 2026-11-21 to 2026-11-23."}, "response": []}
+        if self.apif == "chave":
+            return {"errors": {"token": "Error/Missing application key."}, "response": []}
+        return {"errors": [], "response": []}
 
 
 def teste_arbitros_na_coleta():
@@ -210,12 +214,23 @@ def teste_arbitros_na_coleta():
     assert tipos == {"fdorg", "apif"}, tipos
     assert all((t, c) in (("fdorg", "X-Auth-Token"), ("apif", "x-apisports-key")) for t, c, *_ in f3.chaves)
     assert all("segredo" not in u for *_x, u in f3.chaves) and not any("segredo" in x for x in logs3 + err3)
-    assert est3["arb"]["fontes"]["apif"]["pausa"] > cli.agora and any("API-Football recusou" in x for x in logs3)
+    # a API-Football: só ontem e hoje (o plano grátis); a data fora do plano não para a fonte
+    dias_af = {u.split("date=")[1][:10] for t, _c, _k, u in f3.chaves if t == "apif"}
+    import datetime as dt
+    hoje_d = dt.datetime.fromtimestamp(cli.agora / 1000, dt.timezone.utc).date()
+    assert dias_af and dias_af <= {hoje_d.isoformat(), (hoje_d - dt.timedelta(days=1)).isoformat()}, dias_af
+    assert not est3["arb"]["fontes"]["apif"].get("pausa") and any("não abre" in x for x in logs3)
     n = len(f3.chaves)
     C.completar_arbitros(f3, est3, cli.agora + HORA, lambda: 3000, logs3.append, err3, env)
-    assert not any(t == "apif" for t, *_ in f3.chaves[n:])          # parada
+    assert any(t == "apif" for t, *_ in f3.chaves[n:])               # continua pedindo ontem e hoje
+    # a chave recusada: para 1 dia
+    f3.apif = "chave"
+    C.completar_arbitros(f3, est3, cli.agora + 2 * HORA, lambda: 3000, logs3.append, err3, env)
+    assert est3["arb"]["fontes"]["apif"]["pausa"] == cli.agora + 2 * HORA + DIA and any("tenta de novo amanhã" in x for x in logs3)
+    m = len(f3.chaves)
+    C.completar_arbitros(f3, est3, cli.agora + 3 * HORA, lambda: 3000, logs3.append, err3, env)
+    assert not any(t == "apif" for t, *_ in f3.chaves[m:])
     # os dias velhos já pedidos não voltam (os 2 últimos, sim: o grátis chega com atraso)
-    import datetime as dt
     limite = (dt.datetime.fromtimestamp(cli.agora / 1000, dt.timezone.utc) - dt.timedelta(days=2)).date().isoformat()
     de = [u.split("dateFrom=")[1][:10] for t, _c, _k, u in f3.chaves[n:] if t == "fdorg"]
     assert all(d >= limite for d in de), (de, limite)
