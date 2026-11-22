@@ -606,6 +606,19 @@ def teste_bdm_rodadas():
         assert [x["k"] for x in conf] == [k for k in A.CONFIANCA if k in {x["k"] for x in conf}] and len(conf) >= 2
         assert {"Mandante ou empate", "Empate ou visitante", "Mandante (empate anula)", "Visitante (empate anula)"} & \
             {x["nome"] for x in vs["bdm"]["aoVivo"]["extra"]["recortes"]["selecao"]}
+        # 22/11/2026: o theo.json do Placar (ao lado do apostas.json): cada palpite com tudo o que o teste sabe
+        th = json.load(open(os.path.join(pasta, "theo.json"), encoding="utf-8"))
+        assert th["v"] == 1 and th["palpites"] and len(th["contas"]) == len(A.BDM_CONTAS)
+        ps = th["palpites"]
+        assert [x["inicio"] or 0 for x in ps] == sorted([x["inicio"] or 0 for x in ps], reverse=True)
+        feito = [x for x in ps if x["odd"]]
+        assert feito and all(x["justa"] and x["casa"] and x["contas"]["bdm"]["st"] == "apostado" for x in feito)
+        assert all(abs(x["valor"] - (x["odd"] / x["justa"] - 1)) < 1e-3 for x in feito)
+        assert any(x["fechamento"] and x["clv"] is not None for x in feito) and any(x["resultado"] for x in feito)
+        assert any(x["situacao"] == "fora" and x["motivo"] for x in ps)
+        assert any(x["historico"] and x["historico"]["n"] for x in ps) and any(x["conviccao"] == "alta" for x in ps)
+        assert any(c.get("o") for x in feito for k, c in x["contas"].items() if k != "bdm")
+        assert all(set(x) >= {"mandante", "visitante", "competicao", "mercado", "selecao", "oddCitada", "video"} for x in ps)
         # nenhum pedido a mais: um /historical-odds por jogo, com ou sem palpite
         hist = sum(1 for f in V["fx"].values() if f["st"] in ("feito", "semOdds"))
         assert cli.contagem["oddspapi"] <= hist + 60, (cli.contagem, hist)

@@ -26,6 +26,7 @@ import datetime as dt
 import importlib
 import json
 import os
+import re
 import sys
 import time
 import traceback
@@ -170,6 +171,10 @@ def rodada(cli, pasta, agora=None, formas=None, prazo_min=20.0, exemplo=False, b
                           "rodada": {"pedidos": getattr(cli, "pedidos", 0) - p0,
                                      "segundos": round(time.monotonic() - peso0, 1), "erros": saida.get("erros", [])}})
             saida.pop("erros", None)
+            # arquivos a mais ao lado da forma (22/11/2026: o theo.json das apostas, para o Placar)
+            for n_arq, dados_arq in (saida.pop("_arquivos", None) or {}).items():
+                if re.fullmatch(r"[a-z0-9_-]+\.json", n_arq):
+                    gravar_json(os.path.join(pasta, n_arq), dados_arq)
             com_metricas(saida, est["ref"]["cdi"], cdi_ano_da_serie(est["ref"]["cdi"], CDI_ANO))
             if exemplo:
                 saida["exemplo"] = True

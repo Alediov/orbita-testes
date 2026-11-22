@@ -431,6 +431,18 @@ Futebol, só no papel (`apostas.py`). Diferenças das outras formas:
   zeroComFiltro, zeroComMedias} e `arbitros` (os 8 de média mais alta, 3 jogos ou mais: nome, jogos, media). O 1º
   `gameInfo` de verdade vai para o log (estrutura).
 
+- **theo.json, o arquivo do Placar** (22/11/2026, pedido do Alediov: "o Placar com mais detalhes do que o Theo
+  escolheu"): a cada rodada das apostas o `papel.py` grava, ao lado do `apostas.json`, o `theo.json` (a forma devolve
+  `_arquivos` {nome: dados}; o `papel.py` grava e tira da saída). `theo_publico`: {v 1, agora, dias (21), palpites
+  [até 200, do mais novo: id, dia, video, mandante, visitante, competicao, inicio, mk, mercado, selecao, linha,
+  oddCitada, conviccao, situacao (esperando | apostado | feito | fora), motivo, visto, odd (a da casa na hora do
+  palpite), casa, oddEm, justa (1 ÷ chance da Pinnacle sem a margem naquela hora), valor (odd ÷ justa − 1),
+  fechamento (a justa no início do jogo), clv, aprox, resultado, placar, historico {p, taxas, n, forte, base},
+  contas {id: {st, o}} (cada conta do Theo, menos o controle: apostado com a odd ou o motivo)], contas [o resumo de
+  cada conta do Theo: apostas, acerto, acertoEmpate, roi, resultado, clv, abertas], nota}. As odds de um palpite só
+  existem depois do jogo (o teste busca o histórico de odds quando o jogo acaba, para caber na cota grátis); antes,
+  só a odd citada. Só campos públicos.
+
 ## Looping (`looping.json`)
 
 Aave v3 na Base (`looping.py`): juros diários do GraphQL do Aave (`supplyAPYHistory`/`borrowAPYHistory`, 365 dias), o

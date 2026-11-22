@@ -1516,6 +1516,56 @@ def resumo_bdm(B, conta=None):
             "oddPegaMedia": round(sum(x["o"] for x in cit) / len(cit), 3) if cit else None,
             "ultimos": ultimos, "desde": B.get("desde")}
 
+THEO_DIAS = 21               # dias de palpites no theo.json (o Placar)
+THEO_MAX = 200
+
+
+def theo_publico(B, contas, agora):
+    """O theo.json do ramo papel (22/11/2026, pedido do Alediov: "o Placar com mais detalhes do que o Theo escolheu"):
+    cada palpite dos últimos THEO_DIAS dias com tudo o que o teste sabe dele, sem pedido a mais; e o resumo das contas
+    do Theo. Só campos públicos (os do config/bdm/ e os números do teste)."""
+    corte = dia_de(agora - THEO_DIAS * DIA)
+    ps = [x for x in (B.get("p") or {}).values() if (x.get("dia") or "") >= corte]
+    ps.sort(key=lambda x: (x.get("i") or _ms(x["dia"] + "T12:00:00-03:00") or 0, x["id"]), reverse=True)
+    nomes = {c.id: c.nome for c in contas.values()} if isinstance(contas, dict) else {}
+    out = []
+    for x in ps[:THEO_MAX]:
+        h = x.get("hist") or None
+        cs = {}
+        for cid in BDM_CONTAS:
+            if cid == "bdmFav" or cid not in nomes:
+                continue
+            o = (x.get("odds") or {}).get(cid)
+            st = "apostado" if o else (x.get("gat") or {}).get(cid) if cid != "bdm" else (
+                "fora" if x.get("st") == "fora" else None)
+            if o or st:
+                cs[cid] = {"st": st, "o": o}
+        out.append({"id": x["id"], "dia": x["dia"], "video": x.get("vid"), "mandante": x.get("m"), "visitante": x.get("v"),
+                    "competicao": x.get("comp"), "inicio": x.get("i"), "mk": x["mk"], "mercado": nome_mercado(x),
+                    "selecao": texto_selecao(x), "linha": x.get("ln"), "oddCitada": x.get("oc"),
+                    "conviccao": x.get("conf"), "situacao": x.get("st"), "motivo": x.get("motivo"),
+                    "visto": x.get("visto"), "odd": x.get("o"), "casa": x.get("casa"), "oddEm": x.get("t"),
+                    "justa": x.get("pj"), "valor": round(x["o"] / x["pj"] - 1, 4) if x.get("o") and x.get("pj") else None,
+                    "fechamento": x.get("pfj"), "clv": x.get("clv"), "aprox": bool(x.get("aprox")),
+                    "resultado": x.get("r"), "placar": x.get("pl"),
+                    "historico": {"p": h.get("p"), "taxas": h.get("taxas"), "n": h.get("n"), "forte": h.get("forte"),
+                                  "base": h.get("base")} if h else None,
+                    "contas": cs})
+    resumo = []
+    for cid in BDM_CONTAS:
+        c = contas.get(cid) if isinstance(contas, dict) else None
+        if not c:
+            continue
+        x = c.extra()
+        resumo.append({"id": cid, "nome": c.nome, "apostas": x.get("apostas"), "acerto": x.get("acerto"),
+                       "acertoEmpate": x.get("acertoEmpate"), "roi": x.get("roi"),
+                       "resultado": round(c.acc["resultado"], 2),
+                       "clv": x.get("clvMedio"), "abertas": len(c.abertas)})
+    return {"v": 1, "agora": agora, "dias": THEO_DIAS, "palpites": out, "contas": resumo,
+            "nota": "As odds de cada palpite são buscadas depois do jogo (a odd da casa na hora em que o palpite "
+                    "apareceu, a justa pela Pinnacle sem a margem e o fechamento): antes do jogo, só a odd citada."}
+
+
 def resumo_theo(B, cid):
     """Os números das outras contas do Theo (vão no `extra`): o que aconteceu com cada palpite nesta conta."""
     if cid == "bdmFav":
@@ -2080,8 +2130,12 @@ class Vivo:
                 if modo == "historico":
                     ap["ph"] = hist["p"]
                 c.abrir(ap)
+                pk.setdefault("odds", {})[c.id] = ap["o"]
                 if c.id == "bdm":
-                    pk.update(o=ap["o"], clv=ap["clv"])
+                    # 22/11/2026: os números do palpite para o Placar (theo.json): a justa e o fechamento pela Pinnacle
+                    pk.update(o=ap["o"], clv=ap["clv"], pj=round(1 / pc[i], 3) if pc[i] > 0 else None,
+                              pfj=round(1 / pf[i], 3) if pf and pf[i] > 0 else None, casa=rotulo, t=t,
+                              aprox=bool(ap.get("aprox")))
                     B["cont"]["noTeste"] += 1
                 else:
                     gat[c.id] = "apostado"
@@ -2355,4 +2409,6 @@ def rodar(ctx):
     ctx.est.update(est)
     return {"frase": FRASE, "comoFunciona": COMO_FUNCIONA, "padrao": PADRAO, "versoes": versoes,
             "eventos": est["eventos"], "itens": itens_pendentes(contas) if contas else [], "avisos": avisos,
-            "config": config, "erros": erros, "cartoes": cartoes.resumo(C, agora)}
+            "config": config, "erros": erros, "cartoes": cartoes.resumo(C, agora),
+            # 22/11/2026: o arquivo pequeno do Placar (papel.py grava os `_arquivos` ao lado do apostas.json)
+            "_arquivos": {"theo.json": theo_publico(V.get("bdm") or {}, contas or {}, agora)}}
