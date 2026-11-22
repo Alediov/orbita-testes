@@ -1,0 +1,16 @@
+name: Sonda das odds (uma vez, à mão)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  sonda:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Sonda
+        env:
+          # chave GRATUITA da API-Football (o mesmo segredo dos cartões); o log mostra só os nomes dos mercados
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+        run: python3 -I tools/papel/sonda_odds.py
