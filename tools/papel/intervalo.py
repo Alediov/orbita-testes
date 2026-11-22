@@ -31,7 +31,7 @@ import af  # noqa: E402
 MIN = 60 * 1000
 HORA = 60 * MIN
 DIA = 24 * HORA
-LIMITE_DIA = 60              # pedidos do robô por dia (as apostas e os árbitros usam o resto dos 100)
+LIMITE_DIA = 55              # pedidos do robô por dia (as apostas e os árbitros usam o resto dos 100)
 FOLGA = 12                   # não pede se a API-Football disser que restam menos que isso hoje
 LISTA_CADA = 6 * HORA
 JANELA_HT = (40, 72)         # minutos depois do início em que o jogo pode estar no intervalo

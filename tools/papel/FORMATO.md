@@ -470,7 +470,7 @@ Futebol, só no papel (`apostas.py`). Diferenças das outras formas:
   a lista de jogos do dia (a cada 6 h) e, só quando algum jogo acompanhado (`af.LIGA_AF`) pode estar no intervalo (40 a
   72 min depois do início) ou perto dos 75' (82 a 108 min), um `/odds/live` (todos os jogos num pedido). Guarda no
   intervalo `ht` {t, gols, m} e perto dos 75' (minuto 70 a 86) `m75` {t, min, gols, m}, com m = {mercado: [[over/under,
-  linha, odd]]} (só cartões, escanteios e gols). No máximo 60 pedidos por dia e nunca com menos de 12 restantes na API.
+  linha, odd]]} (só cartões, escanteios e gols). No máximo 55 pedidos por dia (as apostas usam até 30 e os árbitros até ~10, dos 100) e nunca com menos de 12 restantes na API.
   As apostas leem o `intervalo.json` pelo raw do GitHub e `cartoes.contas_intervalo` abre uma aposta de R$ 20 por jogo e
   conta (`C["int"]["ap"]`, liquidada pelos dados da ESPN do jogo terminado; o mercado é o do jogo inteiro, sem time,
   tempo nem handicap): `cartL` e `escL` (o "mais" da linha principal da casa, a de odd mais perto de 2,0, só linhas
