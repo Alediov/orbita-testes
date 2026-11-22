@@ -58,6 +58,14 @@ LINHAS = [(1.5, "o15"), (2.5, "o25"), (3.5, "o35")]
 ODD_REF = 1.9                # a odd típica que ele pegava (a média da planilha de agosto: 1,6 a 2,55)
 MIN_TIME = 4                 # jogos mínimos de um time para entrar na lista
 ULTIMOS = 10
+# 22/11/2026: o filtro do prompt "Cartões" dele: descartar o jogo com árbitro de média abaixo de 4,0 cartões por jogo
+# e com a expectativa (as médias dos dois times e a do árbitro) abaixo de 4,0. As médias saem SÓ dos jogos de antes,
+# vistos aqui (nada do futuro), e pedem MIN_MEDIA jogos de cada um.
+FILTRO_ARBITRO = 4.0
+FILTRO_EXPECTATIVA = 4.0
+MIN_MEDIA = 3
+RE_ARBITRO = re.compile(r"referee|[áa]rbitro|arbitre|schiedsrichter", re.I)
+RE_NAO_ARBITRO = re.compile(r"assist|var\b|video|fourth|quarto|reserve|linesman", re.I)
 
 
 def _dia_espn(ms):
@@ -176,6 +184,36 @@ def lances(r):
     return None
 
 
+def _texto(x):
+    if isinstance(x, dict):
+        return " ".join(str(x.get(k) or "") for k in ("name", "displayName", "abbreviation", "text", "type"))
+    return str(x or "")
+
+
+def arbitro(r):
+    """O nome do árbitro principal do resumo do jogo (gameInfo.officials); None se não vier."""
+    if not isinstance(r, dict):
+        return None
+    gi = r.get("gameInfo") if isinstance(r.get("gameInfo"), dict) else {}
+    offs = gi.get("officials") or r.get("officials") or []
+    if not isinstance(offs, list):
+        return None
+    nomes = []
+    for o in offs:
+        if not isinstance(o, dict):
+            continue
+        nome = o.get("displayName") or o.get("fullName") or o.get("name")
+        if not nome:
+            continue
+        pos = _texto(o.get("position")) + " " + _texto(o.get("type"))
+        if RE_ARBITRO.search(pos) and not RE_NAO_ARBITRO.search(pos):
+            return str(nome)
+        nomes.append((o.get("order"), str(nome), pos))
+    # sem o cargo escrito: o 1º da lista (a ESPN põe o principal primeiro), se nada diz que é assistente
+    um = [x for x in nomes if x[0] in (1, "1")] or nomes[:1]
+    return um[0][1] if um and not RE_NAO_ARBITRO.search(um[0][2]) else None
+
+
 def contar(evs, id_casa, id_fora):
     """(cartões no 1º tempo, no 2º, da casa, de fora) dos lances; None se não houver lista de lances."""
     if evs is None:
@@ -279,12 +317,15 @@ def coletar(fonte, C, agora, restante, log, erros):
             card = next((x for x in evs if eh_cartao(x)), evs[0])
             log(f"  cartões: formato de um lance: {estrutura(card, 3)}")
             C["viuLance"] = True
+        if not C.get("viuArbitro") and isinstance(r, dict) and (r.get("gameInfo") or r.get("officials")):
+            log(f"  cartões: formato do gameInfo: {estrutura(r.get('gameInfo') or {'officials': r.get('officials')}, 4)}")
+            C["viuArbitro"] = True
         n = contar(evs, ic, iff)
         C["pend"].pop(eid)
         if n is None:
             C["semLances"] = int(C.get("semLances", 0)) + 1
             continue
-        C["jogos"][eid] = [ms, liga, casa, fora, *n]
+        C["jogos"][eid] = [ms, liga, casa, fora, *n, arbitro(r)]
     # limpeza
     corte = agora - GUARDA_DIAS * DIA
     for eid in [k for k, j in C["jogos"].items() if j[0] < corte]:
@@ -310,6 +351,34 @@ def taxa(js, linha):
             "justa": round(1 / t, 2) if t else None}
 
 
+def filtro_do_prompt(js):
+    """{id do jogo: (passa, média do árbitro, expectativa)} pelo filtro do prompt, com as médias só dos jogos de antes
+    (os jogos em ordem de início; o árbitro só conta com MIN_MEDIA jogos dele vistos aqui; a expectativa pede as médias
+    dos dois times, também com MIN_MEDIA jogos). Os jogos são (id, linha do estado)."""
+    arb, tim, out = {}, {}, {}
+    for eid, j in sorted(js, key=lambda x: x[1][0]):
+        total = j[4] + j[5]
+        ref = j[8] if len(j) > 8 else None
+        ma = (arb[ref][1] / arb[ref][0]) if ref and ref in arb and arb[ref][0] >= MIN_MEDIA else None
+        mc = (tim[j[2]][1] / tim[j[2]][0]) if j[2] in tim and tim[j[2]][0] >= MIN_MEDIA else None
+        mf = (tim[j[3]][1] / tim[j[3]][0]) if j[3] in tim and tim[j[3]][0] >= MIN_MEDIA else None
+        exp = None
+        if mc is not None and mf is not None:
+            vals = [mc, mf] + ([ma] if ma is not None else [])
+            exp = sum(vals) / len(vals)
+        passa = exp is not None and exp >= FILTRO_EXPECTATIVA and (ma is None or ma >= FILTRO_ARBITRO)
+        out[eid] = (passa, ma, exp)
+        if ref:
+            a = arb.setdefault(ref, [0, 0])
+            a[0] += 1
+            a[1] += total
+        for t in (j[2], j[3]):
+            x = tim.setdefault(t, [0, 0])
+            x[0] += 1
+            x[1] += total
+    return out
+
+
 def resumo(C, agora):
     """O bloco `cartoes` da saída das apostas (FORMATO.md, "Cartões no intervalo")."""
     js = sorted(C.get("jogos", {}).values(), key=lambda j: j[0])
@@ -324,8 +393,23 @@ def resumo(C, agora):
     out["media"] = {"jogo": round(sum(j[4] + j[5] for j in js) / n, 2), "t1": round(sum(j[4] for j in js) / n, 2),
                     "t2": round(sum(j[5] for j in js) / n, 2),
                     "t2SemCartao1t": round(sum(j[5] for j in zero) / len(zero), 2) if zero else None}
+    fp = filtro_do_prompt(list(C.get("jogos", {}).items()))
+    passa = {eid for eid, (ok, _a, _e) in fp.items() if ok}
+    zero_f = [j for eid, j in C.get("jogos", {}).items() if j[4] == 0 and eid in passa]
     out["regras"] = [{"id": rid, "linha": ln, "nome": f"Mais de {str(ln).replace('.', ',')} cartões no 2º tempo",
-                      "comZero": taxa(zero, ln), "todos": taxa(js, ln)} for ln, rid in LINHAS]
+                      "comZero": taxa(zero, ln), "todos": taxa(js, ln), "comFiltro": taxa(zero_f, ln)}
+                     for ln, rid in LINHAS]
+    com_arb = [j for j in js if len(j) > 8 and j[8]]
+    out["filtro"] = {"arbitro": FILTRO_ARBITRO, "expectativa": FILTRO_EXPECTATIVA, "minimo": MIN_MEDIA,
+                     "jogosComArbitro": len(com_arb), "zeroComFiltro": len(zero_f),
+                     "zeroComMedias": sum(1 for eid, j in C.get("jogos", {}).items() if j[4] == 0 and fp[eid][2] is not None)}
+    ar = {}
+    for j in com_arb:
+        a = ar.setdefault(j[8], [0, 0])
+        a[0] += 1
+        a[1] += j[4] + j[5]
+    out["arbitros"] = sorted(({"nome": n, "jogos": v[0], "media": round(v[1] / v[0], 2)}
+                              for n, v in ar.items() if v[0] >= MIN_MEDIA), key=lambda x: (-x["media"], -x["jogos"]))[:8]
     ligas = []
     for liga, nome, _c in LIGAS:
         lj = [j for j in js if j[1] == liga]

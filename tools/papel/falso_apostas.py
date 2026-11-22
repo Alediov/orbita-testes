@@ -442,8 +442,14 @@ def resumo_espn(j):
     r = random.Random(semente("cartoes", j["id"]))
     if r.random() < 0.05:
         return {"header": {"id": j["id"]}}
+    # o árbitro (15 nomes; cada um com o seu rigor, de 0,6 a 1,5 vez a média); 1 de cada 10 sem a arbitragem
+    k = r.randrange(len(ARBITROS))
+    rigor = 0.6 + 0.9 * k / (len(ARBITROS) - 1)
+    oficiais = [] if r.random() < 0.1 else [
+        {"displayName": ARBITROS[k], "position": {"name": "Referee", "displayName": "Referee"}, "order": 1},
+        {"displayName": f"Assistente {k}", "position": {"name": "Assistant Referee"}, "order": 2}]
     evs = []
-    for per, lam, ini in ((1, 1.7, 0), (2, 2.5, 45)):
+    for per, lam, ini in ((1, 1.7 * rigor, 0), (2, 2.5 * rigor, 45)):
         for _ in range(_sorteio_poisson(r, lam)):
             mn = ini + r.randint(1, 47)
             lado = j["fora"] if r.random() < 0.55 else j["casa"]
@@ -458,7 +464,10 @@ def resumo_espn(j):
                         "clock": {"value": mn * 60, "displayValue": f"{mn}'"}, "period": {"number": 1 if mn <= 45 else 2},
                         "team": {"id": id_time(lado), "displayName": lado}})
     evs.sort(key=lambda e: e["clock"]["value"])
-    return {"header": {"id": j["id"]}, "keyEvents": evs}
+    return {"header": {"id": j["id"]}, "keyEvents": evs, "gameInfo": {"officials": oficiais}}
+
+
+ARBITROS = [f"Árbitro {c}" for c in "ABCDEFGHIJKLMNO"]
 
 
 def _iso_br(ms):
@@ -492,6 +501,17 @@ def bdm_do_dia(fut, d: dt.date):
         sel = "mandante" if (i == 0) != trocar else "visitante"
         add(mandante=m, visitante=v, competicao=COMPETICAO[j["liga"]], inicio=_iso_br(j["inicio"]), mercado="1x2",
             linha=None, selecao=sel, oddCitada=citada(j, "1x2", i), fora=False, motivo=None)
+    # 22/11/2026: a dupla chance e o empate anula (pelo 1X2), com a confiança dele no vídeo
+    j = jogos[0]
+    fav = 0 if j["p1x2"][0] >= j["p1x2"][2] else 2
+    add(mandante=j["casa"], visitante=j["fora"], competicao=COMPETICAO[j["liga"]], inicio=_iso_br(j["inicio"]),
+        mercado="dupla", linha=None, selecao="1x" if fav == 0 else "x2", oddCitada=None, fora=False, motivo=None,
+        conviccao="alta")
+    if len(jogos) > 1:
+        j = jogos[1]
+        add(mandante=j["casa"], visitante=j["fora"], competicao=COMPETICAO[j["liga"]], inicio=_iso_br(j["inicio"]),
+            mercado="dnb", linha=None, selecao="mandante" if d.day % 3 else "visitante", oddCitada=None, fora=False,
+            motivo=None, conviccao="baixa")
     if len(jogos) > 2:
         j = jogos[2]
         i = 0 if j["pou"][0] > 0.5 else 1

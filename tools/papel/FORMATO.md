@@ -412,6 +412,25 @@ Futebol, só no papel (`apostas.py`). Diferenças das outras formas:
   `ultimos` (os 10 últimos jogos sem cartão no 1º tempo: jogo, liga, inicio, t2). O 1º lance e a 1ª lista de jogos de
   verdade vão para o log (estrutura): os nomes dos campos foram escritos sem acesso à ESPN daqui.
 
+- **Dupla chance, empate anula e a confiança** (22/11/2026, as melhorias 4 e 5): os palpites do Theo de `dupla`
+  (1x, 12, x2) e `dnb` (mandante, visitante) entram em todas as contas do Theo pelo preço do 1X2 (a OddsPapi grátis
+  não traz esses mercados): a odd da casa = 1 ÷ (soma de 1 ÷ odd dos resultados que ganham) na dupla e odd × (1 − 1 ÷
+  odd do empate) no empate anula (`serie_sintetica`); a justa, pela Pinnacle sem a margem (`justas`: as chances
+  somadas; no empate anula, a chance sem o empate); a aposta leva `aprox` (a casa de verdade cobra um pouco mais). No
+  empate anula, o empate devolve (`devolve`): o dinheiro volta, a aposta não conta, `extra.devolvidas` e o evento
+  `devolveu`. O histórico (`chance_historico`) também sabe os dois (no empate anula, sem os empates). Nova conta
+  `bdmConf` "Theo pela confiança": R$ 30, 20 ou 10 pela `conviccao` do palpite (`alta` | `normal` | `baixa`, publicada
+  pela extração desde 22/11; sem ela, normal); a aposta guarda `conf` e os recortes ganham `confianca` (na ordem alta,
+  normal, baixa).
+- **O árbitro nos cartões** (22/11/2026, o filtro do prompt "Cartões" do Alediov): o árbitro principal vem do resumo do
+  jogo (`gameInfo.officials`, pelo cargo; sem cargo, o 1º; assistente e VAR nunca) e vai na 9ª posição do jogo no
+  estado (os jogos de antes ficam sem). `filtro_do_prompt`: um jogo passa quando a expectativa (a média de cartões dos
+  jogos do mandante, a do visitante e, se conhecida, a do árbitro, só com os jogos de ANTES vistos aqui e pelo menos
+  `MIN_MEDIA` (3) de cada) chega a 4,0 e o árbitro, quando tem média, também. Cada regra ganha `comFiltro` (os jogos sem
+  cartão no 1º tempo que passam no filtro); o bloco ganha `filtro` {arbitro, expectativa, minimo, jogosComArbitro,
+  zeroComFiltro, zeroComMedias} e `arbitros` (os 8 de média mais alta, 3 jogos ou mais: nome, jogos, media). O 1º
+  `gameInfo` de verdade vai para o log (estrutura).
+
 ## Looping (`looping.json`)
 
 Aave v3 na Base (`looping.py`): juros diários do GraphQL do Aave (`supplyAPYHistory`/`borrowAPYHistory`, 365 dias), o

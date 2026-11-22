@@ -142,6 +142,15 @@ BDM_MERCADOS = {             # mercado → (nome, seleções aceitas)
     "escanteios": ("Escanteios", ("mais", "menos", "mandante", "visitante")),
     "outro": ("Outro mercado", ()),
 }
+# 22/11/2026 (pedido do Alediov, melhorias 4 e 5): a dupla chance e o empate anula entram nas contas do Theo pelo
+# preço do 1X2 (a OddsPapi grátis não traz esses mercados): a odd da casa = 1 ÷ (soma de 1 ÷ odd dos resultados que
+# ganham) na dupla e odd × (1 − 1 ÷ odd do empate) no empate anula; a justa, pela Pinnacle sem a margem (as chances
+# somadas; no empate anula, a chance sem o empate). A casa de verdade cobra um pouco mais nesses mercados: aproximado
+# (`aprox` na aposta). No empate anula, o empate devolve o dinheiro (`devolvidas`).
+SINTETICOS = {"dupla": ((0, 1), (0, 2), (1, 2)), "dnb": ((0,), (2,))}
+# a confiança do Theo no palpite (o que a extração lê do vídeo): R$ 30, 20 ou 10 na conta "pela confiança"
+CONFIANCA = {"alta": 1.5, "normal": 1.0, "baixa": 0.5}
+NOME_CONFIANCA = {"alta": "Muito seguro (R$ 30)", "normal": "Normal (R$ 20)", "baixa": "Hesitando (R$ 10)"}
 BDM_MOTIVOS = {"ao_vivo": "plano para o ao vivo", "condicional": "palpite condicional", "cartoes": "cartões",
                "sem_jogo": "sem jogo definido", "outro": "fora do plano"}
 URL_ESPN = "https://site.api.espn.com/apis/site/v2/sports/soccer/{liga}/scoreboard?dates={dia}"
@@ -201,8 +210,11 @@ VERSOES = [
     ("bdmConv", "Theo + convergência", "Seguir palpites", "médio", {"tipo": "bdm", "stake": "bdm", "modo": "convergencia"},
      "Só quando o histórico concorda com o Theo: o mandante em casa, o visitante fora e os confrontos diretos acima da "
      "média da liga para a seleção, e a chance do histórico dizendo que a odd paga. Na odd da hora do palpite."),
+    ("bdmConf", "Theo pela confiança", "Seguir palpites", "médio", {"tipo": "bdm", "stake": "bdm", "conf": True},
+     "Os mesmos palpites com o valor pela confiança dele no vídeo: R$ 30 quando está muito seguro, R$ 20 no normal e "
+     "R$ 10 quando hesita. Mostra se a confiança dele vale alguma coisa."),
 ]
-BDM_CONTAS = ("bdm", "bdmG15", "bdmG5", "bdmFav", "bdmH15", "bdmConv")
+BDM_CONTAS = ("bdm", "bdmG15", "bdmG5", "bdmFav", "bdmH15", "bdmConv", "bdmConf")
 SO_AO_VIVO = set(BDM_CONTAS)
 PADRAO = "valor3"
 
@@ -301,9 +313,49 @@ def clv(odd, p_fech):
 
 def ganhou(mk, sel, placar):
     h, a = placar
+    r = 0 if h > a else 1 if h == a else 2
     if mk == "1x2":
-        return sel == (0 if h > a else 1 if h == a else 2)
+        return sel == r
+    if mk in SINTETICOS:
+        return r in SINTETICOS[mk][sel]
     return sel == (0 if h + a > 2.5 else 1)
+
+
+def devolve(mk, placar):
+    """O empate no empate anula: a aposta volta."""
+    return mk == "dnb" and placar[0] == placar[1]
+
+
+def justas(mk, po):
+    """As chances justas do mercado `mk` pelos preços da Pinnacle `po` (os do 1X2 nos mercados sintéticos)."""
+    p = sem_margem(po) if po and all(po) else None
+    if not p or mk not in SINTETICOS:
+        return p
+    if mk == "dnb":
+        t = p[0] + p[2]
+        return [p[0] / t, p[2] / t] if t > 0 else None
+    return [sum(p[k] for k in grupo) for grupo in SINTETICOS[mk]]
+
+
+def serie_sintetica(mk, hs):
+    """As séries de preço da casa no mercado sintético `mk` a partir das três do 1X2 (`hs`), nos instantes em que as
+    três têm preço."""
+    if not hs or len(hs) < 3 or not all(hs):
+        return None
+    ts = sorted({t for h in hs for t, _ in h})
+    out = [[] for _ in SINTETICOS[mk]]
+    for t in ts:
+        o = [preco_em(h, t) for h in hs]
+        if not all(o):
+            continue
+        if mk == "dnb":
+            vals = [o[0] * (1 - 1 / o[1]), o[2] * (1 - 1 / o[1])]
+        else:
+            vals = [1 / sum(1 / o[k] for k in grupo) for grupo in SINTETICOS[mk]]
+        for k, v in enumerate(vals):
+            if v > 1.0:
+                out[k].append((t, round(v, 4)))
+    return out if all(out) else None
 
 
 # ---------------------------------------------------------------------------------------------------- textos
@@ -325,6 +377,10 @@ def _ddmm(ms):
 def nome_sel(casa, fora, mk, i):
     if mk == "1x2":
         return [f"{casa} vence", "empate", f"{fora} vence"][i]
+    if mk == "dupla":
+        return [f"{casa} ou empate", f"{casa} ou {fora}", f"empate ou {fora}"][i]
+    if mk == "dnb":
+        return [f"{casa} (empate anula)", f"{fora} (empate anula)"][i]
     return ["mais de 2,5 gols", "menos de 2,5 gols"][i]
 
 
@@ -353,14 +409,16 @@ def _norm(s):
 # odd e por campeonato; cada um com [apostas, ganhas, apostado, resultado, soma de 1/odd, soma do CLV, apostas com CLV]
 FAIXAS_ODD = [(1.5, "até 1,49"), (2.0, "1,50 a 1,99"), (3.0, "2,00 a 2,99"), (1e9, "3,00 ou mais")]
 NOME_SELECAO = {("1x2", 0): "Vitória do mandante", ("1x2", 1): "Empate", ("1x2", 2): "Vitória do visitante",
-                ("ou", 0): "Mais de 2,5 gols", ("ou", 1): "Menos de 2,5 gols"}
+                ("ou", 0): "Mais de 2,5 gols", ("ou", 1): "Menos de 2,5 gols",
+                ("dupla", 0): "Mandante ou empate", ("dupla", 1): "Sem empate", ("dupla", 2): "Empate ou visitante",
+                ("dnb", 0): "Mandante (empate anula)", ("dnb", 1): "Visitante (empate anula)"}
 
 
 def faixa_odd(o):
     return next(n for lim, n in FAIXAS_ODD if o < lim)
 
 
-ACC = ("n", "ganhas", "apostado", "resultado", "oddS", "clvS", "clvN", "clvPos", "seq", "pior", "anuladas", "invS", "invN")
+ACC = ("n", "ganhas", "apostado", "resultado", "oddS", "clvS", "clvN", "clvPos", "seq", "pior", "anuladas", "invS", "invN", "devolvidas")
 
 
 class Conta:
@@ -385,6 +443,8 @@ class Conta:
 
     def _recortar(self, ap, venceu, res):
         chaves = {"selecao": f"{ap['mk']}:{ap['s']}", "faixa": faixa_odd(ap["o"]), "liga": ap["l"]}
+        if ap.get("conf"):
+            chaves["confianca"] = ap["conf"]
         for tipo, k in chaves.items():
             v = self.rec.setdefault(tipo, {}).setdefault(k, [0, 0, 0.0, 0.0, 0.0, 0.0, 0])
             v[0] += 1
@@ -407,6 +467,8 @@ class Conta:
                     nome = NOME_SELECAO.get((mk, int(i)), k)
                 elif tipo == "liga":
                     nome = NOME_LIGA.get(k, k)
+                elif tipo == "confianca":
+                    nome = NOME_CONFIANCA.get(k, k)
                 else:
                     nome = k
                 n = int(v[0])
@@ -414,7 +476,7 @@ class Conta:
                                "empate": round(v[4] / n, 4) if n else None, "resultado": round(v[3], 2),
                                "roi": round(v[3] / v[2], 4) if v[2] else None,
                                "clv": round(v[5] / v[6], 4) if v[6] else None})
-            ordem = [n for _l, n in FAIXAS_ODD] if tipo == "faixa" else None
+            ordem = [n for _l, n in FAIXAS_ODD] if tipo == "faixa" else list(CONFIANCA) if tipo == "confianca" else None
             linhas.sort(key=(lambda x: ordem.index(x["k"])) if ordem else (lambda x: (-x["n"], x["nome"])))
             out[tipo] = linhas
         return out
@@ -430,9 +492,9 @@ class Conta:
         self.curva.marcar(max(int(t), self.curva.t), self.patrimonio())
 
     # ------------------------------------------------------------------ decidir
-    def _stake(self, odd, p):
+    def _stake(self, odd, p, mult=1.0):
         if self.regra.get("stake") == "bdm":
-            st = round(BDM_APOSTA * self.curva.capital, 2)
+            st = round(BDM_APOSTA * self.curva.capital * mult, 2)
         elif self.regra.get("stake") == "kelly":
             f = min(KELLY_FRACAO * kelly(odd, p), KELLY_MAX)
             st = round(f * self.caixa, 2)
@@ -487,6 +549,13 @@ class Conta:
             self.acc["anuladas"] += 1
             self._ev(ev, t, "anulou", f"{ap['jogo']}: sem placar em {ANULAR_DIAS} dias; aposta anulada"
                                       + ("." if g else f" e os {reais(ap['st'])} voltaram."))
+            self.marcar(t)
+            return 0.0
+        if devolve(ap["mk"], placar):
+            self.caixa += 0.0 if g else ap["st"]
+            self.acc["devolvidas"] += 1
+            self._ev(ev, t, "devolveu", f"{ap['jogo']}: empate ({placar[0]} × {placar[1]}); {ap['sel']} devolveu "
+                                        f"os {reais(ap['st'])}.")
             self.marcar(t)
             return 0.0
         venceu = ganhou(ap["mk"], ap["s"], placar)
@@ -570,7 +639,7 @@ class Conta:
              "clvMedio": round(a["clvS"] / a["clvN"], 4) if a["clvN"] else None,
              "clvPositivo": round(a["clvPos"] / a["clvN"], 4) if a["clvN"] else None,
              "piorSequencia": int(a["pior"]), "fonteSoft": rotulo_soft(top),
-             "anuladas": int(a["anuladas"])}
+             "anuladas": int(a["anuladas"]), "devolvidas": int(a["devolvidas"])}
         if self.gratis:
             x["ganhoGratis"] = round(a["resultado"], 2)
         else:
@@ -1181,7 +1250,9 @@ def palpite_bdm(pk, dia, video):
         d = dia
     return {"id": pid, "m": m, "v": v, "comp": _texto_curto(pk.get("competicao")), "i": ini, "dia": d, "mk": mk,
             "ln": _f(pk.get("linha")), "sel": sel, "oc": round(oc, 3) if oc and 1.01 <= oc <= 50 else None,
-            "vid": video, "fora": bool(pk.get("fora")), "motivo": pk.get("motivo")}
+            "vid": video, "fora": bool(pk.get("fora")), "motivo": pk.get("motivo"),
+            # a convicção do Theo (o campo `conviccao` que a extração publica desde 22/11/2026)
+            "conf": str(pk.get("conviccao") or "").strip().lower() if str(pk.get("conviccao") or "").strip().lower() in CONFIANCA else None}
 
 
 def ler_bdm(pasta=None, agora=None):
@@ -1250,6 +1321,8 @@ def precificavel(pk):
         return True, None
     if pk["mk"] == "ou" and pk.get("sel") in ("mais", "menos") and pk.get("ln") == 2.5:
         return True, None
+    if pk["mk"] in SINTETICOS and pk.get("sel"):
+        return True, None
     return False, f"mercado fora do teste: {nome_mercado(pk)}"
 
 
@@ -1276,6 +1349,12 @@ def achar_jogo(pk, fxs):
 def indice_bdm(pk, inv):
     if pk["mk"] == "ou":
         return 0 if pk["sel"] == "mais" else 1
+    if pk["mk"] == "dupla":
+        i = ("1x", "12", "x2").index(pk["sel"])
+        return 2 - i if inv else i
+    if pk["mk"] == "dnb":
+        i = 0 if pk["sel"] == "mandante" else 1
+        return 1 - i if inv else i
     i = {"mandante": 0, "empate": 1, "visitante": 2}[pk["sel"]]
     return 2 - i if inv else i
 
@@ -1292,7 +1371,7 @@ def preco_bdm(hs, ph, t, ini):
     return None
 
 
-def preco_gatilho(hs, ph, t, ini, i, g):
+def preco_gatilho(hs, ph, t, ini, i, g, mk="1x2"):
     """(instante, odd da casa, probabilidades justas) no 1º momento a partir de `t` (antes do início) em que a odd da
     casa no lado `i` chega à justa da Pinnacle (sem a margem) × (1 + g): a Odd Mínima de gatilho; None se não chegar."""
     momentos = sorted({t} | {ts for h in [hs, *ph] for ts, _ in h or [] if t < ts < ini})
@@ -1301,7 +1380,7 @@ def preco_gatilho(hs, ph, t, ini, i, g):
         po = [preco_em(h, x) for h in ph]
         if not o or not all(po):
             continue
-        p = sem_margem(po)
+        p = justas(mk, po)
         if p and p[i] > 0 and o >= (1 / p[i]) * (1 + g) - 1e-9:
             return x, o, p
     return None
@@ -1378,17 +1457,36 @@ def chance_historico(jogos, casa, fora, antes, mk, s):
     if len(em_casa) < HIST_MIN or len(fora_) < HIST_MIN:
         return None
     h2h = [j for j in js if {j[1], j[2]} == {tc, tf}][-HIST_H2H:]
-    base_js = js[-HIST_BASE:]
-    base = sum(1 for j in base_js if saida(mk, j[3], j[4]) == s) / len(base_js)
-    # nos jogos do visitante fora, o lado dele também é o "fora": o mesmo índice vale
-    kc = sum(1 for j in em_casa if saida(mk, j[3], j[4]) == s)
-    kf = sum(1 for j in fora_ if saida(mk, j[3], j[4]) == s)
-    kh = sum(1 for j in h2h if (saida(mk, j[3], j[4]) if j[1] == tc else saida(mk, j[4], j[3])) == s)
-    n = len(em_casa) + len(fora_) + len(h2h)
+
+    def acertou(gc, gf):
+        """True/False; None = o jogo não conta (o empate no empate anula)."""
+        if mk in SINTETICOS:
+            r = saida("1x2", gc, gf)
+            if mk == "dnb" and r == 1:
+                return None
+            return r in SINTETICOS[mk][s]
+        return saida(mk, gc, gf) == s
+
+    def freq(lista, oriente=False):
+        vs = [acertou(*((j[4], j[3]) if oriente and j[1] != tc else (j[3], j[4]))) for j in lista]
+        vs = [v for v in vs if v is not None]
+        return sum(vs), len(vs)
+    # nos jogos do visitante fora, o lado dele também é o "fora": o mesmo índice vale; nos confrontos, o mandante de
+    # hoje pode ter jogado fora (a ordem do placar é virada)
+    kb, nb = freq(js[-HIST_BASE:])
+    if not nb:
+        return None
+    base = kb / nb
+    kc, nc = freq(em_casa)
+    kf, nf = freq(fora_)
+    kh, nh = freq(h2h, oriente=True)
+    if nc < HIST_MIN - 2 or nf < HIST_MIN - 2:
+        return None
+    n = nc + nf + nh
     p = (kc + kf + kh + base * HIST_PESO) / (n + HIST_PESO)
     if p <= 0:
         return None
-    taxas = [kc / len(em_casa), kf / len(fora_), kh / len(h2h) if len(h2h) >= 2 else None]
+    taxas = [kc / nc if nc else None, kf / nf if nf else None, kh / nh if nh >= 2 else None]
     forte = all(t is None or t > base for t in taxas)
     return {"p": round(p, 4), "base": round(base, 4), "taxas": [None if t is None else round(t, 3) for t in taxas],
             "n": [len(em_casa), len(fora_), len(h2h)], "forte": forte}
@@ -1908,18 +2006,22 @@ class Vivo:
         fo1 = [preco_em(h, f["i"]) for h in pin.get("1x2") or []]
         for pk in pks:
             mk = pk["mk"]
-            ph, sh = pin.get(mk), soft.get(mk)
+            if mk in SINTETICOS:
+                # dupla chance e empate anula: pelos preços do 1X2 (aproximado)
+                ph, sh = pin.get("1x2"), serie_sintetica(mk, soft.get("1x2"))
+            else:
+                ph, sh = pin.get(mk), soft.get(mk)
             if not ph or not sh:
                 self._bdm_fora(pk, "sem odds desse mercado")
                 continue
             i = indice_bdm(pk, pk.get("inv"))
             x = preco_bdm(sh[i], ph, pk["visto"], f["i"])
-            p = sem_margem(x[2]) if x else None
+            p = justas(mk, x[2]) if x else None
             if not p:
                 self._bdm_fora(pk, "sem odds antes do jogo")
                 continue
             fo = [preco_em(h, f["i"]) for h in ph]
-            pf = sem_margem(fo) if all(fo) else None
+            pf = justas(mk, fo) if all(fo) else None
             gat = pk.setdefault("gat", {})
             hist = None
             if any(c.regra.get("modo") in ("historico", "convergencia") for c in contas):
@@ -1940,7 +2042,7 @@ class Vivo:
                         continue
                     t, o = y
                     po = [preco_em(h, t) for h in ph]
-                    pc = (sem_margem(po) if all(po) else None) or p
+                    pc = (justas(mk, po) if all(po) else None) or p
                 elif modo == "convergencia":
                     (t, o, _po), pc = x, p
                     if not hist:
@@ -1953,14 +2055,14 @@ class Vivo:
                         gat[c.id] = "histórico diz que a odd não paga"
                         continue
                 elif g:
-                    y = preco_gatilho(sh[i], ph, pk["visto"], f["i"], i, g)
+                    y = preco_gatilho(sh[i], ph, pk["visto"], f["i"], i, g, mk)
                     if not y:
                         gat[c.id] = "não chegou ao gatilho"
                         continue
                     t, o, pc = y
                 else:
                     (t, o, _po), pc = x, p
-                st = c._stake(o, pc[i])
+                st = c._stake(o, pc[i], CONFIANCA.get(pk.get("conf") or "normal", 1.0) if c.regra.get("conf") else 1.0)
                 if not st:
                     if c.id == "bdm":
                         self._bdm_fora(pk, "sem saldo na conta")
@@ -1971,6 +2073,10 @@ class Vivo:
                       "sel": nome_sel(f["c"], f["f"], mk, i), "o": round(o, 3), "p": round(pc[i], 5),
                       "v": round(valor(o, pc[i]), 5), "st": st, "c": rotulo, "g": False,
                       "clv": round(clv(o, pf[i]), 5) if pf else None, "oc": pk.get("oc"), "pk": pk["id"], "t": t}
+                if mk in SINTETICOS:
+                    ap["aprox"] = True
+                if c.regra.get("conf"):
+                    ap["conf"] = pk.get("conf") or "normal"
                 if modo == "historico":
                     ap["ph"] = hist["p"]
                 c.abrir(ap)
@@ -2014,8 +2120,9 @@ class Vivo:
         liga = NOME_LIGA.get(ap["l"], "")
         cit = f" (odd citada no vídeo: {odd_txt(ap['oc'])})" if ap.get("oc") else ""
         txt = (f"{nome} — {ap['jogo']}{f' ({liga})' if liga else ''}: {ap['sel']} a {odd_txt(ap['o'])} na "
-               f"{ap['c']}{cit}. {'Ganhou' if res > 0 else 'Perdeu'}: {reais(res, True)} ({pl[0]} × {pl[1]}).")
-        self.ev.add(t, "ganhou" if res > 0 else "perdeu", txt, cid)
+               f"{ap['c']}{cit}. {'Devolvida (empate)' if devolve(ap['mk'], pl) else 'Ganhou' if res > 0 else 'Perdeu'}: "
+               f"{reais(res, True)} ({pl[0]} × {pl[1]}).")
+        self.ev.add(t, "devolveu" if devolve(ap["mk"], pl) else "ganhou" if res > 0 else "perdeu", txt, cid)
 
     def bdm_fechar(self):
         """Os palpites que não vão mais virar aposta saem de "esperando" com o motivo."""

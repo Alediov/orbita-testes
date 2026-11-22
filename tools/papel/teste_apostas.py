@@ -284,14 +284,14 @@ def teste_rodadas():
         assert d["padrao"] == "valor3" and d["nome"] == "Apostas de valor"
         ids = [v["id"] for v in d["versoes"]]
         assert ids == ["valor3", "valor5", "valor8", "kelly", "favoritos", "azaroes", "gratis", "semfiltro", "bdm", "bdmG15", "bdmG5",
-                       "bdmFav", "bdmH15", "bdmConv"]
+                       "bdmFav", "bdmH15", "bdmConv", "bdmConf"]
         riscos = {v["id"]: v["risco"] for v in d["versoes"]}
         assert riscos["azaroes"] == riscos["kelly"] == "alto" and riscos["gratis"] == "baixo" and riscos["valor3"] == "médio"
         assert {v["grupo"] for v in d["versoes"]} == {"Valor", "Referência", "Aposta grátis", "Seguir palpites"}
         vs = {v["id"]: v for v in d["versoes"]}
         bdm = vs["bdm"]
         assert bdm["historico"] is None and bdm["soAoVivo"] and bdm["aoVivo"]["extra"]["palpitesVistos"] > 0
-        for k in ("bdmG15", "bdmG5", "bdmFav", "bdmH15", "bdmConv"):   # 21/11/2026: o gatilho da odd mínima (só ao vivo, como a bdm)
+        for k in ("bdmG15", "bdmG5", "bdmFav", "bdmH15", "bdmConv", "bdmConf"):   # 21 e 22/11/2026: o gatilho da odd mínima (só ao vivo, como a bdm)
             assert vs[k]["historico"] is None and vs[k]["soAoVivo"] and vs[k]["aoVivo"]["serie"][0][1] == 1000.0, k
         for v in [v for v in d["versoes"] if v["id"] not in A.BDM_CONTAS]:
             for nome in ("aoVivo", "historico"):
@@ -592,11 +592,65 @@ def teste_bdm_rodadas():
         assert vs["bdmFav"]["aoVivo"]["extra"]["jogos"] == len(B["fav"])
         assert vs["bdmH15"]["aoVivo"]["extra"]["comHistorico"] > 0
         assert any(s["motivo"] == "sem histórico" for s in vs["bdmConv"]["aoVivo"]["extra"]["situacoes"])
+        # 22/11/2026: a dupla chance e o empate anula pelo 1X2 (aproximado), o empate devolve no empate anula, e a conta
+        # pela confiança aposta R$ 30, 20 ou 10
+        todas = V["contas"]["bdm"]["abertas"] + V["contas"]["bdmConf"]["abertas"]
+        sint = [pk for pk in B["p"].values() if pk["mk"] in ("dupla", "dnb") and pk.get("o")]
+        assert any(pk["mk"] == "dupla" for pk in sint) and any(pk["mk"] == "dnb" for pk in sint), len(sint)
+        assert all(ap.get("aprox") for ap in todas if ap["mk"] in ("dupla", "dnb"))
+        assert {ap["st"] for ap in V["contas"]["bdmConf"]["abertas"]} <= {30.0, 20.0, 10.0}
+        assert any(ap.get("conf") == "alta" and ap["st"] == 30.0 for ap in V["contas"]["bdmConf"]["abertas"]) or \
+            V["contas"]["bdmConf"]["acc"]["n"] > 0
+        assert V["contas"]["bdm"]["acc"]["devolvidas"] > 0 and any(ev["tipo"] == "devolveu" for ev in d["eventos"])
+        conf = vs["bdmConf"]["aoVivo"]["extra"]["recortes"]["confianca"]
+        assert [x["k"] for x in conf] == [k for k in A.CONFIANCA if k in {x["k"] for x in conf}] and len(conf) >= 2
+        assert {"Mandante ou empate", "Empate ou visitante", "Mandante (empate anula)", "Visitante (empate anula)"} & \
+            {x["nome"] for x in vs["bdm"]["aoVivo"]["extra"]["recortes"]["selecao"]}
         # nenhum pedido a mais: um /historical-odds por jogo, com ou sem palpite
         hist = sum(1 for f in V["fx"].values() if f["st"] in ("feito", "semOdds"))
         assert cli.contagem["oddspapi"] <= hist + 60, (cli.contagem, hist)
     finally:
         shutil.rmtree(pasta, ignore_errors=True)
+
+
+def teste_sinteticos():
+    """22/11/2026: a dupla chance e o empate anula pelo preço do 1X2."""
+    hs = [[(1, 2.0), (5, 2.1)], [(1, 3.5)], [(1, 4.0)]]
+    d = A.serie_sintetica("dupla", hs)
+    assert perto(d[0][0][1], 1 / (1 / 2.0 + 1 / 3.5), 1e-3) and perto(d[2][0][1], 1 / (1 / 3.5 + 1 / 4.0), 1e-3)
+    assert [t for t, _ in d[0]] == [1, 5]
+    n = A.serie_sintetica("dnb", hs)
+    assert perto(n[0][0][1], 2.0 * (1 - 1 / 3.5), 1e-3) and perto(n[1][0][1], 4.0 * (1 - 1 / 3.5), 1e-3)
+    assert A.serie_sintetica("dnb", [[(1, 2.0)], [], [(1, 4.0)]]) is None
+    p = A.sem_margem([2.0, 3.5, 4.0])
+    assert all(perto(a, b, 1e-9) for a, b in zip(A.justas("dupla", [2.0, 3.5, 4.0]), [p[0] + p[1], p[0] + p[2], p[1] + p[2]]))
+    j = A.justas("dnb", [2.0, 3.5, 4.0])
+    assert perto(j[0] + j[1], 1, 1e-9) and perto(j[0], p[0] / (p[0] + p[2]), 1e-9)
+    assert A.ganhou("dupla", 0, (1, 1)) and A.ganhou("dupla", 0, (2, 1)) and not A.ganhou("dupla", 0, (0, 1))
+    assert A.ganhou("dupla", 1, (0, 1)) and not A.ganhou("dupla", 1, (1, 1))
+    assert A.devolve("dnb", (1, 1)) and not A.devolve("dnb", (2, 1)) and not A.devolve("dupla", (1, 1))
+    assert A.ganhou("dnb", 1, (0, 2)) and not A.ganhou("dnb", 0, (0, 2))
+    assert A.indice_bdm({"mk": "dupla", "sel": "1x"}, True) == 2 and A.indice_bdm({"mk": "dnb", "sel": "mandante"}, True) == 1
+    assert A.precificavel({"fora": False, "m": "A", "v": "B", "mk": "dupla", "sel": "x2"}) == (True, None)
+    # o empate devolve: a conta não perde nem conta a aposta
+    c = A.Conta(next(x for x in A.VERSOES if x[0] == "bdm"), 0)
+    ap = {"j": "x", "jogo": "A × B", "l": "eng", "i": 0, "mk": "dnb", "s": 0, "sel": "A (empate anula)", "o": 1.5,
+          "p": 0.6, "v": 0, "st": 20.0, "c": "Bet365", "g": False, "clv": None}
+    c.abrir(ap)
+    antes = c.caixa
+    assert c.liquidar(ap, (1, 1), HORA) == 0.0 and c.caixa == antes + 20.0 and c.acc["n"] == 0 and c.acc["devolvidas"] == 1
+    # a confiança: R$ 30, 20 e 10
+    cc = A.Conta(next(x for x in A.VERSOES if x[0] == "bdmConf"), 0)
+    assert [cc._stake(2.0, 0.5, A.CONFIANCA[k]) for k in ("alta", "normal", "baixa")] == [30.0, 20.0, 10.0]
+    assert A.palpite_bdm({"id": "x", "mandante": "A", "visitante": "B", "mercado": "dnb", "selecao": "mandante",
+                          "conviccao": "Alta"}, "2026-11-22", "v")["conf"] == "alta"
+    assert A.palpite_bdm({"id": "x", "mandante": "A", "visitante": "B", "mercado": "1x2", "selecao": "mandante",
+                          "conviccao": "talvez"}, "2026-11-22", "v")["conf"] is None
+    # o histórico no empate anula: os empates não contam
+    js = [(k, "A", f"X{k}", 1, 1) for k in range(4)] + [(10 + k, "A", f"Y{k}", 2, 0) for k in range(6)] + \
+        [(20 + k, f"Z{k}", "B", 3, 0) for k in range(6)]
+    h = A.chance_historico(js, "A", "B", 100, "dnb", 0)
+    assert h and h["taxas"][0] == 1.0, h
 
 
 def teste_bdm_historico():
@@ -680,5 +734,6 @@ if __name__ == "__main__":
     teste_bdm_arquivos()
     teste_bdm_rodadas()
     teste_bdm_historico()
+    teste_sinteticos()
     teste_avulsa()
     print("ok")

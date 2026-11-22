@@ -106,7 +106,9 @@ acabavam; aqui os executores padrão não têm limite.
   `acertoEmpate` e `recortes` (seleção, faixa de odd, campeonato) no `extra`; `cartoes.py` é o observatório dos
   cartões no intervalo (0 cartão no 1º tempo → mais de 1,5/2,5/3,5 no 2º, pelos lances da ESPN, sem conta), bloco
   `cartoes` do `apostas.json`. Teste: `teste_cartoes.py`. FORMATO.md, "Recortes e o acerto que empata" e "Cartões no
-  intervalo".
+  intervalo". Em 22/11/2026: o árbitro e o filtro do prompt nos cartões (`comFiltro`, `arbitros`), a dupla chance e o
+  empate anula pelo 1X2 nas contas do Theo e a conta `bdmConf` (R$ 30/20/10 pela `conviccao`). FORMATO.md, "Dupla
+  chance, empate anula e a confiança" e "O árbitro nos cartões".
 - **Seguir o BDM** (pedido do Alediov, 09/11/2026; só esta conta, nenhum mercado novo): versão `bdm` das apostas, que
   segue os palpites do programa diário "Bom Dia Mercado" do Theo Borges. O repositório PRIVADO extrai os palpites da
   transcrição (que o celular baixa; `tools/ideias/bdm.py` + `ideias-bdm.yml` de lá, com a IA gratuita do filtro) e

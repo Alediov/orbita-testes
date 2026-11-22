@@ -29,6 +29,27 @@ def teste_lances():
     assert C.contar(None, "7", "9") is None and C.contar([], "7", "9") == (0, 0, 0, 0)
     assert C.lances({"keyEvents": []}) == [] and C.lances({"header": {}}) is None
     assert C.lances({"header": {"competitions": [{"details": [am]}]}}) == [am]
+    # 22/11/2026: o árbitro principal (pelo cargo; sem cargo, o 1º da lista; assistente nunca)
+    assert C.arbitro({"gameInfo": {"officials": [{"displayName": "X", "position": {"name": "Assistant Referee"}},
+                                                  {"displayName": "Y", "position": {"name": "Referee"}}]}}) == "Y"
+    assert C.arbitro({"gameInfo": {"officials": [{"fullName": "Z", "order": 1}]}}) == "Z"
+    assert C.arbitro({"gameInfo": {"officials": [{"displayName": "W", "position": {"name": "VAR"}}]}}) is None
+    assert C.arbitro({"gameInfo": {}}) is None and C.arbitro(None) is None
+    # o filtro do prompt: só médias de antes; árbitro abaixo de 4,0 descarta; sem as médias dos dois times, não passa
+    js = []
+    for k in range(4):   # A e B em jogos de 6 cartões com o árbitro R; C em jogos de 2 com o árbitro S
+        js.append((f"a{k}", [k, "eng", "A", f"x{k}", 3, 3, 3, 3, "R"]))
+        js.append((f"b{k}", [k, "eng", f"y{k}", "B", 3, 3, 3, 3, "R"]))
+        js.append((f"c{k}", [k, "eng", "C", f"z{k}", 1, 1, 1, 1, "S"]))
+    js.append(("ab", [10, "eng", "A", "B", 0, 2, 1, 1, "R"]))
+    js.append(("ac", [10, "eng", "A", "C", 0, 2, 1, 1, "R"]))
+    js.append(("as", [10, "eng", "A", "B", 0, 2, 1, 1, "S"]))
+    fp = C.filtro_do_prompt(js)
+    assert fp["ab"] == (True, 6.0, 6.0) and fp["ab"][0]
+    # depois do A × B (2 cartões): A 26/5, C 2 e o árbitro R 50/9 → (5,2 + 2 + 5,56) ÷ 3 = 4,25, passa
+    assert fp["ac"][0] is True and abs(fp["ac"][2] - (26 / 5 + 2 + 50 / 9) / 3) < 1e-9
+    assert fp["as"][0] is False and fp["as"][1] == 2.0          # árbitro de média 2: fora
+    assert fp["a0"] == (False, None, None)                      # o 1º jogo não tem média nenhuma
     lo, hi = C.wilson(7, 7)
     assert 0.6 < lo < 0.7 and hi == 1.0 and C.wilson(0, 0) == (None, None)
     js = [[0, "eng", "A", "B", 0, 3, 2, 1], [0, "eng", "A", "C", 0, 1, 1, 0], [0, "eng", "B", "C", 2, 2, 2, 2]]
@@ -56,7 +77,7 @@ def teste_coleta():
         jogo = fonte.futebol.por_id(eid)
         r = falso_apostas.resumo_espn(jogo)
         c = C.contar(r["keyEvents"], falso_apostas.id_time(jogo["casa"]), falso_apostas.id_time(jogo["fora"]))
-        assert tuple(j[4:]) == c and j[6] + j[7] == j[4] + j[5], (eid, j, c)
+        assert tuple(j[4:8]) == c and j[6] + j[7] == j[4] + j[5], (eid, j, c)
     assert est["semLances"] > 0                     # 1 de cada 20 resumos vem sem lances
     # os dias lidos não são pedidos de novo: uma rodada a mais quase não pede nada
     antes = fonte.contagem["espn"]
@@ -76,6 +97,11 @@ def teste_coleta():
     assert [x["linha"] for x in r["regras"]] == [1.5, 2.5, 3.5]
     assert sum(x["jogos"] for x in r["ligas"]) == len(js) and r["times"] and len(r["ultimos"]) <= C.ULTIMOS
     assert all(t["jogos"] >= C.MIN_TIME for t in r["times"])
+    # o árbitro e o filtro do prompt
+    assert sum(1 for j in js.values() if len(j) > 8 and j[8]) > 0.8 * len(js)
+    assert r["filtro"]["jogosComArbitro"] > 0 and r["arbitros"] and all(a["jogos"] >= C.MIN_MEDIA for a in r["arbitros"])
+    assert 0 < o15["comFiltro"]["n"] <= o15["comZero"]["n"] and r["filtro"]["zeroComFiltro"] == o15["comFiltro"]["n"]
+    assert any("formato do gameInfo" in x for x in logs)
     assert set(r["ligasForaDaEspn"]) == {"Brasileirão B", "Copa do Brasil", "Sul-Americana", "Champions League", "Europa League"}
     # jogos velhos saem do estado
     C.coletar(fonte, est, cli.agora + (C.GUARDA_DIAS + 5) * DIA, lambda: 0, logs.append, erros)
