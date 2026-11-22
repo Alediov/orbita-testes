@@ -48,8 +48,8 @@ intervalo, o gol no 2º tempo (com mais ou menos chutes no 1º que a mediana dos
 
 As contas do intervalo (22/11/2026, pedido do Alediov): o robô do intervalo (`intervalo.py`) guarda as odds AO VIVO da
 API-Football no intervalo e perto dos 75'; aqui cada método vira uma conta no papel de R$ 20 por aposta, na odd que a
-casa pagava naquela hora, liquidada pelo que a ESPN conta do jogo: mais de 1,5 e 2,5 cartões no 2º tempo depois de 0
-no 1º, mais de 3,5 escanteios no 2º tempo (a linha do jogo = os do 1º + 3,5), gol no 2º tempo depois do 0×0 (e só com
+casa pagava naquela hora, liquidada pelo que a ESPN conta do jogo: mais cartões que a linha principal da casa e mais de 1,5 e
+2,5 cartões no 2º tempo depois de 0 no 1º, mais escanteios que a linha principal, mais de 3,5 escanteios no 2º tempo (a linha do jogo = os do 1º + 3,5), gol no 2º tempo depois do 0×0 (e só com
 mais chutes no 1º que a mediana dos jogos de antes) e gol depois dos 75' com o jogo empatado.
 """
 from __future__ import annotations
@@ -130,8 +130,10 @@ MUITAS_FALTAS = 12           # "muitas faltas no 1º tempo" (os dois times)
 TARDE = 75                   # "gol no fim": depois dos 75'
 JANELA_PRESSAO = (60, 75)    # os chutes que contam como pressão antes do fim
 # as contas do intervalo (22/11/2026)
-CONTAS_INT = [("cart15", "Mais de 1,5 cartão no 2º tempo", "0 cartão no 1º tempo"),
+CONTAS_INT = [("cartL", "Mais cartões que a linha da casa", "0 cartão no 1º tempo"),
+              ("cart15", "Mais de 1,5 cartão no 2º tempo", "0 cartão no 1º tempo"),
               ("cart25", "Mais de 2,5 cartões no 2º tempo", "0 cartão no 1º tempo"),
+              ("escL", "Mais escanteios que a linha da casa", "todos os jogos"),
               ("esc35", "Mais de 3,5 escanteios no 2º tempo", "todos os jogos"),
               ("gol2t", "Gol no 2º tempo", "0×0 no intervalo"),
               ("gol2tP", "Gol no 2º tempo", "0×0 e mais chutes no 1º que a mediana"),
@@ -991,6 +993,20 @@ def _odd_int(m, rx, linha):
     return None
 
 
+def _linha_principal(m, rx):
+    """(linha, odd do "mais") da linha principal ao vivo (a de odd mais perto de 2,0; só linhas x,5, sem devolução)."""
+    melhor = None
+    for nome, vs in (m or {}).items():
+        if not rx.search(nome) or RX_INT_FORA.search(nome):
+            continue
+        for t, ln, o in vs:
+            if t != "over" or ln is None or not o or abs(float(ln) % 1 - 0.5) > 1e-6:
+                continue
+            if melhor is None or abs(float(o) - 2.0) < abs(melhor[1] - 2.0):
+                melhor = (float(ln), float(o))
+    return melhor
+
+
 def contas_intervalo(C, robo):
     """Abre e liquida as apostas do intervalo (C["int"]["ap"], uma por jogo e conta) com as capturas do robô e os
     jogos terminados que a ESPN contou."""
@@ -1019,9 +1035,15 @@ def contas_intervalo(C, robo):
         if ht:
             m = ht.get("m") or {}
             if j[4] == 0:
+                lp = _linha_principal(m, RX_INT_CART)
+                if lp:
+                    apostar("cartL", lp[1], j[5] > lp[0], ht.get("t"))
                 apostar("cart15", _odd_int(m, RX_INT_CART, 1.5), j[5] > 1.5, ht.get("t"))
                 apostar("cart25", _odd_int(m, RX_INT_CART, 2.5), j[5] > 2.5, ht.get("t"))
             e = _nar(j)
+            lp = _linha_principal(m, RX_INT_ESC)
+            if e and e[4] is not None and lp:
+                apostar("escL", lp[1], e[4] > lp[0], ht.get("t"))
             if e and e[0] is not None:
                 apostar("esc35", _odd_int(m, RX_INT_ESC, e[0] + 3.5), e[1] > 3.5, ht.get("t"))
             g = _gols(j)

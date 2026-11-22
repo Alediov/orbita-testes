@@ -473,7 +473,8 @@ Futebol, só no papel (`apostas.py`). Diferenças das outras formas:
   linha, odd]]} (só cartões, escanteios e gols). No máximo 60 pedidos por dia e nunca com menos de 12 restantes na API.
   As apostas leem o `intervalo.json` pelo raw do GitHub e `cartoes.contas_intervalo` abre uma aposta de R$ 20 por jogo e
   conta (`C["int"]["ap"]`, liquidada pelos dados da ESPN do jogo terminado; o mercado é o do jogo inteiro, sem time,
-  tempo nem handicap): `cart15`/`cart25` (0 cartão no 1º tempo; mais de 1,5/2,5 no "Total Cards"), `esc35` (a linha de
+  tempo nem handicap): `cartL` e `escL` (o "mais" da linha principal da casa, a de odd mais perto de 2,0, só linhas
+  x,5: ao vivo a casa costuma dar uma linha só de cartões e de escanteios, conferido em 22/11/2026), `cart15`/`cart25` (0 cartão no 1º tempo; mais de 1,5/2,5 no "Total Cards"), `esc35` (a linha de
   escanteios = os do 1º tempo + 3,5), `gol2t` (0×0 no intervalo, mais de 0,5), `gol2tP` (o mesmo, só com mais chutes no
   1º tempo que a mediana dos 10+ jogos de antes) e `fim75` (empatado perto dos 75', mais de gols + 0,5). Saída
   `cartoes.intervalo` {valor, robo (a hora da última rodada do robô), capturas, m75, mercados [[nome, n]], contas [{id,

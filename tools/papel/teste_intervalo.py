@@ -138,15 +138,17 @@ def teste_contas():
     est["jogos"]["b"] = _jogo(AGORA - 95 * MIN, "Liverpool", "Everton", 1, 2, gols=[1, 1, 0, 1, 2, 6])
     C.contas_intervalo(est, robo)
     aps = est["int"]["ap"]
-    assert {a["c"] for a in aps.values()} == {"cart15", "esc35", "gol2t", "gol2tP", "fim75"}, aps
+    assert {a["c"] for a in aps.values()} == {"cartL", "cart15", "escL", "esc35", "gol2t", "gol2tP", "fim75"}, aps
     a = {a["c"]: a for a in aps.values()}
     assert a["cart15"]["o"] == 1.8 and a["cart15"]["g"]             # 3 no 2º tempo
+    assert a["cartL"]["o"] == 1.8 and a["escL"]["o"] == 1.9 and a["escL"]["g"]  # a linha principal: 7,5 e 9 no jogo
+    assert C._linha_principal({"Total Cards": [["over", 3.5, 1.73], ["over", 2.5, 1.3], ["over", 4.0, 2.0]]}, C.RX_INT_CART) == (3.5, 1.73)
     assert a["esc35"]["o"] == 1.9 and a["esc35"]["g"]               # 4 no 1º: a linha 7,5; 5 no 2º
     assert a["gol2t"]["o"] == 1.4 and a["gol2t"]["g"] and a["gol2tP"]["g"]
     assert a["fim75"]["o"] == 2.1 and not a["fim75"]["g"]           # 1×1 aos 76', acabou 1×1
     # sem repetir na rodada seguinte
     C.contas_intervalo(est, robo)
-    assert len(est["int"]["ap"]) == 5
+    assert len(est["int"]["ap"]) == 7
     r = C.resumo_intervalo(est, robo)
     cs = {c["id"]: c for c in r["contas"]}
     assert r["capturas"] == 1 and r["m75"] == 1 and r["valor"] == 20
