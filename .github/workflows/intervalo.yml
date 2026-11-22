@@ -1,0 +1,42 @@
+name: Robô do intervalo (odds ao vivo, no papel)
+# 22/11/2026 (pedido do Alediov): a cada 15 min nos horários de jogo (UTC), guarda as odds ao vivo da API-Football no
+# intervalo e perto dos 75' dos jogos acompanhados e o fechamento dos palpites do Theo (tools/papel/intervalo.py).
+# Só leitura; ramo órfão `intervalo`. A chave GRATUITA só no segredo APIFOOTBALL_KEY (cabeçalho, nunca no log).
+on:
+  schedule:
+    - cron: "*/15 11-23 * * *"
+    - cron: "*/15 0-2 * * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: write
+concurrency:
+  group: intervalo
+  cancel-in-progress: false
+jobs:
+  robo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Estado anterior (ramo intervalo)
+        run: |
+          mkdir -p dados
+          if git fetch -q --depth=1 origin intervalo; then git archive FETCH_HEAD | tar -x -C dados; else echo "ramo intervalo ainda não existe"; fi
+      - name: Rodada
+        env:
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+        run: python3 -I tools/papel/intervalo.py --dados dados
+      - name: Guardar no ramo intervalo
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd dados
+          [ -f intervalo.json ] || { echo "sem saída"; exit 0; }
+          git init -q
+          git checkout -q -b intervalo
+          git config user.name "Órbita (robô do intervalo)"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Intervalo: $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -q -f "https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git" intervalo

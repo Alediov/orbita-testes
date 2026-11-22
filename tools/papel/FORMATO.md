@@ -465,6 +465,32 @@ Futebol, só no papel (`apostas.py`). Diferenças das outras formas:
   acima / até a mediana)], fim {todos, empate (empatado aos 75'), empates, chutesMediana, empatePressao/empateCalmo
   (chutes de 60' a 75' acima / até a mediana)}}; cada taxa no formato {n, k, taxa, lo, hi, justa}.
 
+- **As contas do intervalo** (22/11/2026, pedido do Alediov): o robô do intervalo (`intervalo.py`, `intervalo.yml` a
+  cada 15 min das 11h às 2h59 UTC, ramo órfão `intervalo`) lê a API-Football (`af.py`, chave grátis `APIFOOTBALL_KEY`):
+  a lista de jogos do dia (a cada 6 h) e, só quando algum jogo acompanhado (`af.LIGA_AF`) pode estar no intervalo (40 a
+  72 min depois do início) ou perto dos 75' (82 a 108 min), um `/odds/live` (todos os jogos num pedido). Guarda no
+  intervalo `ht` {t, gols, m} e perto dos 75' (minuto 70 a 86) `m75` {t, min, gols, m}, com m = {mercado: [[over/under,
+  linha, odd]]} (só cartões, escanteios e gols). No máximo 60 pedidos por dia e nunca com menos de 12 restantes na API.
+  As apostas leem o `intervalo.json` pelo raw do GitHub e `cartoes.contas_intervalo` abre uma aposta de R$ 20 por jogo e
+  conta (`C["int"]["ap"]`, liquidada pelos dados da ESPN do jogo terminado; o mercado é o do jogo inteiro, sem time,
+  tempo nem handicap): `cart15`/`cart25` (0 cartão no 1º tempo; mais de 1,5/2,5 no "Total Cards"), `esc35` (a linha de
+  escanteios = os do 1º tempo + 3,5), `gol2t` (0×0 no intervalo, mais de 0,5), `gol2tP` (o mesmo, só com mais chutes no
+  1º tempo que a mediana dos 10+ jogos de antes) e `fim75` (empatado perto dos 75', mais de gols + 0,5). Saída
+  `cartoes.intervalo` {valor, robo (a hora da última rodada do robô), capturas, m75, mercados [[nome, n]], contas [{id,
+  nome, quando, apostas, ganhas, acerto, lo, hi, empate, oddMedia, lucro, apostado, roi, ultimas [{jogo, liga, inicio,
+  odd, ganhou}]}]}. O mundo de mentira tem o robô em `falso_apostas.robo_falso`. Teste: `teste_intervalo.py`.
+
+- **Os palpites do Theo pela API-Football** (22/11/2026, pedido do Alediov): `Vivo.af_theo` liga cada palpite a um jogo
+  da lista do dia da API-Football (`af.achar`, os dois times e o início ±3 h; o plano grátis só abre de ontem a amanhã) e
+  tira uma foto das odds de antes do jogo (Pinnacle e a casa comum, na ordem `af.SOFTS_AF`, Betano primeiro) a cada 3 h
+  até o início (no máximo 3; o robô do intervalo tira a do fechamento, até 40 min antes, em `theo`). No fim do jogo,
+  `af_precificar` monta as séries (`af.series`: uma casa só, a que mais aparece) e chama o MESMO `bdm_apostar` (a odd a
+  partir da hora em que o palpite foi visto, os gatilhos, o histórico, o controle e o CLV pela última foto antes do
+  início); o jogo não gasta a OddsPapi (`fonte` "API-Football"), e as versões de valor também apostam nele pelas fotos.
+  Palpite de um jogo que a OddsPapi não acompanha vira o jogo `af:<id>` (liga "outra" fora da lista; o placar dos 90
+  minutos vem da lista do dia). Sem foto que sirva, vale a OddsPapi como antes. Até 30 pedidos por dia e 12 por rodada
+  (`V["af"]`). Teste: `teste_bdm_api_football` (com e sem a OddsPapi).
+
 - **theo.json, o arquivo do Placar** (22/11/2026, pedido do Alediov: "o Placar com mais detalhes do que o Theo
   escolheu"): a cada rodada das apostas o `papel.py` grava, ao lado do `apostas.json`, o `theo.json` (a forma devolve
   `_arquivos` {nome: dados}; o `papel.py` grava e tira da saída). `theo_publico`: {v 1, agora, dias (21), palpites

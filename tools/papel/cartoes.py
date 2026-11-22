@@ -45,6 +45,12 @@ chutes da narração, a 11ª posição do jogo: [gols 1º, gols 2º, gols depois
 entre 60' e 75', chutes 1º] (None se os gols dos lances não batem com o placar final do resumo). Mede: depois de 0×0 no
 intervalo, o gol no 2º tempo (com mais ou menos chutes no 1º que a mediana dos jogos) e, empatado aos 75', o gol depois
 (com mais ou menos chutes entre 60' e 75').
+
+As contas do intervalo (22/11/2026, pedido do Alediov): o robô do intervalo (`intervalo.py`) guarda as odds AO VIVO da
+API-Football no intervalo e perto dos 75'; aqui cada método vira uma conta no papel de R$ 20 por aposta, na odd que a
+casa pagava naquela hora, liquidada pelo que a ESPN conta do jogo: mais de 1,5 e 2,5 cartões no 2º tempo depois de 0
+no 1º, mais de 3,5 escanteios no 2º tempo (a linha do jogo = os do 1º + 3,5), gol no 2º tempo depois do 0×0 (e só com
+mais chutes no 1º que a mediana dos jogos de antes) e gol depois dos 75' com o jogo empatado.
 """
 from __future__ import annotations
 
@@ -123,6 +129,20 @@ POUCOS_ESC1 = 3              # "1º tempo com poucos escanteios": até 3 (os doi
 MUITAS_FALTAS = 12           # "muitas faltas no 1º tempo" (os dois times)
 TARDE = 75                   # "gol no fim": depois dos 75'
 JANELA_PRESSAO = (60, 75)    # os chutes que contam como pressão antes do fim
+# as contas do intervalo (22/11/2026)
+CONTAS_INT = [("cart15", "Mais de 1,5 cartão no 2º tempo", "0 cartão no 1º tempo"),
+              ("cart25", "Mais de 2,5 cartões no 2º tempo", "0 cartão no 1º tempo"),
+              ("esc35", "Mais de 3,5 escanteios no 2º tempo", "todos os jogos"),
+              ("gol2t", "Gol no 2º tempo", "0×0 no intervalo"),
+              ("gol2tP", "Gol no 2º tempo", "0×0 e mais chutes no 1º que a mediana"),
+              ("fim75", "Gol depois dos 75'", "empatado perto dos 75'")]
+VALOR_INT = 20.0
+MIN_MEDIANA = 10             # jogos de antes para a mediana dos chutes valer
+RX_INT_CART = re.compile(r"card", re.I)
+RX_INT_ESC = re.compile(r"corner", re.I)
+RX_INT_GOL = re.compile(r"over/under line|match goals|^over/under$|goals over/under", re.I)
+RX_INT_FORA = re.compile(r"home|away|team|1st half|first half|2nd half|second half|asian|handicap|european|race|"
+                         r"which|extra|3 ?way", re.I)
 PLANILHAS = {"eng": "E0", "esp": "SP1", "ita": "I1", "ger": "D1", "fra": "F1"}
 RE_N_ESC = re.compile(r"^\s*corner\b|escanteio|corner kick", re.I)
 RE_N_FALTA = re.compile(r"^\s*foul by\b|^\s*falta\b|^foul$", re.I)
@@ -960,6 +980,96 @@ def resumo_gols(C):
     return out
 
 
+def _odd_int(m, rx, linha):
+    """A odd de "mais de `linha`" no mercado do jogo inteiro (sem time, tempo, handicap) cujo nome bate com `rx`."""
+    for nome, vs in (m or {}).items():
+        if not rx.search(nome) or RX_INT_FORA.search(nome):
+            continue
+        for t, ln, o in vs:
+            if t == "over" and ln is not None and abs(float(ln) - linha) < 1e-6 and o:
+                return float(o)
+    return None
+
+
+def contas_intervalo(C, robo):
+    """Abre e liquida as apostas do intervalo (C["int"]["ap"], uma por jogo e conta) com as capturas do robô e os
+    jogos terminados que a ESPN contou."""
+    from apostas import mesmo_time
+    I = C.setdefault("int", {})
+    I.setdefault("ap", {})
+    caps = (robo or {}).get("cap") or {}
+    jogos = list(C.get("jogos", {}).values())
+    chutes = sorted((j[0], _gols(j)[5]) for j in jogos if _gols(j) and _gols(j)[5] is not None)
+    for k, cp in caps.items():
+        try:
+            ms = int(cp["ms"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        j = next((j for j in jogos if abs(j[0] - ms) <= 3 * HORA and mesmo_time(j[2], cp.get("c")) and mesmo_time(j[3], cp.get("f"))), None)
+        if not j:
+            continue
+
+        def apostar(cid, odd, ganhou, t):
+            chave = f"{k}:{cid}"
+            if chave in I["ap"] or not odd or odd <= 1:
+                return
+            I["ap"][chave] = {"c": cid, "o": round(odd, 3), "g": bool(ganhou), "ms": j[0], "jogo": f"{j[2]} × {j[3]}",
+                              "liga": j[1], "t": t}
+        ht, m75 = cp.get("ht") or {}, cp.get("m75") or {}
+        if ht:
+            m = ht.get("m") or {}
+            if j[4] == 0:
+                apostar("cart15", _odd_int(m, RX_INT_CART, 1.5), j[5] > 1.5, ht.get("t"))
+                apostar("cart25", _odd_int(m, RX_INT_CART, 2.5), j[5] > 2.5, ht.get("t"))
+            e = _nar(j)
+            if e and e[0] is not None:
+                apostar("esc35", _odd_int(m, RX_INT_ESC, e[0] + 3.5), e[1] > 3.5, ht.get("t"))
+            g = _gols(j)
+            if g and list(ht.get("gols") or []) == [0, 0] and g[0] == 0:
+                o = _odd_int(m, RX_INT_GOL, 0.5)
+                apostar("gol2t", o, g[1] > 0, ht.get("t"))
+                antes = [c for t, c in chutes if t < j[0]]
+                med = _mediana(antes) if len(antes) >= MIN_MEDIANA else None
+                if med is not None and g[5] is not None and g[5] > med:
+                    apostar("gol2tP", o, g[1] > 0, ht.get("t"))
+        if m75:
+            g, gl = _gols(j), list(m75.get("gols") or [])
+            if g and len(gl) == 2 and None not in gl and gl[0] == gl[1]:
+                tot = int(gl[0]) + int(gl[1])
+                apostar("fim75", _odd_int(m75.get("m"), RX_INT_GOL, tot + 0.5), g[0] + g[1] > tot, m75.get("t"))
+    corte = max([a["ms"] for a in I["ap"].values()] or [0]) - GUARDA_DIAS * DIA
+    I["ap"] = {k: a for k, a in I["ap"].items() if a["ms"] >= corte}
+
+
+def resumo_intervalo(C, robo):
+    """O bloco `intervalo` (FORMATO.md, "As contas do intervalo")."""
+    aps = list(((C.get("int") or {}).get("ap") or {}).values())
+    caps = (robo or {}).get("cap") or {}
+    contas = []
+    for cid, nome, quando in CONTAS_INT:
+        xs = sorted((a for a in aps if a["c"] == cid), key=lambda a: a["ms"])
+        n = len(xs)
+        k = sum(1 for a in xs if a["g"])
+        lucro = sum(VALOR_INT * (a["o"] - 1) if a["g"] else -VALOR_INT for a in xs)
+        lo, hi = wilson(k, n)
+        contas.append({"id": cid, "nome": nome, "quando": quando, "apostas": n, "ganhas": k,
+                       "acerto": round(k / n, 4) if n else None, "lo": round(lo, 4) if lo is not None else None,
+                       "hi": round(hi, 4) if hi is not None else None,
+                       "empate": round(sum(1 / a["o"] for a in xs) / n, 4) if n else None,
+                       "oddMedia": round(sum(a["o"] for a in xs) / n, 3) if n else None,
+                       "lucro": round(lucro, 2), "apostado": round(VALOR_INT * n, 2),
+                       "roi": round(lucro / (VALOR_INT * n), 4) if n else None,
+                       "ultimas": [{"jogo": a["jogo"], "liga": NOME.get(a["liga"], a["liga"]), "inicio": a["ms"], "odd": a["o"],
+                                    "ganhou": a["g"]} for a in reversed(xs[-6:])]})
+    merc = {}
+    for c in caps.values():
+        for nome in ((c.get("ht") or {}).get("m") or {}):
+            merc[nome] = merc.get(nome, 0) + 1
+    return {"valor": VALOR_INT, "robo": (robo or {}).get("agora"), "capturas": sum(1 for c in caps.values() if c.get("ht")),
+            "m75": sum(1 for c in caps.values() if c.get("m75")),
+            "mercados": sorted(([n, k] for n, k in merc.items()), key=lambda x: -x[1])[:12], "contas": contas}
+
+
 def _media_hist(hist, k, antes):
     """(jogos, média) do árbitro `k` no histórico das planilhas, só com os jogos de antes de `antes`."""
     xs = [c for ms, c in (hist or {}).get(k) or [] if ms < antes - 6 * HORA]
@@ -999,7 +1109,7 @@ def filtro_do_prompt(js, hist=None):
     return out
 
 
-def resumo(C, agora):
+def resumo(C, agora, robo=None):
     """O bloco `cartoes` da saída das apostas (FORMATO.md, "Cartões no intervalo"), com o `escanteios` dentro."""
     js = sorted(C.get("jogos", {}).values(), key=lambda j: j[0])
     zero = [j for j in js if j[4] == 0]
@@ -1007,7 +1117,7 @@ def resumo(C, agora):
            "esperando": len(C.get("pend") or {}), "semLances": int(C.get("semLances", 0)),
            "oddRef": ODD_REF, "empateRef": round(1 / ODD_REF, 4), "fonte": "ESPN (lances de cada jogo)",
            "ligasForaDaEspn": [NOME[k] for k, t in (C.get("pausa") or {}).items() if agora < int(t or 0)],
-           "escanteios": resumo_escanteios(C), "gols": resumo_gols(C)}
+           "escanteios": resumo_escanteios(C), "gols": resumo_gols(C), "intervalo": resumo_intervalo(C, robo)}
     if not js:
         return out
     n = len(js)

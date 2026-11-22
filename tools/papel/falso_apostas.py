@@ -347,6 +347,11 @@ class Falso:
     # ------------------------------------------------------------------ ESPN
     def json_url(self, url, tipo="espn"):
         self._contar_ap(tipo)
+        if "raw.githubusercontent.com" in url:
+            # o ramo `intervalo` do robô (22/11/2026): o dado de um teste ou o do mundo de mentira
+            if getattr(self, "intervalo_json", None) is not None:
+                return self.intervalo_json
+            return robo_falso(self.futebol, self.agora)
         r = re.search(r"/soccer/([^/]+)/summary\?event=([\w-]+)", url)
         if r:
             if r.group(1) not in ESPN_COD:
@@ -555,6 +560,100 @@ def bdm_do_dia(fut, d: dt.date):
     add(mandante="Ajax", visitante="PSV", competicao="Eredivisie", inicio=_iso_br(pub + 6 * HORA), mercado="1x2",
         linha=None, selecao="visitante", oddCitada=2.4, fora=False, motivo=None)
     return {"versao": 1, "data": d.isoformat(), "video": {"id": video, "publicado": _iso(pub)}, "palpites": out}
+
+
+# ---------------------------------------------------------------------------------------------------- API-Football
+AF_LIGA = {"bra": 71, "eng": 39, "esp": 140, "ita": 135, "ger": 78, "fra": 61, "lib": 13}
+_AF_IDX = {k: i + 1 for i, k in enumerate(sorted(LIGAS))}
+
+
+def af_id(j):
+    """O id numérico da API-Football de um jogo do mundo de mentira (ida e volta com `af_jogo`)."""
+    m = re.fullmatch(r"fx-([a-z]+)-(\d{8})-(\d+)", j["id"])
+    return int(f"{_AF_IDX[m.group(1)]}{m.group(2)}{int(m.group(3)):02d}")
+
+
+def af_jogo(fut, fid):
+    s = str(fid)
+    liga = next((k for k, i in _AF_IDX.items() if i == int(s[0])), None)
+    return fut.por_id(f"fx-{liga}-{s[1:9]}-{int(s[9:])}") if liga else None
+
+
+class FalsoAF:
+    """Mixin: a API-Football do mundo de mentira (a lista de jogos do dia e as odds de antes do jogo da Pinnacle, da
+    Betano e da Bet365); o plano grátis só abre de ontem a amanhã, como o de verdade."""
+
+    af_chave = "af-falsa"
+
+    def json_chave(self, url, tipo, cab, chave):
+        assert chave not in url
+        self._contar_ap(tipo)
+        hoje = dt.datetime.fromtimestamp(self.agora / 1000, dt.timezone.utc).date()
+        m = re.search(r"/fixtures\?date=(\d{4}-\d{2}-\d{2})", url)
+        if m:
+            d = dt.date.fromisoformat(m.group(1))
+            if abs((d - hoje).days) > 1:
+                return {"errors": {"plan": "Free plans do not have access to this date."}, "response": []}
+            ini = _ms_dia(d, 0)
+            out = []
+            for liga in AF_LIGA:
+                for j in self.futebol.entre(liga, ini, ini + DIA - 1):
+                    fim = j["inicio"] + 2 * HORA <= self.agora
+                    st = "FT" if fim else "NS" if j["inicio"] > self.agora else "2H"
+                    out.append({"fixture": {"id": af_id(j), "date": _iso(j["inicio"]), "status": {"short": st}},
+                                "league": {"id": AF_LIGA[liga]},
+                                "teams": {"home": {"name": ESPN.get(j["casa"], j["casa"])}, "away": {"name": ESPN.get(j["fora"], j["fora"])}},
+                                "goals": {"home": j["placar"][0] if fim else None, "away": j["placar"][1] if fim else None},
+                                "score": {"fulltime": {"home": j["placar"][0] if fim else None, "away": j["placar"][1] if fim else None}}})
+            return {"errors": [], "response": out}
+        m = re.search(r"/odds\?fixture=(\d+)", url)
+        if m:
+            j = af_jogo(self.futebol, m.group(1))
+            if not j or j["inicio"] <= self.agora:
+                return {"errors": [], "response": []}
+            h = (j["inicio"] - self.agora) / HORA
+            bks = []
+            for nome, livro in (("Bet365", "bet365"), ("Pinnacle", "pinnacle"), ("Betano", "betano")):
+                o = odds_de(j, livro, round(h, 2))
+                bks.append({"name": nome, "bets": [
+                    {"id": 1, "name": "Match Winner", "values": [{"value": v, "odd": str(x)} for v, x in zip(("Home", "Draw", "Away"), o["1x2"])]},
+                    {"id": 5, "name": "Goals Over/Under", "values": [{"value": "Over 2.5", "odd": str(o["ou"][0])}, {"value": "Under 2.5", "odd": str(o["ou"][1])},
+                                                                     {"value": "Over 1.5", "odd": "1.30"}]}]})
+            return {"errors": [], "response": [{"fixture": {"id": int(m.group(1))}, "bookmakers": bks}]}
+        raise odds.Erro("HTTP 404 em API-Football", 404)
+
+
+def robo_falso(fut, agora, dias=20):
+    """O `intervalo.json` do robô do intervalo no mundo de mentira (22/11/2026): as odds ao vivo de cartões, escanteios e
+    gols no intervalo dos jogos terminados (coerentes com os lances e a narração de `resumo_espn`) e perto dos 75'."""
+    cap = {}
+    for liga in ("bra", "eng", "esp", "ita", "ger", "fra"):
+        for j in fut.entre(liga, agora - dias * DIA, agora - 3 * HORA):
+            r = random.Random(semente("robo", j["id"]))
+            if r.random() < 0.35:
+                continue  # o agendamento do GitHub atrasa: nem todo intervalo é pego
+            res = resumo_espn(j)
+            ids = {id_time(j["casa"]): 0, id_time(j["fora"]): 1}
+            g1, g75 = [0, 0], [0, 0]
+            for ev in res.get("keyEvents") or []:
+                if ev.get("scoringPlay"):
+                    lado = ids.get(ev["team"]["id"], 0)
+                    mn = int(ev["clock"]["value"] // 60)
+                    if ev["period"]["number"] == 1:
+                        g1[lado] += 1
+                    if mn <= 75:
+                        g75[lado] += 1
+            e1 = sum(1 for x in res.get("commentary") or [] if x["text"].startswith("Corner") and x["play"]["period"]["number"] == 1)
+            m = {"Total Cards": [["over", 1.5, round(r.uniform(1.55, 2.15), 2)], ["over", 2.5, round(r.uniform(2.3, 3.3), 2)]],
+                 "Total Corners": [["over", e1 + 3.5, round(r.uniform(1.7, 2.15), 2)]],
+                 "Over/Under Line": [["over", g1[0] + g1[1] + 0.5, round(r.uniform(1.3, 1.65), 2)]]}
+            c = {"ms": j["inicio"], "liga": liga, "c": ESPN.get(j["casa"], j["casa"]), "f": ESPN.get(j["fora"], j["fora"]),
+                 "ht": {"t": j["inicio"] + 50 * 60 * 1000, "gols": g1, "m": m}}
+            if r.random() < 0.6:
+                c["m75"] = {"t": j["inicio"] + 92 * 60 * 1000, "min": 76, "gols": g75,
+                            "m": {"Over/Under Line": [["over", g75[0] + g75[1] + 0.5, round(r.uniform(1.9, 3.0), 2)]]}}
+            cap[str(af_id(j)) if liga in AF_LIGA else j["id"]] = c
+    return {"v": 1, "agora": agora, "cap": cap, "theo": {}}
 
 
 class Avulsa(Falso):

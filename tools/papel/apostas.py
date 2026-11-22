@@ -45,6 +45,7 @@ import os
 import re
 import unicodedata
 
+import af
 import cartoes
 import odds
 from conta import CAPITAL, DIA, FUSO_MS, HORA, Curva, Eventos, dia_de, num_br, pct_br
@@ -84,6 +85,7 @@ LIGAS = [
     ("lib", "Libertadores", None, "conmebol.libertadores"),
 ]
 NOME_LIGA = {k: n for k, n, _, _ in LIGAS}
+NOME_LIGA["outra"] = "Outros campeonatos"  # 22/11/2026: os jogos dos palpites que só a API-Football acompanha
 PRIORIDADE = {k: i for i, (k, _, _, _) in enumerate(LIGAS)}
 
 # ---------------------------------------------------------------------------------------------------- football-data
@@ -111,6 +113,13 @@ JUSTA_NOVA = [(PINNACLE, ("PSCH", "PSCD", "PSCA")), (PINNACLE, ("PH", "PD", "PA"
 
 # ---------------------------------------------------------------------------------------------------- OddsPapi
 ORCAMENTO_MES = 250          # pedidos por mês no plano gratuito
+# a API-Football (22/11/2026, af.py): as odds de antes do jogo dos palpites do Theo, de graça, sem gastar a OddsPapi
+AF_DIA = 30                  # pedidos por dia das apostas (o plano grátis tem 100: o robô do intervalo e os árbitros
+AF_RODADA = 12               # usam o resto)
+AF_FOTO_CADA = 3 * HORA      # uma foto das odds de cada jogo com palpite a cada 3 h, até o início
+AF_FOTOS = 3                 # no máximo (a do fechamento vem do robô do intervalo, 30 min antes)
+AF_LISTA_CADA = 6 * HORA     # a lista de jogos de um dia é refeita a cada 6 h
+URL_INTERVALO = "https://raw.githubusercontent.com/{repo}/intervalo/intervalo.json"
 PARAR_EM = 0.9               # para em 90% (225)
 MAX_POR_DIA = 8              # jogos acompanhados por dia, no máximo
 FX_CADA = 84 * HORA          # lista de jogos de cada campeonato: a cada 3,5 dias…
@@ -1652,6 +1661,9 @@ class Vivo:
             V.setdefault(k, copy.deepcopy(pad))
         self.espn_cache, self.espn_pedidos = {}, 0
         self.hist_times = {}
+        # a API-Football (22/11/2026): a chave da variável de ambiente (ou a do mundo de mentira dos testes)
+        self.af_chave = getattr(fonte, "af_chave", None) or os.environ.get("APIFOOTBALL_KEY") or None
+        self.af_rodada, self._robo = 0, None
 
     # ------------------------------------------------------------------ histórico dos times (football-data)
     def historico_liga(self, chave):
@@ -1806,6 +1818,163 @@ class Vivo:
                     self.ev.add(self.agora, "aviso", txt, None)
                     self.log(f"  apostas: {txt}")
 
+    # ------------------------------------------------------------------ API-Football (22/11/2026)
+    def _af(self):
+        A = self.V.setdefault("af", {})
+        for k, pad in (("dias", {}), ("snap", {}), ("uso", {})):
+            A.setdefault(k, pad)
+        return A
+
+    def af_pedir(self, url):
+        """Um pedido à API-Football (a chave no cabeçalho); None se não há chave ou acabou a cota da rodada/do dia."""
+        if not self.af_chave or not hasattr(self.fonte, "json_chave"):
+            return None
+        A = self._af()
+        hoje = dia_de(self.agora)
+        A["uso"] = {hoje: int(A["uso"].get(hoje, 0))}
+        if A["uso"][hoje] >= AF_DIA or self.af_rodada >= AF_RODADA:
+            return None
+        A["uso"][hoje] += 1
+        self.af_rodada += 1
+        r = self.fonte.json_chave(url, "apif", af.CAB, self.af_chave)
+        errs = (r or {}).get("errors")
+        if errs:
+            self.erros.append(f"API-Football: {str(errs)[:200]}")
+            return None
+        return r
+
+    def af_lista(self, d):
+        """Os jogos do dia `d` (AAAA-MM-DD, UTC) na API-Football, guardados; o plano grátis só abre de ontem a amanhã."""
+        A = self._af()
+        hoje = dt.datetime.fromtimestamp(self.agora / 1000, dt.timezone.utc).date()
+        try:
+            dd = dt.date.fromisoformat(d)
+        except ValueError:
+            return []
+        x = A["dias"].get(d)
+        if abs((dd - hoje).days) > 1:
+            return (x or {}).get("j") or []
+        if not x or self.agora - int(x.get("em") or 0) >= AF_LISTA_CADA:
+            r = self.af_pedir(af.url_dia(d))
+            if r is not None:
+                lista = af.jogos_do_dia(r)
+                if lista and not A.get("viuLista"):
+                    self.log(f"  apostas: API-Football, a lista de jogos de {d}: {len(lista)} jogos")
+                    A["viuLista"] = True
+                x = A["dias"][d] = {"em": self.agora, "j": lista}
+        return (x or {}).get("j") or []
+
+    def af_robo(self):
+        """As fotos de fechamento que o robô do intervalo tirou (ramo `intervalo`), uma vez por rodada."""
+        if self._robo is None:
+            self._robo = {}
+            try:
+                repo = os.environ.get("GITHUB_REPOSITORY") or "Alediov/orbita-testes"
+                r = self.fonte.json_url(URL_INTERVALO.format(repo=repo), "raw")
+                self._robo = r if isinstance(r, dict) else {}
+            except Exception:  # noqa: BLE001  (o robô ainda não rodou: sem fotos de fechamento)
+                pass
+        return self._robo
+
+    def af_theo(self):
+        """Liga cada palpite que espera a um jogo da API-Football e tira a foto das odds de antes do jogo (Pinnacle e
+        a casa comum) a cada AF_FOTO_CADA, até o início. Palpite de um jogo que a OddsPapi não acompanha ganha o jogo
+        "af:<id>" (o placar vem da lista de jogos da API-Football ou da ESPN)."""
+        B = self.V.get("bdm")
+        if not B or not self.af_chave:
+            return
+        A = self._af()
+        hoje = dt.datetime.fromtimestamp(self.agora / 1000, dt.timezone.utc).date()
+        fotos_rodada = set()
+        for pk in sorted(B["p"].values(), key=lambda p: p.get("i") or 0):
+            if pk.get("st") != "esperando":
+                continue
+            if not pk.get("af"):
+                if pk.get("i"):
+                    dias = [dt.datetime.fromtimestamp(pk["i"] / 1000, dt.timezone.utc).date()]
+                else:  # sem a hora: o dia do vídeo e o seguinte (jogo depois da meia-noite em UTC)
+                    d0 = dt.date.fromisoformat(pk["dia"])
+                    dias = [d0, d0 + dt.timedelta(days=1)]
+                for d in dias:
+                    if abs((d - hoje).days) > 1:
+                        continue
+                    j, inv = af.achar(self.af_lista(d.isoformat()), pk["m"], pk["v"], pk.get("i"))
+                    if j:
+                        pk["af"], pk["afInv"] = j["id"], inv
+                        pk["afJ"] = {"c": j["casa"], "f": j["fora"], "l": af.LIGA_AF.get(j["liga"]), "ms": j["ms"]}
+                        break
+            if not pk.get("af"):
+                continue
+            aj = pk.get("afJ") or {}
+            if not pk.get("fx"):
+                if aj.get("ms") and aj["ms"] <= pk["visto"]:
+                    self._bdm_fora(pk, "visto depois do início do jogo")
+                    continue
+                fid = f"af:{pk['af']}"
+                l = aj.get("l") if aj.get("l") in PRIORIDADE else "outra"
+                f = self.V["fx"].setdefault(fid, {"id": fid, "l": l, "c": aj.get("c"), "f": aj.get("f"),
+                                                   "i": aj.get("ms"), "st": "novo"})
+                f["bdm"] = True
+                pk["fx"], pk["inv"], pk["i"] = fid, bool(pk.get("afInv")), aj.get("ms")
+            ini = (self.V["fx"].get(pk["fx"]) or {}).get("i") or aj.get("ms")
+            k = str(pk["af"])
+            fs = A["snap"].setdefault(k, [])
+            if k in fotos_rodada or not ini or ini <= self.agora or len(fs) >= AF_FOTOS:
+                continue
+            if fs and self.agora - int(fs[-1]["t"]) < AF_FOTO_CADA:
+                continue
+            fotos_rodada.add(k)
+            r = self.af_pedir(af.url_odds(pk["af"]))
+            if r is None:
+                continue
+            foto = af.odds_prejogo(r)
+            if not A.get("viuOdds"):
+                casas = [b.get("name") for x in (r.get("response") or [])[:1] for b in x.get("bookmakers") or []]
+                self.log(f"  apostas: API-Football, odds de antes do jogo: casas {casas}")
+                A["viuOdds"] = True
+            if foto:
+                fs.append({"t": self.agora, **foto})
+        # os placares dos jogos "af:" que já acabaram (pela lista do dia, que traz o placar dos 90 minutos)
+        for f in self.V["fx"].values():
+            if not str(f["id"]).startswith("af:") or f.get("p") or not f.get("i") or f["i"] + FIM_JOGO > self.agora:
+                continue
+            d = dt.datetime.fromtimestamp(f["i"] / 1000, dt.timezone.utc).date().isoformat()
+            x = A["dias"].get(d)
+            if x and int(x.get("em") or 0) < f["i"] + FIM_JOGO:
+                A["dias"][d]["em"] = 0  # a lista é de antes do fim do jogo: pede de novo
+            j = next((j for j in self.af_lista(d) if f"af:{j['id']}" == f["id"]), None)
+            if j and j.get("placar"):
+                f["p"] = j["placar"]
+        # limpeza: listas de mais de 3 dias e fotos de jogos de mais de 10 dias
+        d0 = (hoje - dt.timedelta(days=3)).isoformat()
+        A["dias"] = {d: x for d, x in A["dias"].items() if d >= d0}
+        A["snap"] = {k: v for k, v in A["snap"].items() if v and v[-1]["t"] >= self.agora - 10 * DIA}
+
+    def af_precificar(self, f):
+        """As apostas do Theo no jogo `f` pelas fotos da API-Football (as da rodada + as do robô); False se não há
+        foto que sirva (aí vale a OddsPapi, como antes)."""
+        B = self.V.get("bdm") or {}
+        ids = {str(pk["af"]) for pk in B.get("p", {}).values() if pk.get("fx") == f["id"] and pk.get("af")}
+        if not ids:
+            return False
+        fotos = []
+        for k in ids:
+            fotos += self._af()["snap"].get(k) or []
+            fotos += ((self.af_robo().get("theo") or {}).get(k) or [])
+        pin, soft, casa = af.series(fotos, f["i"])
+        if not pin or not soft or not pin.get("1x2") or not soft.get("1x2"):
+            return False
+        f["st"], f["fonte"] = "feito", "API-Football"
+        self.bdm_apostar(f, pin, soft, casa)
+        if f.get("l") in PRIORIDADE:
+            j = jogo_vivo(f, pin, soft, casa)
+            if j:
+                for c in self.contas.values():
+                    if not c.gratis:
+                        for ap in c.decidir(j):
+                            c.abrir(ap)
+        return True
+
     # ------------------------------------------------------------------ jogos terminados
     def processar(self):
         V = self.V
@@ -1829,6 +1998,12 @@ class Vivo:
             # os jogos com palpite do BDM primeiro (o limite do dia pode não chegar a todos)
             lista = sorted(dias[d], key=lambda f: (0 if f.get("bdm") else 1, PRIORIDADE.get(f["l"], 99), f["i"]))
             for f in lista:
+                # 22/11/2026: o jogo com palpite do Theo e as fotos da API-Football não gasta a OddsPapi
+                if f.get("bdm") and self.af_precificar(f):
+                    continue
+                if str(f["id"]).startswith("af:"):
+                    f["st"] = "semOdds"
+                    continue
                 feitos = int(V["porDia"].get(d, 0))
                 if feitos >= self.orc.cota_do_dia(ativas):
                     f["st"] = "pulado"
@@ -2199,13 +2374,12 @@ class Vivo:
             if ini + FIM_JOGO < self.agora:
                 self._bdm_fora(pk, "jogo fora dos campeonatos acompanhados")
 
-    def rodar(self):
+    def _bloco(self, *passos):
+        """Roda os passos; o limite da OddsPapi ou um erro param o bloco, não a rodada."""
         try:
-            self.bdm_ver()
-            self.torneios()
-            self.jogos()
-            self.bdm_casar()
-            self.processar()
+            for p in passos:
+                p()
+            return True
         except Esgotado:
             self.log(f"  apostas: limite do mês da OddsPapi alcançado ({self.V.get('usados')} de {ORCAMENTO_MES}); "
                      "o ao vivo espera o mês que vem")
@@ -2222,6 +2396,17 @@ class Vivo:
         except Exception as e:  # noqa: BLE001  (um formato inesperado não pode perder o que já foi gasto do mês)
             self.erros.append(f"ao vivo: {type(e).__name__}: {e}")
             self.log(f"  apostas: ao vivo: {type(e).__name__}: {e}")
+        return False
+
+    def rodar(self):
+        # 22/11/2026: a API-Football (af_theo) roda fora do bloco da OddsPapi, para o limite de uma não parar a outra
+        self._bloco(self.bdm_ver, self.torneios, self.jogos, self.bdm_casar)
+        try:
+            self.af_theo()
+        except Exception as e:  # noqa: BLE001
+            self.erros.append(f"API-Football: {type(e).__name__}: {e}")
+            self.log(f"  apostas: API-Football: {type(e).__name__}: {e}")
+        self._bloco(self.processar)
         self.gratis_da_semana()
         self.liquidar()
         self.bdm_fechar()
@@ -2345,6 +2530,18 @@ def rodar(ctx):
     except Exception as e:  # noqa: BLE001  (o observatório nunca derruba as apostas)
         erros.append(f"cartões: {type(e).__name__}: {e}")
         log(f"  cartões: {type(e).__name__}: {e}")
+    # 22/11/2026: as contas do intervalo, pelas capturas do robô (ramo `intervalo`)
+    robo = {}
+    try:
+        repo = os.environ.get("GITHUB_REPOSITORY") or "Alediov/orbita-testes"
+        r = fonte.json_url(URL_INTERVALO.format(repo=repo), "raw")
+        robo = r if isinstance(r, dict) else {}
+    except Exception:  # noqa: BLE001  (o robô ainda não rodou)
+        pass
+    try:
+        cartoes.contas_intervalo(C, robo)
+    except Exception as e:  # noqa: BLE001
+        erros.append(f"intervalo: {type(e).__name__}: {e}")
     d0 = dia_de(agora - 10 * DIA)
     for d in [d for d in evdia if d < d0]:
         del evdia[d]
@@ -2409,6 +2606,6 @@ def rodar(ctx):
     ctx.est.update(est)
     return {"frase": FRASE, "comoFunciona": COMO_FUNCIONA, "padrao": PADRAO, "versoes": versoes,
             "eventos": est["eventos"], "itens": itens_pendentes(contas) if contas else [], "avisos": avisos,
-            "config": config, "erros": erros, "cartoes": cartoes.resumo(C, agora),
+            "config": config, "erros": erros, "cartoes": cartoes.resumo(C, agora, robo),
             # 22/11/2026: o arquivo pequeno do Placar (papel.py grava os `_arquivos` ao lado do apostas.json)
             "_arquivos": {"theo.json": theo_publico(V.get("bdm") or {}, contas or {}, agora)}}

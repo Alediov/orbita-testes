@@ -113,7 +113,11 @@ acabavam; aqui os executores padrão não têm limite.
   `APIFOOTBALL_KEY`; a chave só no papel.yml). Também em 22/11: escanteios, faltas e chutes de cada tempo pela narração
   lance a lance do mesmo resumo da ESPN (`cartoes.escanteios`, o recorte `comFaltas`; FORMATO.md, "Escanteios") e os
   gols depois do 0×0 no intervalo e no fim, pela pressão dos chutes (`cartoes.gols`; FORMATO.md, "Gols no intervalo e
-  no fim"); no app, a parte virou "Observatório".
+  no fim"); no app, a parte virou "Observatório". E o **robô do intervalo** (`intervalo.py` + `af.py`, `intervalo.yml` a
+  cada 15 min, ramo `intervalo`): as odds ao vivo da API-Football no intervalo e perto dos 75' viram as contas de R$ 20
+  do Observatório (`cartoes.intervalo`), e as fotos de antes do jogo da API-Football (Pinnacle e Betano) precificam os
+  palpites do Theo sem gastar a OddsPapi (FORMATO.md, "As contas do intervalo" e "Os palpites do Theo pela
+  API-Football"). A sonda à mão dos mercados: `sonda_odds.py` + `sonda.yml`.
 - **Seguir o BDM** (pedido do Alediov, 09/11/2026; só esta conta, nenhum mercado novo): versão `bdm` das apostas, que
   segue os palpites do programa diário "Bom Dia Mercado" do Theo Borges. O repositório PRIVADO extrai os palpites da
   transcrição (que o celular baixa; `tools/ideias/bdm.py` + `ideias-bdm.yml` de lá, com a IA gratuita do filtro) e

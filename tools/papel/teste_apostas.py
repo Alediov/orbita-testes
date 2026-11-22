@@ -666,6 +666,63 @@ def teste_sinteticos():
     assert h and h["taxas"][0] == 1.0, h
 
 
+class CliAF(FA.FalsoAF, Cli):
+    """Com a chave da API-Football (22/11/2026): as odds dos palpites do Theo vêm dela, sem gastar a OddsPapi."""
+
+
+class CliSoAF(CliAF):
+    """A OddsPapi sem a lista de jogos de nenhum campeonato: os palpites só têm a API-Football (jogos "af:")."""
+
+    def oddspapi(self, caminho, **p):
+        if caminho == "/fixtures":
+            self.contagem["oddspapi"] += 1
+            return {"data": []}
+        return FA.Falso.oddspapi(self, caminho, **p)
+
+
+def teste_bdm_api_football():
+    """Os palpites do Theo pelas fotos da API-Football: a odd da Betano a partir da hora em que o palpite foi visto, a
+    justa pela Pinnacle e o fechamento pela última foto antes do início (a do robô do intervalo entra também)."""
+    for Classe in (CliAF, CliSoAF):
+        pasta = tempfile.mkdtemp(prefix="apostas-")
+        try:
+            cli = Classe()
+            t0 = cli.agora
+            hist0 = 0
+            for k in range(24):
+                cli.agora = t0 + k * 6 * HORA
+                rodar(cli, pasta)
+            V = _estado(pasta)["vivo"]
+            B, A_ = V["bdm"], V["af"]
+            feitas = [p for p in B["p"].values() if p.get("o")]
+            assert feitas, Classe
+            pelo_af = [p for p in feitas if p.get("af")]
+            assert pelo_af and all(p["casa"] == "Betano" for p in pelo_af), {p.get("casa") for p in feitas}
+            for p in pelo_af:
+                assert p["t"] >= p["visto"] and p["t"] < p["i"] and p.get("pj") and p.get("clv") is not None, p
+                assert str(p["af"]) in A_["snap"] and len(A_["snap"][str(p["af"])]) <= A.AF_FOTOS
+            fs = [f for f in V["fx"].values() if f.get("fonte") == "API-Football"]
+            assert fs and all(f["st"] == "feito" for f in fs)
+            assert all(n <= A.AF_DIA for n in A_["uso"].values())
+            liquid = [p for p in pelo_af if p.get("st") == "liquidado"]
+            assert liquid, Classe
+            if Classe is CliSoAF:
+                # sem a OddsPapi: todos os jogos são "af:", o placar vem da lista do dia da API-Football
+                assert all(str(p["fx"]).startswith("af:") for p in pelo_af)
+                assert all(V["fx"][p["fx"]].get("p") == p["pl"] for p in liquid)
+                assert not any("historical-odds" in str(e) for e in (_forma(pasta)["rodada"]["erros"] or []))
+        finally:
+            shutil.rmtree(pasta, ignore_errors=True)
+    # a foto do robô (o fechamento, 30 min antes) entra na série: a última antes do início vira o fechamento
+    fotos = [{"t": 10, "pin": {"1x2": [2.0, 3.4, 4.0]}, "soft": {"1x2": [2.1, 3.3, 3.8]}, "casa": "Betano"},
+             {"t": 50, "pin": {"1x2": [1.9, 3.5, 4.3]}, "soft": {"1x2": [2.0, 3.4, 4.0]}, "casa": "Betano"},
+             {"t": 70, "pin": {"1x2": [1.8, 3.6, 4.6]}, "soft": {"1x2": [1.85, 3.5, 4.4]}, "casa": "Bet365"},
+             {"t": 90, "pin": {"1x2": [1.5, 4.0, 6.0]}, "soft": {"1x2": [1.5, 4.0, 6.0]}, "casa": "Betano"}]
+    pin, soft, casa = A.af.series(fotos, 80)
+    assert casa == "Betano" and pin["1x2"][0] == [(10, 2.0), (50, 1.9), (70, 1.8)] and soft["1x2"][0] == [(10, 2.1), (50, 2.0)]
+    assert A.preco_em(pin["1x2"][0], 80) == 1.8
+
+
 def teste_bdm_historico():
     """21/11/2026: a chance pelo histórico (o mandante em casa, o visitante fora, os confrontos diretos e o desconto
     pela média da liga), a convergência, o preço mínimo e o favorito."""
@@ -747,6 +804,7 @@ if __name__ == "__main__":
     teste_bdm_arquivos()
     teste_bdm_rodadas()
     teste_bdm_historico()
+    teste_bdm_api_football()
     teste_sinteticos()
     teste_avulsa()
     print("ok")
