@@ -242,9 +242,63 @@ def teste_arbitros_na_coleta():
     assert not f4.chaves
 
 
+def teste_escanteios():
+    """22/11/2026: escanteios, faltas e chutes de cada tempo pela narração e o total pelas estatísticas."""
+    it = lambda dv, txt, tp=None, per=None, time=None: {"time": {"displayValue": dv}, "text": txt,  # noqa: E731
+                                                        "play": {**({"type": {"text": tp}} if tp else {}),
+                                                                 **({"period": {"number": per}} if per else {}),
+                                                                 **({"team": time} if time else {})}}
+    r = {"commentary": [it("3'", "Corner,  Arsenal. Conceded by X."), it("45'+2'", "Corner,  Chelsea. Conceded by Y."),
+                        it("10'", "Foul by Rice (Arsenal)."), it("50'", "Attempt missed. Saka (Arsenal) left footed shot."),
+                        it("88'", "Corner,  Arsenal. Conceded by Z."), it("12'", "Offside, Chelsea."),
+                        it("60'", "", "Corner Kick", 2, {"id": "2"}), it("90'+4'", "Foul by A (Chelsea).")],
+         "boxscore": {"teams": [{"team": {"id": "1"}, "statistics": [{"name": "wonCorners", "displayValue": "2"}]},
+                                {"team": {"id": "2"}, "statistics": [{"name": "wonCorners", "displayValue": "2"}]}]}}
+    assert C.narracao(r, "1", "2", "Arsenal", "Chelsea") == [2, 2, 2, 2, 4, 1, 1, 0, 1]
+    # o total das estatísticas não bate com a narração: os tempos ficam de fora, o total vale
+    r["boxscore"]["teams"][0]["statistics"][0]["displayValue"] = "5"
+    assert C.narracao(r, "1", "2", "Arsenal", "Chelsea")[:5] == [None, None, 5, 2, 7]
+    # só a narração; só as estatísticas; nenhum dos dois
+    assert C.narracao({"commentary": r["commentary"]}, "1", "2", "Arsenal", "Chelsea")[4] == 4
+    assert C.narracao({"boxscore": r["boxscore"]}, "1", "2", "Arsenal", "Chelsea") == [None, None, 5, 2, 7, None, None, None, None]
+    assert C.narracao({}, "1", "2", "A", "B") is None
+    # a coleta guarda e o resumo conta
+    cli = T.Cli()
+    fonte = cli if hasattr(cli, "oddspapi") else falso_apostas.Avulsa(cli)
+    est, erros, logs = {}, [], []
+    for k in range(8):
+        C.coletar(fonte, est, cli.agora + k * 6 * HORA, lambda: 3000, logs.append, erros)
+    assert not erros, erros[:3]
+    js = list(est["jogos"].values())
+    com = [j for j in js if j[9] and j[9][4] is not None]
+    assert len(com) > 0.8 * len(js) and any("formato da narração" in x for x in logs)
+    for j in com[:30]:
+        r = falso_apostas.resumo_espn(fonte.futebol.por_id(next(k for k, v in est["jogos"].items() if v is j)))
+        box = C.escanteios_box(r, falso_apostas.id_time(j[2]), falso_apostas.id_time(j[3]))
+        if box:
+            assert j[9][2:5] == [box[0], box[1], sum(box)]
+        if j[9][0] is not None:
+            assert j[9][0] + j[9][1] == j[9][4]
+    R = C.resumo(est, cli.agora)
+    E = R["escanteios"]
+    assert E["jogos"] == len(com) and E["comTempos"] > 0 and E["media"]["jogo"] > 5
+    assert [x["id"] for x in E["regras"]] == ["e85", "e95", "e105", "s35", "s45"]
+    s35 = E["regras"][3]
+    assert s35["poucos1t"]["n"] <= s35["todos"]["n"] and E["regras"][0]["todos"]["n"] == len(com)
+    assert sum(x["jogos"] for x in E["ligas"]) == len(com) and E["times"]
+    # o histórico das planilhas (5 ligas grandes; o mundo de mentira tem as europeias)
+    assert E["hist"] and all(h["jogos"] > 50 and 5 < h["media"] < 15 for h in E["hist"])
+    assert any("escanteios de" in x for x in logs)
+    # as faltas nos cartões
+    assert R["faltas"]["jogos"] > 0 and R["faltas"]["t1"] > 5
+    o15 = R["regras"][0]
+    assert o15["comFaltas"]["n"] == R["faltas"]["zeroComMuitas"] <= o15["comZero"]["n"]
+
+
 if __name__ == "__main__":
     teste_lances()
     teste_coleta()
     teste_arbitros_de_fora()
     teste_arbitros_na_coleta()
+    teste_escanteios()
     print("ok")

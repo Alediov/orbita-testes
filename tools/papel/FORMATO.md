@@ -443,6 +443,19 @@ Futebol, só no papel (`apostas.py`). Diferenças das outras formas:
   mesmo jogo duas vezes); os outros, pelos jogos vistos aqui. `filtro.fontes` {planilha, fdorg, apif, espnCore: jogos
   preenchidos por cada fonte} e cada item de `arbitros` ganha `fonte` ("planilha" ou "aqui").
 
+- **Escanteios, faltas e chutes** (22/11/2026, pedido do Alediov; só observando, sem odds grátis): do MESMO resumo do
+  jogo da ESPN (nenhum pedido a mais), `narracao` lê a narração lance a lance (`commentary`: escanteio, falta e chute
+  pelo tipo do lance ou pelo começo do texto, "Corner, …", "Foul by …", "Attempt …"; o tempo pelo minuto) e
+  `escanteios_box` o total de cada time (`boxscore.teams[].statistics`, `wonCorners`). No estado, a 10ª posição do jogo:
+  [esc. 1º, esc. 2º, esc. casa, esc. fora, esc. total, faltas 1º, faltas 2º, chutes 1º, chutes 2º] (None no que faltou;
+  se a narração não bate com o total, os tempos ficam None e o total vale). As planilhas do football-data das 5 ligas
+  grandes (HC + AC, 2 temporadas, 1×/dia, junto com as do árbitro) dão `escHist`. Saída: `cartoes.escanteios` {jogos,
+  comTempos, poucos1t (3), media {jogo, t1, t2}, regras [e85, e95, e105 no jogo: `todos`; s35, s45 no 2º tempo: `todos`
+  e `poucos1t` (até 3 no 1º)], ligas [{liga, nome, jogos, media, e95}], times [{time, liga, jogos, aFavor, contra,
+  media}], hist [{liga, nome, jogos, media, e85, e95, e105}]}. Nos cartões, cada regra ganha `comFaltas` (0 cartão e
+  12+ faltas no 1º tempo) e o bloco ganha `faltas` {jogos, muitas, t1, t2, zeroComMuitas}. A 1ª rodada registra a
+  estrutura de um item da narração e das estatísticas no log.
+
 - **theo.json, o arquivo do Placar** (22/11/2026, pedido do Alediov: "o Placar com mais detalhes do que o Theo
   escolheu"): a cada rodada das apostas o `papel.py` grava, ao lado do `apostas.json`, o `theo.json` (a forma devolve
   `_arquivos` {nome: dados}; o `papel.py` grava e tira da saída). `theo_publico`: {v 1, agora, dias (21), palpites

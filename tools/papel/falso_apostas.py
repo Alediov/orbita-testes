@@ -204,7 +204,7 @@ CAB_EUROPA = ["Div", "Date", "Time", "HomeTeam", "AwayTeam", "FTHG", "FTAG", "FT
               "PSD", "PSA", "MaxH", "MaxD", "MaxA", "AvgH", "AvgD", "AvgA", "B365>2.5", "B365<2.5", "P>2.5", "P<2.5",
               "Max>2.5", "Max<2.5", "Avg>2.5", "Avg<2.5", "B365CH", "B365CD", "B365CA", "PSCH", "PSCD", "PSCA",
               "MaxCH", "MaxCD", "MaxCA", "AvgCH", "AvgCD", "AvgCA", "B365C>2.5", "B365C<2.5", "PC>2.5", "PC<2.5",
-              "AvgC>2.5", "AvgC<2.5"]
+              "AvgC>2.5", "AvgC<2.5", "HC", "AC"]
 CAB_NOVA = ["Country", "League", "Season", "Date", "Time", "Home", "Away", "HG", "AG", "Res", "PSCH", "PSCD", "PSCA",
             "MaxCH", "MaxCD", "MaxCA", "AvgCH", "AvgCD", "AvgCA", "BFECH", "BFECD", "BFECA"]
 
@@ -259,6 +259,8 @@ def planilha(fut, url, agora):
                               ("Avg", _media(pin["ou"], b365["ou"])), ("B365C", b365c["ou"]), ("PC", pinc["ou"]),
                               ("AvgC", _media(pinc["ou"], b365c["ou"]))):
                 v[f"{pre}>2.5"], v[f"{pre}<2.5"] = vals
+            re_ = random.Random(semente("esc-csv", j["id"]))
+            v["HC"], v["AC"] = _sorteio_poisson(re_, 5.4), _sorteio_poisson(re_, 4.4)
             linhas.append([v.get(c, "") for c in cab])
     elif n and n.group(1) == "BRA":
         cab = CAB_NOVA
@@ -464,7 +466,32 @@ def resumo_espn(j):
                         "clock": {"value": mn * 60, "displayValue": f"{mn}'"}, "period": {"number": 1 if mn <= 45 else 2},
                         "team": {"id": id_time(lado), "displayName": lado}})
     evs.sort(key=lambda e: e["clock"]["value"])
-    return {"header": {"id": j["id"]}, "keyEvents": evs, "gameInfo": {"officials": oficiais}}
+    out = {"header": {"id": j["id"]}, "keyEvents": evs, "gameInfo": {"officials": oficiais}}
+    # 22/11/2026: a narração lance a lance (escanteios, faltas e chutes; 1 de cada 10 sem ela) e o total de escanteios
+    # de cada time nas estatísticas (1 de cada 20 sem); um sorteio à parte, para os cartões de antes não mudarem
+    r2 = random.Random(semente("narracao", j["id"]))
+    com = []
+    esc = {j["casa"]: 0, j["fora"]: 0}
+    for per, ini in ((1, 0), (2, 45)):
+        for tipo, lam in (("esc", 4.6 + 0.4 * per), ("falta", 11.0 + per), ("chute", 11.0)):
+            for _ in range(_sorteio_poisson(r2, lam)):
+                mn = ini + r2.randint(1, 48)
+                lado = j["casa"] if r2.random() < 0.55 else j["fora"]
+                dv = f"{min(mn, ini + 45)}'" + (f"+{mn - ini - 45}'" if mn > ini + 45 else "")
+                txt = {"esc": f"Corner,  {lado}. Conceded by Fulano.", "falta": f"Foul by Fulano ({lado}).",
+                       "chute": "Attempt missed. Fulano (" + lado + ") right footed shot from outside the box."}[tipo]
+                if tipo == "esc":
+                    esc[lado] += 1
+                com.append({"sequence": len(com), "time": {"value": mn * 60, "displayValue": dv}, "text": txt,
+                            "play": {"type": {"text": {"esc": "Corner Kick", "falta": "Foul", "chute": "Shot Off Target"}[tipo]},
+                                     "period": {"number": per}, "team": {"displayName": lado}}})
+    if r2.random() >= 0.1:
+        out["commentary"] = sorted(com, key=lambda x: x["time"]["value"])
+    if r2.random() >= 0.05:
+        out["boxscore"] = {"teams": [{"team": {"id": id_time(t), "displayName": t}, "statistics": [
+            {"name": "foulsCommitted", "displayValue": "12", "label": "Fouls"},
+            {"name": "wonCorners", "displayValue": str(esc[t]), "label": "Corner Kicks"}]} for t in (j["casa"], j["fora"])]}
+    return out
 
 
 ARBITROS = [f"Árbitro {c}" for c in "ABCDEFGHIJKLMNO"]

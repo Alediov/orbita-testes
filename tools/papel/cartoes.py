@@ -30,6 +30,15 @@ Outras fontes, todas gratuitas, preenchem o nome (`completar_arbitros`, a ordem 
 As chaves só por variável de ambiente (papel.yml), nunca em arquivo, URL ou log. O casamento com os jogos da ESPN é pela
 data (±36 h) e pelos dois times (`apostas.mesmo_time`); o nome vira uma chave "inicial + sobrenome" (`chave_arbitro`),
 porque a planilha escreve "A Taylor" e as APIs "Anthony Taylor".
+
+Escanteios, faltas e chutes (22/11/2026, pedido do Alediov; também SÓ OBSERVAÇÃO, sem odds grátis de escanteio): do
+MESMO resumo do jogo (nenhum pedido a mais), a narração lance a lance (`commentary`: "Corner, …", "Foul by …",
+"Attempt …", com o minuto) separa cada tempo, e as estatísticas (`boxscore.teams[].statistics`, `wonCorners`) dão o
+total de escanteios de cada time. Guardado na 10ª posição do jogo: [esc. 1º tempo, esc. 2º, esc. casa, esc. fora,
+esc. total, faltas 1º, faltas 2º, chutes 1º, chutes 2º] (None no que a ESPN não trouxe). As planilhas do football-data
+das 5 ligas grandes (HC e AC, o jogo inteiro, 2 temporadas, 1×/dia) dão o histórico de cada liga. As faltas do 1º tempo
+entram nos cartões (o recorte "0 cartão e muitas faltas no 1º tempo"). Os nomes dos campos foram escritos sem acesso à
+ESPN daqui: a 1ª rodada registra a estrutura de um item da narração e das estatísticas.
 """
 from __future__ import annotations
 
@@ -91,7 +100,6 @@ RE_NAO_ARBITRO = re.compile(r"assist|var\b|video|fourth|quarto|reserve|linesman"
 URL_OFICIAIS = "https://sports.core.api.espn.com/v2/sports/soccer/leagues/{liga}/events/{id}/competitions/{id}/officials"
 CORE_DESISTE = 12            # jogos seguidos sem árbitro na API core: para
 CORE_PAUSA = 14 * DIA
-PLANILHA_ARB = {"eng": "E0"}  # as planilhas do football-data.co.uk que têm a coluna Referee (as inglesas)
 URL_FDORG = "https://api.football-data.org/v4/matches?competitions={comps}&dateFrom={de}&dateTo={ate}&status=FINISHED"
 FDORG_COMP = {"bra": "BSA", "eng": "PL", "esp": "PD", "ita": "SA", "ger": "BL1", "fra": "FL1", "ucl": "CL"}
 FDORG_DIAS = 10              # o máximo de dias por pedido
@@ -102,6 +110,15 @@ APIF_VOLTA = 2               # o plano grátis só abre de ontem a amanhã
 APIF_DIA = 90                # pedidos por dia (o limite grátis é 100)
 CHAVE_PAUSA = 7 * DIA        # fonte com chave que recusou (plano, chave errada): tenta de novo em 7 dias
 CASAR_JANELA = 36 * HORA
+# escanteios (22/11/2026)
+LINHAS_ESC = [(8.5, "e85"), (9.5, "e95"), (10.5, "e105")]     # no jogo
+LINHAS_ESC2 = [(3.5, "s35"), (4.5, "s45")]                    # no 2º tempo
+POUCOS_ESC1 = 3              # "1º tempo com poucos escanteios": até 3 (os dois times)
+MUITAS_FALTAS = 12           # "muitas faltas no 1º tempo" (os dois times)
+PLANILHAS = {"eng": "E0", "esp": "SP1", "ita": "I1", "ger": "D1", "fra": "F1"}
+RE_N_ESC = re.compile(r"^\s*corner\b|escanteio|corner kick", re.I)
+RE_N_FALTA = re.compile(r"^\s*foul by\b|^\s*falta\b|^foul$", re.I)
+RE_N_CHUTE = re.compile(r"^\s*(attempt (missed|saved|blocked)|goal!)|^shot (on|off) target|^(blocked )?shot$", re.I)
 
 
 def _dia_espn(ms):
@@ -325,6 +342,102 @@ def contar(evs, id_casa, id_fora):
     return c1, c2, cc, cf
 
 
+def _tipo_narracao(it):
+    """"esc", "falta", "chute" ou None de um item da narração (pelo tipo do lance; sem ele, pelo começo do texto)."""
+    t = _tipo(it.get("play") or {}) if isinstance(it.get("play"), dict) else ""
+    t = t.strip()
+    txt = str(it.get("text") or "")
+    for nome, rx in (("esc", RE_N_ESC), ("falta", RE_N_FALTA), ("chute", RE_N_CHUTE)):
+        if (t and rx.search(t)) or rx.search(txt):
+            return nome
+    return None
+
+
+def escanteios_box(r, id_casa, id_fora):
+    """(escanteios da casa, de fora) das estatísticas do resumo (`wonCorners`); None se não vierem."""
+    times = ((r or {}).get("boxscore") or {}).get("teams") if isinstance(r, dict) else None
+    if not isinstance(times, list):
+        return None
+    out = {}
+    for t in times:
+        if not isinstance(t, dict):
+            continue
+        tid = str(((t.get("team") or {}).get("id")) or "")
+        for st in t.get("statistics") or []:
+            if isinstance(st, dict) and (st.get("name") == "wonCorners" or str(st.get("label") or "").lower() == "corner kicks"):
+                try:
+                    out[tid] = int(float(str(st.get("displayValue") or st.get("value")).replace(",", ".")))
+                except (TypeError, ValueError):
+                    pass
+    if id_casa in out and id_fora in out:
+        return out[id_casa], out[id_fora]
+    return None
+
+
+def narracao(r, id_casa, id_fora, casa, fora):
+    """[esc. 1º, esc. 2º, esc. casa, esc. fora, esc. total, faltas 1º, faltas 2º, chutes 1º, chutes 2º] do resumo (a
+    narração lance a lance e as estatísticas); None se não houver nenhum dos dois."""
+    itens = (r or {}).get("commentary") if isinstance(r, dict) else None
+    box = escanteios_box(r, id_casa, id_fora)
+    if not isinstance(itens, list) or not itens:
+        itens = None
+    if itens is None and box is None:
+        return None
+    e = [None] * 9
+    if itens is not None:
+        cont = {("esc", 1): 0, ("esc", 2): 0, ("falta", 1): 0, ("falta", 2): 0, ("chute", 1): 0, ("chute", 2): 0}
+        lado = [0, 0]
+        nc, nf = _tokens_nome(casa), _tokens_nome(fora)
+        for it in itens:
+            if not isinstance(it, dict):
+                continue
+            tp = _tipo_narracao(it)
+            if not tp:
+                continue
+            pl = it.get("play") if isinstance(it.get("play"), dict) else {}
+            per = it.get("period") or pl.get("period")
+            t = tempo({"period": per, "clock": it.get("time") or it.get("clock") or pl.get("clock") or {}})
+            if t is None:
+                continue
+            cont[(tp, t)] += 1
+            if tp == "esc":
+                tm = pl.get("team") or it.get("team") or {}
+                tid = str(tm.get("id") or "")
+                quem = tm.get("displayName") or str(it.get("text") or "")
+                if tid and tid == id_casa:
+                    lado[0] += 1
+                elif tid and tid == id_fora:
+                    lado[1] += 1
+                elif _cita(quem, nc) and not _cita(quem, nf):
+                    lado[0] += 1
+                elif _cita(quem, nf) and not _cita(quem, nc):
+                    lado[1] += 1
+        e[0], e[1] = cont[("esc", 1)], cont[("esc", 2)]
+        e[5], e[6], e[7], e[8] = cont[("falta", 1)], cont[("falta", 2)], cont[("chute", 1)], cont[("chute", 2)]
+        if sum(lado) == e[0] + e[1]:
+            e[2], e[3] = lado
+        e[4] = e[0] + e[1]
+        if e[0] + e[1] + e[5] + e[6] == 0:  # narração sem nada disso (a liga não tem narração de verdade)
+            e = [None] * 9
+    if box is not None:
+        e[2], e[3] = box
+        e[4] = box[0] + box[1]
+        if e[0] is not None and e[0] + e[1] != e[4]:
+            # a narração perdeu algum: os tempos não batem com o total, então ficam de fora (o total vale)
+            e[0] = e[1] = None
+    return e
+
+
+def _tokens_nome(n):
+    s = unicodedata.normalize("NFKD", str(n or "")).encode("ascii", "ignore").decode().lower()
+    return [t for t in re.sub(r"[^a-z0-9]+", " ", s).split() if len(t) >= 3 and t not in ("fc", "club", "clube", "esporte")]
+
+
+def _cita(texto, tokens):
+    s = unicodedata.normalize("NFKD", str(texto or "")).encode("ascii", "ignore").decode().lower()
+    return bool(tokens) and all(t in s for t in tokens[:2])
+
+
 # ---------------------------------------------------------------------------------------------------- a coleta
 def coletar(fonte, C, agora, restante, log, erros):
     """Anda o observatório: pede as listas de jogos dos dias que faltam (do mais novo para trás) e os resumos dos jogos
@@ -413,7 +526,14 @@ def coletar(fonte, C, agora, restante, log, erros):
         if n is None:
             C["semLances"] = int(C.get("semLances", 0)) + 1
             continue
-        C["jogos"][eid] = [ms, liga, casa, fora, *n, arbitro(r) or arbitro_core(fonte, C, liga, eid, agora, log)]
+        if not C.get("viuNarracao") and isinstance(r, dict) and (r.get("commentary") or r.get("boxscore")):
+            it = next((x for x in r.get("commentary") or [] if isinstance(x, dict) and _tipo_narracao(x) == "esc"),
+                      (r.get("commentary") or [None])[0])
+            log(f"  cartões: formato da narração: {estrutura(it, 4) if it else 'sem'}; das estatísticas: "
+                f"{estrutura(((r.get('boxscore') or {}).get('teams') or [{}])[0], 3)}")
+            C["viuNarracao"] = True
+        C["jogos"][eid] = [ms, liga, casa, fora, *n, arbitro(r) or arbitro_core(fonte, C, liga, eid, agora, log),
+                           narracao(r, ic, iff, casa, fora)]
     try:
         completar_arbitros(fonte, C, agora, restante, log, erros)
     except Exception as e:  # noqa: BLE001  (os árbitros nunca derrubam a coleta)
@@ -432,9 +552,9 @@ def coletar(fonte, C, agora, restante, log, erros):
 
 
 # ---------------------------------------------------------------------------------------------------- os árbitros de fora
-def ler_planilha_arbitros(texto):
-    """[(ms, casa, fora, árbitro, cartões)] de uma planilha do football-data.co.uk (as linhas sem Referee ficam de fora;
-    os cartões = HY + AY + HR + AR, o jogo inteiro)."""
+def ler_planilha_jogos(texto):
+    """[(ms, casa, fora, árbitro ou None, cartões ou None, escanteios ou None)] de uma planilha do football-data.co.uk
+    (cartões = HY + AY + HR + AR e escanteios = HC + AC, o jogo inteiro)."""
     from apostas import _campo, _data, _hora_uk, _f
     texto = (texto or "").lstrip("\ufeff")
     leitor = csv.DictReader(io.StringIO(texto))
@@ -443,13 +563,30 @@ def ler_planilha_arbitros(texto):
     leitor.fieldnames = [(c or "").strip().lstrip("\ufeff") for c in leitor.fieldnames]
     out = []
     for ln in leitor:
-        ref = (_campo(ln, "Referee") or "").strip()
+        ref = (_campo(ln, "Referee") or "").strip() or None
         casa, fora, d = _campo(ln, "HomeTeam", "Home"), _campo(ln, "AwayTeam", "Away"), _data(_campo(ln, "Date"))
-        if not ref or not casa or not fora or d is None:
+        if not casa or not fora or d is None:
             continue
         cs = [_f(_campo(ln, k)) for k in ("HY", "AY", "HR", "AR")]
+        es = [_f(_campo(ln, k)) for k in ("HC", "AC")]
         out.append((_hora_uk(d, _campo(ln, "Time")), casa, fora, ref,
-                    int(sum(cs)) if all(c is not None for c in cs) else None))
+                    int(sum(cs)) if all(c is not None for c in cs) else None,
+                    int(sum(es)) if all(x is not None for x in es) else None))
+    return out
+
+
+def ler_planilha_arbitros(texto):
+    """[(ms, casa, fora, árbitro, cartões)] das linhas com Referee."""
+    return [x[:5] for x in ler_planilha_jogos(texto) if x[3]]
+
+
+def historico_escanteios(totais):
+    """{jogos, media, e85, e95, e105} de uma lista de totais de escanteios por jogo."""
+    n = len(totais)
+    out = {"jogos": n, "media": round(sum(totais) / n, 2) if n else None}
+    for ln, rid in LINHAS_ESC:
+        k = sum(1 for t in totais if t > ln)
+        out[rid] = round(k / n, 4) if n else None
     return out
 
 
@@ -521,29 +658,34 @@ def completar_arbitros(fonte, C, agora, restante, log, erros, env=None):
     env = os.environ if env is None else env
     A = C.setdefault("arb", {})
     A.setdefault("fontes", {})
-    # 2. as planilhas inglesas (1×/dia): o nome nos jogos e o histórico de cada árbitro
+    # 2. as planilhas (1×/dia): o árbitro e o histórico dele (só as inglesas têm Referee) e o histórico dos escanteios
     F = A["fontes"].setdefault("planilha", {})
     if agora - int(F.get("em") or 0) >= DIA and restante() >= TEMPO_MIN:
         from apostas import URL_FD, temporadas
         temps, _ini = temporadas(agora, 2)
-        linhas, hist = [], {}
-        for liga, div in PLANILHA_ARB.items():
+        linhas, hist, esc = [], {}, {}
+        for liga, div in PLANILHAS.items():
             for t in temps:
                 try:
-                    linhas += [(liga, x) for x in ler_planilha_arbitros(fonte.texto(URL_FD.format(temp=t, div=div), "arbitros"))]
+                    linhas += [(liga, x) for x in ler_planilha_jogos(fonte.texto(URL_FD.format(temp=t, div=div), "arbitros"))]
                 except Exception as e:  # noqa: BLE001  (a temporada que não começou dá 404)
                     if getattr(e, "status", None) != 404:
-                        erros.append(f"cartões: planilha dos árbitros ({div} {t}): {e}")
-        for liga, (ms, casa, fora, ref, cart) in linhas:
+                        erros.append(f"cartões: planilha ({div} {t}): {e}")
+        for liga, (ms, casa, fora, ref, cart, es) in linhas:
             k = chave_arbitro(ref)
             if k and cart is not None:
                 hist.setdefault(k, []).append([ms, cart])
+            if es is not None:
+                esc.setdefault(liga, []).append(es)
         F["em"] = agora
+        com_ref = [x for _l, x in linhas if x[3]]
         if linhas:
             A["hist"] = {k: sorted(v) for k, v in hist.items()}
-            n = casar(C, [x for _l, x in linhas], set(PLANILHA_ARB))
+            C["escHist"] = {liga: historico_escanteios(v) for liga, v in esc.items()}
+            n = casar(C, [x[:5] for x in com_ref])
             _contar_fonte(A, "planilha", n)
-            log(f"  cartões: planilha dos árbitros: {len(linhas)} jogos, {len(hist)} árbitros, {n} jogos daqui preenchidos")
+            log(f"  cartões: planilha dos árbitros: {len(com_ref)} jogos, {len(hist)} árbitros, {n} jogos daqui preenchidos; "
+                f"escanteios de {sum(len(v) for v in esc.values())} jogos em {len(esc)} ligas")
     # 3. football-data.org (chave grátis)
     chave = (env.get("FOOTBALLDATA_KEY") or "").strip()
     F = A["fontes"].setdefault("fdorg", {})
@@ -635,6 +777,64 @@ def taxa(js, linha):
             "justa": round(1 / t, 2) if t else None}
 
 
+def taxa_valores(vs, linha):
+    """{n, k, taxa, lo, hi, justa} de uma lista de números acima de `linha`."""
+    n = len(vs)
+    k = sum(1 for v in vs if v > linha)
+    lo, hi = wilson(k, n)
+    t = k / n if n else None
+    return {"n": n, "k": k, "taxa": round(t, 4) if t is not None else None,
+            "lo": round(lo, 4) if lo is not None else None, "hi": round(hi, 4) if hi is not None else None,
+            "justa": round(1 / t, 2) if t else None}
+
+
+def _nar(j):
+    return j[9] if len(j) > 9 and isinstance(j[9], list) and len(j[9]) == 9 else None
+
+
+def resumo_escanteios(C):
+    """O bloco `escanteios` (FORMATO.md, "Escanteios")."""
+    js = sorted(C.get("jogos", {}).values(), key=lambda j: j[0])
+    com = [(j, _nar(j)) for j in js if _nar(j) and _nar(j)[4] is not None]
+    tempos = [(j, e) for j, e in com if e[0] is not None]
+    out = {"jogos": len(com), "comTempos": len(tempos), "poucos1t": POUCOS_ESC1,
+           "hist": [{"liga": k, "nome": NOME.get(k, k), **v} for k, v in (C.get("escHist") or {}).items()]}
+    if not com:
+        return out
+    tot = [e[4] for _j, e in com]
+    out["media"] = {"jogo": round(sum(tot) / len(tot), 2),
+                    "t1": round(sum(e[0] for _j, e in tempos) / len(tempos), 2) if tempos else None,
+                    "t2": round(sum(e[1] for _j, e in tempos) / len(tempos), 2) if tempos else None}
+    regras = [{"id": rid, "linha": ln, "nome": f"Mais de {str(ln).replace('.', ',')} escanteios no jogo",
+               "todos": taxa_valores(tot, ln)} for ln, rid in LINHAS_ESC]
+    poucos = [e for _j, e in tempos if e[0] <= POUCOS_ESC1]
+    regras += [{"id": rid, "linha": ln, "nome": f"Mais de {str(ln).replace('.', ',')} escanteios no 2º tempo",
+                "todos": taxa_valores([e[1] for _j, e in tempos], ln),
+                "poucos1t": taxa_valores([e[1] for e in poucos], ln)} for ln, rid in LINHAS_ESC2]
+    out["regras"] = regras
+    ligas = []
+    for liga, nome, _c in LIGAS:
+        lv = [e[4] for j, e in com if j[1] == liga]
+        if lv:
+            ligas.append({"liga": liga, "nome": nome, "jogos": len(lv), "media": round(sum(lv) / len(lv), 2),
+                          "e95": taxa_valores(lv, 9.5)})
+    out["ligas"] = sorted(ligas, key=lambda x: -x["jogos"])
+    tm = {}
+    for j, e in com:
+        if e[2] is None or e[3] is None:
+            continue
+        for nome, a, c in ((j[2], e[2], e[3]), (j[3], e[3], e[2])):
+            t = tm.setdefault((j[1], nome), [0, 0, 0])
+            t[0] += 1
+            t[1] += a
+            t[2] += c
+    times = [{"time": nome, "liga": NOME.get(liga, liga), "jogos": v[0], "aFavor": round(v[1] / v[0], 2),
+              "contra": round(v[2] / v[0], 2), "media": round((v[1] + v[2]) / v[0], 2)}
+             for (liga, nome), v in tm.items() if v[0] >= MIN_TIME]
+    out["times"] = sorted(times, key=lambda x: (-x["media"], -x["jogos"]))[:8]
+    return out
+
+
 def _media_hist(hist, k, antes):
     """(jogos, média) do árbitro `k` no histórico das planilhas, só com os jogos de antes de `antes`."""
     xs = [c for ms, c in (hist or {}).get(k) or [] if ms < antes - 6 * HORA]
@@ -675,13 +875,14 @@ def filtro_do_prompt(js, hist=None):
 
 
 def resumo(C, agora):
-    """O bloco `cartoes` da saída das apostas (FORMATO.md, "Cartões no intervalo")."""
+    """O bloco `cartoes` da saída das apostas (FORMATO.md, "Cartões no intervalo"), com o `escanteios` dentro."""
     js = sorted(C.get("jogos", {}).values(), key=lambda j: j[0])
     zero = [j for j in js if j[4] == 0]
     out = {"desde": C.get("desde"), "jogos": len(js), "zero1t": len(zero),
            "esperando": len(C.get("pend") or {}), "semLances": int(C.get("semLances", 0)),
            "oddRef": ODD_REF, "empateRef": round(1 / ODD_REF, 4), "fonte": "ESPN (lances de cada jogo)",
-           "ligasForaDaEspn": [NOME[k] for k, t in (C.get("pausa") or {}).items() if agora < int(t or 0)]}
+           "ligasForaDaEspn": [NOME[k] for k, t in (C.get("pausa") or {}).items() if agora < int(t or 0)],
+           "escanteios": resumo_escanteios(C)}
     if not js:
         return out
     n = len(js)
@@ -692,9 +893,17 @@ def resumo(C, agora):
     fp = filtro_do_prompt(list(C.get("jogos", {}).items()), hist)
     passa = {eid for eid, (ok, _a, _e) in fp.items() if ok}
     zero_f = [j for eid, j in C.get("jogos", {}).items() if j[4] == 0 and eid in passa]
+    # 22/11/2026: com a narração, o recorte "0 cartão e muitas faltas no 1º tempo"
+    zero_faltas = [j for j in zero if _nar(j) and _nar(j)[5] is not None and _nar(j)[5] >= MUITAS_FALTAS]
     out["regras"] = [{"id": rid, "linha": ln, "nome": f"Mais de {str(ln).replace('.', ',')} cartões no 2º tempo",
-                      "comZero": taxa(zero, ln), "todos": taxa(js, ln), "comFiltro": taxa(zero_f, ln)}
+                      "comZero": taxa(zero, ln), "todos": taxa(js, ln), "comFiltro": taxa(zero_f, ln),
+                      "comFaltas": taxa(zero_faltas, ln)}
                      for ln, rid in LINHAS]
+    nar = [_nar(j) for j in js if _nar(j) and _nar(j)[5] is not None]
+    out["faltas"] = {"jogos": len(nar), "muitas": MUITAS_FALTAS,
+                     "t1": round(sum(e[5] for e in nar) / len(nar), 2) if nar else None,
+                     "t2": round(sum(e[6] for e in nar) / len(nar), 2) if nar else None,
+                     "zeroComMuitas": len(zero_faltas)}
     com_arb = [j for j in js if len(j) > 8 and j[8]]
     out["filtro"] = {"arbitro": FILTRO_ARBITRO, "expectativa": FILTRO_EXPECTATIVA, "minimo": MIN_MEDIA,
                      "jogosComArbitro": len(com_arb), "zeroComFiltro": len(zero_f),
