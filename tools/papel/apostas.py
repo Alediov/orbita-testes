@@ -1531,7 +1531,45 @@ THEO_DIAS = 21               # dias de palpites no theo.json (o Placar)
 THEO_MAX = 200
 
 
-def theo_publico(B, contas, agora):
+def _fotos_theo(V, robo):
+    """As fotos de antes do jogo de cada jogo (id da API-Football): as da rodada e as do robô do intervalo."""
+    out = {}
+    for fonte in ((V.get("af") or {}).get("snap") or {}, (robo or {}).get("theo") or {}):
+        for k, v in fonte.items():
+            out.setdefault(str(k), []).extend(v or [])
+    return out
+
+
+def odd_agora(x, fotos):
+    """A odd de agora de um palpite que espera (22/11/2026), pela última foto da API-Football: {odd, casa, justa, valor,
+    em} na casa comum, com a justa pela Pinnacle sem a margem; None sem foto que sirva."""
+    if x.get("st") != "esperando" or not fotos:
+        return None
+    ini = x.get("i") or 9e15
+    fs = [f for f in fotos if f and int(f.get("t") or 0) < ini]
+    if not fs:
+        return None
+    ult = max(fs, key=lambda f: f["t"])
+    pin, soft, casa = af.series([ult], 9e15)
+    mk = x.get("mk")
+    if mk in SINTETICOS:
+        ph, sh = (pin or {}).get("1x2"), serie_sintetica(mk, (soft or {}).get("1x2"))
+    else:
+        ph, sh = (pin or {}).get(mk), (soft or {}).get(mk)
+    if not ph or not sh:
+        return None
+    try:
+        i = indice_bdm(x, x.get("inv"))
+        o = preco_em(sh[i], 9e15)
+        p = justas(mk, [preco_em(h, 9e15) for h in ph])
+    except (IndexError, KeyError, TypeError, ValueError):
+        return None
+    if not o or not p or not p[i]:
+        return None
+    return {"odd": round(o, 3), "casa": casa, "justa": round(1 / p[i], 3), "valor": round(o * p[i] - 1, 4), "em": ult["t"]}
+
+
+def theo_publico(B, contas, agora, fotos=None):
     """O theo.json do ramo papel (22/11/2026, pedido do Alediov: "o Placar com mais detalhes do que o Theo escolheu"):
     cada palpite dos últimos THEO_DIAS dias com tudo o que o teste sabe dele, sem pedido a mais; e o resumo das contas
     do Theo. Só campos públicos (os do config/bdm/ e os números do teste)."""
@@ -1561,7 +1599,8 @@ def theo_publico(B, contas, agora):
                     "resultado": x.get("r"), "placar": x.get("pl"),
                     "historico": {"p": h.get("p"), "taxas": h.get("taxas"), "n": h.get("n"), "forte": h.get("forte"),
                                   "base": h.get("base")} if h else None,
-                    "contas": cs})
+                    "contas": cs,
+                    "agora": odd_agora(x, (fotos or {}).get(str(x.get("af"))) if x.get("af") else None)})
     resumo = []
     for cid in BDM_CONTAS:
         c = contas.get(cid) if isinstance(contas, dict) else None
@@ -1573,8 +1612,9 @@ def theo_publico(B, contas, agora):
                        "resultado": round(c.acc["resultado"], 2),
                        "clv": x.get("clvMedio"), "abertas": len(c.abertas)})
     return {"v": 1, "agora": agora, "dias": THEO_DIAS, "palpites": out, "contas": resumo,
-            "nota": "As odds de cada palpite são buscadas depois do jogo (a odd da casa na hora em que o palpite "
-                    "apareceu, a justa pela Pinnacle sem a margem e o fechamento): antes do jogo, só a odd citada."}
+            "nota": "Antes do jogo, a odd de agora na casa comum e a justa pela Pinnacle sem a margem (fotos da "
+                    "API-Football a cada 3 h). Depois do jogo, a conta do teste: a odd da hora em que o palpite apareceu, "
+                    "o fechamento e o CLV."}
 
 
 def resumo_theo(B, cid):
@@ -2610,4 +2650,4 @@ def rodar(ctx):
             "eventos": est["eventos"], "itens": itens_pendentes(contas) if contas else [], "avisos": avisos,
             "config": config, "erros": erros, "cartoes": cartoes.resumo(C, agora, robo),
             # 22/11/2026: o arquivo pequeno do Placar (papel.py grava os `_arquivos` ao lado do apostas.json)
-            "_arquivos": {"theo.json": theo_publico(V.get("bdm") or {}, contas or {}, agora)}}
+            "_arquivos": {"theo.json": theo_publico(V.get("bdm") or {}, contas or {}, agora, _fotos_theo(V, robo))}}

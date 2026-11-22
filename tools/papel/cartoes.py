@@ -836,7 +836,9 @@ def completar_arbitros(fonte, C, agora, restante, log, erros, env=None):
     if re.search(r"access to this date", str(F.get("motivo") or ""), re.I):  # a parada de 7 dias da 1ª versão
         F.pop("pausa", None)
         F.pop("motivo", None)
-    if chave and agora >= int(F.get("pausa") or 0):
+    # 22/11/2026: as apostas rodam a cada hora; a API-Football dos árbitros só a cada 3 h (o robô e o Theo usam o resto)
+    if chave and agora >= int(F.get("pausa") or 0) and agora - int(F.get("em") or 0) >= 3 * HORA:
+        F["em"] = agora
         hoje = dia_de(agora)
         if F.get("dia") != hoje:
             F["dia"], F["hoje"] = hoje, 0

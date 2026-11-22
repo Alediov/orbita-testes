@@ -14,6 +14,10 @@ name: Testes de mercado (outras formas, no papel)
 on:
   schedule:
     - cron: "23 */6 * * *"
+    # 22/11/2026: só as apostas a cada hora (o Placar e o Observatório recebem os números do Theo e do intervalo
+    # pouco depois do jogo; as fotos de antes do jogo da API-Football a cada 3 h). Não gasta mais da OddsPapi: a cota é
+    # por dia (`cota_do_dia`).
+    - cron: "53 * * * *"
   push:
     branches: [main]
     paths: ["config/bdm/**"]
@@ -55,7 +59,7 @@ jobs:
           # chaves GRATUITAS só para o árbitro dos cartões (22/11/2026; cartoes.py); sem elas, só as fontes sem chave
           FOOTBALLDATA_KEY: ${{ secrets.FOOTBALLDATA_KEY }}
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
-        run: python3 -I tools/papel/papel.py --dados dados --prazo 24 ${{ github.event_name == 'push' && '--formas apostas' || (inputs.formas && format('--formas {0}', inputs.formas) || '') }}
+        run: python3 -I tools/papel/papel.py --dados dados --prazo 24 ${{ (github.event_name == 'push' || github.event.schedule == '53 * * * *') && '--formas apostas' || (inputs.formas && format('--formas {0}', inputs.formas) || '') }}
       - name: Guardar no ramo papel
         if: always()
         env:

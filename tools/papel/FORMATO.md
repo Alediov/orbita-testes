@@ -1,6 +1,6 @@
 # Formato dos resultados das outras formas (ramo `papel`)
 
-O workflow `papel.yml` roda `tools/papel/papel.py` a cada 6 h e grava, num commit único do ramo órfão `papel`:
+O workflow `papel.yml` roda `tools/papel/papel.py` a cada 6 h (e só as apostas a cada hora, desde 22/11/2026) e grava, num commit único do ramo órfão `papel`:
 
 - `indice.json`: o que existe e quando cada forma rodou (o app lê primeiro e só baixa a forma que mudou);
 - `<forma>.json`: um por forma (`cofres.json`, `funding.json`, `robos.json`, `apostas.json`, `looping.json`,
@@ -508,8 +508,9 @@ Futebol, só no papel (`apostas.py`). Diferenças das outras formas:
 
 Aave v3 na Base (`looping.py`): juros diários do GraphQL do Aave (`supplyAPYHistory`/`borrowAPYHistory`, 365 dias), o
 staking do Lido pela DefiLlama, limites de liquidação pelo `getReserveData` (RPC) e o e-mode pelo GraphQL; o ether pelas
-velas da HL (1 h ao vivo, 1 dia no teste no passado, que é `aproximado: true`).
-
+velas da HL (1 h ao vivo, 1 dia no teste no passado, que é `aproximado: true`). Desde 22/11/2026, cada palpite que espera ganha `agora` {odd, casa, justa, valor, em}: a última foto da
+  API-Football antes do início (as da rodada e as do robô do intervalo, `odd_agora`), na casa comum, com a justa pela
+  Pinnacle sem a margem; None sem foto. As apostas rodam a cada hora, então o theo.json chega ao app até 1 h depois.
 - **Versões** (`grupo` "wstETH × ETH", "ETH × USDC" ou "Referência"; `alav` até 6): `wst3` (padrão), `wst6`, `eth15`, `eth2`,
   `eth2def` (desalavanca quando o fator de saúde cai a 1,3), e as réguas (desde 09/11/2026, `grupo` "Referência"):
   `wst1` (só wstETH, sem empréstimo: o staking sozinho, medido em ether), `eth1` (só ether, sem empréstimo: o preço

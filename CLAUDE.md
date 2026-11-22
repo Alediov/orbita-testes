@@ -117,7 +117,8 @@ acabavam; aqui os executores padrão não têm limite.
   cada 15 min, ramo `intervalo`): as odds ao vivo da API-Football no intervalo e perto dos 75' viram as contas de R$ 20
   do Observatório (`cartoes.intervalo`), e as fotos de antes do jogo da API-Football (Pinnacle e Betano) precificam os
   palpites do Theo sem gastar a OddsPapi (FORMATO.md, "As contas do intervalo" e "Os palpites do Theo pela
-  API-Football"). A sonda à mão dos mercados: `sonda_odds.py` + `sonda.yml`.
+  API-Football"). A sonda à mão dos mercados: `sonda_odds.py` + `sonda.yml`. Desde 22/11 as apostas rodam também a cada
+  hora (`papel.yml`, cron "53 * * * *" = só as apostas) e o theo.json leva a odd de antes do jogo (`agora`).
 - **Seguir o BDM** (pedido do Alediov, 09/11/2026; só esta conta, nenhum mercado novo): versão `bdm` das apostas, que
   segue os palpites do programa diário "Bom Dia Mercado" do Theo Borges. O repositório PRIVADO extrai os palpites da
   transcrição (que o celular baixa; `tools/ideias/bdm.py` + `ideias-bdm.yml` de lá, com a IA gratuita do filtro) e

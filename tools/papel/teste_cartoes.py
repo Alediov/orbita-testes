@@ -222,13 +222,16 @@ def teste_arbitros_na_coleta():
     assert not est3["arb"]["fontes"]["apif"].get("pausa") and any("não abre" in x for x in logs3)
     n = len(f3.chaves)
     C.completar_arbitros(f3, est3, cli.agora + HORA, lambda: 3000, logs3.append, err3, env)
+    assert not any(t == "apif" for t, *_ in f3.chaves[n:])           # só a cada 3 h
+    n = len(f3.chaves)
+    C.completar_arbitros(f3, est3, cli.agora + 3 * HORA, lambda: 3000, logs3.append, err3, env)
     assert any(t == "apif" for t, *_ in f3.chaves[n:])               # continua pedindo ontem e hoje
     # a chave recusada: para 1 dia
     f3.apif = "chave"
-    C.completar_arbitros(f3, est3, cli.agora + 2 * HORA, lambda: 3000, logs3.append, err3, env)
-    assert est3["arb"]["fontes"]["apif"]["pausa"] == cli.agora + 2 * HORA + DIA and any("tenta de novo amanhã" in x for x in logs3)
+    C.completar_arbitros(f3, est3, cli.agora + 6 * HORA, lambda: 3000, logs3.append, err3, env)
+    assert est3["arb"]["fontes"]["apif"]["pausa"] == cli.agora + 6 * HORA + DIA and any("tenta de novo amanhã" in x for x in logs3)
     m = len(f3.chaves)
-    C.completar_arbitros(f3, est3, cli.agora + 3 * HORA, lambda: 3000, logs3.append, err3, env)
+    C.completar_arbitros(f3, est3, cli.agora + 9 * HORA, lambda: 3000, logs3.append, err3, env)
     assert not any(t == "apif" for t, *_ in f3.chaves[m:])
     # os dias velhos já pedidos não voltam (os 2 últimos, sim: o grátis chega com atraso)
     limite = (dt.datetime.fromtimestamp(cli.agora / 1000, dt.timezone.utc) - dt.timedelta(days=2)).date().isoformat()

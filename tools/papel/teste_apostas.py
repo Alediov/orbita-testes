@@ -721,6 +721,14 @@ def teste_bdm_api_football():
     pin, soft, casa = A.af.series(fotos, 80)
     assert casa == "Betano" and pin["1x2"][0] == [(10, 2.0), (50, 1.9), (70, 1.8)] and soft["1x2"][0] == [(10, 2.1), (50, 2.0)]
     assert A.preco_em(pin["1x2"][0], 80) == 1.8
+    # a odd de agora no theo.json (antes do jogo): a última foto, na casa comum, com a justa pela Pinnacle
+    pk = {"st": "esperando", "i": 100, "mk": "1x2", "sel": "visitante", "inv": False, "af": 7}
+    ag = A.odd_agora(pk, fotos)
+    assert ag["casa"] == "Betano" and ag["odd"] == 6.0 and ag["em"] == 90 and 6.0 < ag["justa"] < 8.0 and ag["valor"] < 0, ag
+    pk2 = dict(pk, inv=True)
+    assert A.odd_agora(pk2, fotos)["odd"] == 1.5                     # o mandante do palpite é o visitante do jogo
+    assert A.odd_agora(dict(pk, mk="dupla", sel="x2"), fotos)["odd"] < 6.0
+    assert A.odd_agora(dict(pk, st="liquidado"), fotos) is None and A.odd_agora(dict(pk, i=5), fotos) is None
 
 
 def teste_bdm_historico():
