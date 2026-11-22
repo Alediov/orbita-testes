@@ -34,8 +34,9 @@ DIA = 24 * HORA
 LIMITE_DIA = 55              # pedidos do robô por dia (as apostas e os árbitros usam o resto dos 100)
 FOLGA = 12                   # não pede se a API-Football disser que restam menos que isso hoje
 LISTA_CADA = 6 * HORA
-JANELA_HT = (40, 72)         # minutos depois do início em que o jogo pode estar no intervalo
-JANELA_75 = (82, 108)        # …e perto dos 75' (com o intervalo e os acréscimos)
+JANELA_HT = (44, 68)         # minutos depois do início em que o jogo pode estar no intervalo
+JANELA_75 = (86, 106)        # …e perto dos 75' (com o intervalo e os acréscimos)
+TENTATIVAS = 4               # pedidos ao vivo por jogo e momento sem achar o que guardar: desiste (não gasta à toa)
 MIN_75 = (70, 86)            # o minuto do jogo que vale como "perto dos 75'"
 FECH_ANTES = 40 * MIN        # a foto de fechamento dos palpites do Theo: até 40 min antes do início
 GUARDA_CAP = 30 * DIA
@@ -156,12 +157,16 @@ class Robo:
         for j in jogos.values():
             mins = (self.agora - j["ms"]) / MIN
             c = E["cap"].get(str(j["id"])) or {}
-            if JANELA_HT[0] <= mins <= JANELA_HT[1] and "ht" not in c:
-                perto.append(j)
-            elif JANELA_75[0] <= mins <= JANELA_75[1] and "m75" not in c:
-                perto.append(j)
+            tent = E.setdefault("tent", {})
+            if JANELA_HT[0] <= mins <= JANELA_HT[1] and "ht" not in c and tent.get(f"{j['id']}:ht", 0) < TENTATIVAS:
+                perto.append((j, "ht"))
+            elif JANELA_75[0] <= mins <= JANELA_75[1] and "m75" not in c and tent.get(f"{j['id']}:m75", 0) < TENTATIVAS:
+                perto.append((j, "m75"))
         if not perto:
             return 0
+        for j, fase in perto:
+            E["tent"][f"{j['id']}:{fase}"] = E["tent"].get(f"{j['id']}:{fase}", 0) + 1
+        E["tent"] = {k: v for k, v in E["tent"].items() if int(k.split(":")[0]) in jogos}
         r = self.pedir(af.url_ao_vivo())
         if r is None:
             return 0
