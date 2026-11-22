@@ -109,7 +109,127 @@ def teste_coleta():
     assert C.resumo({}, cli.agora)["jogos"] == 0
 
 
+def teste_arbitros_de_fora():
+    """22/11/2026: o resumo da ESPN de verdade não traz o árbitro; as outras fontes preenchem."""
+    # a chave do nome
+    assert C.chave_arbitro("Anthony Taylor") == C.chave_arbitro("A Taylor") == C.chave_arbitro("A. Taylor, England") == "a taylor"
+    assert C.chave_arbitro("Wilton Pereira Sampaio") == "w sampaio" and C.chave_arbitro("Raphael Claus Junior") == "r claus"
+    assert C.chave_arbitro("") is None and C.chave_arbitro(None) is None
+    # a planilha do football-data.co.uk
+    csv_ = ("Div,Date,Time,HomeTeam,AwayTeam,FTHG,FTAG,Referee,HY,AY,HR,AR\n"
+            "E0,16/08/2025,12:30,Liverpool,Bournemouth,4,2,A Taylor,2,3,0,0\n"
+            "E0,17/08/2025,14:00,Arsenal,Man United,1,0,M Oliver,1,1,0,1\n"
+            "E0,18/08/2025,20:00,Leeds,Everton,1,0,,2,2,0,0\n")
+    ls = C.ler_planilha_arbitros(csv_)
+    assert [(x[1], x[3], x[4]) for x in ls] == [("Liverpool", "A Taylor", 5), ("Arsenal", "M Oliver", 3)]
+    # football-data.org e API-Football
+    fd = {"matches": [{"utcDate": "2026-11-20T19:00:00Z", "homeTeam": {"name": "CR Flamengo"}, "awayTeam": {"name": "SE Palmeiras"},
+                       "referees": [{"name": "Fulano Assistente", "type": "ASSISTANT_REFEREE_N1"}, {"name": "Wilton Pereira Sampaio", "type": "REFEREE"}]},
+                      {"utcDate": "2026-11-20T21:00:00Z", "homeTeam": {"name": "X"}, "awayTeam": {"name": "Y"}, "referees": []}]}
+    assert [(x[1], x[3]) for x in C.ler_fdorg(fd)] == [("CR Flamengo", "Wilton Pereira Sampaio")]
+    af = {"errors": [], "response": [{"fixture": {"date": "2026-11-20T19:00:00+00:00", "referee": "Anthony Taylor, England"},
+                                      "teams": {"home": {"name": "Liverpool"}, "away": {"name": "Everton"}}},
+                                     {"fixture": {"timestamp": 1795300000, "referee": None}, "teams": {"home": {"name": "A"}, "away": {"name": "B"}}}]}
+    assert [(x[1], x[3]) for x in C.ler_apif(af)] == [("Liverpool", "Anthony Taylor")]
+    # casar: os mesmos times em ±36 h, sem sobrescrever quem já tem
+    ms = C._ms("2026-11-20T19:00:00Z")
+    est = {"jogos": {"1": [ms, "bra", "Flamengo", "Palmeiras", 0, 2, 1, 1, None],
+                     "2": [ms, "eng", "Liverpool", "Everton", 1, 2, 2, 1, "Outro Nome"],
+                     "3": [ms + 3 * DIA, "bra", "Flamengo", "Palmeiras", 0, 1, 0, 1, None],
+                     "4": [ms, "eng", "Liverpool", "Everton", 1, 2, 2, 1]}}
+    assert C.casar(est, C.ler_fdorg(fd)) == 1 and est["jogos"]["1"][8] == "Wilton Pereira Sampaio" and est["jogos"]["3"][8] is None
+    assert C.casar(est, C.ler_apif(af)) == 1 and est["jogos"]["2"][8] == "Outro Nome" and est["jogos"]["4"][8] == "Anthony Taylor"
+    # o filtro pelo histórico das planilhas: só os jogos de antes, a média dele no lugar da daqui
+    hist = {"a taylor": [[ms - 30 * DIA, 6], [ms - 20 * DIA, 5], [ms - 10 * DIA, 4], [ms + DIA, 0]]}
+    js = [(f"t{k}", [ms - (10 - k) * DIA, "eng", "Liverpool", "Everton", 1, 3, 2, 2, None]) for k in range(4)]
+    js.append(("alvo", [ms, "eng", "Liverpool", "Everton", 0, 2, 1, 1, "Anthony Taylor"]))
+    fp = C.filtro_do_prompt(js, hist)
+    assert fp["alvo"][1] == 5.0 and fp["alvo"][0] is True
+    assert C.filtro_do_prompt(js)["alvo"][1] is None   # sem histórico: o árbitro ainda não tem 3 jogos aqui
+
+
+class _SemOficiais:
+    """O placar de mentira com o resumo SEM a arbitragem (como a ESPN de verdade) e a API core respondendo."""
+
+    def __init__(self, base, core="ref"):
+        self.base, self.core, self.urls, self.chaves = base, core, [], []
+
+    def __getattr__(self, k):
+        return getattr(self.base, k)
+
+    def json_url(self, url, tipo="espn"):
+        self.urls.append(url)
+        if "sports.core.api.espn.com" in url:
+            if self.core == "nada":
+                return {"count": 0, "items": []}
+            if "/officials/1" in url:
+                return {"displayName": "Raphael Claus", "position": {"name": "Referee"}, "order": 1}
+            return {"count": 2, "items": [{"$ref": url.replace("https://", "http://") + "/1"}, {"$ref": url + "/2"}]}
+        r = self.base.json_url(url, tipo)
+        if "summary" in url:
+            r = dict(r)
+            r.pop("gameInfo", None)
+        return r
+
+    def json_chave(self, url, tipo, cab, chave):
+        self.chaves.append((tipo, cab, chave, url))
+        if tipo == "fdorg":
+            return {"matches": []}
+        return {"errors": {"plan": "Free plans do not have access to this season"}, "response": []}
+
+
+def teste_arbitros_na_coleta():
+    cli = T.Cli()
+    base = cli if hasattr(cli, "oddspapi") else falso_apostas.Avulsa(cli)
+    # a API core traz (pelo $ref): o árbitro entra no jogo
+    f = _SemOficiais(base)
+    est, erros, logs = {}, [], []
+    for k in range(3):
+        C.coletar(f, est, cli.agora + k * 6 * HORA, lambda: 3000, logs.append, erros)
+    assert not erros, erros[:3]
+    com = [j for j in est["jogos"].values() if j[8]]
+    assert com and all(j[8] == "Raphael Claus" for j in com) and len(com) == len(est["jogos"])
+    assert any("formato dos oficiais" in x for x in logs) and est["arb"]["fontes"]["espnCore"]["achou"] == len(com)
+    assert any("/officials/1" in u and u.startswith("https://") for u in f.urls)
+    # a API core sem ninguém: para depois de 12 jogos seguidos, com o aviso
+    f2 = _SemOficiais(base, core="nada")
+    est2, logs2 = {}, []
+    for k in range(4):
+        C.coletar(f2, est2, cli.agora + k * 6 * HORA, lambda: 3000, logs2.append, [])
+    F = est2["arb"]["fontes"]["espnCore"]
+    assert F["achou"] == 0 and F["pausa"] > cli.agora and any("para por 14 dias" in x for x in logs2)
+    assert sum(1 for u in f2.urls if "core.api" in u) == C.CORE_DESISTE
+    # as chaves: pelo cabeçalho, nunca no log; a API-Football recusada pelo plano para 7 dias
+    env = {"FOOTBALLDATA_KEY": "fd-segredo", "APIFOOTBALL_KEY": "af-segredo"}
+    f3 = _SemOficiais(base, core="nada")
+    est3, logs3, err3 = {}, [], []
+    for k in range(4):
+        C.coletar(f3, est3, cli.agora + k * 6 * HORA, lambda: 3000, logs3.append, err3)
+    C.completar_arbitros(f3, est3, cli.agora, lambda: 3000, logs3.append, err3, env)
+    tipos = {t for t, *_ in f3.chaves}
+    assert tipos == {"fdorg", "apif"}, tipos
+    assert all((t, c) in (("fdorg", "X-Auth-Token"), ("apif", "x-apisports-key")) for t, c, *_ in f3.chaves)
+    assert all("segredo" not in u for *_x, u in f3.chaves) and not any("segredo" in x for x in logs3 + err3)
+    assert est3["arb"]["fontes"]["apif"]["pausa"] > cli.agora and any("API-Football recusou" in x for x in logs3)
+    n = len(f3.chaves)
+    C.completar_arbitros(f3, est3, cli.agora + HORA, lambda: 3000, logs3.append, err3, env)
+    assert not any(t == "apif" for t, *_ in f3.chaves[n:])          # parada
+    # os dias velhos já pedidos não voltam (os 2 últimos, sim: o grátis chega com atraso)
+    import datetime as dt
+    limite = (dt.datetime.fromtimestamp(cli.agora / 1000, dt.timezone.utc) - dt.timedelta(days=2)).date().isoformat()
+    de = [u.split("dateFrom=")[1][:10] for t, _c, _k, u in f3.chaves[n:] if t == "fdorg"]
+    assert all(d >= limite for d in de), (de, limite)
+    r = C.resumo(est3, cli.agora)
+    assert set(r["filtro"]["fontes"]) >= {"planilha", "fdorg", "apif", "espnCore"}
+    # sem as chaves: nada de pedido com chave
+    f4 = _SemOficiais(base, core="nada")
+    C.completar_arbitros(f4, {"jogos": dict(est3["jogos"])}, cli.agora, lambda: 3000, [].append, [], {})
+    assert not f4.chaves
+
+
 if __name__ == "__main__":
     teste_lances()
     teste_coleta()
+    teste_arbitros_de_fora()
+    teste_arbitros_na_coleta()
     print("ok")

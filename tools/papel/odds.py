@@ -58,9 +58,9 @@ class Cliente:
             texto = texto.replace(self.chave, "***")
         return texto
 
-    def _baixar(self, url, tipo, rotulo, tentativas=None):
+    def _baixar(self, url, tipo, rotulo, tentativas=None, cab=None):
         tentativas = tentativas or self.tentativas
-        req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "*/*"})
+        req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "*/*", **(cab or {})})
         for k in range(tentativas):
             self.pedidos += 1
             self.contagem[tipo] += 1
@@ -94,6 +94,18 @@ class Cliente:
             return json.loads(self._baixar(url, tipo, rotulo).decode("utf-8", errors="replace"))
         except ValueError as e:
             raise Erro(f"JSON inválido em {rotulo}") from e
+
+    def json_chave(self, url, tipo, cabecalho, chave):
+        """JSON de uma API gratuita com chave no CABEÇALHO (22/11/2026, os árbitros dos cartões: football-data.org e
+        API-Football). A chave nunca vai na URL, no log nem no erro."""
+        rotulo = url.split("?")[0]
+        try:
+            dados = self._baixar(url, tipo, rotulo, tentativas=2, cab={cabecalho: chave})
+            return json.loads(dados.decode("utf-8", errors="replace"))
+        except ValueError:
+            raise Erro(f"JSON inválido em {rotulo}") from None
+        except Erro as e:
+            raise Erro(str(e).replace(chave, "***"), getattr(e, "status", None)) from None
 
     def oddspapi(self, caminho, **params):
         """GET na OddsPapi v4 (`caminho` como "/fixtures"). Sem chave: Erro. Só 2 tentativas (cada uma gasta o mês)."""

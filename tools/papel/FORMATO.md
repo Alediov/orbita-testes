@@ -429,7 +429,18 @@ Futebol, só no papel (`apostas.py`). Diferenças das outras formas:
   `MIN_MEDIA` (3) de cada) chega a 4,0 e o árbitro, quando tem média, também. Cada regra ganha `comFiltro` (os jogos sem
   cartão no 1º tempo que passam no filtro); o bloco ganha `filtro` {arbitro, expectativa, minimo, jogosComArbitro,
   zeroComFiltro, zeroComMedias} e `arbitros` (os 8 de média mais alta, 3 jogos ou mais: nome, jogos, media). O 1º
-  `gameInfo` de verdade vai para o log (estrutura).
+  `gameInfo` de verdade vai para o log (estrutura). **Na ESPN de verdade o `gameInfo` não traz a arbitragem** (só o
+  estádio e o público): desde 22/11/2026 (pedido do Alediov) outras fontes grátis preenchem o nome, na ordem: a API core
+  da ESPN (`/officials` do jogo, sem chave; para 14 dias se 12 jogos seguidos vêm vazios), as planilhas inglesas do
+  football-data.co.uk (`Referee` e HY+AY+HR+AR, 1×/dia, a temporada atual e a anterior; também o histórico `arb.hist`
+  {chave: [[início, cartões]]}), a football-data.org (`FOOTBALLDATA_KEY`, cabeçalho `X-Auth-Token`; 10 dias por pedido,
+  até 3 por rodada; os dias de 2 ou mais dias atrás só uma vez) e a API-Football (`APIFOOTBALL_KEY`, cabeçalho
+  `x-apisports-key`; um dia por pedido, até 6 por rodada e 90 por dia; `errors` na resposta = para 7 dias). Os segredos
+  ficam só no `papel.yml` (variável de ambiente), nunca na URL, no estado ou no log (`odds.Cliente.json_chave`). O
+  casamento é pela data (±36 h) e pelos dois times; o nome vira `chave_arbitro` (inicial + último sobrenome: "A Taylor"
+  = "Anthony Taylor"). O árbitro com histórico nas planilhas tem a média só por ele (os jogos de antes, sem contar o
+  mesmo jogo duas vezes); os outros, pelos jogos vistos aqui. `filtro.fontes` {planilha, fdorg, apif, espnCore: jogos
+  preenchidos por cada fonte} e cada item de `arbitros` ganha `fonte` ("planilha" ou "aqui").
 
 - **theo.json, o arquivo do Placar** (22/11/2026, pedido do Alediov: "o Placar com mais detalhes do que o Theo
   escolheu"): a cada rodada das apostas o `papel.py` grava, ao lado do `apostas.json`, o `theo.json` (a forma devolve

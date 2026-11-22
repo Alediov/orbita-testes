@@ -108,7 +108,9 @@ acabavam; aqui os executores padrão não têm limite.
   `cartoes` do `apostas.json`. Teste: `teste_cartoes.py`. FORMATO.md, "Recortes e o acerto que empata" e "Cartões no
   intervalo". Em 22/11/2026: o árbitro e o filtro do prompt nos cartões (`comFiltro`, `arbitros`), a dupla chance e o
   empate anula pelo 1X2 nas contas do Theo e a conta `bdmConf` (R$ 30/20/10 pela `conviccao`). FORMATO.md, "Dupla
-  chance, empate anula e a confiança" e "O árbitro nos cartões".
+  chance, empate anula e a confiança" e "O árbitro nos cartões" (a ESPN de verdade não traz o árbitro: desde 22/11 vem da API core da ESPN, das
+  planilhas inglesas, da football-data.org e da API-Football, as duas com chave grátis nos segredos `FOOTBALLDATA_KEY` e
+  `APIFOOTBALL_KEY`; a chave só no papel.yml).
 - **Seguir o BDM** (pedido do Alediov, 09/11/2026; só esta conta, nenhum mercado novo): versão `bdm` das apostas, que
   segue os palpites do programa diário "Bom Dia Mercado" do Theo Borges. O repositório PRIVADO extrai os palpites da
   transcrição (que o celular baixa; `tools/ideias/bdm.py` + `ideias-bdm.yml` de lá, com a IA gratuita do filtro) e

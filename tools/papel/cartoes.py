@@ -14,13 +14,33 @@ Fonte: o placar público da ESPN (sem chave), o mesmo das apostas: a lista de jo
 jogo terminado, os lances (`keyEvents` do resumo do jogo: tipo, minuto, período e time). Cada cartão conta 1 (o 2º
 amarelo e o vermelho que vem com ele contam 2, como a ESPN registra). Prorrogação não conta. Os nomes dos campos foram
 escritos sem acesso à ESPN daqui: a 1ª rodada registra no log a estrutura de um lance para conferir.
+
+O árbitro (22/11/2026): o resumo da ESPN de verdade NÃO traz a arbitragem (o `gameInfo` só tem o estádio e o público).
+Outras fontes, todas gratuitas, preenchem o nome (`completar_arbitros`, a ordem abaixo):
+1. a API "core" da ESPN (`/events/<id>/competitions/<id>/officials`), sem chave: tentada nos jogos novos; se 12 jogos
+   seguidos não trazem ninguém, para por 14 dias (o log diz);
+2. as planilhas do football-data.co.uk (sem chave): `Referee` e os cartões (HY, AY, HR, AR) da Premier League, 1×/dia,
+   a temporada atual e a anterior; servem também de HISTÓRICO do árbitro (`arb.hist`: a média dele vem só dos jogos de
+   antes, sem contar duas vezes o mesmo jogo);
+3. a football-data.org (chave grátis no segredo `FOOTBALLDATA_KEY`, cabeçalho `X-Auth-Token`; 10 pedidos por minuto):
+   `referees` dos jogos do Brasileirão A e das ligas grandes da Europa, até 10 dias por pedido;
+4. a API-Football (chave grátis no segredo `APIFOOTBALL_KEY`, cabeçalho `x-apisports-key`; 100 pedidos por dia):
+   `fixture.referee` de todos os jogos de um dia num pedido só. Há relato de que o plano grátis não abre a temporada
+   atual: se ela recusar pelo plano, para por 7 dias e o log diz.
+As chaves só por variável de ambiente (papel.yml), nunca em arquivo, URL ou log. O casamento com os jogos da ESPN é pela
+data (±36 h) e pelos dois times (`apostas.mesmo_time`); o nome vira uma chave "inicial + sobrenome" (`chave_arbitro`),
+porque a planilha escreve "A Taylor" e as APIs "Anthony Taylor".
 """
 from __future__ import annotations
 
+import csv
 import datetime as dt
+import io
 import math
+import os
 import re
 import time
+import unicodedata
 
 from conta import DIA, HORA, dia_de
 
@@ -66,6 +86,21 @@ FILTRO_EXPECTATIVA = 4.0
 MIN_MEDIA = 3
 RE_ARBITRO = re.compile(r"referee|[áa]rbitro|arbitre|schiedsrichter", re.I)
 RE_NAO_ARBITRO = re.compile(r"assist|var\b|video|fourth|quarto|reserve|linesman", re.I)
+
+# as fontes do árbitro (22/11/2026; ver o começo do arquivo)
+URL_OFICIAIS = "https://sports.core.api.espn.com/v2/sports/soccer/leagues/{liga}/events/{id}/competitions/{id}/officials"
+CORE_DESISTE = 12            # jogos seguidos sem árbitro na API core: para
+CORE_PAUSA = 14 * DIA
+PLANILHA_ARB = {"eng": "E0"}  # as planilhas do football-data.co.uk que têm a coluna Referee (as inglesas)
+URL_FDORG = "https://api.football-data.org/v4/matches?competitions={comps}&dateFrom={de}&dateTo={ate}&status=FINISHED"
+FDORG_COMP = {"bra": "BSA", "eng": "PL", "esp": "PD", "ita": "SA", "ger": "BL1", "fra": "FL1", "ucl": "CL"}
+FDORG_DIAS = 10              # o máximo de dias por pedido
+FDORG_RODADA = 3
+URL_APIF = "https://v3.football.api-sports.io/fixtures?date={dia}&timezone=UTC"
+APIF_RODADA = 6              # dias por rodada
+APIF_DIA = 90                # pedidos por dia (o limite grátis é 100)
+CHAVE_PAUSA = 7 * DIA        # fonte com chave que recusou (plano, chave errada): tenta de novo em 7 dias
+CASAR_JANELA = 36 * HORA
 
 
 def _dia_espn(ms):
@@ -214,6 +249,58 @@ def arbitro(r):
     return um[0][1] if um and not RE_NAO_ARBITRO.search(um[0][2]) else None
 
 
+def chave_arbitro(nome):
+    """"Anthony Taylor", "A Taylor", "A. Taylor, England" → "a taylor" (a inicial e o último sobrenome)."""
+    if not nome:
+        return None
+    n = unicodedata.normalize("NFKD", str(nome).split(",")[0]).encode("ascii", "ignore").decode().lower()
+    ts = [t for t in re.sub(r"[^a-z ]+", " ", n).split() if t not in ("jr", "junior", "filho", "neto", "de", "da", "do", "dos")]
+    if not ts:
+        return None
+    return ts[0] if len(ts) == 1 else f"{ts[0][0]} {ts[-1]}"
+
+
+def oficiais_core(r):
+    """(nome do árbitro, [$ref]) da lista de oficiais da API core da ESPN: o nome se os itens vêm inteiros; senão os
+    endereços dos itens (só `$ref`)."""
+    itens = (r or {}).get("items") if isinstance(r, dict) else None
+    if not isinstance(itens, list) or not itens:
+        return None, []
+    inteiros = [x for x in itens if isinstance(x, dict) and (x.get("displayName") or x.get("fullName"))]
+    if inteiros:
+        return arbitro({"officials": inteiros}), []
+    return None, [x["$ref"] for x in itens if isinstance(x, dict) and x.get("$ref")]
+
+
+def arbitro_core(fonte, C, liga, eid, agora, log):
+    """O árbitro pela API core da ESPN (sem chave); None se ela não tem ou está parada."""
+    F = C.setdefault("arb", {}).setdefault("fontes", {}).setdefault("espnCore", {"tentou": 0, "achou": 0, "seguidos": 0})
+    if agora < int(F.get("pausa") or 0):
+        return None
+    F["tentou"] += 1
+    try:
+        r = fonte.json_url(URL_OFICIAIS.format(liga=COD[liga], id=eid), "espn")
+        if not F.get("viu"):
+            log(f"  cartões: formato dos oficiais (ESPN core): {estrutura(r, 4)}")
+            F["viu"] = True
+        nome, refs = oficiais_core(r)
+        if not nome and refs:
+            um = fonte.json_url(refs[0].replace("http://", "https://"), "espn")
+            nome = arbitro({"officials": [um]}) if isinstance(um, dict) else None
+    except Exception:  # noqa: BLE001  (404: a ESPN não tem a lista desse jogo)
+        nome = None
+    if nome:
+        F["achou"] += 1
+        F["seguidos"] = 0
+        return nome
+    F["seguidos"] = int(F.get("seguidos", 0)) + 1
+    if F["seguidos"] >= CORE_DESISTE and not F["achou"]:
+        F["pausa"] = agora + CORE_PAUSA
+        F["seguidos"] = 0
+        log(f"  cartões: a API core da ESPN não trouxe o árbitro em {CORE_DESISTE} jogos seguidos; para por 14 dias")
+    return None
+
+
 def contar(evs, id_casa, id_fora):
     """(cartões no 1º tempo, no 2º, da casa, de fora) dos lances; None se não houver lista de lances."""
     if evs is None:
@@ -325,7 +412,11 @@ def coletar(fonte, C, agora, restante, log, erros):
         if n is None:
             C["semLances"] = int(C.get("semLances", 0)) + 1
             continue
-        C["jogos"][eid] = [ms, liga, casa, fora, *n, arbitro(r)]
+        C["jogos"][eid] = [ms, liga, casa, fora, *n, arbitro(r) or arbitro_core(fonte, C, liga, eid, agora, log)]
+    try:
+        completar_arbitros(fonte, C, agora, restante, log, erros)
+    except Exception as e:  # noqa: BLE001  (os árbitros nunca derrubam a coleta)
+        erros.append(f"cartões: árbitros: {type(e).__name__}: {e}")
     # limpeza
     corte = agora - GUARDA_DIAS * DIA
     for eid in [k for k, j in C["jogos"].items() if j[0] < corte]:
@@ -337,6 +428,192 @@ def coletar(fonte, C, agora, restante, log, erros):
         log(f"  cartões: {feitos_dias} listas de jogos e {feitos_jogos} resumos; {len(C['jogos'])} jogos guardados, "
             f"{len(C['pend'])} esperando o resumo")
     return pedidos
+
+
+# ---------------------------------------------------------------------------------------------------- os árbitros de fora
+def ler_planilha_arbitros(texto):
+    """[(ms, casa, fora, árbitro, cartões)] de uma planilha do football-data.co.uk (as linhas sem Referee ficam de fora;
+    os cartões = HY + AY + HR + AR, o jogo inteiro)."""
+    from apostas import _campo, _data, _hora_uk, _f
+    texto = (texto or "").lstrip("\ufeff")
+    leitor = csv.DictReader(io.StringIO(texto))
+    if not leitor.fieldnames:
+        return []
+    leitor.fieldnames = [(c or "").strip().lstrip("\ufeff") for c in leitor.fieldnames]
+    out = []
+    for ln in leitor:
+        ref = (_campo(ln, "Referee") or "").strip()
+        casa, fora, d = _campo(ln, "HomeTeam", "Home"), _campo(ln, "AwayTeam", "Away"), _data(_campo(ln, "Date"))
+        if not ref or not casa or not fora or d is None:
+            continue
+        cs = [_f(_campo(ln, k)) for k in ("HY", "AY", "HR", "AR")]
+        out.append((_hora_uk(d, _campo(ln, "Time")), casa, fora, ref,
+                    int(sum(cs)) if all(c is not None for c in cs) else None))
+    return out
+
+
+def ler_fdorg(r):
+    """[(ms, casa, fora, árbitro, None)] da lista de jogos da football-data.org (o árbitro principal de `referees`)."""
+    out = []
+    for m in (r or {}).get("matches") or []:
+        try:
+            refs = [x for x in m.get("referees") or [] if isinstance(x, dict) and x.get("name")]
+            ref = next((x["name"] for x in refs if str(x.get("type") or "").upper() == "REFEREE"), None)
+            ms = _ms(m.get("utcDate"))
+            casa = (m.get("homeTeam") or {}).get("name") or (m.get("homeTeam") or {}).get("shortName")
+            fora = (m.get("awayTeam") or {}).get("name") or (m.get("awayTeam") or {}).get("shortName")
+            if ref and ms and casa and fora:
+                out.append((ms, casa, fora, ref, None))
+        except (AttributeError, TypeError):
+            continue
+    return out
+
+
+def ler_apif(r):
+    """[(ms, casa, fora, árbitro, None)] de /fixtures da API-Football ("Anthony Taylor, England" vira o nome)."""
+    out = []
+    for x in (r or {}).get("response") or []:
+        try:
+            fx, tm = x.get("fixture") or {}, x.get("teams") or {}
+            ref = str(fx.get("referee") or "").split(",")[0].strip()
+            ms = _ms(fx.get("date")) or (int(fx["timestamp"]) * 1000 if fx.get("timestamp") else None)
+            casa, fora = (tm.get("home") or {}).get("name"), (tm.get("away") or {}).get("name")
+            if ref and ms and casa and fora:
+                out.append((ms, casa, fora, ref, None))
+        except (AttributeError, TypeError, ValueError):
+            continue
+    return out
+
+
+def casar(C, achados, ligas=None):
+    """Põe o árbitro de `achados` [(ms, casa, fora, árbitro, _)] nos jogos guardados sem ele (mesmos times, ±36 h).
+    Devolve quantos preencheu."""
+    from apostas import mesmo_time
+    n = 0
+    for j in C.get("jogos", {}).values():
+        if (len(j) > 8 and j[8]) or (ligas and j[1] not in ligas):
+            continue
+        for ms, casa, fora, ref, _c in achados:
+            if abs(ms - j[0]) <= CASAR_JANELA and mesmo_time(j[2], casa) and mesmo_time(j[3], fora):
+                if len(j) > 8:
+                    j[8] = ref
+                else:
+                    j.append(ref)
+                n += 1
+                break
+    return n
+
+
+def _faltam(C, ligas=None):
+    """Os jogos guardados sem árbitro (dos campeonatos `ligas`, se dado)."""
+    return [j for j in C.get("jogos", {}).values() if not (len(j) > 8 and j[8]) and (not ligas or j[1] in ligas)]
+
+
+def _contar_fonte(A, nome, n):
+    F = A.setdefault("fontes", {}).setdefault(nome, {})
+    F["preencheu"] = int(F.get("preencheu", 0)) + n
+    return F
+
+
+def completar_arbitros(fonte, C, agora, restante, log, erros, env=None):
+    """As fontes 2 a 4 do começo do arquivo. Nada aqui derruba a coleta."""
+    env = os.environ if env is None else env
+    A = C.setdefault("arb", {})
+    A.setdefault("fontes", {})
+    # 2. as planilhas inglesas (1×/dia): o nome nos jogos e o histórico de cada árbitro
+    F = A["fontes"].setdefault("planilha", {})
+    if agora - int(F.get("em") or 0) >= DIA and restante() >= TEMPO_MIN:
+        from apostas import URL_FD, temporadas
+        temps, _ini = temporadas(agora, 2)
+        linhas, hist = [], {}
+        for liga, div in PLANILHA_ARB.items():
+            for t in temps:
+                try:
+                    linhas += [(liga, x) for x in ler_planilha_arbitros(fonte.texto(URL_FD.format(temp=t, div=div), "arbitros"))]
+                except Exception as e:  # noqa: BLE001  (a temporada que não começou dá 404)
+                    if getattr(e, "status", None) != 404:
+                        erros.append(f"cartões: planilha dos árbitros ({div} {t}): {e}")
+        for liga, (ms, casa, fora, ref, cart) in linhas:
+            k = chave_arbitro(ref)
+            if k and cart is not None:
+                hist.setdefault(k, []).append([ms, cart])
+        F["em"] = agora
+        if linhas:
+            A["hist"] = {k: sorted(v) for k, v in hist.items()}
+            n = casar(C, [x for _l, x in linhas], set(PLANILHA_ARB))
+            _contar_fonte(A, "planilha", n)
+            log(f"  cartões: planilha dos árbitros: {len(linhas)} jogos, {len(hist)} árbitros, {n} jogos daqui preenchidos")
+    # 3. football-data.org (chave grátis)
+    chave = (env.get("FOOTBALLDATA_KEY") or "").strip()
+    F = A["fontes"].setdefault("fdorg", {})
+    if chave and agora >= int(F.get("pausa") or 0):
+        tentados = set(F.get("tentados") or [])
+        recente = (dt.datetime.fromtimestamp(agora / 1000, dt.timezone.utc) - dt.timedelta(days=2)).date()
+        falta = sorted(j[0] for j in _faltam(C, set(FDORG_COMP)))
+        falta = [ms for ms in falta if dt.datetime.fromtimestamp(ms / 1000, dt.timezone.utc).date().isoformat() not in tentados]
+        feitos = 0
+        while falta and feitos < FDORG_RODADA and restante() >= TEMPO_MIN:
+            de = dt.datetime.fromtimestamp(falta[0] / 1000, dt.timezone.utc).date()
+            ate = de + dt.timedelta(days=FDORG_DIAS - 1)
+            # um dia de 2 dias atrás ou mais velho só é pedido uma vez (o grátis chega com atraso: os recentes voltam)
+            tentados |= {(de + dt.timedelta(days=k)).isoformat() for k in range(FDORG_DIAS) if de + dt.timedelta(days=k) <= recente}
+            url = URL_FDORG.format(comps=",".join(sorted(set(FDORG_COMP.values()))), de=de.isoformat(), ate=ate.isoformat())
+            feitos += 1
+            try:
+                r = fonte.json_chave(url, "fdorg", "X-Auth-Token", chave)
+            except Exception as e:  # noqa: BLE001
+                if getattr(e, "status", None) in (400, 401, 403):
+                    F["pausa"] = agora + CHAVE_PAUSA
+                    log(f"  cartões: a football-data.org recusou ({e}); tenta de novo em 7 dias")
+                else:
+                    erros.append(f"cartões: football-data.org: {e}")
+                break
+            if not F.get("viu"):
+                log(f"  cartões: formato da football-data.org: {estrutura(((r or {}).get('matches') or [{}])[0], 3)}")
+                F["viu"] = True
+            n = casar(C, ler_fdorg(r), set(FDORG_COMP))
+            _contar_fonte(A, "fdorg", n)
+            log(f"  cartões: football-data.org {de}–{ate}: {n} árbitros")
+            fim = int(dt.datetime.combine(ate + dt.timedelta(days=1), dt.time(), dt.timezone.utc).timestamp() * 1000)
+            falta = [ms for ms in falta if ms >= fim]
+        corte = (dt.datetime.fromtimestamp(agora / 1000, dt.timezone.utc) - dt.timedelta(days=GUARDA_DIAS + 2)).date().isoformat()
+        F["tentados"] = sorted(x for x in tentados if x >= corte)
+    # 4. API-Football (chave grátis): um dia por pedido, todos os campeonatos
+    chave = (env.get("APIFOOTBALL_KEY") or "").strip()
+    F = A["fontes"].setdefault("apif", {})
+    if chave and agora >= int(F.get("pausa") or 0):
+        hoje = dia_de(agora)
+        if F.get("dia") != hoje:
+            F["dia"], F["hoje"] = hoje, 0
+        dias = sorted({_dia_espn(j[0]) for j in _faltam(C)}, reverse=True)
+        tentados = set(F.get("tentados") or [])
+        feitos = 0
+        for d in [x for x in dias if x not in tentados]:
+            if feitos >= APIF_RODADA or F["hoje"] >= APIF_DIA or restante() < TEMPO_MIN:
+                break
+            iso = f"{d[:4]}-{d[4:6]}-{d[6:]}"
+            feitos += 1
+            F["hoje"] += 1
+            try:
+                r = fonte.json_chave(URL_APIF.format(dia=iso), "apif", "x-apisports-key", chave)
+            except Exception as e:  # noqa: BLE001
+                erros.append(f"cartões: API-Football: {e}")
+                break
+            errs = (r or {}).get("errors")
+            if errs:  # a API-Football responde 200 com o motivo em `errors` (plano, chave, limite)
+                F["pausa"] = agora + CHAVE_PAUSA
+                F["motivo"] = str(errs)[:200]
+                log(f"  cartões: a API-Football recusou: {F['motivo']}; tenta de novo em 7 dias")
+                break
+            if not F.get("viu"):
+                log(f"  cartões: formato da API-Football: {estrutura(((r or {}).get('response') or [{}])[0], 3)}")
+                F["viu"] = True
+            n = casar(C, ler_apif(r))
+            _contar_fonte(A, "apif", n)
+            tentados.add(d)
+            log(f"  cartões: API-Football {iso}: {n} árbitros")
+        corte = _dia_espn(agora - (GUARDA_DIAS + 2) * DIA)
+        F["tentados"] = sorted(x for x in tentados if x >= corte)
 
 
 # ---------------------------------------------------------------------------------------------------- as contas
@@ -351,15 +628,26 @@ def taxa(js, linha):
             "justa": round(1 / t, 2) if t else None}
 
 
-def filtro_do_prompt(js):
+def _media_hist(hist, k, antes):
+    """(jogos, média) do árbitro `k` no histórico das planilhas, só com os jogos de antes de `antes`."""
+    xs = [c for ms, c in (hist or {}).get(k) or [] if ms < antes - 6 * HORA]
+    return (len(xs), sum(xs) / len(xs)) if xs else (0, None)
+
+
+def filtro_do_prompt(js, hist=None):
     """{id do jogo: (passa, média do árbitro, expectativa)} pelo filtro do prompt, com as médias só dos jogos de antes
-    (os jogos em ordem de início; o árbitro só conta com MIN_MEDIA jogos dele vistos aqui; a expectativa pede as médias
-    dos dois times, também com MIN_MEDIA jogos). Os jogos são (id, linha do estado)."""
+    (os jogos em ordem de início; o árbitro só conta com MIN_MEDIA jogos dele; a expectativa pede as médias dos dois
+    times, também com MIN_MEDIA jogos). O árbitro com histórico nas planilhas (`hist`, por `chave_arbitro`) usa só ele
+    (o mesmo jogo não conta duas vezes); os outros, os jogos vistos aqui. Os jogos são (id, linha do estado)."""
     arb, tim, out = {}, {}, {}
     for eid, j in sorted(js, key=lambda x: x[1][0]):
         total = j[4] + j[5]
-        ref = j[8] if len(j) > 8 else None
-        ma = (arb[ref][1] / arb[ref][0]) if ref and ref in arb and arb[ref][0] >= MIN_MEDIA else None
+        ref = chave_arbitro(j[8] if len(j) > 8 else None)
+        if ref and hist and ref in hist:
+            nh, mh = _media_hist(hist, ref, j[0])
+            ma = mh if nh >= MIN_MEDIA else None
+        else:
+            ma = (arb[ref][1] / arb[ref][0]) if ref and ref in arb and arb[ref][0] >= MIN_MEDIA else None
         mc = (tim[j[2]][1] / tim[j[2]][0]) if j[2] in tim and tim[j[2]][0] >= MIN_MEDIA else None
         mf = (tim[j[3]][1] / tim[j[3]][0]) if j[3] in tim and tim[j[3]][0] >= MIN_MEDIA else None
         exp = None
@@ -393,7 +681,8 @@ def resumo(C, agora):
     out["media"] = {"jogo": round(sum(j[4] + j[5] for j in js) / n, 2), "t1": round(sum(j[4] for j in js) / n, 2),
                     "t2": round(sum(j[5] for j in js) / n, 2),
                     "t2SemCartao1t": round(sum(j[5] for j in zero) / len(zero), 2) if zero else None}
-    fp = filtro_do_prompt(list(C.get("jogos", {}).items()))
+    hist = (C.get("arb") or {}).get("hist") or {}
+    fp = filtro_do_prompt(list(C.get("jogos", {}).items()), hist)
     passa = {eid for eid, (ok, _a, _e) in fp.items() if ok}
     zero_f = [j for eid, j in C.get("jogos", {}).items() if j[4] == 0 and eid in passa]
     out["regras"] = [{"id": rid, "linha": ln, "nome": f"Mais de {str(ln).replace('.', ',')} cartões no 2º tempo",
@@ -403,13 +692,27 @@ def resumo(C, agora):
     out["filtro"] = {"arbitro": FILTRO_ARBITRO, "expectativa": FILTRO_EXPECTATIVA, "minimo": MIN_MEDIA,
                      "jogosComArbitro": len(com_arb), "zeroComFiltro": len(zero_f),
                      "zeroComMedias": sum(1 for eid, j in C.get("jogos", {}).items() if j[4] == 0 and fp[eid][2] is not None)}
-    ar = {}
+    out["filtro"]["fontes"] = {k: int(v.get("preencheu") or 0) for k, v in ((C.get("arb") or {}).get("fontes") or {}).items()
+                               if k != "espnCore"}
+    core = ((C.get("arb") or {}).get("fontes") or {}).get("espnCore") or {}
+    out["filtro"]["fontes"]["espnCore"] = int(core.get("achou") or 0)
+    ar, nomes = {}, {}
     for j in com_arb:
-        a = ar.setdefault(j[8], [0, 0])
+        k = chave_arbitro(j[8])
+        if not k:
+            continue
+        if len(str(j[8])) > len(nomes.get(k, "")):
+            nomes[k] = str(j[8])
+        a = ar.setdefault(k, [0, 0])
         a[0] += 1
         a[1] += j[4] + j[5]
-    out["arbitros"] = sorted(({"nome": n, "jogos": v[0], "media": round(v[1] / v[0], 2)}
-                              for n, v in ar.items() if v[0] >= MIN_MEDIA), key=lambda x: (-x["media"], -x["jogos"]))[:8]
+    lista = []
+    for k, v in ar.items():
+        nh, mh = _media_hist(hist, k, agora + DIA)  # com as planilhas: a média da temporada (todos os jogos)
+        n, m, fonte_m = (nh, mh, "planilha") if nh >= MIN_MEDIA else (v[0], v[1] / v[0], "aqui")
+        if n >= MIN_MEDIA:
+            lista.append({"nome": nomes[k], "jogos": n, "media": round(m, 2), "fonte": fonte_m})
+    out["arbitros"] = sorted(lista, key=lambda x: (-x["media"], -x["jogos"]))[:8]
     ligas = []
     for liga, nome, _c in LIGAS:
         lj = [j for j in js if j[1] == liga]
