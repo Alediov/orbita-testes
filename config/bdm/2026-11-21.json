@@ -1,0 +1,49 @@
+{
+ "versao": 1,
+ "data": "2026-11-21",
+ "video": {
+  "id": "rlz2-OrHKzg",
+  "publicado": "2026-11-20T12:00:39+00:00"
+ },
+ "palpites": [
+  {
+   "id": "rlz2-OrHKzg-1",
+   "mandante": "Manchester City",
+   "visitante": "Fulham",
+   "competicao": "Premier League",
+   "inicio": "2026-11-21T09:30:00-03:00",
+   "mercado": "1x2",
+   "linha": null,
+   "selecao": "mandante",
+   "oddCitada": null,
+   "fora": false,
+   "motivo": null
+  },
+  {
+   "id": "rlz2-OrHKzg-2",
+   "mandante": "Lazio",
+   "visitante": "Lecce",
+   "competicao": "Serie A",
+   "inicio": "2026-11-21T11:00:00-03:00",
+   "mercado": "1x2",
+   "linha": null,
+   "selecao": "mandante",
+   "oddCitada": null,
+   "fora": false,
+   "motivo": null
+  },
+  {
+   "id": "rlz2-OrHKzg-3",
+   "mandante": "Cruzeiro",
+   "visitante": "Chapecoense",
+   "competicao": "Brasileirão",
+   "inicio": "2026-11-21",
+   "mercado": "1x2",
+   "linha": null,
+   "selecao": "mandante",
+   "oddCitada": null,
+   "fora": false,
+   "motivo": null
+  }
+ ]
+}
