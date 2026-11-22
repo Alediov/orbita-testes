@@ -1189,7 +1189,9 @@ APELIDOS = {"man utd": "manchester united", "man united": "manchester united", "
             "nott m forest": "nottingham forest", "nottm forest": "nottingham forest", "spurs": "tottenham",
             "wolves": "wolverhampton", "inter": "internazionale", "psg": "paris saint germain",
             "paris sg": "paris saint germain", "ath madrid": "atletico madrid", "ath bilbao": "athletic bilbao",
-            "sp lisbon": "sporting", "atletico mg": "atletico mineiro", "athletico pr": "athletico paranaense"}
+            "sp lisbon": "sporting", "atletico mg": "atletico mineiro", "athletico pr": "athletico paranaense",
+            # 22/11/2026: a API-Football escreve sem o "h" ("Atletico Paranaense")
+            "atletico paranaense": "athletico paranaense", "atletico pr": "athletico paranaense"}
 SOBRA = {"fc", "cf", "ec", "sc", "ac", "afc", "cr", "se", "club", "clube", "de", "da", "do", "the", "ca", "cd", "ss",
          "as", "us", "rc", "sv", "vfb", "vfl", "tsg", "fk", "sk", "esporte", "futebol", "football", "calcio", "1"}
 
