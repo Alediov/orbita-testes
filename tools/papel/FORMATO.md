@@ -465,8 +465,9 @@ Futebol, só no papel (`apostas.py`). Diferenças das outras formas:
   acima / até a mediana)], fim {todos, empate (empatado aos 75'), empates, chutesMediana, empatePressao/empateCalmo
   (chutes de 60' a 75' acima / até a mediana)}}; cada taxa no formato {n, k, taxa, lo, hi, justa}.
 
-- **As contas do intervalo** (22/11/2026, pedido do Alediov): o robô do intervalo (`intervalo.py`, `intervalo.yml` a
-  cada 15 min das 11h às 2h59 UTC, ramo órfão `intervalo`) lê a API-Football (`af.py`, chave grátis `APIFOOTBALL_KEY`):
+- **As contas do intervalo** (22/11/2026, pedido do Alediov): o robô do intervalo (`intervalo.py`, `intervalo.yml`:
+  como o agendamento do GitHub pula rodadas, um LAÇO de uma volta a cada 5 min por ~5h40 que dispara a si mesmo no fim,
+  com o cron de 6 em 6 h só de reserva; ramo órfão `intervalo`) lê a API-Football (`af.py`, chave grátis `APIFOOTBALL_KEY`):
   a lista de jogos do dia (a cada 6 h) e, só quando algum jogo acompanhado (`af.LIGA_AF`) pode estar no intervalo (40 a
   72 min depois do início) ou perto dos 75' (82 a 108 min), um `/odds/live` (todos os jogos num pedido). Guarda no
   intervalo `ht` {t, gols, m} e perto dos 75' (minuto 70 a 86) `m75` {t, min, gols, m}, com m = {mercado: [[over/under,

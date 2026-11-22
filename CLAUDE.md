@@ -113,8 +113,10 @@ acabavam; aqui os executores padrão não têm limite.
   `APIFOOTBALL_KEY`; a chave só no papel.yml). Também em 22/11: escanteios, faltas e chutes de cada tempo pela narração
   lance a lance do mesmo resumo da ESPN (`cartoes.escanteios`, o recorte `comFaltas`; FORMATO.md, "Escanteios") e os
   gols depois do 0×0 no intervalo e no fim, pela pressão dos chutes (`cartoes.gols`; FORMATO.md, "Gols no intervalo e
-  no fim"); no app, a parte virou "Observatório". E o **robô do intervalo** (`intervalo.py` + `af.py`, `intervalo.yml` a
-  cada 15 min, ramo `intervalo`): as odds ao vivo da API-Football no intervalo e perto dos 75' viram as contas de R$ 20
+  no fim"); no app, a parte virou "Observatório". E o **robô do intervalo** (`intervalo.py` + `af.py`, `intervalo.yml`:
+  um laço de 5 em 5 min que se redispara a cada ~5h40, ramo `intervalo`; a cada volta, o **vigia** `vigia.py` dispara
+  pela API o workflow atrasado, porque o agendamento do GitHub pula rodadas: o copy trading de 2 em 2 h rodou 4 vezes
+  em 40 h em 21–22/11): as odds ao vivo da API-Football no intervalo e perto dos 75' viram as contas de R$ 20
   do Observatório (`cartoes.intervalo`), e as fotos de antes do jogo da API-Football (Pinnacle e Betano) precificam os
   palpites do Theo sem gastar a OddsPapi (FORMATO.md, "As contas do intervalo" e "Os palpites do Theo pela
   API-Football"). A sonda à mão dos mercados: `sonda_odds.py` + `sonda.yml`. Desde 22/11 as apostas rodam também a cada

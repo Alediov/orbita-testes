@@ -1,11 +1,15 @@
-name: Robô do intervalo (odds ao vivo, no papel)
-# 22/11/2026 (pedido do Alediov): a cada 15 min nos horários de jogo (UTC), guarda as odds ao vivo da API-Football no
-# intervalo e perto dos 75' dos jogos acompanhados e o fechamento dos palpites do Theo (tools/papel/intervalo.py).
-# Só leitura; ramo órfão `intervalo`. A chave GRATUITA só no segredo APIFOOTBALL_KEY (cabeçalho, nunca no log).
+name: Robô do intervalo (odds ao vivo, no papel) e o vigia dos agendamentos
+# 22/11/2026 (pedido do Alediov): guarda as odds ao vivo da API-Football no intervalo e perto dos 75' dos jogos
+# acompanhados e o fechamento dos palpites do Theo (tools/papel/intervalo.py). Só leitura; ramo órfão `intervalo`.
+# A chave GRATUITA só no segredo APIFOOTBALL_KEY (cabeçalho, nunca no log).
+#
+# O agendamento do GitHub pula rodadas (o de 15 em 15 min não rodou nenhuma vez em 5 h), então o robô roda num LAÇO:
+# uma volta a cada 5 min por ~5h40 e, no fim, dispara a si mesmo (workflow_dispatch pelo GITHUB_TOKEN é permitido).
+# A cada volta, o vigia (tools/papel/vigia.py) dispara os outros workflows que estiverem atrasados. O agendamento de
+# 6 em 6 h fica só de reserva, se a corrente quebrar.
 on:
   schedule:
-    - cron: "*/15 11-23 * * *"
-    - cron: "*/15 0-2 * * *"
+    - cron: "7 */6 * * *"
   workflow_dispatch:
 permissions:
   contents: write
@@ -16,27 +20,41 @@ concurrency:
 jobs:
   robo:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 355
     steps:
       - uses: actions/checkout@v4
       - name: Estado anterior (ramo intervalo)
         run: |
           mkdir -p dados
           if git fetch -q --depth=1 origin intervalo; then git archive FETCH_HEAD | tar -x -C dados; else echo "ramo intervalo ainda não existe"; fi
-      - name: Rodada
+      - name: Laço (uma volta a cada 5 min)
         env:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
-        run: python3 -I tools/papel/intervalo.py --dados dados
-      - name: Guardar no ramo intervalo
-        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cd dados
-          [ -f intervalo.json ] || { echo "sem saída"; exit 0; }
-          git init -q
-          git checkout -q -b intervalo
-          git config user.name "Órbita (robô do intervalo)"
-          git config user.email "actions@users.noreply.github.com"
-          git add -A
-          git commit -q -m "Intervalo: $(date -u +%Y-%m-%dT%H:%MZ)"
-          git push -q -f "https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git" intervalo
+          guardar() {
+            [ -f dados/intervalo.json ] || return 0
+            rm -rf /tmp/ramo && mkdir -p /tmp/ramo && cp dados/*.json dados/log.txt /tmp/ramo/ 2>/dev/null
+            ( cd /tmp/ramo && git init -q && git checkout -q -b intervalo \
+              && git config user.name "Órbita (robô do intervalo)" \
+              && git config user.email "actions@users.noreply.github.com" \
+              && git add -A && git commit -q -m "Intervalo: $(date -u +%Y-%m-%dT%H:%MZ)" \
+              && git push -q -f "https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git" intervalo ) || echo "não deu para guardar"
+          }
+          fim=$(( $(date +%s) + 340 * 60 ))
+          ult=""
+          while [ "$(date +%s)" -lt "$fim" ]; do
+            python3 -I tools/papel/intervalo.py --dados dados || echo "a volta falhou"
+            h=$(sha1sum dados/intervalo.json 2>/dev/null | cut -c1-40)
+            min=$(date +%M)
+            if [ "$h" != "$ult" ] || [ "${min#0}" -lt 5 ]; then guardar; ult="$h"; fi
+            python3 -I tools/papel/vigia.py || echo "o vigia falhou"
+            sleep 300
+          done
+          guardar
+      - name: A próxima volta (dispara a si mesmo)
+        if: success() || failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run intervalo.yml -R "${GITHUB_REPOSITORY}" --ref main || echo "não deu para disparar de novo"
