@@ -660,7 +660,7 @@ def completar_arbitros(fonte, C, agora, restante, log, erros, env=None):
     A.setdefault("fontes", {})
     # 2. as planilhas (1×/dia): o árbitro e o histórico dele (só as inglesas têm Referee) e o histórico dos escanteios
     F = A["fontes"].setdefault("planilha", {})
-    if agora - int(F.get("em") or 0) >= DIA and restante() >= TEMPO_MIN:
+    if (agora - int(F.get("em") or 0) >= DIA or "escHist" not in C) and restante() >= TEMPO_MIN:
         from apostas import URL_FD, temporadas
         temps, _ini = temporadas(agora, 2)
         linhas, hist, esc = [], {}, {}
