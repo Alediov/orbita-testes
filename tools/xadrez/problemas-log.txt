@@ -1,0 +1,53 @@
+baixando https://database.lichess.org/lichess_db_puzzle.csv.zst
+500000 linhas
+1000000 linhas
+1500000 linhas
+2000000 linhas
+2500000 linhas
+3000000 linhas
+3500000 linhas
+4000000 linhas
+4500000 linhas
+5000000 linhas
+5500000 linhas
+6000000 linhas
+lidas 6193530
+mate1 247568 -> 148
+mate2 313192 -> 148
+mate3 91576 -> 148
+corredor 40398 -> 148
+garfo 311723 -> 148
+cravada 138246 -> 148
+espeto 54393 -> 148
+descoberto 127747 -> 148
+xequeDuplo 12650 -> 148
+pendurada 71100 -> 148
+presa 27643 -> 137
+desvio 107587 -> 148
+atracao 90639 -> 148
+sacrificio 159233 -> 148
+defesa 69043 -> 148
+peaoAvancado 121181 -> 148
+intermediario 27165 -> 122
+finalPeoes 53920 -> 148
+finalTorre 100173 -> 148
+finalDama 24242 -> 148
+finalBispoCavalo 36397 -> 148
+sicilianaTaimanov 2454 -> 148
+sicilianaAlapin 5010 -> 148
+sicilianaOutras 15264 -> 148
+italiana 25184 -> 148
+petrovPhilidor 11428 -> 148
+gambitoDamaRecusado 16626 -> 148
+londres 9088 -> 148
+francesaAvanco 5244 -> 148
+caroKannAvanco 5001 -> 148
+escandinava 19517 -> 148
+pircModerna 13369 -> 148
+alekhine 4223 -> 148
+escocesa 12445 -> 148
+sicilianaQuatroCavalos 1481 -> 148
+grunfeld 1663 -> 148
+gambitoDamaAceito 4565 -> 148
+eslava 7918 -> 148
+app/dados/xadrez/problemas.json 822522 bytes, 5532 problemas

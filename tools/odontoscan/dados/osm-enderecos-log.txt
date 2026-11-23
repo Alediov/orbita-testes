@@ -1,0 +1,3 @@
+Overpass ok em https://overpass-api.de/api/interpreter: 4295 elementos
+3603 trechos de rua com nome (1745 nomes), 669 endereços com número (181 ruas com algum número)
+gravado osm-enderecos.json.gz: 185 KB
