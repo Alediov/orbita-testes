@@ -1,0 +1,52 @@
+{
+ "versao": 1,
+ "data": "2026-11-23",
+ "video": {
+  "id": "alnwcBTPQxU",
+  "publicado": "2026-11-22T12:00:00+00:00"
+ },
+ "palpites": [
+  {
+   "id": "alnwcBTPQxU-1",
+   "mandante": "Internacional",
+   "visitante": "Vitória",
+   "competicao": "Brasileirão",
+   "inicio": "2026-11-23",
+   "mercado": "ou",
+   "linha": 2.5,
+   "selecao": "menos",
+   "oddCitada": null,
+   "fora": false,
+   "motivo": null,
+   "conviccao": "baixa"
+  },
+  {
+   "id": "alnwcBTPQxU-2",
+   "mandante": "Botafogo",
+   "visitante": "São Paulo",
+   "competicao": "Brasileirão",
+   "inicio": "2026-11-23",
+   "mercado": "ou",
+   "linha": 2.5,
+   "selecao": "menos",
+   "oddCitada": null,
+   "fora": false,
+   "motivo": null,
+   "conviccao": "baixa"
+  },
+  {
+   "id": "alnwcBTPQxU-3",
+   "mandante": "Santos",
+   "visitante": "Grêmio",
+   "competicao": "Brasileirão",
+   "inicio": "2026-11-23",
+   "mercado": "cartoes",
+   "linha": 3.5,
+   "selecao": "mais",
+   "oddCitada": null,
+   "fora": true,
+   "motivo": "condicional",
+   "conviccao": "baixa"
+  }
+ ]
+}
