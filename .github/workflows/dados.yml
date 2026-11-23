@@ -5,6 +5,9 @@
 #   sia     produção ambulatorial oficial (SIA/SUS, DATASUS) dos dois CNES da clínica de Odontologia da UNIOESTE,
 #           agregada por mês (espelho/tools/odontoscan/sia.py). Incremental. Todo dia 22 e à mão.
 #   xadrez  problemas do banco do Lichess (CC0) para os treinos (espelho/tools/xadrez/problemas.py). Só à mão.
+#   enderecos  ruas de Cascavel com a geometria e os números de casa do OpenStreetMap (ODbL), para o app pôr no mapa o
+#           endereço das fichas da IC NO computador do laboratório (espelho/tools/odontoscan/osm_enderecos.py; só dados
+#           públicos do OSM, nada das fichas). Só à mão.
 name: Dados públicos do app (SIA, xadrez)
 on:
   schedule:
@@ -12,7 +15,7 @@ on:
   workflow_dispatch:
     inputs:
       qual:
-        description: "sia ou xadrez"
+        description: "sia, xadrez ou enderecos"
         default: "sia"
       inicio:
         description: "SIA: primeiro mês de processamento (AAAA-MM)"
@@ -65,6 +68,10 @@ jobs:
           pip install -q zstandard
           mkdir -p app/dados/xadrez
           python3 tools/xadrez/problemas.py 2>&1 | tee tools/xadrez/problemas-log.txt
+      - name: Endereços (OSM)
+        if: env.QUAL == 'enderecos'
+        working-directory: espelho
+        run: python3 tools/odontoscan/osm_enderecos.py
       - name: Guardar no ramo dados
         if: always()
         env:

@@ -10,7 +10,7 @@
 # que o outro acabou de gravar.
 set -e
 RAMO=dados
-CAMINHOS="app/dados/sia tools/odontoscan/dados/sia-estado.json tools/odontoscan/dados/sia-log.txt app/dados/xadrez/problemas.json tools/xadrez/problemas-log.txt android-extra/jniLibs"
+CAMINHOS="app/dados/sia tools/odontoscan/dados/sia-estado.json tools/odontoscan/dados/sia-log.txt tools/odontoscan/dados/osm-enderecos.json.gz tools/odontoscan/dados/osm-enderecos-log.txt app/dados/xadrez/problemas.json tools/xadrez/problemas-log.txt android-extra/jniLibs"
 case "$1" in
   abrir)
     if git fetch -q --depth=1 origin "$RAMO"; then git archive FETCH_HEAD | tar -x -C espelho; echo "ramo $RAMO aberto em espelho/"

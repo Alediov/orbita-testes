@@ -27,7 +27,7 @@ acabavam; aqui os executores padrão não têm limite.
 
 - `espelho/` + `tools/dados/` + `dados.yml`, `even3.yml`, `whisper.yml`, `llama.yml`: **o espelho do app** (17/11/2026).
   `dados.yml` (SIA/SUS dos dois CNES da clínica da UNIOESTE, agregado, todo dia 22; `qual` = xadrez: problemas do
-  Lichess, CC0), `whisper.yml` e `llama.yml` (whisper.cpp e llama.cpp, MIT, compilados para arm64 com as pontes JNI;
+  Lichess, CC0; `qual` = enderecos: ruas e números de casa de Cascavel do OSM, ODbL, desde 23/11/2026), `whisper.yml` e `llama.yml` (whisper.cpp e llama.cpp, MIT, compilados para arm64 com as pontes JNI;
   `guardar` = não só confere) gravam o ramo órfão `dados` (`tools/dados/ramo.sh abrir|guardar`, commit único, nos
   mesmos caminhos do repositório do app, que puxa com `tools/publico.py puxar`); os três têm o grupo de concorrência
   `dados` (um por vez; disparar um de cada vez, porque um 2º na fila derruba o 1º que espera). `even3.yml` (4h13,
