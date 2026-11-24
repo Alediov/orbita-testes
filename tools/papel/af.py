@@ -148,7 +148,9 @@ def odds_prejogo(r):
     casa = next((c for c in SOFTS_AF if casas.get(c, {}).get("1x2")), None)
     if not pin.get("1x2") or not casa:
         return None
-    return {"pin": pin, "soft": casas[casa], "casa": casa}
+    # 24/11/2026: todas as casas comuns da lista, para a melhor odd (as versões da melhor casa)
+    todas = {c: casas[c] for c in SOFTS_AF if casas.get(c, {}).get("1x2")}
+    return {"pin": pin, "soft": casas[casa], "casa": casa, "todas": todas}
 
 
 def series(fotos, ate):
@@ -174,6 +176,23 @@ def series(fotos, ate):
     pin = {mk: h for mk, h in pin.items() if all(h)}
     soft = {mk: h for mk, h in soft.items() if all(h)}
     return pin, soft, casa
+
+
+def series_por_casa(fotos, ate):
+    """{casa: {mk: [hist por resultado]}} das fotos de antes de `ate` que trazem `todas` (desde 24/11/2026)."""
+    fs = sorted((f for f in fotos or [] if f and f.get("todas") and int(f.get("t") or 0) < ate), key=lambda f: f["t"])
+    out = {}
+    for f in fs:
+        for casa, mks in f["todas"].items():
+            alvo = out.setdefault(casa, {})
+            for mk, vals in (mks or {}).items():
+                h = alvo.setdefault(mk, [[] for _ in vals])
+                if len(h) != len(vals):
+                    continue
+                for k, o in enumerate(vals):
+                    if o:
+                        h[k].append((int(f["t"]), float(o)))
+    return {c: {mk: h for mk, h in d.items() if all(h)} for c, d in out.items() if any(all(h) for h in d.values())}
 
 
 # ---------------------------------------------------------------------------------------------------- ao vivo

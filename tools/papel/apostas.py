@@ -189,6 +189,15 @@ VERSOES = [
      "Valor de 3% ou mais, só nas odds de 1,50 a 2,20: acerta mais vezes e a banca balança menos."),
     ("azaroes", "Azarões", "Valor", "alto", {"tipo": "valor", "limiar": 0.03, "faixa": (3.0, 6.0), "stake": "fixo"},
      "Valor de 3% ou mais, só nas odds de 3,00 a 6,00: acerta pouco e passa por sequências longas de derrotas."),
+    # 24/11/2026 (pedido do Alediov): a mesma regra, com a MELHOR odd entre as casas comuns que chegam de graça (Betano e
+    # Bet365 pela OddsPapi; nos jogos do Theo, as da API-Football). Em 21 dias a Betano sozinha não deu nenhuma aposta.
+    ("valor3m", "Valor 3% · melhor casa", "Valor", "médio",
+     {"tipo": "valor", "limiar": 0.03, "faixa": FAIXA_PADRAO, "stake": "fixo", "casas": "melhor"},
+     "Valor de 3% ou mais, mas na melhor odd entre as casas comuns que o teste lê (Betano e Bet365), como quem tem "
+     "conta nas duas e aposta onde paga mais. Só ao vivo."),
+    ("valor5m", "Valor 5% · melhor casa", "Valor", "médio",
+     {"tipo": "valor", "limiar": 0.05, "faixa": FAIXA_PADRAO, "stake": "fixo", "casas": "melhor"},
+     "O mesmo com vantagem de 5% ou mais. Só ao vivo."),
     ("gratis", "Aposta grátis", "Aposta grátis", "baixo", {"tipo": "gratis", "faixa": GRATIS_FAIXA},
      "Uma aposta grátis de R$ 5 por semana, como a da Betano, na odd de 2,00 a 6,00 que mais vale a pena; "
      "o valor não volta, só o lucro (a conta mostra 1.000 + o que ganhou)."),
@@ -224,7 +233,8 @@ VERSOES = [
      "R$ 10 quando hesita. Mostra se a confiança dele vale alguma coisa."),
 ]
 BDM_CONTAS = ("bdm", "bdmG15", "bdmG5", "bdmFav", "bdmH15", "bdmConv", "bdmConf")
-SO_AO_VIVO = set(BDM_CONTAS)
+MELHOR_CASA = ("valor3m", "valor5m")
+SO_AO_VIVO = set(BDM_CONTAS) | set(MELHOR_CASA)
 PADRAO = "valor3"
 
 FRASE = ("Aposta (no papel) quando a odd da casa paga mais do que a chance real do jogo vale; a chance real vem das "
@@ -1132,6 +1142,54 @@ def preco_em(hist, t):
     return melhor
 
 
+def melhor_das_casas(dados):
+    """{mk: [hist por resultado]} com, a cada instante, a MAIOR odd entre as casas de `dados` ({nome: mercados}), e
+    {mk: [[(ms, nome)] por resultado]} com a casa de cada ponto. Só os mercados que pelo menos uma casa tem inteiros."""
+    out, quem = {}, {}
+    for mk in ("1x2", "ou"):
+        casas = {n: d[mk] for n, d in dados.items() if d and d.get(mk)}
+        if not casas:
+            continue
+        n_res = len(next(iter(casas.values())))
+        hs, qs = [], []
+        for i in range(n_res):
+            ts = sorted({t for h in casas.values() if len(h) == n_res for t, _o in (h[i] or [])})
+            h, q = [], []
+            for t in ts:
+                cands = [(preco_em(c[i], t), n) for n, c in casas.items() if len(c) == n_res]
+                cands = [(o, n) for o, n in cands if o]
+                if cands:
+                    o, n = max(cands)
+                    h.append((t, o))
+                    q.append((t, n))
+            hs.append(h)
+            qs.append(q)
+        if all(hs):
+            out[mk], quem[mk] = hs, qs
+    return out, quem
+
+
+def casa_em(quem, mk, i, t):
+    """O nome da casa que tinha a melhor odd do resultado `i` de `mk` no instante `t`."""
+    nome = None
+    for ts, n in ((quem or {}).get(mk) or [[]] * (i + 1))[i]:
+        if ts <= t:
+            nome = n
+        else:
+            break
+    return nome
+
+
+def apostar_melhor(contas, j, quem):
+    """As versões da melhor casa no jogo `j` (montado com `melhor_das_casas`): a casa de cada aposta é a que pagava."""
+    for c in contas.values():
+        if c.regra.get("casas") != "melhor":
+            continue
+        for ap in c.decidir(j):
+            ap["c"] = casa_em(quem, ap["mk"], ap["s"], j["mk"][ap["mk"]]["t"]) or ap["c"]
+            c.abrir(ap)
+
+
 def jogo_vivo(fx, pin, soft, rotulo):
     """O jogo no formato do motor a partir dos históricos da Pinnacle e da casa comum, olhando só o que existia 6 h
     antes (ou até 1 h antes). None se não houver preço que sirva."""
@@ -2012,9 +2070,16 @@ class Vivo:
             j = jogo_vivo(f, pin, soft, casa)
             if j:
                 for c in self.contas.values():
-                    if not c.gratis:
+                    if not c.gratis and c.regra.get("casas") != "melhor":
                         for ap in c.decidir(j):
                             c.abrir(ap)
+            # a melhor casa entre as da API-Football (as fotos de 24/11/2026 em diante trazem todas)
+            por_casa = af.series_por_casa(fotos, f["i"])
+            if por_casa:
+                mel, quem = melhor_das_casas(por_casa)
+                jm = jogo_vivo(f, pin, mel, " ou ".join(por_casa)) if mel.get("1x2") else None
+                if jm:
+                    apostar_melhor(self.contas, jm, quem)
         return True
 
     # ------------------------------------------------------------------ jogos terminados
@@ -2095,10 +2160,17 @@ class Vivo:
                     f["st"] = "semOdds"
                     continue
                 for c in self.contas.values():
-                    if c.gratis:
+                    if c.gratis or c.regra.get("casas") == "melhor":
                         continue
                     for ap in c.decidir(j):
                         c.abrir(ap)
+                # 24/11/2026: a melhor odd entre as casas comuns que vieram na mesma resposta (sem pedido a mais)
+                vieram = {NOME_SOFT[s]: dados[s] for s in pedidas if dados.get(s, {}).get("1x2")}
+                if vieram:
+                    mel, quem = melhor_das_casas(vieram)
+                    jm = jogo_vivo(f, pin, mel, " ou ".join(vieram)) if mel.get("1x2") else None
+                    if jm:
+                        apostar_melhor(self.contas, jm, quem)
                 m = melhor_gratis([j])
                 if m:
                     _e, jj, mk, i = m

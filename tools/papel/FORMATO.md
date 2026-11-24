@@ -1027,3 +1027,11 @@ recebe a sua cópia, só com as horas antes de onde parou).
   nos outros, o `priceUsd` ÷ o SOL do dia; a saída de 24 h leva no máximo `LIQ_SAIDA` (metade) da liquidez em US$ do
   par (`tok.liq24`); e `corrigir_segura_2411` tirou a aposta da conta uma vez (marca `corrigido2411` no estado).
 
+- **Apostas, a melhor casa (24/11/2026, pedido do Alediov)**: em 21 dias as versões de valor não fizeram nenhuma aposta
+  (a Betano quase nunca paga mais que a Pinnacle sem a margem). `valor3m` e `valor5m` (grupo "Valor", só ao vivo,
+  `MELHOR_CASA`) usam a MAIOR odd, a cada instante, entre as casas comuns que já vêm de graça: Betano e Bet365 na
+  mesma resposta da OddsPapi (o `/historical-odds` aceita no máximo 3 casas por pedido, e são pinnacle + as duas; nenhum
+  pedido a mais) e, nos jogos do Theo, todas as casas comuns da API-Football (`odds_prejogo` guarda `todas` nas fotos;
+  `af.series_por_casa`). `melhor_das_casas` junta as séries e guarda de quem é cada ponto; a aposta leva no `c` a casa
+  que pagava (`casa_em`). As outras versões continuam com uma casa só.
+

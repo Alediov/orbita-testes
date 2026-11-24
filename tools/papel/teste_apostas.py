@@ -283,7 +283,7 @@ def teste_rodadas():
         # formato
         assert d["padrao"] == "valor3" and d["nome"] == "Apostas de valor"
         ids = [v["id"] for v in d["versoes"]]
-        assert ids == ["valor3", "valor5", "valor8", "kelly", "favoritos", "azaroes", "gratis", "semfiltro", "bdm", "bdmG15", "bdmG5",
+        assert ids == ["valor3", "valor5", "valor8", "kelly", "favoritos", "azaroes", "valor3m", "valor5m", "gratis", "semfiltro", "bdm", "bdmG15", "bdmG5",
                        "bdmFav", "bdmH15", "bdmConv", "bdmConf"]
         riscos = {v["id"]: v["risco"] for v in d["versoes"]}
         assert riscos["azaroes"] == riscos["kelly"] == "alto" and riscos["gratis"] == "baixo" and riscos["valor3"] == "médio"
@@ -293,7 +293,9 @@ def teste_rodadas():
         assert bdm["historico"] is None and bdm["soAoVivo"] and bdm["aoVivo"]["extra"]["palpitesVistos"] > 0
         for k in ("bdmG15", "bdmG5", "bdmFav", "bdmH15", "bdmConv", "bdmConf"):   # 21 e 22/11/2026: o gatilho da odd mínima (só ao vivo, como a bdm)
             assert vs[k]["historico"] is None and vs[k]["soAoVivo"] and vs[k]["aoVivo"]["serie"][0][1] == 1000.0, k
-        for v in [v for v in d["versoes"] if v["id"] not in A.BDM_CONTAS]:
+        for k in A.MELHOR_CASA:   # 24/11/2026: a melhor casa, só ao vivo
+            assert vs[k]["historico"] is None and vs[k]["soAoVivo"] and vs[k]["aoVivo"]["serie"][0][1] == 1000.0, k
+        for v in [v for v in d["versoes"] if v["id"] not in A.SO_AO_VIVO]:
             for nome in ("aoVivo", "historico"):
                 c = v[nome]
                 assert c and c["serie"][0][1] == 1000.0, (v["id"], nome)
@@ -798,8 +800,27 @@ def teste_avulsa():
         shutil.rmtree(pasta, ignore_errors=True)
 
 
+def teste_melhor_casa():
+    """24/11/2026: as versões da melhor casa apostam na maior odd entre Betano e Bet365; as outras seguem com uma só."""
+    H = 3600 * 1000
+    ini = 100 * H
+    pin = {"1x2": [[(ini - 10 * H, 2.0)], [(ini - 10 * H, 3.5)], [(ini - 10 * H, 4.2)]]}
+    bet = {"Betano": {"1x2": [[(ini - 10 * H, 1.95)], [(ini - 10 * H, 3.4)], [(ini - 10 * H, 4.0)]]},
+           "Bet365": {"1x2": [[(ini - 10 * H, 2.12)], [(ini - 10 * H, 3.3)], [(ini - 10 * H, 4.1)]]}}
+    mel, quem = A.melhor_das_casas(bet)
+    assert mel["1x2"][0] == [(ini - 10 * H, 2.12)] and A.casa_em(quem, "1x2", 0, ini - 6 * H) == "Bet365"
+    fx = {"id": "x", "l": "epl", "c": "A", "f": "B", "i": ini}
+    jb = A.jogo_vivo(fx, pin, bet["Betano"], "Betano")
+    contas = {cfg[0]: A.Conta(cfg, 0) for cfg in A.VERSOES}
+    assert not contas["valor3"].decidir(jb)
+    A.apostar_melhor(contas, A.jogo_vivo(fx, pin, mel, "Betano ou Bet365"), quem)
+    ab = {k: c.abertas for k, c in contas.items() if c.abertas}
+    assert list(ab) == ["valor3m"] and ab["valor3m"][0]["c"] == "Bet365" and ab["valor3m"][0]["o"] == 2.12, ab
+
+
 if __name__ == "__main__":
     teste_contas()
+    teste_melhor_casa()
     teste_versoes()
     teste_planilhas()
     teste_leitura_oddspapi()
