@@ -1012,3 +1012,9 @@ Estado: `esp["robos.<espécie>"]` com `contador`, `lab`, `liga` (cada conta com 
 `Curva`) e `arvore`; as velas de 1 h que os robôs de sinal guardam ficam uma vez por mercado em `hb` (cada conta
 recebe a sua cópia, só com as horas antes de onde parou).
 
+- **Previsões, 24/11/2026**: o observatório de calibração parou em 08/11 (565 mercados, o último encerrado em 08/11): o gamma
+  respondia HTTP 500 a todo pedido dos encerrados com a janela do `novo` (dia 8) até agora; a sonda (`sonda_gamma.yml`)
+  mostrou que janelas de 4 dias respondem 200. Agora os encerrados vêm em janelas de `CAL_JANELA` (2) dias, até
+  `CAL_JANELAS_RODADA` por rodada em cada sentido. Sem o observatório, a liga da Evolução das Previsões (refeita por ele)
+  ficou parada em zero desde 19/11.
+

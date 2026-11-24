@@ -966,6 +966,10 @@ def tabela_calibracao(merc):
     return out
 
 
+CAL_JANELA = 2                    # dias por pedido dos encerrados (janelas longas: HTTP 500 do gamma)
+CAL_JANELAS_RODADA = 40           # pedidos de janela por rodada, em cada sentido
+
+
 def coletar_calibracao(R, cal, agora, erros):
     """Lê os mercados encerrados novos (e, para trás, até 180 dias) e guarda o preço de cada dia antes do fim."""
     if any("ev" not in m for m in (cal.get("mercados") or {}).values()):
@@ -1009,10 +1013,16 @@ def coletar_calibracao(R, cal, agora, erros):
                           "ult": int(round(pts[-1][1] * 1000))}
         return True
 
-    # os novos (do mais antigo ao mais novo)
-    if R.tempo(60):
-        xs = buscar(cal["novo"], agora, True)
-        if xs is not None:
+    # os novos (do mais antigo ao mais novo), numa janela de CAL_JANELA dias por vez: de 10 a 24/11/2026 o gamma respondeu
+    # 500 a todo pedido com a janela do dia 8 até agora (a sonda de 24/11: 4 dias respondem 200), e o observatório parou
+    for _ in range(CAL_JANELAS_RODADA):
+        if not R.tempo(60) or feitos >= CAL_POR_RODADA or cal["novo"] >= agora:
+            break
+        ate = min(agora, cal["novo"] + CAL_JANELA * DIA)
+        xs = buscar(cal["novo"], ate, True)
+        if xs is None:
+            break
+        else:
             lidos += len(xs)
             ult = cal["novo"]
             completo = True
@@ -1021,11 +1031,18 @@ def coletar_calibracao(R, cal, agora, erros):
                     completo = False
                     break
                 ult = max(ult, mk["fim"])
-            cal["novo"] = agora if completo and len(xs) < 100 else ult
-    # para trás
-    if cal["velho"] > limite_velho and R.tempo(60) and feitos < CAL_POR_RODADA:
-        xs = buscar(limite_velho, cal["velho"], False)
-        if xs is not None:
+            cal["novo"] = ate if completo and len(xs) < 100 else ult
+            if not completo:
+                break
+    # para trás, na mesma janela
+    for _ in range(CAL_JANELAS_RODADA):
+        if cal["velho"] <= limite_velho or not R.tempo(60) or feitos >= CAL_POR_RODADA:
+            break
+        de = max(limite_velho, cal["velho"] - CAL_JANELA * DIA)
+        xs = buscar(de, cal["velho"], False)
+        if xs is None:
+            break
+        else:
             lidos += len(xs)
             ult = cal["velho"]
             completo = True
@@ -1034,7 +1051,9 @@ def coletar_calibracao(R, cal, agora, erros):
                     completo = False
                     break
                 ult = min(ult, mk["fim"])
-            cal["velho"] = limite_velho if completo and len(xs) < 100 else ult
+            cal["velho"] = de if completo and len(xs) < 100 else ult
+            if not completo:
+                break
     # o limite de tamanho: fica com os mais novos
     for k in sorted(merc, key=lambda k: merc[k]["fim"])[:-CAL_MAX] if len(merc) > CAL_MAX else []:
         del merc[k]
