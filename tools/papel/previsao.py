@@ -984,9 +984,9 @@ def coletar_calibracao(R, cal, agora, erros):
     cal.setdefault("velho", cal["novo"])         # e, para trás, até o limite
     feitos, lidos = 0, 0
 
-    def buscar(de, ate, asc):
+    def buscar(de, ate, asc, pular=0):
         q = (f"/markets?closed=true&end_date_min={iso(de)}&end_date_max={iso(ate)}&volume_num_min={int(CAL_VOL_MIN)}"
-             f"&order=endDate&ascending={'true' if asc else 'false'}&limit=100")
+             f"&order=endDate&ascending={'true' if asc else 'false'}&limit=100" + (f"&offset={pular}" if pular else ""))
         r = R.pedir("gamma", q, "gamma /markets (encerrados)", "gamma")
         if r is None:
             R.log(f"  previsão: o pedido dos encerrados que falhou: {q}")
@@ -1039,7 +1039,7 @@ def coletar_calibracao(R, cal, agora, erros):
         if not R.tempo(60) or feitos >= CAL_POR_RODADA or cal["novo"] >= agora:
             break
         ate = min(agora, cal["novo"] + CAL_JANELA * DIA)
-        xs = buscar(cal["novo"], ate, True)
+        xs = buscar(cal["novo"], ate, True, cal.get("novoPular", 0))
         if xs is None:
             break
         else:
@@ -1051,6 +1051,12 @@ def coletar_calibracao(R, cal, agora, erros):
                     completo = False
                     break
                 ult = max(ult, mk["fim"])
+            # 24/11/2026: mais de 100 mercados terminam na MESMA hora (os de 08/11 12:00), e a página seguinte começava
+            # de novo nela: parado desde 08/11. Sem andar, a próxima página pula os já vistos (offset)
+            if completo and len(xs) >= 100 and ult <= cal["novo"]:
+                cal["novoPular"] = cal.get("novoPular", 0) + len(xs)
+                continue
+            cal["novoPular"] = 0
             cal["novo"] = ate if completo and len(xs) < 100 else ult
             if not completo:
                 break
@@ -1059,7 +1065,7 @@ def coletar_calibracao(R, cal, agora, erros):
         if cal["velho"] <= limite_velho or not R.tempo(60) or feitos >= CAL_POR_RODADA:
             break
         de = max(limite_velho, cal["velho"] - CAL_JANELA * DIA)
-        xs = buscar(de, cal["velho"], False)
+        xs = buscar(de, cal["velho"], False, cal.get("velhoPular", 0))
         if xs is None:
             break
         else:
@@ -1071,6 +1077,10 @@ def coletar_calibracao(R, cal, agora, erros):
                     completo = False
                     break
                 ult = min(ult, mk["fim"])
+            if completo and len(xs) >= 100 and ult >= cal["velho"]:
+                cal["velhoPular"] = cal.get("velhoPular", 0) + len(xs)
+                continue
+            cal["velhoPular"] = 0
             cal["velho"] = de if completo and len(xs) < 100 else ult
             if not completo:
                 break
