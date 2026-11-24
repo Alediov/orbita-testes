@@ -128,6 +128,7 @@ TX_POR_TOKEN = 4                  # compras do 1º minuto abertas por token (que
 PAGINAS_SIG = 3                   # páginas de 1.000 assinaturas da curva até achar a criação
 CEDO_S = 60                       # "cedo" = no 1º minuto
 CRIADOR_SAIU = 0.01               # o criador com menos de 1% do que comprou = vendeu tudo
+LIQ_SAIDA = 0.5                   # a saída de 24 h leva no máximo metade da liquidez (US$) do par
 LIQ_RETIRADA = 0.05               # graduado com menos de 5% da liquidez da graduação = liquidez retirada
 FALHAS_RPC = 8                    # falhas seguidas do RPC da Solana: os sinais por ele param nesta rodada
 MIN_SINAL = 20                    # a comparação com/sem um sinal só aparece com 20 tokens de cada lado
@@ -140,6 +141,7 @@ MAX_CARTEIRAS = 3000
 MAX_CRIADORES = 4000
 MAX_SEMANA7 = 1500
 SOL_PADRAO = 150.0
+SOL_MINT = "So11111111111111111111111111111111111111112"
 X_ABSURDO = 1e5                   # máxima ÷ lançamento acima disso = erro de unidade (outra moeda de cotação): fora
 DEX_GECKO = {"pump-fun": "pumpfun", "pumpfun": "pumpfun"}
 PONTOS = [("5m", "5 min", 5 * MIN), ("1h", "1 h", HORA), ("6h", "6 h", 6 * HORA), ("24h", "24 h", ESPERA), ("7d", "7 dias", ESPERA7)]
@@ -383,6 +385,9 @@ def simular(tok, velas, versao, sol_usd, custo=REDE_SOL, partes=None):
             p24 = preco_em(velas, te + ESPERA, pe) if velas else pe
         ts = te + ESPERA
         recebido = sair(q, p24, grad(ts), custo, partes) if p24 > 0 else -custo
+        liq = tok.get("liq24")
+        if liq and recebido > LIQ_SAIDA * liq / sol_usd:
+            recebido = LIQ_SAIDA * liq / sol_usd  # ninguém tira de um pool mais que uma parte do que há nele
         return (recebido - gasto) * sol_usd, ts, "24 h", te
     for v in velas:
         if v[0] <= te:
@@ -901,12 +906,17 @@ def ler_pares(fonte, mints, log, est, erros):
             o = out.setdefault(mint, {"pares": [], "preco": None, "liq": 0.0, "liqAmm": None})
             dex = str(p.get("dexId") or "")
             o["pares"].append((dex, p.get("pairAddress"), int(_f(p.get("pairCreatedAt"), 0) or 0)))
-            preco = _f(p.get("priceNative"))
+            # 24/11/2026: o «priceNative» vem na moeda do par; num par cotado em outra moeda (USDC, outra memecoin) ele
+            # não é SOL por token, e uma aposta de US$ 10 da referência virou US$ 157 mil. Fora de SOL: o «priceUsd»
+            qt = p.get("quoteToken") or {}
+            em_sol = qt.get("address") == SOL_MINT or str(qt.get("symbol") or "").upper() in ("SOL", "WSOL")
+            preco = _f(p.get("priceNative")) if em_sol else None
+            usd = None if em_sol else _f(p.get("priceUsd"))
             liq = _f(((p.get("liquidity") or {}).get("usd")), 0.0) or 0.0
             if dex and dex != "pumpfun":
                 o["liqAmm"] = max(o["liqAmm"] or 0.0, liq)
-            if preco is not None and (o["preco"] is None or liq >= o["liq"]):
-                o["preco"], o["liq"] = preco, liq
+            if (preco is not None or usd is not None) and (o["preco"] is None and o.get("precoUsd") is None or liq >= o["liq"]):
+                o["preco"], o["precoUsd"], o["liq"] = preco, usd, liq
     return out
 
 
@@ -1128,6 +1138,9 @@ def analisar(amostra, fonte, cli, est, contas, ev, log, erros, restante, agora=N
         if not tok.get("tGrad"):
             tok["tGrad"] = next((v[0] for v in velas if v[2] >= P_GRAD), None)
         tok["p24"] = info.get("preco")
+        if tok["p24"] is None and info.get("precoUsd") and sol_usd:
+            tok["p24"] = info["precoUsd"] / sol_usd
+        tok["liq24"] = info.get("liq") or None
         if tok["p24"] is None and not info["pares"]:
             tok["p24"] = 0.0 if velas else None
         if velas and max(v[2] for v in velas) / tok["p0"] > X_ABSURDO:
@@ -1339,6 +1352,48 @@ def custos_saida(est):
             "fontes": {k: v[1] for k, v in CUSTOS.items()}}
 
 
+def corrigir_segura_2411(est, log):
+    """24/11/2026: em 13/11 uma aposta de US$ 10 da referência «1º minuto e segura» virou +US$ 157.795 (o preço de 24 h de
+    um par cotado em outra moeda, lido como SOL; corrigido em `ler_pares`). Uma vez: tira essa aposta da série, do
+    resultado e dos ganhos; o deslize dela fica de fora dos custos (aproximado: a parte acima de 99% do deslize total)."""
+    if est.get("corrigido2411"):
+        return
+    est["corrigido2411"] = True
+    c = (est.get("vivo") or {}).get("segura")
+    if not isinstance(c, dict):
+        return
+    ex = c.get("extra") or {}
+    melhor = ex.get("melhor")
+    if not melhor or melhor < 10000:
+        return
+    serie = c.get("serie") or {}
+    for d in sorted(serie):
+        if d >= "2026-11-13":
+            serie[d] = round(serie[d] - melhor, 4)
+    c["ultimo"] = (c.get("ultimo") or 0) - melhor
+    c["pico"] = max([c.get("capital") or 1000.0] + list(serie.values()))
+    vals, pico, queda = [serie[d] for d in sorted(serie)], 0.0, 0.0
+    for v in vals:
+        pico = max(pico, v)
+        queda = max(queda, 1 - v / pico if pico > 0 else 0.0)
+    c["queda"] = queda
+    ex["resultado"] = round((ex.get("resultado") or 0) - melhor, 4)
+    ex["ganhas"] = max(0, (ex.get("ganhas") or 1) - 1)
+    g = c.get("ganhos") or []
+    if g and max(g) >= melhor * 0.99:
+        g.remove(max(g))
+    ex["melhor"] = round(max(g), 2) if g else None
+    cu = ex.get("custos") or {}
+    if (cu.get("deslize") or 0) > melhor:
+        cu["deslize"] = round(max(0.0, cu["deslize"] - melhor * 1.008), 4)
+        c["taxas"] = round(cu.get("taxa", 0) + cu.get("rede", 0) + cu["deslize"], 4)
+    if ex.get("apostado"):
+        ex["roi"] = round(ex["resultado"] / ex["apostado"], 4)
+        tot = cu.get("taxa", 0) + cu.get("rede", 0) + cu.get("deslize", 0)
+        ex["custoPct"] = round(tot / ex["apostado"], 4)
+    log(f"  memes: a referência sem a aposta de +US$ {melhor:,.0f} de 13/11 (preço de outra moeda lido como SOL)")
+
+
 def rodar(ctx):
     erros = []
     est = copy.deepcopy(ctx.est)
@@ -1355,6 +1410,7 @@ def rodar(ctx):
         vivo = est.setdefault("vivo", {})
         inicio = int(est.get("inicio") or agora)
         est["inicio"] = inicio
+        corrigir_segura_2411(est, log)
         contas = {}
         for v in VERSOES:
             c = Curva.de_json(vivo.get(v[0]))

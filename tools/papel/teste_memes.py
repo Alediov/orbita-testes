@@ -461,6 +461,37 @@ def teste_amostra_sorteada():
         shutil.rmtree(a, ignore_errors=True)
 
 
+def teste_cotacao_e_liquidez():
+    """24/11/2026: par cotado em outra moeda usa o priceUsd; a saída de 24 h não leva mais que metade da liquidez; e a
+    correção da referência tira a aposta de 13/11 uma vez só."""
+    import memes as MM
+
+    class F:
+        def dexscreener(self, _q):
+            return [{"baseToken": {"address": "A"}, "quoteToken": {"address": "EPj", "symbol": "USDC"}, "dexId": "raydium",
+                     "pairAddress": "p1", "pairCreatedAt": 1, "priceNative": "3.0", "priceUsd": "3.0",
+                     "liquidity": {"usd": 5000}},
+                    {"baseToken": {"address": "B"}, "quoteToken": {"address": MM.SOL_MINT, "symbol": "SOL"}, "dexId": "pumpswap",
+                     "pairAddress": "p2", "pairCreatedAt": 1, "priceNative": "0.00001", "priceUsd": "0.0015",
+                     "liquidity": {"usd": 800}}]
+    out = MM.ler_pares(F(), ["A", "B"], lambda *_: None, {"formatoDex": True}, [])
+    assert out["A"]["preco"] is None and out["A"]["precoUsd"] == 3.0, out["A"]
+    assert out["B"]["preco"] == 0.00001 and out["B"]["precoUsd"] is None, out["B"]
+    v = next(x for x in MM.VERSOES if x[0] == "segura")
+    tok = {"t": 0, "p0": 1e-7, "p24": 1e-3, "liq24": 2000.0, "rc": "ok", "tGrad": None}
+    r = MM.simular(tok, [], v, 150.0)
+    assert r is not None and r[0] <= 0.5 * 2000.0, r          # um ×10.000 não vira mais que metade do pool
+    est = {"vivo": {"segura": {"inicio": 0, "capital": 1000.0, "serie": {"2026-11-12": 1000.0, "2026-11-13": 101000.0},
+                               "ultimo": 101000.0, "pico": 101000.0, "queda": 0.0, "ganhos": [1.0, 100000.0],
+                               "extra": {"melhor": 100000.0, "resultado": 100000.0, "ganhas": 2, "apostado": 100.0,
+                                         "custos": {"taxa": 1.0, "rede": 0.1, "deslize": 100900.0}}}}}
+    MM.corrigir_segura_2411(est, lambda *_: None)
+    c = est["vivo"]["segura"]
+    assert c["serie"]["2026-11-13"] == 1000.0 and c["ultimo"] == 1000.0 and c["extra"]["melhor"] == 1.0, c
+    MM.corrigir_segura_2411(est, lambda *_: None)
+    assert c["ultimo"] == 1000.0                                # uma vez só
+
+
 if __name__ == "__main__":
     teste_curva()
     teste_regras()
@@ -473,4 +504,5 @@ if __name__ == "__main__":
     teste_websocket()
     teste_rodadas()
     teste_amostra_sorteada()
+    teste_cotacao_e_liquidez()
     print("ok")

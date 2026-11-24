@@ -1021,3 +1021,9 @@ recebe a sua cópia, só com as horas antes de onde parou).
   usa o `offset` (`novoPular`/`velhoPular`). E um mercado sem histórico de preços 2 vezes vai para os pulados
   (`cal.falhas`). `CAL_POR_RODADA` 160 (era 80) para alcançar os dias parados.
 
+- **Memecoins, 24/11/2026**: a referência «1º minuto e segura» mostrava +15.700% por UMA aposta de US$ 10 que virou
+  US$ 157.795 em 13/11: o `priceNative` da DexScreener vem na moeda do par, e o par de maior liquidez daquele token era
+  cotado em outra moeda (lido como SOL por token). Agora `ler_pares` só usa o `priceNative` de par em SOL (`SOL_MINT`);
+  nos outros, o `priceUsd` ÷ o SOL do dia; a saída de 24 h leva no máximo `LIQ_SAIDA` (metade) da liquidez em US$ do
+  par (`tok.liq24`); e `corrigir_segura_2411` tirou a aposta da conta uma vez (marca `corrigido2411` no estado).
+
