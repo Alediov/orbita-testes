@@ -1016,5 +1016,8 @@ recebe a sua cópia, só com as horas antes de onde parou).
   respondia HTTP 500 a todo pedido dos encerrados com a janela do `novo` (dia 8) até agora; a sonda (`sonda_gamma.yml`)
   mostrou que janelas de 4 dias respondem 200. Agora os encerrados vêm em janelas de `CAL_JANELA` (2) dias, até
   `CAL_JANELAS_RODADA` por rodada em cada sentido. Sem o observatório, a liga da Evolução das Previsões (refeita por ele)
-  ficou parada em zero desde 19/11.
+  ficou parada em zero desde 19/11. A causa de verdade (o 500 era de janelas antigas, de vez em quando): mais de 100
+  mercados terminam na MESMA hora (08/11 12:00) e a página seguinte recomeçava nela; agora, sem andar, a próxima página
+  usa o `offset` (`novoPular`/`velhoPular`). E um mercado sem histórico de preços 2 vezes vai para os pulados
+  (`cal.falhas`). `CAL_POR_RODADA` 160 (era 80) para alcançar os dias parados.
 
