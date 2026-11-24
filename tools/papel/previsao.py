@@ -985,9 +985,17 @@ def coletar_calibracao(R, cal, agora, erros):
     feitos, lidos = 0, 0
 
     def buscar(de, ate, asc):
-        r = R.pedir("gamma", f"/markets?closed=true&end_date_min={iso(de)}&end_date_max={iso(ate)}&volume_num_min={int(CAL_VOL_MIN)}"
-                             f"&order=endDate&ascending={'true' if asc else 'false'}&limit=100", "gamma /markets (encerrados)", "gamma")
-        return None if r is None else [mercado_de(m) for m in R.lista(r, "data", "markets")]
+        q = (f"/markets?closed=true&end_date_min={iso(de)}&end_date_max={iso(ate)}&volume_num_min={int(CAL_VOL_MIN)}"
+             f"&order=endDate&ascending={'true' if asc else 'false'}&limit=100")
+        r = R.pedir("gamma", q, "gamma /markets (encerrados)", "gamma")
+        if r is None:
+            R.log(f"  previsão: o pedido dos encerrados que falhou: {q}")
+            return None
+        try:
+            return [mercado_de(m) for m in R.lista(r, "data", "markets")]
+        except Exception as e:  # noqa: BLE001 (um mercado estranho não para o observatório)
+            R.log(f"  previsão: encerrados ilegíveis ({type(e).__name__}: {e}) em {q}")
+            return None
 
     def processar(mk):
         nonlocal feitos
