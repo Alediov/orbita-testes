@@ -1011,7 +1011,19 @@ def coletar_calibracao(R, cal, agora, erros):
         feitos += 1
         pts = R.historico(mk["toks"][0], mk["fim"] - 31 * DIA, max(mk["fim"], mk.get("fechouEm") or 0) + 2 * HORA, 720)
         if pts is None:
-            return False
+            # 24/11/2026: o observatório ficou parado em 08/11 porque o histórico de UM mercado não vinha e a busca
+            # dos novos recomeçava sempre nele. Com o CLOB respondendo aos outros, o mesmo mercado falhando 2 vezes é pulado.
+            if getattr(R, "hist_fora", False):
+                return False
+            fal = cal.setdefault("falhas", {})
+            fal[mk["id"]] = fal.get(mk["id"], 0) + 1
+            if fal[mk["id"]] < 2:
+                return False
+            del fal[mk["id"]]
+            pulados.append(mk["id"])
+            ps.add(mk["id"])
+            R.log(f"  previsão: sem o histórico de preços do mercado {mk['id']} duas vezes: pulado")
+            return True
         if not pts:
             pulados.append(mk["id"])
             ps.add(mk["id"])
