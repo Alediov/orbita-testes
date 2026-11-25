@@ -28,6 +28,13 @@ Revisão de 09/11/2026 (pedido do Alediov, pelos 6 primeiros dias ao vivo):
 - a conta por dentro (`extra.porDentro`) em toda conta e as janelas de 30 dias a cada 7 no teste no passado
   (`historico.janelas`, contra o CDI do mesmo período).
 
+Indicadores (pedido do Alediov, 25/11/2026, pelas ideias dos vídeos de análise técnica): uma versão por indicador
+(`grupo` "Indicadores"), no bitcoin à vista, 1×, decidindo na virada de cada hora pelas velas de 1 h: Ichimoku
+(`ichimoku`), DMI/ADX (`dmi`), VWAP (`vwap`, pelo volume das velas, guardado no 4º número de cada hora do buffer), KST
+(`kst`), Chande Kroll (`chande`), pivôs do dia anterior (`pivo`) e o cruzamento de médias com alvo e stop (`mmalvo`:
+alvo `alvo` checado a cada vela, como o stop, e sem a pausa de um dia depois do stop, `pausa` 0). O RSI da família é o
+`rrsi`, que já existia. As réguas são o segurar BTC e o CDI (as métricas de toda conta).
+
 Estado (`ctx.est`):
     {"pares": {"BTC": "@142", …}, "paresEm": ms, "levMax": {"BTC": 40}, "levEm": ms,
      "vivo": {id: {"curva": Curva.para_json(), "bot": {estado do robô, "ate": ms já processado}}},
@@ -219,6 +226,37 @@ VERSOES = [
      "grupo": "Ao contrário",
      "frase": "O espelho da tendência nos dois lados: vendido quando as médias dizem alta e comprado quando dizem queda "
               "(aposta que a tendência vira)."},
+    # ---- indicadores (pedido do Alediov, 25/11/2026, pelos vídeos de análise técnica que a Antena achou): um por
+    # versão, no bitcoin à vista, 1×; o RSI da família é o rrsi (acima). Réguas: segurar BTC e o CDI
+    {"id": "indichi", "nome": "Ichimoku (9, 26, 52)", "tipo": "sinal", "regra": "ichimoku", "mercado": "spot",
+     "moeda": "BTC", "tenkan": 9, "kijun": 26, "alav": 1, "risco": "médio", "grupo": "Indicadores",
+     "frase": "Fica comprado enquanto o preço fecha acima da nuvem do Ichimoku e a linha rápida (tenkan, 9 h) está "
+              "acima da lenta (kijun, 26 h); sai quando uma das duas coisas deixa de valer."},
+    {"id": "inddmi", "nome": "DMI com ADX acima de 25", "tipo": "sinal", "regra": "dmi", "mercado": "spot",
+     "moeda": "BTC", "dmiN": 14, "adx": 25, "alav": 1, "risco": "médio", "grupo": "Indicadores",
+     "frase": "Compra quando há tendência forte (ADX de 14 h acima de 25) e para cima (+DI acima do −DI); vende quando "
+              "o −DI passa o +DI."},
+    {"id": "indvwap", "nome": "VWAP de 24 horas", "tipo": "sinal", "regra": "vwap", "mercado": "spot",
+     "moeda": "BTC", "janela": 24, "alav": 1, "risco": "médio", "grupo": "Indicadores",
+     "frase": "O VWAP é o preço médio das últimas 24 h pesado pelo volume negociado: fica comprado com o preço acima "
+              "dele e vai para dólar abaixo."},
+    {"id": "indkst", "nome": "KST (Know Sure Thing)", "tipo": "sinal", "regra": "kst", "mercado": "spot",
+     "moeda": "BTC", "kstx": 1, "alav": 1, "risco": "médio", "grupo": "Indicadores",
+     "frase": "O KST soma a força da subida em 4 prazos (10 a 30 h, os mais longos pesando mais): fica comprado com "
+              "ele acima da sua média de 9 h e sai abaixo."},
+    {"id": "indck", "nome": "Chande Kroll (10, 1, 9)", "tipo": "sinal", "regra": "chande", "mercado": "spot",
+     "moeda": "BTC", "ckp": 10, "ckx": 1, "ckq": 9, "alav": 1, "risco": "médio", "grupo": "Indicadores",
+     "frase": "As duas linhas de stop do Chande Kroll (máxima e mínima de 10 h, afastadas pela oscilação): compra quando "
+              "o preço fecha acima das duas e vende quando fecha abaixo das duas."},
+    {"id": "indpivo", "nome": "Pivôs: compra no S1, vende no R1", "tipo": "sinal", "regra": "pivo", "mercado": "spot",
+     "moeda": "BTC", "pivoAlvo": "R1", "alav": 1, "risco": "médio", "grupo": "Indicadores",
+     "frase": "Os pivôs do dia anterior como suporte e resistência: compra quando o preço chega ao suporte S1, vende na "
+              "resistência R1 e sai se perder o S2."},
+    {"id": "indmm", "nome": "Médias 9 × 21 com alvo 2% e stop 1%", "tipo": "sinal", "regra": "mmalvo",
+     "mercado": "spot", "moeda": "BTC", "rapida": 9, "lenta": 21, "alvo": 0.02, "stop": 0.01, "pausa": 0, "alav": 1,
+     "risco": "médio", "grupo": "Indicadores",
+     "frase": "Compra quando a média de 9 h cruza para cima da de 21 h e sai só pelo alvo (+2%) ou pelo stop (−1%); "
+              "depois espera o próximo cruzamento."},
     {"id": "segbtc", "nome": "Só segurar BTC (tudo no dia 1)", "tipo": "segurar", "mercado": "spot", "moeda": "BTC",
      "alav": 1, "risco": "médio", "grupo": "Referência",
      "frase": "Régua: compra US$ 1.000 de bitcoin no primeiro dia e só segura. É também o \"tudo no dia 1\" do DCA: "
@@ -341,8 +379,18 @@ class Funding:
         return list(zip(self.t[i:j], self.r[i:j]))
 
 
+class Vela(tuple):
+    """(t, T, o, h, l, c), com o volume (na moeda) em `.v` quando a API manda (o VWAP); se desempacota como antes."""
+
+
+def com_volume(tupla, v):
+    x = Vela(tupla)
+    x.v = v
+    return x
+
+
 def velas_da_api(lista, intervalo, agora):
-    """[(t, T, o, h, l, c)] só das velas já fechadas antes de `agora`, em ordem, sem as quebradas."""
+    """[(t, T, o, h, l, c)] só das velas já fechadas antes de `agora`, em ordem, sem as quebradas (o volume em `.v`)."""
     passo = hl.INTERVALO_MS[intervalo]
     out = {}
     for c in lista or []:
@@ -354,7 +402,11 @@ def velas_da_api(lista, intervalo, agora):
         if t + passo > agora or min(o, h, l, f) <= 0:
             continue
         h, l = max(h, o, f), min(l, o, f)
-        out[t] = (t, t + passo - 1, o, h, l, f)
+        try:
+            v = max(0.0, float(c.get("v") or 0))
+        except (TypeError, ValueError):
+            v = 0.0
+        out[t] = com_volume((t, t + passo - 1, o, h, l, f), v)
     return [out[k] for k in sorted(out)]
 
 
@@ -540,11 +592,16 @@ class Robo:
                                          f"todo; agora só segura.")
 
     # ------------------------------------------------------------------ buffer de velas de 1 h (saída e oscilação)
-    def guardar_vela(self, s, t, h, l, c):
+    def guardar_vela(self, s, t, h, l, c, v=None):
+        """A vela na hora dela: [máxima, mínima, fechamento] e, quando a vela traz o volume, a soma dele em 4º."""
         hb = s.setdefault("hb", {})
         k = _hora(t)
         x = hb.get(k)
-        hb[k] = [max(x[0], h), min(x[1], l), c] if x else [h, l, c]
+        y = [max(x[0], h), min(x[1], l), c] if x else [h, l, c]
+        vol = (x[3] if x and len(x) > 3 else 0.0) + (v or 0.0)
+        if v is not None or (x and len(x) > 3):
+            y.append(round(vol, 6))
+        hb[k] = y
         if len(hb) > BUF_DIAS * 24 + 4:
             corte = t - BUF_DIAS * DIA
             for kk in [kk for kk in hb if int(kk) < corte]:
@@ -811,7 +868,76 @@ class Robo:
             if v <= cfg["baixo"]:
                 return 1
             return -1 if ls and v >= cfg["alto"] else 0
+        if r == "ichimoku":
+            x = ichimoku(hs, ls_, cfg.get("tenkan", 9), cfg.get("kijun", 26))
+            if x is None:
+                return None
+            tk, kj, nA, nB = x
+            s["ind"] = {"tenkan": round(tk, 2), "kijun": round(kj, 2), "nuvemTopo": round(max(nA, nB), 2),
+                        "nuvemBase": round(min(nA, nB), 2)}
+            return 1 if c > max(nA, nB) and tk > kj else 0
+        if r == "dmi":
+            x = dmi(hs, ls_, cs, cfg.get("dmiN", 14))
+            if x is None:
+                return None
+            mais, menos, adx = x
+            s["ind"] = {"diMais": round(mais, 1), "diMenos": round(menos, 1), "adx": round(adx, 1)}
+            if sig > 0:
+                return 0 if mais < menos else 1
+            return 1 if adx >= cfg.get("adx", 25) and mais > menos else 0
+        if r == "vwap":
+            n = cfg.get("janela", 24)
+            vs = self._volumes(s)
+            if len(cs) < n or len(vs) < n:
+                return None
+            pv = sum((h + l + f) / 3 * v for h, l, f, v in zip(hs[-n:], ls_[-n:], cs[-n:], vs[-n:]))
+            vt = sum(vs[-n:])
+            if vt <= 0:
+                return None
+            w = pv / vt
+            s["ind"] = {"vwap": round(w, 2)}
+            return 1 if c > w else 0
+        if r == "kst":
+            x = kst(cs, cfg.get("kstx", 1))
+            if x is None:
+                return None
+            k, sn = x
+            s["ind"] = {"kst": round(k, 2), "sinal": round(sn, 2)}
+            return 1 if k > sn else 0
+        if r == "chande":
+            x = chande_kroll(hs, ls_, cs, cfg.get("ckp", 10), cfg.get("ckx", 1), cfg.get("ckq", 9))
+            if x is None:
+                return None
+            cima, baixo = max(x), min(x)
+            s["ind"] = {"linhaCima": round(cima, 2), "linhaBaixo": round(baixo, 2)}
+            if sig > 0:
+                return 0 if c < baixo else 1
+            return 1 if c > cima else 0
+        if r == "pivo":
+            pv = pivos(s.get("hb") or {}, t)
+            if pv is None:
+                return None
+            s["ind"] = {k: round(v, 2) for k, v in pv.items()}
+            alvo = pv[cfg.get("pivoAlvo", "R1")]
+            if sig > 0:
+                return 0 if c >= alvo or c < pv["S2"] else 1
+            return 1 if pv["S2"] <= c <= pv["S1"] else 0
+        if r == "mmalvo":
+            n = cfg["lenta"]
+            if len(cs) < n + 1:
+                return None
+            a, b = ema(cs, cfg["rapida"]), ema(cs, n)
+            a0, b0 = ema(cs[:-1], cfg["rapida"]), ema(cs[:-1], n)
+            s["ind"] = {"rapida": round(a, 2), "lenta": round(b, 2)}
+            if sig > 0:
+                return 1  # sai pelo alvo ou pelo stop (a cada vela, em _sinal)
+            return 1 if a > b and a0 <= b0 else 0
         return 0
+
+    def _volumes(self, s):
+        """Os volumes das horas guardadas (0 nas horas sem volume), na ordem de _serie."""
+        hb = s.get("hb") or {}
+        return [(hb[k][3] if len(hb[k]) > 3 else 0.0) for k in sorted(hb, key=int)]
 
     def _alvo(self, sinal):
         """A posição real (−1 | 0 | +1) de um sinal lógico: o "ao contrário" troca o lado; o à vista não fica vendido."""
@@ -855,13 +981,23 @@ class Robo:
         """No fechamento de cada vela: o stop (a cada vela) e, na virada da hora, a regra."""
         cfg = self.cfg
         lado = self._lado_real(s)
+        # alvo de lucro (a cada vela; a média com alvo e stop), sobre a posição real
+        if lado and cfg.get("alvo") and s.get("pxEntrada"):
+            ganho = (c - s["pxEntrada"]) / s["pxEntrada"] * lado
+            if ganho >= cfg["alvo"]:
+                self._ir_para(s, 0, T, c, "alvo", f"o preço andou {pct_br(ganho)} a favor ({preco_br(c)}); saiu no alvo "
+                                                  f"de {pct_br(cfg['alvo'], 0)} e espera o próximo cruzamento.")
+                s["sinal"] = 0
+                return
         # stop de perda (a cada vela), sobre a posição real
         if lado and cfg.get("stop") and s.get("pxEntrada"):
             perda = (s["pxEntrada"] - c) / s["pxEntrada"] * lado
             if perda >= cfg["stop"]:
+                pausa = cfg.get("pausa", SINAL_PAUSA)
                 self._ir_para(s, 0, T, c, "stop", f"o preço andou {pct_br(perda)} contra a posição ({preco_br(c)}); saiu (stop "
-                                                   f"de {pct_br(cfg['stop'], 0)}) e espera um dia.")
-                s["sinal"], s["pausa"] = 0, T + SINAL_PAUSA
+                                                   f"de {pct_br(cfg['stop'], 0 if abs(cfg['stop'] * 100 - round(cfg['stop'] * 100)) < 1e-9 else 1)})"
+                                                   + (" e espera um dia." if pausa else "."))
+                s["sinal"], s["pausa"] = 0, T + pausa
                 return
         if (T + 1) % HORA:
             return
@@ -893,8 +1029,29 @@ class Robo:
         elif r == "bandas":
             por = ("o preço voltou à média" if novo == 0 else
                    f"o preço fechou {num_br(abs(ind.get('z', 0)), 1)} desvios {'abaixo' if novo > 0 else 'acima'} da média")
-        else:
+        elif r == "rsi":
             por = f"o RSI está em {num_br(ind.get('rsi', 0), 0)}"
+        elif r == "ichimoku":
+            por = ("o preço está acima da nuvem e a tenkan acima da kijun" if novo > 0 else
+                   "o preço perdeu o topo da nuvem" if c <= ind.get("nuvemTopo", c) else "a tenkan caiu abaixo da kijun")
+        elif r == "dmi":
+            por = (f"o ADX está em {num_br(ind.get('adx', 0), 0)} com o +DI acima do −DI" if novo > 0 else
+                   "o −DI passou o +DI")
+        elif r == "vwap":
+            por = (f"o preço passou o VWAP ({preco_br(ind.get('vwap', c))})" if novo > 0 else
+                   f"o preço caiu abaixo do VWAP ({preco_br(ind.get('vwap', c))})")
+        elif r == "kst":
+            por = "o KST passou acima da linha de sinal" if novo > 0 else "o KST caiu abaixo da linha de sinal"
+        elif r == "chande":
+            por = ("o preço fechou acima das duas linhas do Chande Kroll" if novo > 0 else
+                   "o preço fechou abaixo das duas linhas do Chande Kroll")
+        elif r == "pivo":
+            a = self.cfg.get("pivoAlvo", "R1")
+            por = (f"o preço chegou ao suporte S1 ({preco_br(ind.get('S1', c))})" if novo > 0 else
+                   f"o preço chegou ao {a} ({preco_br(ind.get(a, c))})" if c >= ind.get(a, c) else
+                   f"o preço perdeu o S2 ({preco_br(ind.get('S2', c))})")
+        else:
+            por = "a média rápida cruzou acima da lenta" if novo > 0 else "a média rápida caiu abaixo da lenta"
         return f"{por}; {acao}."
 
     # ------------------------------------------------------------------ caixa na Aave (DCA)
@@ -1065,7 +1222,7 @@ class Robo:
             return
         s.setdefault("acc", _acc())
         if self.usa_buffer:
-            self.guardar_vela(s, t, h, l, c)
+            self.guardar_vela(s, t, h, l, c, getattr(v, "v", None))
         if not s["ini"]:
             self.iniciar(s, t, o)
         # o juro do dinheiro parado na Aave
@@ -1133,8 +1290,9 @@ class Robo:
     def aquecer(self, s, velas):
         """A máxima de 7 dias antes do início (DCA na queda) e as velas de 1 h (grade com saída e pela oscilação)."""
         if self.usa_buffer:
-            for t, T, o, h, l, c in velas:
-                self.guardar_vela(s, t, h, l, c)
+            for v in velas:
+                t, T, o, h, l, c = v
+                self.guardar_vela(s, t, h, l, c, getattr(v, "v", None))
             return
         if self.tipo != "queda":
             return
@@ -1187,6 +1345,7 @@ class Robo:
         if self.tipo == "sinal":
             out["lado"] = self._lado_real(s)
             out["indicadores"] = s.get("ind")
+            out["regra"] = self.cfg["regra"]
             out["entradas"] = s["compras"]
         if self.caixa_aave:
             out["naAave"] = round(s.get("aave", 0.0), 2)
@@ -1234,6 +1393,106 @@ def rsi(xs, n=14):
         g = (g * (n - 1) + max(d, 0)) / n
         p = (p * (n - 1) + max(-d, 0)) / n
     return 100.0 if p == 0 else 100 - 100 / (1 + g / p)
+
+
+def _meio(hs, ls_, i, n):
+    """O meio entre a máxima e a mínima das `n` velas que terminam na vela `i`."""
+    return (max(hs[i - n + 1:i + 1]) + min(ls_[i - n + 1:i + 1])) / 2
+
+
+def ichimoku(hs, ls_, a=9, b=26):
+    """(tenkan, kijun, nuvem A, nuvem B) da última vela. A nuvem de agora foi desenhada `b` velas atrás: A = média da
+    tenkan e da kijun de lá, B = o meio de 2b velas de lá. None sem 3b velas."""
+    i = len(hs) - 1
+    if i + 1 < 3 * b:
+        return None
+    j = i - b
+    return _meio(hs, ls_, i, a), _meio(hs, ls_, i, b), (_meio(hs, ls_, j, a) + _meio(hs, ls_, j, b)) / 2, \
+        _meio(hs, ls_, j, 2 * b)
+
+
+def dmi(hs, ls_, cs, n=14):
+    """(+DI, −DI, ADX) de Wilder na última vela, pelas últimas 6n velas (a suavização já esqueceu o resto). None sem 2n+1."""
+    m = min(len(cs), 6 * n + 1)
+    if m < 2 * n + 1:
+        return None
+    hs, ls_, cs = hs[-m:], ls_[-m:], cs[-m:]
+    tr, pdm, mdm = [], [], []
+    for i in range(1, m):
+        sobe, desce = hs[i] - hs[i - 1], ls_[i - 1] - ls_[i]
+        pdm.append(sobe if sobe > desce and sobe > 0 else 0.0)
+        mdm.append(desce if desce > sobe and desce > 0 else 0.0)
+        tr.append(max(hs[i] - ls_[i], abs(hs[i] - cs[i - 1]), abs(ls_[i] - cs[i - 1])))
+    st, sp, sm = sum(tr[:n]), sum(pdm[:n]), sum(mdm[:n])
+    dxs = []
+
+    def _di():
+        if st <= 0:
+            return 0.0, 0.0
+        return 100 * sp / st, 100 * sm / st
+
+    for k in range(n, len(tr) + 1):
+        if k > n:
+            st, sp, sm = st - st / n + tr[k - 1], sp - sp / n + pdm[k - 1], sm - sm / n + mdm[k - 1]
+        p, q = _di()
+        dxs.append(100 * abs(p - q) / (p + q) if p + q > 0 else 0.0)
+    adx = sum(dxs[:n]) / min(n, len(dxs))
+    for d in dxs[n:]:
+        adx = (adx * (n - 1) + d) / n
+    p, q = _di()
+    return p, q, adx
+
+
+def kst(cs, x=1.0):
+    """(KST, linha de sinal) de Pring: as variações de 10, 15, 20 e 30 velas, suavizadas por médias de 10, 10, 10 e 15,
+    pesos 1 a 4, e o sinal = a média de 9 do KST. `x` estica todos os prazos (menos o sinal). None sem velas."""
+    rs = [max(2, round(n * x)) for n in (10, 15, 20, 30)]
+    ms = [max(2, round(n * x)) for n in (10, 10, 10, 15)]
+    sinal = 9
+    if len(cs) < max(r + m for r, m in zip(rs, ms)) + sinal:
+        return None
+
+    def valor(i):
+        tot = 0.0
+        for w, (r, m) in enumerate(zip(rs, ms), 1):
+            tot += w * sum((cs[j] / cs[j - r] - 1) * 100 for j in range(i - m + 1, i + 1)) / m
+        return tot
+
+    fim = len(cs) - 1
+    serie = [valor(i) for i in range(fim - sinal + 1, fim + 1)]
+    return serie[-1], sum(serie) / sinal
+
+
+def chande_kroll(hs, ls_, cs, p=10, x=1.0, q=9):
+    """(linha do stop dos vendidos, linha do stop dos comprados) de Chande e Kroll: a maior das últimas `q` (máxima de
+    `p` velas − x × a oscilação média de `p`) e a menor das últimas `q` (mínima de `p` + x × a oscilação média). A
+    oscilação média é a simples (não a de Wilder). None sem p + q + 1 velas."""
+    if len(cs) < p + q + 1:
+        return None
+    tr = [max(hs[i] - ls_[i], abs(hs[i] - cs[i - 1]), abs(ls_[i] - cs[i - 1])) for i in range(len(cs) - p - q + 1, len(cs))]
+    altas, baixas = [], []
+    fim = len(cs) - 1
+    for j in range(fim - q + 1, fim + 1):
+        k = j - (fim - p - q + 2)
+        atr = sum(tr[k - p + 1:k + 1]) / p
+        altas.append(max(hs[j - p + 1:j + 1]) - x * atr)
+        baixas.append(min(ls_[j - p + 1:j + 1]) + x * atr)
+    return max(altas), min(baixas)
+
+
+def pivos(hb, t):
+    """Os pivôs clássicos do dia anterior (UTC, o dia do mercado cripto) pelas horas guardadas: P = (máxima + mínima +
+    fechamento) ÷ 3, R1 = 2P − mínima, S1 = 2P − máxima, R2 = P + (máx − mín), S2 = P − (máx − mín). `t` é o fim da
+    vela que acabou de fechar. None com menos de 20 horas do dia anterior."""
+    ontem = (t + 1) // DIA - 1
+    ks = sorted((int(k) for k in hb if int(k) // DIA == ontem))
+    if len(ks) < 20:
+        return None
+    h = max(hb[str(k)][0] for k in ks)
+    l = min(hb[str(k)][1] for k in ks)
+    c = hb[str(ks[-1])][2]
+    P = (h + l + c) / 3
+    return {"P": P, "R1": 2 * P - l, "S1": 2 * P - h, "R2": P + (h - l), "S2": P - (h - l)}
 
 
 # ====================================================================== passar velas numa conta

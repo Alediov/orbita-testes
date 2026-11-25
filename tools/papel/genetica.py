@@ -85,6 +85,13 @@ def reparar(esp, genes):
         # a lenta sobe até o 1º valor da grade com pelo menos o dobro da rápida (72 h × 2 = 144 h cabe nos 200 h)
         gl = next(g for g in esp["genes"] if g["k"] == "lenta")
         out["lenta"] = min(gl["max"], gl["min"] + math.ceil((2 * out["rapida"] - gl["min"]) / gl["passo"]) * gl["passo"])
+    if esp["id"] == "indicadores" and out.get("regra") == "mmalvo":
+        # a média lenta fica pelo menos 4 h acima da rápida; a média com alvo sempre tem stop (1% sem o gene)
+        gl = next(g for g in esp["genes"] if g["k"] == "lenta")
+        if out["lenta"] < out["rapida"] + 4:
+            out["lenta"] = _snap(gl, out["rapida"] + 4)
+        if not out.get("stop"):
+            out["stop"] = 0.01
     return out
 
 

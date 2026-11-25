@@ -215,8 +215,19 @@ na versão "Os que você fixou" (partes iguais), e não sai pela regra.
   vende na alta" (`rfaixa`: baixa e alta a 3% da média de 72 h; `rfaixavol`: a uma oscilação diária; `rbandas`: 2
   desvios da média de 48 h, saída na média; `rbandastend`: só compra acima da média de 168 h; `rrsi`: RSI 14 h abaixo de
   30 / acima de 70; `rbandasls`: as bandas nos dois lados) e "Ao contrário" (`irbandas`, `irsi`, `icruzls`: a mesma
-  regra com o lado trocado, no perpétuo 1×). `extra.lado` (−1, 0, 1), `extra.entradas` e `extra.indicadores` (por
-  regra: `rapida`/`lenta`, `topo`/`fundo`/`stopMovel`, `media`/`baixa`/`alta`/`z`, `rsi`).
+  regra com o lado trocado, no perpétuo 1×). `extra.lado` (−1, 0, 1), `extra.entradas`, `extra.regra` (25/11/2026) e
+  `extra.indicadores` (por regra: `rapida`/`lenta`, `topo`/`fundo`/`stopMovel`, `media`/`baixa`/`alta`/`z`, `rsi`,
+  `tenkan`/`kijun`/`nuvemTopo`/`nuvemBase`, `diMais`/`diMenos`/`adx`, `vwap`, `kst`/`sinal`, `linhaCima`/`linhaBaixo`,
+  `P`/`R1`/`S1`/`R2`/`S2`).
+  **Indicadores (25/11/2026, pedido do Alediov, pelos vídeos de análise técnica que a Antena achou)**: `grupo`
+  "Indicadores", uma versão por indicador, BTC à vista 1×, contra o `segbtc` e o CDI: `indichi` (comprado com o preço
+  acima da nuvem do Ichimoku 9/26/52 e a tenkan acima da kijun), `inddmi` (entra com ADX de 14 h ≥ 25 e +DI > −DI, sai
+  quando o −DI passa o +DI), `indvwap` (comprado acima do VWAP das últimas 24 h; o volume de cada hora é o 4º número
+  das horas guardadas, `hb`, vindo do `v` das velas da Hyperliquid; sem volume, sem sinal), `indkst` (KST de Pring
+  acima da sua média de 9), `indck` (Chande Kroll 10/1/9: entra acima das duas linhas, sai abaixo das duas; a
+  oscilação média é a simples), `indpivo` (pivôs clássicos do dia UTC anterior: compra entre o S2 e o S1, vende no R1
+  ou abaixo do S2) e `indmm` (EMA 9 × 21 h: entra no cruzamento para cima, sai só no alvo de 2% ou no stop de 1%,
+  conferidos a cada vela, evento com `motivo` "alvo" ou "stop", sem a pausa de um dia). O RSI da família é o `rrsi`.
   **Revisão de 09/11/2026** (detalhes no começo de `robos.py`): versões novas `gsaida1`/`gsaida3` (`grupo` "Grade com
   saída": a grade neutra de BTC que fecha tudo quando o preço passa `config.saida.alemDegraus` degrau além da borda ou a
   conta cai `queda` (15%) do melhor momento desde a montagem, e remonta em volta do preço passadas `esperaHoras` (24) com
@@ -959,14 +970,20 @@ conta da versão no teste.)
 
 Pedido do Alediov: versões que evoluem sozinhas (as piores saem, as melhores se cruzam, às vezes uma mutação), para
 achar os melhores parâmetros de cada estratégia. Regras e números no começo do `evolucao.py`. Começa pelos Robôs (BTC):
-três **espécies**, cada uma com os seus **genes** (os parâmetros que mudam):
+quatro **espécies** (os Indicadores desde 25/11/2026), cada uma com os seus **genes** (os parâmetros que mudam):
 
 - `grade` (controle `gbtc10`): `mercado` spot/perp, `faixa` 3–25%, `degraus` 6–40, `alav` 1–3× (só perp), `recentrar`,
   `saida` e `saidaQueda` 5–30% (só com saída; o `saidaQueda` virou opção da versão em `robos.py`);
 - `bandas` (controle `rbandas`): `mercado`, `ls` (só perp), `media` 12–168 h, `z` 1–3 desvios, `stop` 2–15%,
   `filtro` 0/72/120/168 h;
 - `tendencia` (controle `tcruz`): `mercado`, `ls`, `rapida` 6–72 h, `lenta` 48–200 h (sempre ≥ 2 × a rápida),
-  `stop` 0/3/5/8/12%.
+  `stop` 0/3/5/8/12%;
+- `indicadores` (controle `rrsi`, 25/11/2026; sementes as 7 versões do `grupo` "Indicadores"; só à vista, sem o gene
+  `mercado`): `regra` (rsi | ichimoku | dmi | vwap | kst | chande | pivo | mmalvo) e os números de cada uma, que só
+  valem com ela (`so`): `periodo` 6–30 h, `baixo` 15–40 e `alto` 60–85 (RSI); `tenkan` 5–20 h e `kijun` 18–60 h;
+  `dmiN` 7–28 h e `adx` 15–40; `janela` 6–168 h (VWAP); `kstx` 0,5–3 (estica os prazos do KST); `ckp` 5–30 h, `ckx`
+  0,5–3 e `ckq` 3–20 h (Chande Kroll); `pivoAlvo` P/R1/R2; `rapida` 4–30 h, `lenta` 12–80 h (sempre ≥ rápida + 4) e
+  `alvo` 0,5–6% (médias com alvo); e `stop` 0/1/2/3/5/8% para todas (a média com alvo nunca fica sem: 1%).
 
 Duas frentes: o **laboratório** (todo dia, até 10 gerações de 24 nos últimos 180 dias de velas de 1 h, "aproximado";
 nota do treino = média das 3 janelas de 45 dias − ½ desvio entre elas, cada janela = retorno ao mês − ½ pior queda; os

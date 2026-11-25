@@ -3,7 +3,7 @@
 A ideia dele: "construímos algumas versões com parâmetros variáveis; depois de um ciclo (semanal) os piores são
 eliminados, os melhores se cruzam, recebendo parte do pai e parte da mãe e, a depender da sorte, uma mutação", para
 chegar ao melhor de cada estratégia (hoje há bons parâmetros, mas não se sabe se são os melhores). Começa pelos Robôs
-(três espécies no bitcoin: grade, bandas e tendência); o copy trading vem depois.
+(quatro espécies no bitcoin: grade, bandas, tendência e, desde 25/11/2026, os indicadores); o copy trading vem depois.
 
 Duas velocidades (decisão de 16/11/2026):
 
@@ -150,6 +150,52 @@ ESPECIES = {
              {"k": "stop", "nome": "Stop", "tipo": "op", "opcoes": [0, 0.03, 0.05, 0.08, 0.12], "un": "%",
               "rotulos": {"0": "Sem"}, "neutro": 0},
          ]},
+        # os indicadores (25/11/2026): a regra é um gene; os números de cada regra só valem para ela ("so")
+        {"id": "indicadores", "nome": "Indicadores", "icone": "🧭", "prefixo": "i", "controle": "rrsi",
+         "sementes": ["indichi", "inddmi", "indvwap", "indkst", "indck", "indpivo", "indmm"],
+         "base": {"tipo": "sinal", "moeda": "BTC", "mercado": "spot"},
+         "frase": "Um indicador de análise técnica decide quando comprar bitcoin e quando voltar para dólar: o "
+                  "indicador, os números dele e o stop evoluem.",
+         "genes": [
+             {"k": "regra", "nome": "Indicador", "tipo": "op",
+              "opcoes": ["rsi", "ichimoku", "dmi", "vwap", "kst", "chande", "pivo", "mmalvo"],
+              "rotulos": {"rsi": "RSI", "ichimoku": "Ichimoku", "dmi": "DMI/ADX", "vwap": "VWAP", "kst": "KST",
+                          "chande": "Chande Kroll", "pivo": "Pivôs", "mmalvo": "Médias com alvo"}, "neutro": "rsi"},
+             {"k": "periodo", "nome": "RSI de", "tipo": "int", "min": 6, "max": 30, "passo": 1, "un": "h",
+              "neutro": 14, "so": {"regra": "rsi"}},
+             {"k": "baixo", "nome": "Compra abaixo de", "tipo": "int", "min": 15, "max": 40, "passo": 1, "neutro": 30,
+              "so": {"regra": "rsi"}},
+             {"k": "alto", "nome": "Vende acima de", "tipo": "int", "min": 60, "max": 85, "passo": 1, "neutro": 70,
+              "so": {"regra": "rsi"}},
+             {"k": "tenkan", "nome": "Tenkan", "tipo": "int", "min": 5, "max": 20, "passo": 1, "un": "h", "neutro": 9,
+              "so": {"regra": "ichimoku"}},
+             {"k": "kijun", "nome": "Kijun", "tipo": "int", "min": 18, "max": 60, "passo": 2, "un": "h", "neutro": 26,
+              "so": {"regra": "ichimoku"}},
+             {"k": "dmiN", "nome": "DMI de", "tipo": "int", "min": 7, "max": 28, "passo": 1, "un": "h", "neutro": 14,
+              "so": {"regra": "dmi"}},
+             {"k": "adx", "nome": "ADX mínimo", "tipo": "int", "min": 15, "max": 40, "passo": 1, "neutro": 25,
+              "so": {"regra": "dmi"}},
+             {"k": "janela", "nome": "VWAP de", "tipo": "int", "min": 6, "max": 168, "passo": 6, "un": "h",
+              "neutro": 24, "so": {"regra": "vwap"}},
+             {"k": "kstx", "nome": "Prazos do KST ×", "tipo": "num", "min": 0.5, "max": 3.0, "passo": 0.25,
+              "neutro": 1.0, "so": {"regra": "kst"}},
+             {"k": "ckp", "nome": "Chande: velas", "tipo": "int", "min": 5, "max": 30, "passo": 1, "un": "h",
+              "neutro": 10, "so": {"regra": "chande"}},
+             {"k": "ckx", "nome": "Chande: oscilações", "tipo": "num", "min": 0.5, "max": 3.0, "passo": 0.25,
+              "neutro": 1.0, "so": {"regra": "chande"}},
+             {"k": "ckq", "nome": "Chande: suaviza", "tipo": "int", "min": 3, "max": 20, "passo": 1, "un": "h",
+              "neutro": 9, "so": {"regra": "chande"}},
+             {"k": "pivoAlvo", "nome": "Vende no", "tipo": "op", "opcoes": ["P", "R1", "R2"], "neutro": "R1",
+              "so": {"regra": "pivo"}},
+             {"k": "rapida", "nome": "Média rápida", "tipo": "int", "min": 4, "max": 30, "passo": 1, "un": "h",
+              "neutro": 9, "so": {"regra": "mmalvo"}},
+             {"k": "lenta", "nome": "Média lenta", "tipo": "int", "min": 12, "max": 80, "passo": 1, "un": "h",
+              "neutro": 21, "so": {"regra": "mmalvo"}},
+             {"k": "alvo", "nome": "Alvo", "tipo": "num", "min": 0.005, "max": 0.06, "passo": 0.005, "un": "%",
+              "neutro": 0.02, "so": {"regra": "mmalvo"}},
+             {"k": "stop", "nome": "Stop", "tipo": "op", "opcoes": [0, 0.01, 0.02, 0.03, 0.05, 0.08], "un": "%",
+              "rotulos": {"0": "Sem"}, "neutro": 0},
+         ]},
     ],
 }
 FORMA_NOME = {"robos": "Robôs"}
@@ -193,21 +239,33 @@ def genes_da_versao(esp, cfg):
 def cfg_de(esp, genes, id_, nome):
     """A versão dos Robôs (robos.Robo) com esses genes."""
     cfg = dict(esp["base"])
-    cfg.update(id=id_, nome=nome, mercado=genes["mercado"], alav=1, risco="médio", grupo="Evolução")
+    cfg.update(id=id_, nome=nome, mercado=genes.get("mercado", "spot"), alav=1, risco="médio", grupo="Evolução")
     if esp["id"] == "grade":
         cfg.update(faixa=genes["faixa"], degraus=genes["degraus"], recentrar=bool(genes["recentrar"]),
                    alav=genes["alav"], saida=bool(genes["saida"]), saidaQueda=genes["saidaQueda"])
     elif esp["id"] == "bandas":
         cfg.update(media=genes["media"], z=genes["z"], stop=genes["stop"], ls=bool(genes["ls"]),
                    filtro=genes["filtro"] or None)
+    elif esp["id"] == "indicadores":
+        cfg.update(mercado="spot", regra=genes["regra"], stop=genes["stop"] or None)
+        cfg.update({k: genes[k] for k in INDICADOR_GENES[genes["regra"]]})
+        if genes["regra"] == "mmalvo":
+            cfg.update(pausa=0, stop=genes["stop"] or 0.01)  # a média com alvo sempre tem stop (1% sem o gene)
     else:
         cfg.update(rapida=genes["rapida"], lenta=genes["lenta"], ls=bool(genes["ls"]), stop=genes["stop"] or None)
     return cfg
 
 
+INDICADOR_GENES = {"rsi": ("periodo", "baixo", "alto"), "ichimoku": ("tenkan", "kijun"), "dmi": ("dmiN", "adx"),
+                   "vwap": ("janela",), "kst": ("kstx",), "chande": ("ckp", "ckx", "ckq"), "pivo": ("pivoAlvo",),
+                   "mmalvo": ("rapida", "lenta", "alvo")}
+INDICADOR_NOME = {"rsi": "RSI", "ichimoku": "Ichimoku", "dmi": "DMI", "vwap": "VWAP", "kst": "KST",
+                  "chande": "Chande Kroll", "pivo": "Pivôs", "mmalvo": "Médias"}
+
+
 def descrever(esp, genes):
     """A versão em poucas palavras (o app mostra embaixo do nome)."""
-    perp = genes["mercado"] == "perp"
+    perp = genes.get("mercado", "spot") == "perp"
     if esp["id"] == "grade":
         t = f"±{genes['faixa'] * 100:.0f}%, {genes['degraus']} degraus"
         t += f", perpétuo {num(genes['alav'])}×" if perp else ", à vista"
@@ -221,6 +279,20 @@ def descrever(esp, genes):
         if genes["filtro"]:
             t += f", só acima da média de {genes['filtro']} h"
         return t + (", dois lados" if genes["ls"] else (", perpétuo" if perp else ""))
+    if esp["id"] == "indicadores":
+        r = genes["regra"]
+        t = INDICADOR_NOME[r] + " " + {
+            "rsi": lambda: f"de {genes['periodo']} h, {genes['baixo']}/{genes['alto']}",
+            "ichimoku": lambda: f"{genes['tenkan']}/{genes['kijun']} h",
+            "dmi": lambda: f"de {genes['dmiN']} h, ADX ≥ {genes['adx']}",
+            "vwap": lambda: f"de {genes['janela']} h",
+            "kst": lambda: f"com prazos × {num(genes['kstx'])}",
+            "chande": lambda: f"{genes['ckp']}, {num(genes['ckx'])}, {genes['ckq']}",
+            "pivo": lambda: f"do S1 ao {genes['pivoAlvo']}",
+            "mmalvo": lambda: f"{genes['rapida']} × {genes['lenta']} h, alvo {num(genes['alvo'] * 100)}%",
+        }[r]()
+        st = genes["stop"] or (0.01 if r == "mmalvo" else 0)
+        return t + (f", stop {num(st * 100)}%" if st else "")
     t = f"Médias de {genes['rapida']} h e {genes['lenta']} h"
     if genes["stop"]:
         t += f", stop {num(genes['stop'] * 100)}%"
@@ -317,7 +389,7 @@ def dados_lab(ctx, pares, P, erros, log):
 
 
 def avaliar(esp, genes, dados, P):
-    d = dados.get(genes["mercado"])
+    d = dados.get(genes.get("mercado", "spot"))
     if not d:
         return None
     antes, depois, fund = d
@@ -529,7 +601,7 @@ class Especie:
         robo = self.robo(ind)
         s = robo.novo(agora // MIN * MIN)
         if robo.usa_buffer:
-            velas = aquecer.get(ind["genes"]["mercado"]) or []
+            velas = aquecer.get(ind["genes"].get("mercado", "spot")) or []
             robo.aquecer(s, [v for v in velas if v[1] < agora])
         curva = Curva(inicio=agora)
         curva.marcar(agora, CAPITAL)
@@ -754,7 +826,7 @@ def restaurar_buffers(especies, est):
         s = ind["s"]
         if "hb" in s and s["hb"] is None:
             ate = int(s["ate"])
-            s["hb"] = {k: list(v) for k, v in (hb.get(ind["genes"]["mercado"]) or {}).items() if int(k) < ate}
+            s["hb"] = {k: list(v) for k, v in (hb.get(ind["genes"].get("mercado", "spot")) or {}).items() if int(k) < ate}
 
 
 def guardar_buffers(especies, est):
@@ -764,7 +836,7 @@ def guardar_buffers(especies, est):
         s = ind["s"]
         b = s.get("hb")
         if b:
-            m = ind["genes"]["mercado"]
+            m = ind["genes"].get("mercado", "spot")
             if m not in hb or max(map(int, b)) > max(map(int, hb[m])) or (
                     max(map(int, b)) == max(map(int, hb[m])) and len(b) > len(hb[m])):
                 hb[m] = b
@@ -785,7 +857,7 @@ def avancar_vivo(ctx, especies, pares, erros, log):
         if not liga:
             continue
         for ind in liga["pop"] + [liga["controle"]]:
-            grupos.setdefault(ind["genes"]["mercado"], []).append((sp, ind))
+            grupos.setdefault(ind["genes"].get("mercado", "spot"), []).append((sp, ind))
     for merc, lista in grupos.items():
         vivos = [ind for _, ind in lista if not ind["s"].get("morta")]
         if not vivos:

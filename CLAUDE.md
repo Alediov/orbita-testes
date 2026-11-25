@@ -121,6 +121,11 @@ acabavam; aqui os executores padrão não têm limite.
   palpites do Theo sem gastar a OddsPapi (FORMATO.md, "As contas do intervalo" e "Os palpites do Theo pela
   API-Football"). A sonda à mão dos mercados: `sonda_odds.py` + `sonda.yml`. Desde 22/11 as apostas rodam também a cada
   hora (`papel.yml`, cron "53 * * * *" = só as apostas) e o theo.json leva a odd de antes do jogo (`agora`).
+- **Indicadores** (25/11/2026, pedido do Alediov pela proposta da Antena de ideias): `grupo` "Indicadores" dos Robôs
+  (`indichi`, `inddmi`, `indvwap`, `indkst`, `indck`, `indpivo`, `indmm`; o RSI é o `rrsi`), BTC à vista 1×, contra
+  segurar BTC e o CDI; o volume das velas entra no buffer (`robos.Vela`, para o VWAP); e a 4ª espécie da Evolução,
+  `indicadores` (o indicador é um gene). FORMATO.md, "Robôs de sinal" e "Evolução". Teste em `teste_robos.py`
+  (`teste_indicadores_familia`).
 - **A melhor casa** (24/11/2026): `valor3m`/`valor5m` das apostas, a maior odd entre a Betano e a Bet365 (e as casas da
   API-Football nos jogos do Theo), sem pedido a mais; FORMATO.md, "Apostas, a melhor casa".
 - **Seguir o BDM** (pedido do Alediov, 09/11/2026; só esta conta, nenhum mercado novo): versão `bdm` das apostas, que

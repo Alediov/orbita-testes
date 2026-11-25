@@ -221,7 +221,10 @@ def conferir_forma(d):
     assert ids == ["gbtc10", "geth10", "gbtc20r", "gneutra1", "gneutra3", "dca", "dcaqueda", "dcam1", "dcam3",
                    "gsaida1", "gsaida3", "gvol2", "gvol4", "gsol1", "ghype1", "dcaC", "tcruz", "tcruzls", "tcruzeth",
                    "trompe", "tmovel", "rfaixa", "rfaixavol", "rbandas", "rbandastend", "rrsi", "rbandasls", "irbandas",
-                   "irsi", "icruzls", "segbtc", "segeth"]
+                   "irsi", "icruzls", "indichi", "inddmi", "indvwap", "indkst", "indck", "indpivo", "indmm",
+                   "segbtc", "segeth"]
+    assert [v["id"] for v in d["versoes"] if v["grupo"] == "Indicadores"] == [
+        "indichi", "inddmi", "indvwap", "indkst", "indck", "indpivo", "indmm"]
     assert d["padrao"] in ids
     for v in d["versoes"]:
         assert v["risco"] in RISCOS and v["nome"] and v["frase"] and 1 <= v["alav"] <= 3
@@ -579,6 +582,66 @@ def teste_baixa_alta():
     assert [x for x in _rodar_sinal("rbandas", descendo)[1]["buf"]["ev"] if x[1] == "comprou"]
 
 
+# ---------------------------------------------------------------------- indicadores (25/11/2026)
+def teste_indicadores_familia():
+    sobe = [100 * 1.002 ** i for i in range(220)]
+    hs, ls_ = [c * 1.003 for c in sobe], [c * 0.997 for c in sobe]
+    tk, kj, a, b = robos.ichimoku(hs, ls_)
+    assert tk > kj and sobe[-1] > max(a, b)
+    assert robos.ichimoku(hs[:70], ls_[:70]) is None  # 3 × 26
+    mais, menos, adx = robos.dmi(hs, ls_, sobe)
+    assert mais > menos and adx > 25
+    desce = list(reversed(sobe))
+    mais, menos, _ = robos.dmi([c * 1.003 for c in desce], [c * 0.997 for c in desce], desce)
+    assert menos > mais
+    k, sn = robos.kst([100 + i + (3 if i % 2 else 0) for i in range(120)])
+    assert k > 0
+    assert robos.kst(desce)[0] < 0 and robos.kst(sobe[:50]) is None
+    cima, baixo = robos.chande_kroll(hs, ls_, sobe)
+    assert sobe[-1] > max(cima, baixo)
+    hb = {str(DIA * 100 + h * HORA): [110, 90, 100] for h in range(24)}
+    pv = robos.pivos(hb, DIA * 101 + HORA - 1)
+    assert (pv["P"], pv["R1"], pv["S1"], pv["S2"]) == (100, 110, 90, 80)
+    assert robos.pivos(hb, DIA * 102 + HORA - 1) is None  # o dia anterior não está guardado
+    # cada versão roda sem erro numa subida, numa queda e num vai e vem, e as de tendência entram na subida
+    import math as m
+    vai = [100 * (1 + 0.04 * m.sin(2 * m.pi * i / 48)) for i in range(24 * 10)]
+    for vid in ("indichi", "inddmi", "indkst", "indck", "indpivo", "indmm"):
+        for precos in (sobe, desce, vai):
+            r, s = _rodar_sinal(vid, precos)
+            e = r.extra(s)
+            assert e["regra"] == cfg_de(vid)["regra"]
+            assert e["indicadores"], vid
+    for vid in ("indichi", "inddmi", "indkst", "indck"):
+        r, s = _rodar_sinal(vid, [100.0] * 100 + sobe)
+        assert r._lado_real(s) == 1, vid
+        r, s = _rodar_sinal(vid, [100.0] * 100 + sobe + [sobe[-1] * 0.995 ** i for i in range(1, 49)])
+        assert r._lado_real(s) == 0, vid
+    # pivôs: compra no S1 de um dia de vai e vem, vende no R1
+    r, s = _rodar_sinal("indpivo", vai)
+    tipos = [x[1] for x in s["buf"]["ev"]]
+    assert "comprou" in tipos and "saiu" in tipos, tipos
+    # médias com alvo e stop: o alvo de 2% fecha a posição e não há pausa depois do stop
+    r, s = _rodar_sinal("indmm", [100.0] * 30 + [100 - i * 0.2 for i in range(10)] + [98 + i * 0.4 for i in range(20)])
+    assert any(len(x) > 3 and x[3] == "alvo" for x in s["buf"]["ev"]), [x[2] for x in s["buf"]["ev"]]
+    precos = [100.0] * 30 + [100 - i * 0.2 for i in range(10)] + [98 + i * 0.4 for i in range(7)] + [96.0]
+    r, s = _rodar_sinal("indmm", precos)
+    assert any(len(x) > 3 and x[3] == "stop" and "stop de 1%)." in x[2] for x in s["buf"]["ev"]), s["buf"]["ev"]
+    assert s["pausa"] < len(precos) * HORA
+    # VWAP: o volume vem das velas da API (o 4º número da hora); sem volume, sem sinal
+    r = robos.Robo(cfg_de("indvwap"))
+    s = r.novo(0)
+    lista = [{"t": i * HORA, "o": p, "h": p * 1.001, "l": p * 0.999, "c": p, "v": "5"} for i, p in enumerate(sobe[:60])]
+    vs = robos.velas_da_api(lista, "1h", 61 * HORA)
+    assert vs[0].v == 5.0 and copy.deepcopy(vs[0]).v == 5.0
+    for v in vs:
+        r.vela(s, v)
+    assert list(s["hb"].values())[-1][3] == 5.0
+    assert r._lado_real(s) == 1 and s["ind"]["vwap"] < sobe[59]
+    r2, s2 = _rodar_sinal("indvwap", sobe[:60])
+    assert r2._lado_real(s2) == 0 and "vwap" not in (s2.get("ind") or {})
+
+
 if __name__ == "__main__":
     teste_grade_a_mao()
     teste_caminho_pessimista()
@@ -599,4 +662,5 @@ if __name__ == "__main__":
     teste_sinais_indicadores()
     teste_tendencia()
     teste_baixa_alta()
+    teste_indicadores_familia()
     print("ok")

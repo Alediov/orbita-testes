@@ -39,7 +39,9 @@ def teste_genes():
                     assert v == d["neutro"], f"{esp['id']}: {d['k']} inativo fora do neutro ({g})"
             if esp["id"] == "tendencia":
                 assert g["lenta"] >= 2 * g["rapida"], g
-            if g["mercado"] == "spot":
+            if esp["id"] == "indicadores" and g["regra"] == "mmalvo":
+                assert g["lenta"] >= g["rapida"] + 4 and g["stop"], g
+            if g.get("mercado", "spot") == "spot":
                 assert not g.get("ls") and g.get("alav", 1) == 1, g
             # a versão desses genes roda no robô
             R.Robo(E.cfg_de(esp, g, "x", "x"))
@@ -64,6 +66,14 @@ def teste_controles_e_sementes():
         for k in ("mercado", "faixa", "degraus", "media", "z", "stop", "rapida", "lenta"):
             if k in orig:
                 assert cfg[k] == orig[k], (esp["id"], k, cfg[k], orig[k])
+    # indicadores: cada semente volta igual (a regra e os números dela) e se descreve
+    for vid in [ESP["indicadores"]["controle"]] + ESP["indicadores"]["sementes"]:
+        g = E.genes_da_versao(ESP["indicadores"], cfgs[vid])
+        cfg, orig = E.cfg_de(ESP["indicadores"], g, "c", "c"), cfgs[vid]
+        for k, v in orig.items():
+            if k not in ("id", "nome", "frase", "grupo", "risco"):
+                assert cfg.get(k) == v, (vid, k, cfg.get(k), v)
+        assert E.descrever(ESP["indicadores"], g)
     g = E.genes_da_versao(ESP["bandas"], cfgs["rbandastend"])
     assert g["filtro"] == 168
     g = E.genes_da_versao(ESP["grade"], cfgs["gsaida3"])
@@ -327,7 +337,7 @@ def teste_rodadas():
             d = json.load(f)
         conferir_evolucao(d)
         esp = d["formas"][0]["especies"]
-        assert [e["id"] for e in esp] == ["grade", "bandas", "tendencia"]
+        assert [e["id"] for e in esp] == ["grade", "bandas", "tendencia", "indicadores"]
         for e in esp:
             assert e["lab"]["g"] >= 40, e["lab"]["g"]
             assert len(e["liga"]["pop"]) == 8
