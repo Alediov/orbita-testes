@@ -55,6 +55,19 @@ def teste_genes():
     assert E.chave(g) == E.chave(dict(reversed(list(g.items()))))
 
 
+def teste_migrar_moeda():
+    est = {"esp": {"robos.grade": {"lab": {"pop": [{"genes": {"mercado": "spot", "faixa": 0.1}, "origem": {"faixa": "pai"}}]},
+                                   "liga": {"controle": {"genes": {"mercado": "perp"}}, "pop": []}}},
+           "hb": {"spot": {"1": [1, 1, 1]}, "perp": {}}}
+    E.migrar_moeda(est)
+    ind = est["esp"]["robos.grade"]["lab"]["pop"][0]
+    assert ind["genes"]["moeda"] == "BTC" and ind["origem"]["moeda"] == "base"
+    assert est["esp"]["robos.grade"]["liga"]["controle"]["genes"]["moeda"] == "BTC"
+    assert set(est["hb"]) == {"spot|BTC", "perp|BTC"} and est["hb"]["spot|BTC"] == {"1": [1, 1, 1]}
+    assert E.onde({"mercado": "perp", "moeda": "SOL"}) == "perp|SOL" and E.onde({}) == "spot|BTC"
+    assert E.coin_de("perp|SOL", {}) == "SOL" and E.coin_de("spot|ETH", {"ETH": "@151"}) == "@151"
+
+
 def teste_controles_e_sementes():
     cfgs = {c["id"]: c for c in R.VERSOES}
     for esp in ESP.values():
@@ -74,6 +87,21 @@ def teste_controles_e_sementes():
             if k not in ("id", "nome", "frase", "grupo", "risco"):
                 assert cfg.get(k) == v, (vid, k, cfg.get(k), v)
         assert E.descrever(ESP["indicadores"], g)
+    # a moeda e o DCA (25/11/2026): cada semente volta igual nos números que importam
+    for esp in ESP.values():
+        for vid in [esp["controle"]] + esp["sementes"]:
+            orig = cfgs[vid]
+            cfg = E.cfg_de(esp, E.genes_da_versao(esp, orig), "c", "c")
+            for k in ("moeda", "tipo", "mercado", "alav", "partes", "cada", "queda", "caixa", "passo", "seguranca",
+                      "mult", "alvo", "faixa", "degraus", "regra"):
+                if k in orig:
+                    assert cfg.get(k) == orig[k], (esp["id"], vid, k, cfg.get(k), orig[k])
+    g = E.genes_da_versao(ESP["dca"], cfgs["dcaqueda"])
+    assert g["tipo"] == "queda" and g["cada"] == 7 and g["queda"] == 0.05 and g["passo"] == 0.02  # o passo fica neutro
+    assert E.descrever(ESP["dca"], g) == "20 compras, só com 5% de queda, no máximo 1 a cada 7 dias", E.descrever(ESP["dca"], g)
+    g = E.genes_da_versao(ESP["dca"], cfgs["dcam3"])
+    assert g["mercado"] == "perp" and g["alav"] == 3 and g["partes"] == 20 and not g["caixa"]
+    assert E.descrever(ESP["grade"], E.genes_da_versao(ESP["grade"], cfgs["geth10"])).startswith("ETH · ")
     g = E.genes_da_versao(ESP["bandas"], cfgs["rbandastend"])
     assert g["filtro"] == 168
     g = E.genes_da_versao(ESP["grade"], cfgs["gsaida3"])
@@ -337,7 +365,7 @@ def teste_rodadas():
             d = json.load(f)
         conferir_evolucao(d)
         esp = d["formas"][0]["especies"]
-        assert [e["id"] for e in esp] == ["grade", "bandas", "tendencia", "indicadores"]
+        assert [e["id"] for e in esp] == ["grade", "bandas", "tendencia", "indicadores", "dca"]
         for e in esp:
             assert e["lab"]["g"] >= 40, e["lab"]["g"]
             assert len(e["liga"]["pop"]) == 8

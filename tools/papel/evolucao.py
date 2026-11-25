@@ -3,7 +3,8 @@
 A ideia dele: "construímos algumas versões com parâmetros variáveis; depois de um ciclo (semanal) os piores são
 eliminados, os melhores se cruzam, recebendo parte do pai e parte da mãe e, a depender da sorte, uma mutação", para
 chegar ao melhor de cada estratégia (hoje há bons parâmetros, mas não se sabe se são os melhores). Começa pelos Robôs
-(quatro espécies no bitcoin: grade, bandas, tendência e, desde 25/11/2026, os indicadores); o copy trading vem depois.
+(grade, bandas, tendência e, desde 25/11/2026, os indicadores e o DCA; desde 25/11/2026 a moeda também é gene: BTC,
+ETH, SOL ou HYPE); o copy trading vem depois.
 
 Duas velocidades (decisão de 16/11/2026):
 
@@ -100,14 +101,20 @@ def parametros(ctx):
 # esses valores (senão fica no `neutro`, para duas versões iguais terem a mesma chave). "un": "%" (fração), "×" ou "h".
 MERCADO = {"k": "mercado", "nome": "Mercado", "tipo": "op", "opcoes": ["spot", "perp"],
            "rotulos": {"spot": "À vista", "perp": "Perpétuo"}, "neutro": "spot"}
+# a moeda (25/11/2026, o 2º do plano das Evoluções): todas as espécies dos Robôs podem sair do bitcoin; os controles
+# continuam no bitcoin. As contas de antes ganharam "BTC" (`migrar_moeda`)
+MOEDAS = ["BTC", "ETH", "SOL", "HYPE"]
+MOEDA = {"k": "moeda", "nome": "Moeda", "tipo": "op", "opcoes": MOEDAS, "neutro": "BTC"}
+DCA_TIPOS = {"dca": "Toda semana (ou a cada N dias)", "queda": "Só na queda", "martingale": "Com proteção"}
 ESPECIES = {
     "robos": [
         {"id": "grade", "nome": "Grade", "icone": "🪜", "prefixo": "g", "controle": "gbtc10",
-         "sementes": ["gbtc20r", "gneutra1", "gneutra3", "gsaida1", "gsaida3"],
+         "sementes": ["gbtc20r", "gneutra1", "gneutra3", "gsaida1", "gsaida3", "geth10", "gsol1", "ghype1"],
          "base": {"tipo": "grade", "moeda": "BTC"},
-         "frase": "Grades de compra e venda no bitcoin: a largura, os degraus, o mercado, a alavancagem e a saída "
+         "frase": "Grades de compra e venda: a moeda, a largura, os degraus, o mercado, a alavancagem e a saída "
                   "evoluem.",
          "genes": [
+             MOEDA,
              MERCADO,
              {"k": "faixa", "nome": "Largura", "tipo": "num", "min": 0.03, "max": 0.25, "passo": 0.01, "un": "%",
               "neutro": 0.10},
@@ -122,9 +129,10 @@ ESPECIES = {
         {"id": "bandas", "nome": "Bandas", "icone": "〰️", "prefixo": "b", "controle": "rbandas",
          "sementes": ["rbandastend", "rbandasls"],
          "base": {"tipo": "sinal", "regra": "bandas", "moeda": "BTC"},
-         "frase": "Compra quando o preço estica para baixo da média e vende na volta: a média, os desvios, o stop e "
-                  "o filtro de tendência evoluem.",
+         "frase": "Compra quando o preço estica para baixo da média e vende na volta: a moeda, a média, os desvios, o "
+                  "stop e o filtro de tendência evoluem.",
          "genes": [
+             MOEDA,
              MERCADO,
              {"k": "ls", "nome": "Dois lados", "tipo": "bool", "neutro": False, "so": {"mercado": "perp"}},
              {"k": "media", "nome": "Média", "tipo": "int", "min": 12, "max": 168, "passo": 6, "un": "h",
@@ -136,11 +144,12 @@ ESPECIES = {
               "rotulos": {"0": "Não"}, "neutro": 0},
          ]},
         {"id": "tendencia", "nome": "Tendência", "icone": "📈", "prefixo": "t", "controle": "tcruz",
-         "sementes": ["tcruzls"],
+         "sementes": ["tcruzls", "tcruzeth"],
          "base": {"tipo": "sinal", "regra": "cruz", "moeda": "BTC"},
-         "frase": "Fica comprado enquanto a média rápida está acima da lenta: as duas médias, os dois lados e o stop "
-                  "evoluem.",
+         "frase": "Fica comprado enquanto a média rápida está acima da lenta: a moeda, as duas médias, os dois lados e "
+                  "o stop evoluem.",
          "genes": [
+             MOEDA,
              MERCADO,
              {"k": "ls", "nome": "Dois lados", "tipo": "bool", "neutro": False, "so": {"mercado": "perp"}},
              {"k": "rapida", "nome": "Média rápida", "tipo": "int", "min": 6, "max": 72, "passo": 2, "un": "h",
@@ -154,9 +163,10 @@ ESPECIES = {
         {"id": "indicadores", "nome": "Indicadores", "icone": "🧭", "prefixo": "i", "controle": "rrsi",
          "sementes": ["indichi", "inddmi", "indvwap", "indkst", "indck", "indpivo", "indmm"],
          "base": {"tipo": "sinal", "moeda": "BTC", "mercado": "spot"},
-         "frase": "Um indicador de análise técnica decide quando comprar bitcoin e quando voltar para dólar: o "
-                  "indicador, os números dele e o stop evoluem.",
+         "frase": "Um indicador de análise técnica decide quando comprar a moeda e quando voltar para dólar: a moeda, "
+                  "o indicador, os números dele e o stop evoluem.",
          "genes": [
+             MOEDA,
              {"k": "regra", "nome": "Indicador", "tipo": "op",
               "opcoes": ["rsi", "ichimoku", "dmi", "vwap", "kst", "chande", "pivo", "mmalvo"],
               "rotulos": {"rsi": "RSI", "ichimoku": "Ichimoku", "dmi": "DMI/ADX", "vwap": "VWAP", "kst": "KST",
@@ -196,6 +206,35 @@ ESPECIES = {
              {"k": "stop", "nome": "Stop", "tipo": "op", "opcoes": [0, 0.01, 0.02, 0.03, 0.05, 0.08], "un": "%",
               "rotulos": {"0": "Sem"}, "neutro": 0},
          ]},
+        # o DCA (25/11/2026, o 2º do plano das Evoluções): o jeito é um gene; os números de cada jeito só valem com ele
+        {"id": "dca", "nome": "DCA", "icone": "🧺", "prefixo": "d", "controle": "dca",
+         "sementes": ["dcaqueda", "dcam1", "dcam3", "dcaC"],
+         "base": {"moeda": "BTC"},
+         "frase": "Compra aos poucos em vez de tudo de uma vez: a moeda, o jeito (toda semana, só na queda ou com "
+                  "proteção), o tamanho e o ritmo das compras, a proteção e o caixa na Aave evoluem.",
+         "genes": [
+             MOEDA,
+             {"k": "tipo", "nome": "Jeito", "tipo": "op", "opcoes": list(DCA_TIPOS), "rotulos": DCA_TIPOS,
+              "neutro": "dca"},
+             {"k": "partes", "nome": "Em quantas compras", "tipo": "op", "opcoes": [5, 10, 20, 40], "neutro": 20,
+              "so": {"tipo": ["dca", "queda"]}},
+             {"k": "cada", "nome": "A cada", "tipo": "op", "opcoes": [1, 3, 7, 14], "un": "d", "neutro": 7,
+              "so": {"tipo": ["dca", "queda"]}},
+             {"k": "queda", "nome": "Queda da máxima de 7 dias", "tipo": "num", "min": 0.02, "max": 0.15, "passo": 0.01,
+              "un": "%", "neutro": 0.05, "so": {"tipo": "queda"}},
+             {"k": "caixa", "nome": "Caixa na Aave", "tipo": "bool", "neutro": False, "so": {"tipo": ["dca", "queda"]}},
+             dict(MERCADO, so={"tipo": "martingale"}),
+             {"k": "alav", "nome": "Alavancagem", "tipo": "num", "min": 1, "max": 3, "passo": 0.5, "un": "×",
+              "neutro": 1, "so": {"mercado": "perp"}},
+             {"k": "passo", "nome": "Compra mais a cada queda de", "tipo": "num", "min": 0.01, "max": 0.06,
+              "passo": 0.005, "un": "%", "neutro": 0.02, "so": {"tipo": "martingale"}},
+             {"k": "seguranca", "nome": "Compras a mais", "tipo": "int", "min": 2, "max": 8, "passo": 1, "neutro": 5,
+              "so": {"tipo": "martingale"}},
+             {"k": "mult", "nome": "Cada uma maior", "tipo": "num", "min": 1.0, "max": 2.5, "passo": 0.25, "un": "×",
+              "neutro": 1.5, "so": {"tipo": "martingale"}},
+             {"k": "alvo", "nome": "Vende com lucro de", "tipo": "num", "min": 0.005, "max": 0.05, "passo": 0.005,
+              "un": "%", "neutro": 0.015, "so": {"tipo": "martingale"}},
+         ]},
     ],
 }
 FORMA_NOME = {"robos": "Robôs"}
@@ -231,6 +270,10 @@ def genes_da_versao(esp, cfg):
             genes[k] = bool(cfg.get(k))
         elif k in ("filtro", "stop") and g["tipo"] == "op":
             genes[k] = cfg.get(k) or 0
+        elif k == "cada":
+            genes[k] = int(cfg.get("cada", g["neutro"] * DIA) // DIA)
+        elif k == "caixa":
+            genes[k] = bool(cfg.get("caixa"))
         else:
             genes[k] = cfg.get(k, g["neutro"])
     return reparar(esp, genes)
@@ -239,13 +282,24 @@ def genes_da_versao(esp, cfg):
 def cfg_de(esp, genes, id_, nome):
     """A versão dos Robôs (robos.Robo) com esses genes."""
     cfg = dict(esp["base"])
-    cfg.update(id=id_, nome=nome, mercado=genes.get("mercado", "spot"), alav=1, risco="médio", grupo="Evolução")
+    cfg.update(id=id_, nome=nome, mercado=genes.get("mercado", "spot"), moeda=genes.get("moeda", "BTC"), alav=1,
+               risco="médio", grupo="Evolução")
     if esp["id"] == "grade":
         cfg.update(faixa=genes["faixa"], degraus=genes["degraus"], recentrar=bool(genes["recentrar"]),
                    alav=genes["alav"], saida=bool(genes["saida"]), saidaQueda=genes["saidaQueda"])
     elif esp["id"] == "bandas":
         cfg.update(media=genes["media"], z=genes["z"], stop=genes["stop"], ls=bool(genes["ls"]),
                    filtro=genes["filtro"] or None)
+    elif esp["id"] == "dca":
+        t = genes["tipo"]
+        cfg.update(tipo=t, mercado=genes["mercado"] if t == "martingale" else "spot")
+        if t == "martingale":
+            cfg.update(passo=genes["passo"], seguranca=genes["seguranca"], mult=genes["mult"], alvo=genes["alvo"],
+                       alav=genes["alav"] if genes["mercado"] == "perp" else 1)
+        else:
+            cfg.update(partes=genes["partes"], cada=genes["cada"] * DIA, caixa=bool(genes["caixa"]))
+            if t == "queda":
+                cfg.update(queda=genes["queda"], janela=7 * DIA)
     elif esp["id"] == "indicadores":
         cfg.update(mercado="spot", regra=genes["regra"], stop=genes["stop"] or None)
         cfg.update({k: genes[k] for k in INDICADOR_GENES[genes["regra"]]})
@@ -264,8 +318,24 @@ INDICADOR_NOME = {"rsi": "RSI", "ichimoku": "Ichimoku", "dmi": "DMI", "vwap": "V
 
 
 def descrever(esp, genes):
-    """A versão em poucas palavras (o app mostra embaixo do nome)."""
+    """A versão em poucas palavras (o app mostra embaixo do nome), com a moeda na frente quando não é o bitcoin."""
+    t = _descrever(esp, genes)
+    m = genes.get("moeda", "BTC")
+    return t if m == "BTC" else f"{m} · {t}"
+
+
+def _descrever(esp, genes):
     perp = genes.get("mercado", "spot") == "perp"
+    if esp["id"] == "dca":
+        tp = genes["tipo"]
+        if tp == "martingale":
+            t = (f"Com proteção: até {genes['seguranca']} compras a mais, cada uma {num(genes['mult'])}× maior, a cada "
+                 f"{num(genes['passo'] * 100)}% de queda; vende com {num(genes['alvo'] * 100)}%")
+            return t + (f", perpétuo {num(genes['alav'])}×" if perp else "")
+        d = "todo dia" if genes["cada"] == 1 else f"a cada {genes['cada']} dias"
+        t = (f"{genes['partes']} compras, {d}" if tp == "dca" else
+             f"{genes['partes']} compras, só com {num(genes['queda'] * 100)}% de queda, no máximo 1 {d}")
+        return t + (", caixa na Aave" if genes["caixa"] else "")
     if esp["id"] == "grade":
         t = f"±{genes['faixa'] * 100:.0f}%, {genes['degraus']} degraus"
         t += f", perpétuo {num(genes['alav'])}×" if perp else ", à vista"
@@ -366,15 +436,31 @@ def sem_clones(ordem):
 
 
 # ====================================================================== laboratório
+def onde(genes):
+    """A chave dos dados de uma versão: "mercado|moeda" (antes de 25/11/2026 era só o mercado, no bitcoin)."""
+    return f"{genes.get('mercado', 'spot')}|{genes.get('moeda', 'BTC')}"
+
+
+def coin_de(chave_, pares):
+    merc, moeda = chave_.split("|")
+    return pares.get(moeda, R.PARES_PADRAO[moeda]) if merc == "spot" else moeda
+
+
+CHAVES = [f"{m}|{c}" for c in MOEDAS for m in ("spot", "perp")]
+
+
 def dados_lab(ctx, pares, P, erros, log):
-    """As velas de 1 h (com os dias de aquecer antes) do à vista e do perpétuo e o financiamento do perpétuo."""
+    """As velas de 1 h (com os dias de aquecer antes) do à vista e do perpétuo de cada moeda e o financiamento do
+    perpétuo, pela chave "mercado|moeda"."""
     agora = ctx.agora
     ini = agora - P["HIST_DIAS"] * DIA
     out = {}
-    for merc, coin in (("spot", pares.get("BTC", R.PARES_PADRAO["BTC"])), ("perp", "BTC")):
+    for ch in CHAVES:
+        merc, moeda = ch.split("|")
+        coin = coin_de(ch, pares)
         try:
             velas = R.velas_da_api(ctx.cli.velas(coin, "1h", ini - R.AQUECER_SINAL_DIAS * DIA, agora), "1h", agora)
-            fund = R.Funding.da_api(ctx.cli.financiamento("BTC", ini - HORA, agora)) if merc == "perp" else None
+            fund = R.Funding.da_api(ctx.cli.financiamento(moeda, ini - HORA, agora)) if merc == "perp" else None
         except hl.Erro as e:
             erros.append(f"evolucao: velas de 1 h {coin} ({e})")
             continue
@@ -383,17 +469,26 @@ def dados_lab(ctx, pares, P, erros, log):
         if len(depois) < 24 * 7:
             erros.append(f"evolucao: poucas velas de 1 h em {coin} ({len(depois)})")
             continue
-        out[merc] = (antes, depois, fund)
+        out[ch] = (antes, depois, fund)
         log(f"  evolucao: {len(depois)} velas de 1 h de {coin} ({dia_de(depois[0][0])} a {dia_de(depois[-1][1])})")
     return out
 
 
+JURO = [lambda t: 0.0]  # o juro do dólar na Aave em t (a rodada troca pelo da Aave: o caixa do DCA)
+
+
+def robo_de(esp, genes, id_, nome):
+    r = R.Robo(cfg_de(esp, genes, id_, nome), R.LEV_MAX_PADRAO.get(genes.get("moeda", "BTC"), 10))
+    r.juro = JURO[0]
+    return r
+
+
 def avaliar(esp, genes, dados, P):
-    d = dados.get(genes.get("mercado", "spot"))
+    d = dados.get(onde(genes))
     if not d:
         return None
     antes, depois, fund = d
-    robo = R.Robo(cfg_de(esp, genes, "lab", "lab"), R.LEV_MAX_PADRAO["BTC"])
+    robo = robo_de(esp, genes, "lab", "lab")
     s = robo.novo(depois[0][0])
     robo.aquecer(s, antes)
     curva = Curva(inicio=depois[0][0])
@@ -594,14 +689,14 @@ class Especie:
 
     # -------------------------------------------------------------- liga
     def robo(self, ind):
-        return R.Robo(cfg_de(self.esp, ind["genes"], ind["id"], ind["nome"]), R.LEV_MAX_PADRAO["BTC"])
+        return robo_de(self.esp, ind["genes"], ind["id"], ind["nome"])
 
     def comecar_vivo(self, ind, agora, aquecer):
         """Começa a conta ao vivo de `ind` agora (com as velas de 1 h dos últimos dias para as que precisam)."""
         robo = self.robo(ind)
         s = robo.novo(agora // MIN * MIN)
-        if robo.usa_buffer:
-            velas = aquecer.get(ind["genes"].get("mercado", "spot")) or []
+        if robo.usa_buffer or robo.tipo == "queda":
+            velas = aquecer.get(onde(ind["genes"])) or []
             robo.aquecer(s, [v for v in velas if v[1] < agora])
         curva = Curva(inicio=agora)
         curva.marcar(agora, CAPITAL)
@@ -826,7 +921,7 @@ def restaurar_buffers(especies, est):
         s = ind["s"]
         if "hb" in s and s["hb"] is None:
             ate = int(s["ate"])
-            s["hb"] = {k: list(v) for k, v in (hb.get(ind["genes"].get("mercado", "spot")) or {}).items() if int(k) < ate}
+            s["hb"] = {k: list(v) for k, v in (hb.get(onde(ind["genes"])) or {}).items() if int(k) < ate}
 
 
 def guardar_buffers(especies, est):
@@ -836,7 +931,7 @@ def guardar_buffers(especies, est):
         s = ind["s"]
         b = s.get("hb")
         if b:
-            m = ind["genes"].get("mercado", "spot")
+            m = onde(ind["genes"])
             if m not in hb or max(map(int, b)) > max(map(int, hb[m])) or (
                     max(map(int, b)) == max(map(int, hb[m])) and len(b) > len(hb[m])):
                 hb[m] = b
@@ -857,19 +952,20 @@ def avancar_vivo(ctx, especies, pares, erros, log):
         if not liga:
             continue
         for ind in liga["pop"] + [liga["controle"]]:
-            grupos.setdefault(ind["genes"].get("mercado", "spot"), []).append((sp, ind))
-    for merc, lista in grupos.items():
+            grupos.setdefault(onde(ind["genes"]), []).append((sp, ind))
+    for ch, lista in grupos.items():
+        merc, moeda = ch.split("|")
         vivos = [ind for _, ind in lista if not ind["s"].get("morta")]
         if not vivos:
             continue
         ini = min(int(ind["s"]["ate"]) for ind in vivos)
         if agora - ini < MIN:
             continue
-        coin = pares.get("BTC", R.PARES_PADRAO["BTC"]) if merc == "spot" else "BTC"
+        coin = coin_de(ch, pares)
         intervalo = hl.intervalo_para(ini, agora, agora)
         try:
             velas = R.velas_da_api(ctx.cli.velas(coin, intervalo, ini, agora), intervalo, agora)
-            fund = R.Funding.da_api(ctx.cli.financiamento("BTC", ini - HORA, agora)) if merc == "perp" else None
+            fund = R.Funding.da_api(ctx.cli.financiamento(moeda, ini - HORA, agora)) if merc == "perp" else None
         except hl.Erro as e:
             erros.append(f"evolucao: velas {coin} {intervalo} ({e})")
             continue
@@ -886,24 +982,61 @@ def avancar_vivo(ctx, especies, pares, erros, log):
             curva.ganhos = curva.ganhos[-GANHOS:]
             curva.extra = {}
             ind["c"] = curva.para_json()
-        log(f"  evolucao: {len(lista)} contas ao vivo no {'à vista' if merc == 'spot' else 'perpétuo'} "
+        log(f"  evolucao: {len(lista)} contas ao vivo no {'à vista' if merc == 'spot' else 'perpétuo'} de {moeda} "
             f"({len(velas)} velas de {intervalo})")
 
 
 def aquecer_de(ctx, dados, pares, erros):
-    """As velas de 1 h dos últimos dias (para as versões novas da liga que precisam delas)."""
+    """As velas de 1 h dos últimos dias (para as versões novas da liga que precisam delas), pela chave "mercado|moeda"."""
     out = {}
     corte = ctx.agora - (R.AQUECER_SINAL_DIAS + 1) * DIA
-    for merc, coin in (("spot", pares.get("BTC", R.PARES_PADRAO["BTC"])), ("perp", "BTC")):
-        if merc in dados:
-            antes, depois, _ = dados[merc]
-            out[merc] = [v for v in antes + depois if v[0] >= corte]
+    for ch in CHAVES:
+        coin = coin_de(ch, pares)
+        if ch in dados:
+            antes, depois, _ = dados[ch]
+            out[ch] = [v for v in antes + depois if v[0] >= corte]
             continue
         try:
-            out[merc] = R.velas_da_api(ctx.cli.velas(coin, "1h", corte, ctx.agora), "1h", ctx.agora)
+            out[ch] = R.velas_da_api(ctx.cli.velas(coin, "1h", corte, ctx.agora), "1h", ctx.agora)
         except hl.Erro as e:
             erros.append(f"evolucao: velas de 1 h para aquecer {coin} ({e})")
     return out
+
+
+def migrar_moeda(est):
+    """25/11/2026: a moeda virou gene. As versões de antes (todas no bitcoin) ganham `moeda` = "BTC" (origem "base") e as
+    velas guardadas por mercado ("spot", "perp") passam para "spot|BTC" e "perp|BTC". Não recomeça nada."""
+    def andar(x):
+        if isinstance(x, dict):
+            g = x.get("genes")
+            if isinstance(g, dict) and "moeda" not in g:
+                g["moeda"] = "BTC"
+                if isinstance(x.get("origem"), dict):
+                    x["origem"]["moeda"] = "base"
+            for v in x.values():
+                andar(v)
+        elif isinstance(x, list):
+            for v in x:
+                andar(v)
+    andar(est.get("esp") or {})
+    hb = est.get("hb") or {}
+    for m in ("spot", "perp"):
+        if m in hb:
+            hb[f"{m}|BTC"] = hb.pop(m)
+
+
+def ler_juro(ctx, est, log, erros):
+    """O juro do dólar na Aave (o caixa do DCA), o mesmo dos Robôs; sem ele, 0."""
+    JURO[0] = lambda t: 0.0  # noqa: E731
+    if R.FD is None:
+        return
+    try:
+        tx = R.FD.taxas_aave(R.FD.ler_aave(ctx, est, log, erros))
+    except Exception as e:  # noqa: BLE001
+        erros.append(f"evolucao: juro da Aave ({e})")
+        return
+    if tx is not None:
+        JURO[0] = lambda t: max(0.0, float(tx.taxa("sup:USDC", t) or 0.0))  # noqa: E731
 
 
 def rodar(ctx):
@@ -912,6 +1045,8 @@ def rodar(ctx):
     erros = []
     ev = Eventos(est.get("eventos"))
     pares = R.resolver_pares(ctx, est, erros)
+    migrar_moeda(est)
+    ler_juro(ctx, est, log, erros)
     estados = est.setdefault("esp", {})
     especies = []
     for forma, lista in ESPECIES.items():

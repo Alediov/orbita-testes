@@ -55,7 +55,9 @@ SOBRENOMES = (
 
 
 def ativo(g, genes):
-    return all(genes.get(k) == v for k, v in (g.get("so") or {}).items())
+    """O gene vale com estes genes? `so` = {gene: valor} ou {gene: [valores]} (desde 25/11/2026: um gene que vale para
+    mais de um tipo, como as partes do DCA semanal e do DCA na queda)."""
+    return all(genes.get(k) in v if isinstance(v, list) else genes.get(k) == v for k, v in (g.get("so") or {}).items())
 
 
 def _snap(g, x):

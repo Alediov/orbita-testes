@@ -126,6 +126,10 @@ acabavam; aqui os executores padrão não têm limite.
   segurar BTC e o CDI; o volume das velas entra no buffer (`robos.Vela`, para o VWAP); e a 4ª espécie da Evolução,
   `indicadores` (o indicador é um gene). FORMATO.md, "Robôs de sinal" e "Evolução". Teste em `teste_robos.py`
   (`teste_indicadores_familia`).
+- **Evolução dos Robôs: o DCA e a moeda** (25/11/2026, o 2º do plano `docs/plano-evolucao.md` do app): a 5ª espécie,
+  `dca` (o jeito semanal, na queda ou com proteção é um gene), e o gene `moeda` (BTC, ETH, SOL, HYPE) em todas as
+  espécies dos Robôs, com os dados separados por "mercado|moeda" e as contas de antes migradas para "BTC"
+  (`migrar_moeda`); `genetica.ativo` aceita lista no `so`. FORMATO.md, "Evolução".
 - **Evolução das Apostas** (25/11/2026, a 1ª do plano `docs/plano-evolucao.md` do app; a forma virou só "Apostas"):
   `apostas_evolucao.py`, a espécie "valor" (controle `valor3`; genes: valor mínimo, faixa de odd, mercados, fixa ou
   Kelly, a casa Bet365 ou a melhor comum da planilha, o campeonato), refeita por um banco compacto dos jogos das

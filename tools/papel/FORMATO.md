@@ -998,7 +998,11 @@ enquanto o banco tem menos de 300 jogos.
 
 Pedido do Alediov: versões que evoluem sozinhas (as piores saem, as melhores se cruzam, às vezes uma mutação), para
 achar os melhores parâmetros de cada estratégia. Regras e números no começo do `evolucao.py`. Começa pelos Robôs (BTC):
-quatro **espécies** (os Indicadores desde 25/11/2026), cada uma com os seus **genes** (os parâmetros que mudam):
+cinco **espécies** (os Indicadores e o DCA desde 25/11/2026), cada uma com os seus **genes** (os parâmetros que mudam).
+Desde 25/11/2026 todas têm também o gene `moeda` (BTC | ETH | SOL | HYPE; os controles continuam no bitcoin; as versões
+de antes ganharam "BTC" com a origem "base", `migrar_moeda`, sem recomeçar), e os dados do laboratório, as velas
+guardadas (`hb`) e o ao vivo são separados pela chave "mercado|moeda" (`onde`); o `so` de um gene aceita uma lista de
+valores ({"tipo": ["dca", "queda"]}):
 
 - `grade` (controle `gbtc10`): `mercado` spot/perp, `faixa` 3–25%, `degraus` 6–40, `alav` 1–3× (só perp), `recentrar`,
   `saida` e `saidaQueda` 5–30% (só com saída; o `saidaQueda` virou opção da versão em `robos.py`);
@@ -1011,7 +1015,11 @@ quatro **espécies** (os Indicadores desde 25/11/2026), cada uma com os seus **g
   valem com ela (`so`): `periodo` 6–30 h, `baixo` 15–40 e `alto` 60–85 (RSI); `tenkan` 5–20 h e `kijun` 18–60 h;
   `dmiN` 7–28 h e `adx` 15–40; `janela` 6–168 h (VWAP); `kstx` 0,5–3 (estica os prazos do KST); `ckp` 5–30 h, `ckx`
   0,5–3 e `ckq` 3–20 h (Chande Kroll); `pivoAlvo` P/R1/R2; `rapida` 4–30 h, `lenta` 12–80 h (sempre ≥ rápida + 4) e
-  `alvo` 0,5–6% (médias com alvo); e `stop` 0/1/2/3/5/8% para todas (a média com alvo nunca fica sem: 1%).
+  `alvo` 0,5–6% (médias com alvo); e `stop` 0/1/2/3/5/8% para todas (a média com alvo nunca fica sem: 1%);
+- `dca` (controle `dca`, 25/11/2026; sementes `dcaqueda`, `dcam1`, `dcam3`, `dcaC`): `tipo` (dca | queda |
+  martingale), `partes` 5/10/20/40 e `cada` 1/3/7/14 dias e `caixa` (o caixa na Aave, com o juro da Aave lido a cada
+  rodada, `ler_juro`) nos dois primeiros, `queda` 2–15% da máxima de 7 dias (só na queda), e no martingale `mercado`
+  (perpétuo com `alav` 1–3×), `passo` 1–6%, `seguranca` 2–8 compras a mais, `mult` 1–2,5× e `alvo` 0,5–5%.
 
 Duas frentes: o **laboratório** (todo dia, até 10 gerações de 24 nos últimos 180 dias de velas de 1 h, "aproximado";
 nota do treino = média das 3 janelas de 45 dias − ½ desvio entre elas, cada janela = retorno ao mês − ½ pior queda; os
