@@ -58,7 +58,7 @@ try:  # o falso da Hyperliquid levanta hl.Erro quando um pedido "falha" nos test
 except ImportError:  # pragma: no cover
     ERROS_API = (odds.Erro,)
 
-NOME = "Apostas de valor"
+NOME = "Apostas"  # "Apostas de valor" até 25/11/2026 (pedido do Alediov: já não são só as de valor)
 VERSAO = 1
 
 # ---------------------------------------------------------------------------------------------------- regras
@@ -104,6 +104,10 @@ FECH_1X2 = [(PINNACLE, ("PSCH", "PSCD", "PSCA")), (MEDIA, ("AvgCH", "AvgCD", "Av
 SOFT_OU = [(BET365, ("B365>2.5", "B365<2.5")), (MEDIA, ("Avg>2.5", "Avg<2.5")), (MEDIA, ("BbAv>2.5", "BbAv<2.5"))]
 JUSTA_OU = [(PINNACLE, ("P>2.5", "P<2.5")), (MEDIA, ("Avg>2.5", "Avg<2.5")), (MEDIA, ("BbAv>2.5", "BbAv<2.5"))]
 FECH_OU = [(PINNACLE, ("PC>2.5", "PC<2.5")), (MEDIA, ("AvgC>2.5", "AvgC<2.5"))]
+# a melhor odd entre as casas comuns da planilha (25/11/2026, para a Evolução: a casa "melhor"); sem a Pinnacle (a
+# justa), a Betfair e a bolsa dela, e o "Max" (que mistura as duas)
+COMUNS_1X2 = [("B365H", "B365D", "B365A"), ("BWH", "BWD", "BWA"), ("WHH", "WHD", "WHA"), ("1XBH", "1XBD", "1XBA"),
+              ("IWH", "IWD", "IWA"), ("VCH", "VCD", "VCA")]
 # as planilhas "novas" (Brasil e outras ligas fora da Europa) só têm odds de FECHAMENTO: a aposta é feita no
 # fechamento e o CLV não é medido nelas
 SOFT_NOVA = [(BET365, ("B365CH", "B365CD", "B365CA")), (BET365, ("B365H", "B365D", "B365A")),
@@ -764,6 +768,17 @@ def _pegar(linha, grupos):
     return None, None
 
 
+def melhor_comum(linha, base):
+    """A maior odd de cada saída do 1X2 entre as casas comuns da planilha (`COMUNS_1X2`), ou None se só há a `base`."""
+    out, n = list(base), 0
+    for cols in COMUNS_1X2:
+        vs = [_f(linha.get(c)) for c in cols]
+        if all(v is not None and v > 1 for v in vs):
+            n += 1
+            out = [max(a, b) for a, b in zip(out, vs)]
+    return out if n > 1 or out != list(base) else None
+
+
 def _campo(linha, *nomes):
     for n in nomes:
         v = linha.get(n)
@@ -809,9 +824,13 @@ def ler_planilha(texto, liga, desde=0, ate=None):
             if gfch:
                 rf, fo = _pegar(ln, gfch)
                 pf = sem_margem(fo) if fo else None
-            j["mk"][mk] = {"o": so, "p": p, "pf": pf}
+            j["mk"][mk] = {"o": so, "p": p, "pf": pf, "jo": jo}
             if mk == "1x2":
                 j["soft"], j["justa"], j["fechJusta"] = rs, rj, rf
+                if not nova:
+                    om = melhor_comum(ln, so)
+                    if om:
+                        j["mk"][mk]["om"] = om
         if j["mk"].get("1x2"):
             out.append(j)
     return out
@@ -826,9 +845,10 @@ def temporadas(agora, n=HIST_TEMPORADAS):
     return [f"{a % 100:02d}{(a + 1) % 100:02d}" for a in anos], ini
 
 
-def baixar_passado(fonte, agora, log, erros):
-    """Baixa as planilhas e devolve (jogos, informações). Levanta odds.Erro se nenhuma planilha veio."""
-    temps, ini = temporadas(agora)
+def baixar_passado(fonte, agora, log, erros, n=HIST_TEMPORADAS):
+    """Baixa as planilhas (as últimas `n` temporadas) e devolve (jogos, informações). Levanta odds.Erro se nenhuma
+    planilha veio."""
+    temps, ini = temporadas(agora, n)
     jogos, ok, falhas = [], 0, []
     for chave, _nome, div, _espn in LIGAS:
         if not div:
@@ -2595,6 +2615,16 @@ def rodar(ctx):
         elif info is not None:
             erros.append("as planilhas vieram sem jogos")
 
+    # ---------------------------------------------------------------- a Evolução (25/11/2026, apostas_evolucao.py)
+    # o banco dos jogos das planilhas (semeado pelo teste no passado, em dia 1×/dia), o laboratório e a liga do valor
+    evolucao = None
+    try:
+        import apostas_evolucao as AE
+        evolucao = AE.avancar(ctx, est, agora, fonte, log, erros, jogos if refazer else None)
+    except Exception as e:  # noqa: BLE001 (a Evolução não derruba a forma)
+        erros.append(f"evolução: {type(e).__name__}: {e}")
+        log(f"  apostas: evolução com erro ({type(e).__name__}: {e})")
+
     # ---------------------------------------------------------------- ao vivo
     ev = Eventos(est.get("eventos"))
     evdia = est.setdefault("evDia", {})
@@ -2720,6 +2750,6 @@ def rodar(ctx):
     ctx.est.update(est)
     return {"frase": FRASE, "comoFunciona": COMO_FUNCIONA, "padrao": PADRAO, "versoes": versoes,
             "eventos": est["eventos"], "itens": itens_pendentes(contas) if contas else [], "avisos": avisos,
-            "config": config, "erros": erros, "cartoes": cartoes.resumo(C, agora, robo),
+            "config": config, "erros": erros, "cartoes": cartoes.resumo(C, agora, robo), "evolucao": evolucao,
             # 22/11/2026: o arquivo pequeno do Placar (papel.py grava os `_arquivos` ao lado do apostas.json)
             "_arquivos": {"theo.json": theo_publico(V.get("bdm") or {}, contas or {}, agora, _fotos_theo(V, robo))}}

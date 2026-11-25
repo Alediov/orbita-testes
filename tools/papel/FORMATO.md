@@ -320,7 +320,7 @@ numa escolha fora da segunda, uma vez.
   rodada (as mais antigas podem faltar).
 - `config` ganhou `sinais`, `constancia`, `tvlGrande` e `misturas`.
 
-## Apostas de valor (`apostas.json`)
+## Apostas (`apostas.json`; "Apostas de valor" até 25/11/2026)
 
 Futebol, só no papel (`apostas.py`). Diferenças das outras formas:
 
@@ -975,6 +975,25 @@ conta da versão no teste.)
   (`cal.mercados`, um por evento), entrada pelo preço do dia + 1 centavo, saída pela resolução. Só os mercados que já
   acabaram entram (uma posição aparece quando o mercado dela acaba). `aoVivo.membros` = "N abertas", `acertos`,
   `resolvidas`; `regras.mercados` = quantos mercados o observatório tem.)
+
+(As **Apostas** também, desde 25/11/2026 (a 1ª do plano de 25/11, `docs/plano-evolucao.md` do repositório do app): o
+`apostas.json` traz o bloco `evolucao`, `formas: [{ id: "apostas", nome: "Apostas", especies: [valor] }]`; `null`
+enquanto o banco tem menos de 300 jogos.
+
+- **Apostas** (`apostas_evolucao.py`), espécie `valor` ("Valor", ⚽, controle `valor3` = "Valor 3%"). Genes: `limiar`
+  1/2/3/5/8/12%, `de` 1,20/1,50/2,00/3,00 e `ate` 2,20/3,00/4,00/6,00/10,00 (a faixa de odd; `ate` sempre acima de
+  `de`), `mercados` (1X2 e gols | só 1X2 | só mais/menos de 2,5), `stake` (fixa | Kelly), `aposta` 0,5/1/2% da banca
+  inicial (só na fixa) e `kf` 0,1/0,25/0,5 (só no Kelly, no máximo 2% da banca de agora), `casa` (Bet365 | a melhor
+  das casas comuns da planilha: Bet365, bwin, William Hill, 1xBet, Interwetten e VC Bet, `apostas.COMUNS_1X2`, só no
+  1X2 e fora do Brasileirão) e `liga` (todas | só a Europa | um campeonato). Sementes: valor5, valor8, kelly, favoritos,
+  azaroes, valor3m e valor5m. Banco (`bancoEv` no estado das Apostas, `{jogos: {crc32 do id: linha}, em}`): de cada
+  jogo das planilhas do football-data (sem a Libertadores), [dia (dias desde 1970, Brasília, início + 2 h), liga, gols
+  da casa, gols de fora, odds da casa ×100, odds de onde sai a justa ×1000, melhor comum ×100 ou 0, mais/menos ×100 ou
+  0, a justa dele ×1000 ou 0], até 1.100 dias; semeado pelos jogos do teste no passado (quando é refeito, 1×/semana) e
+  posto em dia uma vez por dia pela temporada de agora (6 planilhas, sem chave). As chances justas são refeitas na
+  leitura pelo `sem_margem`, as mesmas do teste no passado (o controle faz as mesmas apostas que a conta `valor3`).
+  Cada aposta é decidida e liquidada no dia do jogo. Contas em R$ (`regras.moeda` = "R$"); `aoVivo.membros` = [],
+  `acertos` e `resolvidas` (as apostas); `regras.jogos` = quantos jogos o banco tem.)
 
 Pedido do Alediov: versões que evoluem sozinhas (as piores saem, as melhores se cruzam, às vezes uma mutação), para
 achar os melhores parâmetros de cada estratégia. Regras e números no começo do `evolucao.py`. Começa pelos Robôs (BTC):

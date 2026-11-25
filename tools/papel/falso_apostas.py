@@ -204,7 +204,7 @@ CAB_EUROPA = ["Div", "Date", "Time", "HomeTeam", "AwayTeam", "FTHG", "FTAG", "FT
               "PSD", "PSA", "MaxH", "MaxD", "MaxA", "AvgH", "AvgD", "AvgA", "B365>2.5", "B365<2.5", "P>2.5", "P<2.5",
               "Max>2.5", "Max<2.5", "Avg>2.5", "Avg<2.5", "B365CH", "B365CD", "B365CA", "PSCH", "PSCD", "PSCA",
               "MaxCH", "MaxCD", "MaxCA", "AvgCH", "AvgCD", "AvgCA", "B365C>2.5", "B365C<2.5", "PC>2.5", "PC<2.5",
-              "AvgC>2.5", "AvgC<2.5", "HC", "AC"]
+              "AvgC>2.5", "AvgC<2.5", "HC", "AC", "WHH", "WHD", "WHA"]
 CAB_NOVA = ["Country", "League", "Season", "Date", "Time", "Home", "Away", "HG", "AG", "Res", "PSCH", "PSCD", "PSCA",
             "MaxCH", "MaxCD", "MaxCA", "AvgCH", "AvgCD", "AvgCA", "BFECH", "BFECD", "BFECA"]
 
@@ -252,7 +252,10 @@ def planilha(fut, url, agora):
                  "AwayTeam": j["fora"], "FTHG": h, "FTAG": a, "FTR": "H" if h > a else "D" if h == a else "A"}
             for pre, vals in (("B365", b365["1x2"]), ("PS", pin["1x2"]), ("Max", [max(x, y) for x, y in zip(pin["1x2"], b365["1x2"])]),
                               ("Avg", avg), ("B365C", b365c["1x2"]), ("PSC", pinc["1x2"]),
-                              ("MaxC", [max(x, y) for x, y in zip(pinc["1x2"], b365c["1x2"])]), ("AvgC", avgc)):
+                              ("MaxC", [max(x, y) for x, y in zip(pinc["1x2"], b365c["1x2"])]), ("AvgC", avgc),
+                              # 25/11/2026: uma 2ª casa comum (William Hill), às vezes acima da Bet365 (a casa "melhor")
+                              ("WH", [round(x * (1.03 if (len(j["casa"]) + k) % 3 == 0 else 0.97), 2)
+                                      for k, x in enumerate(b365["1x2"])])):
                 for suf, x in zip("HDA", vals):
                     v[f"{pre}{suf}"] = x
             for pre, vals in (("B365", b365["ou"]), ("P", pin["ou"]), ("Max", [max(x, y) for x, y in zip(pin["ou"], b365["ou"])]),

@@ -268,7 +268,9 @@ def teste_rodadas():
                 assert cli.contagem["csv"] == 16, cli.contagem  # 5 ligas × 3 temporadas + o Brasil
             d = _forma(pasta)
             conferir_forma(d, "apostas")
-        assert cli.contagem["csv"] == 32, cli.contagem  # refeito uma vez, 7 dias depois
+        # refeito uma vez, 7 dias depois (32), e o banco da Evolução posto em dia nos 6 dias do meio pela temporada de
+        # agora (5 ligas + o Brasil = 6 por dia)
+        assert cli.contagem["csv"] == 32 + 6 * 6, cli.contagem
         assert d["cartoes"]["jogos"] > 0 and not [e for e in d.get("erros", []) if "cartões" in str(e)], d.get("erros")
         # um buraco de 30 h: a rodada alcança
         cli.agora += 30 * HORA
@@ -281,7 +283,7 @@ def teste_rodadas():
         presos = [f for f in V["fx"].values() if f["st"] == "novo" and f["i"] + A.FIM_JOGO <= cli.agora]
         assert not presos, presos[:2]
         # formato
-        assert d["padrao"] == "valor3" and d["nome"] == "Apostas de valor"
+        assert d["padrao"] == "valor3" and d["nome"] == "Apostas"
         ids = [v["id"] for v in d["versoes"]]
         assert ids == ["valor3", "valor5", "valor8", "kelly", "favoritos", "azaroes", "valor3m", "valor5m", "gratis", "semfiltro", "bdm", "bdmG15", "bdmG5",
                        "bdmFav", "bdmH15", "bdmConv", "bdmConf"]

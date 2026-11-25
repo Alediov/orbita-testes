@@ -36,7 +36,7 @@ acabavam; aqui os executores padrão não têm limite.
 
 - `tools/mercado/`: copy trading (detalhes no `LEIA-ME.md` de lá). Workflow `mercado.yml`, ramo `mercado`.
 - `tools/papel/`: as outras formas, no formato comum de `tools/papel/FORMATO.md`. Workflow `papel.yml`, ramo `papel`.
-- `tools/papel/apostas.py` (+ `odds.py`, `falso_apostas.py`, `teste_apostas.py`): **Apostas de valor** (pedido do Alediov,
+- `tools/papel/apostas.py` (+ `odds.py`, `falso_apostas.py`, `teste_apostas.py`): **Apostas** ("Apostas de valor" até 25/11/2026; pedido do Alediov,
   03/11/2026; só futebol, só no papel, como ele fazia na Betano antes da suspensão das bets): odd justa = Pinnacle sem a
   margem (método da potência), aposta quando a casa comum paga ≥ 3/5/8% a mais, Kelly ¼, favoritos, azarões, a aposta
   grátis de R$ 5 por semana e "sem filtro" como referência; contas em R$ fictícios (1.000). Teste no passado pelas
@@ -126,6 +126,11 @@ acabavam; aqui os executores padrão não têm limite.
   segurar BTC e o CDI; o volume das velas entra no buffer (`robos.Vela`, para o VWAP); e a 4ª espécie da Evolução,
   `indicadores` (o indicador é um gene). FORMATO.md, "Robôs de sinal" e "Evolução". Teste em `teste_robos.py`
   (`teste_indicadores_familia`).
+- **Evolução das Apostas** (25/11/2026, a 1ª do plano `docs/plano-evolucao.md` do app; a forma virou só "Apostas"):
+  `apostas_evolucao.py`, a espécie "valor" (controle `valor3`; genes: valor mínimo, faixa de odd, mercados, fixa ou
+  Kelly, a casa Bet365 ou a melhor comum da planilha, o campeonato), refeita por um banco compacto dos jogos das
+  planilhas do football-data (`bancoEv`, semeado pelo teste no passado e posto em dia 1×/dia pela temporada de agora;
+  nenhum pedido da OddsPapi). Saída: `evolucao` no `apostas.json`. Teste: `teste_apostas_evolucao.py`.
 - **Krystal nas Pools** (25/11/2026, proposta da Antena aprovada): `krystal10`/`krystal5` no WETH/USDC (`grupo`
   "Automático (Krystal)"): remonta depois de 1 h fora e reinveste as taxas todo dia, com as taxas da Krystal;
   FORMATO.md, "Pools". Teste `teste_krystal` em `teste_pools.py`.
