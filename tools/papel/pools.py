@@ -144,6 +144,15 @@ ESPERA_DIAS = {"espera3": 3, "espera7": 7, "sobra": 3}
 PERTO = 0.5                            # "espera": fora, mas a menos de meia largura da borda → não mexe
 FOLGA_SOBRA = 0.002                    # "sobra": a borda nova a 0,2% do preço (fora da faixa de propósito)
 GAS_REINVESTIR = 0.6                   # coletar + aumentar a liquidez: ~60% do gás de um reposicionamento
+# O auto rebalance e o auto compound da Krystal (vídeo do Canal do Marinho de 24/11/2026, proposta aprovada pelo Alediov
+# em 25/11/2026): com o preço fora da faixa há KRYSTAL_ESPERA ("time buffer"), remonta a faixa do mesmo tamanho em
+# volta do preço; uma vez por dia (KRYSTAL_COMPOUND) põe as taxas de volta na posição. As taxas da Krystal são as da
+# página de taxas dela (docs.krystal.app/ecosystem/fees, lida em 25/11/2026): auto rebalance 0,01% da posição nos pools
+# de taxa até 0,05% e auto compound 2% das taxas coletadas; o gás continua por nossa conta (suposição conservadora).
+KRYSTAL_ESPERA = HORA
+KRYSTAL_COMPOUND = DIA
+KRYSTAL_REBAL = 0.0001
+KRYSTAL_COMP = 0.02
 PARAMS_REFAZER = 7 * DIA
 AMOSTRA_BLOCOS = 1800                  # a escolha do pool compara as trocas da última hora de cada candidato
 VOL_MEIA_VIDA_H = 7 * 24               # meia-vida da volatilidade medida (horas)
@@ -181,6 +190,12 @@ VERSOES = [
     ("sobra", "±5% · remonta com o que sobrou", 0.05, "sobra", "médio",
      "Com o preço fora há 3 dias, não vende na baixa: monta a faixa de novo logo do outro lado do preço, só com a moeda "
      "que sobrou (de propósito fora da faixa). Se o preço volta, vai trocando aos poucos e ganhando a taxa."),
+    ("krystal10", "±10% · automático (Krystal)", 0.10, "krystal", "médio",
+     "O auto rebalance da Krystal que o Marinho mostra: faixa de 10% para cada lado; com o preço fora há 1 hora, o robô "
+     "da Krystal remonta a faixa em volta do preço, e uma vez por dia põe as taxas de volta (paga 0,01% da posição a "
+     "cada remontagem e 2% das taxas reinvestidas)."),
+    ("krystal5", "±5% · automático (Krystal)", 0.05, "krystal", "médio",
+     "O mesmo robô da Krystal com a faixa de 5% para cada lado: ganha mais por dólar e remonta mais vezes."),
     ("cheia", "Faixa cheia", None, "nunca", "médio",
      "A faixa inteira, como nos pools antigos (v2): nunca sai, ganha bem menos por dólar e não precisa reposicionar."),
     ("r3fixa", "±3% sem reposicionar", 0.03, "nunca", "médio",
@@ -517,6 +532,8 @@ def grupo_da_versao(cfg):
         return "No gauge (AERO)"
     if cfg["regra"] in ESPERA_DIAS:
         return "Espera fora (Marinho)"
+    if cfg["regra"] == "krystal":
+        return "Automático (Krystal)"
     return "Reposiciona" if cfg["regra"] in ("sai", "hora") else "À mão" if cfg["regra"] == "dia" else "Parada"
 
 
@@ -544,7 +561,7 @@ class Conta:
         self.s = e.get("s")              # último √P visto
         a = e.get("acc") or {}
         self.acc = {k: float(a.get(k, 0.0)) for k in ("taxas", "gas", "repos", "pi", "dentro", "total", "diaRepos",
-                                                       "reinv", "aero", "aeroUS")}
+                                                       "reinv", "aero", "aeroUS", "krystal")}
         self.dia = e.get("dia")          # o dia (índice, Brasília) da última troca, para o resumo dos reposicionamentos
         self.aviso_fora = bool(e.get("avisoFora"))
         self.olhou = e.get("olhou")      # "dia": o último dia (índice, Brasília) em que conferiu
@@ -721,14 +738,37 @@ class Conta:
         self._ev(ev, t, "reequilibrou", f"Fora havia {ESPERA_DIAS['sobra']} dias: remontou sem vender, na faixa de "
                                         f"{self._txt(lo)} a {self._txt(hi)}, só com o que sobrou.")
 
-    def reinvestir(self, t, s, gas_wei):
+    def remontar_krystal(self, t, s, gas_wei, sigma=None):
+        """O auto rebalance da Krystal: a taxa dela (KRYSTAL_REBAL da posição) sai das moedas antes de remontar."""
+        x, y = self.tokens(s)
+        P = preco_de(s)
+        V = (x + self.fx) * P + y + self.fy
+        k = V * KRYSTAL_REBAL
+        # tirada na proporção das moedas (das taxas guardadas primeiro, que vão junto na remontagem)
+        if V > 0:
+            self.fx -= k * ((x + self.fx) * P / V) / P
+            self.fy -= k * ((y + self.fy) / V)
+        u1 = self.u1(s)
+        self.acc["krystal"] += k * u1
+        self.curva.operou(k * u1, 0)
+        self.reposicionar(t, s, gas_wei, sigma)
+
+    def reinvestir(self, t, s, gas_wei, taxa_auto=0.0, sempre=False):
         """Põe as taxas não coletadas de volta na posição, na MESMA faixa (coleta, troca o que precisa e aumenta a
-        liquidez). Não faz nada se as taxas não pagam pelo menos 5 vezes o gás."""
+        liquidez). Não faz nada se as taxas não pagam pelo menos 5 vezes o gás, menos com `sempre` (o gatilho por tempo
+        da Krystal: reinveste na hora marcada, pague ou não). `taxa_auto`: a parte das taxas que o serviço automático
+        fica (a Krystal, 2%)."""
         P = preco_de(s)
         Vf = self.fx * P + self.fy
         gas = self._gas_t1(gas_wei, s, t, GAS_REINVESTIR)
-        if Vf < 5 * gas:
+        if Vf <= 0 or (Vf < 5 * gas and not sempre):
             return False
+        if taxa_auto:
+            k = Vf * taxa_auto
+            self.acc["krystal"] += k * self.u1(s)
+            self.fx, self.fy = self.fx * (1 - taxa_auto), self.fy * (1 - taxa_auto)
+            self.curva.operou(k * self.u1(s), 0)
+            Vf -= k
         x1, y1 = quantias(1.0, s, self.sa, self.sb)
         u = x1 * P + y1
         if u <= 0:
@@ -840,6 +880,8 @@ class Conta:
                     self.fora = t
                 if self.regra == "sai" or (self.regra == "hora" and t - self.fora >= FORA_ESPERA):
                     self.reposicionar(t, s1, gas_wei, sigma)
+                elif self.regra == "krystal" and t - self.fora >= KRYSTAL_ESPERA:
+                    self.remontar_krystal(t, s1, gas_wei, sigma)
                 elif self.regra == "nunca" and (self.largura is not None or self.mult is not None) \
                         and not self.aviso_fora and t - self.fora >= FORA_ESPERA:
                     self.aviso_fora = True
@@ -850,6 +892,12 @@ class Conta:
                                             f"({self.par.texto_preco(s1)}): a posição parou de ganhar e está toda em {moeda}.")
             if self.regra in REGRAS_MAO:
                 self.olhar(t, s1, gas_wei, ev, sigma)
+            if self.regra == "krystal":
+                if self.reinvestiu is None:
+                    self.reinvestiu = t
+                elif t - self.reinvestiu >= KRYSTAL_COMPOUND:
+                    self.reinvestir(t, s1, gas_wei, KRYSTAL_COMP, sempre=True)
+                    self.reinvestiu = t
         self.t, self.s = t, s1
         if t // MARCA_MS != self.marca // MARCA_MS:
             self.marcar(t)
@@ -888,6 +936,7 @@ class Conta:
         tot = self.acc["total"]
         e = {"taxasGanhas": round(self.acc["taxas"], 4), "gasPago": round(self.acc["gas"], 4),
              "reposicoes": int(self.acc["repos"]), "reinvestimentos": int(self.acc.get("reinv", 0)),
+             **({"taxaKrystal": round(self.acc.get("krystal", 0.0), 4)} if self.regra == "krystal" else {}),
              "preco": round(self.par.preco_base(s), 8 if self.par.cot == "cbBTC" else 6 if self.par.preco_base(s) < 10 else 2),
              "naBase": round(nab, 2), "naCotacao": round(nac, 2)}
         if self.par.legado:

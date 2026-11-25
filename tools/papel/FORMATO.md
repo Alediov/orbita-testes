@@ -709,6 +709,14 @@ mesmas versões, ids e histórico de antes (o estado antigo é levado para `pool
   longe da faixa (a menos de meia largura da borda, não mexem); `sobra`, fora há 3 dias, remonta a faixa do mesmo
   tamanho logo do outro lado do preço (0,2% dele) só com a moeda que sobrou, sem troca (só o gás): fica de propósito
   fora da faixa e só volta a ganhar se o preço voltar; o evento é um `reequilibrou`.
+- **"Automático (Krystal)"** (`grupo`, desde 25/11/2026, a proposta da Antena pelo vídeo do Canal do Marinho sobre o
+  auto rebalance da Krystal, aprovada pelo Alediov; só no WETH/USDC: `krystal10` ±10% e `krystal5` ±5%, regra
+  `krystal`): com o preço fora da faixa há 1 h (`KRYSTAL_ESPERA`, o "time buffer"), remonta a faixa do mesmo tamanho em
+  volta do preço, pagando à Krystal 0,01% da posição (`KRYSTAL_REBAL`, a taxa dela nos pools de 0,05%); e a cada 24 h
+  (`KRYSTAL_COMPOUND`, o gatilho por tempo) reinveste as taxas na mesma faixa, pague o gás ou não, com 2% delas para a
+  Krystal (`KRYSTAL_COMP`). Taxas da página docs.krystal.app/ecosystem/fees (25/11/2026); o gás é nosso (suposição
+  conservadora). `extra.taxaKrystal` = o pago à Krystal (US$). Compare com `r10h` (a mesma remontagem sem reinvestir),
+  `dia10`, `esp3` e `segurar`.
 - **Versões dos pools novos** (ids com o prefixo do pool: `cbu-`, `ecb-`, `aer-`, `stb-`): a faixa segue a oscilação
   diária medida no próprio pool (`volDia`): `est` (estreita, 1×), `med` (média, 3×; o padrão), `larga` (8×), as três
   reposicionando depois de 1 h fora; `maoM` e `maoL` (média e larga "à mão": 1×/dia + reinveste); `cheia`; `segurar`.

@@ -126,6 +126,9 @@ acabavam; aqui os executores padrão não têm limite.
   segurar BTC e o CDI; o volume das velas entra no buffer (`robos.Vela`, para o VWAP); e a 4ª espécie da Evolução,
   `indicadores` (o indicador é um gene). FORMATO.md, "Robôs de sinal" e "Evolução". Teste em `teste_robos.py`
   (`teste_indicadores_familia`).
+- **Krystal nas Pools** (25/11/2026, proposta da Antena aprovada): `krystal10`/`krystal5` no WETH/USDC (`grupo`
+  "Automático (Krystal)"): remonta depois de 1 h fora e reinveste as taxas todo dia, com as taxas da Krystal;
+  FORMATO.md, "Pools". Teste `teste_krystal` em `teste_pools.py`.
 - **A melhor casa** (24/11/2026): `valor3m`/`valor5m` das apostas, a maior odd entre a Betano e a Bet365 (e as casas da
   API-Football nos jogos do Theo), sem pedido a mais; FORMATO.md, "Apostas, a melhor casa".
 - **Seguir o BDM** (pedido do Alediov, 09/11/2026; só esta conta, nenhum mercado novo): versão `bdm` das apostas, que

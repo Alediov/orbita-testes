@@ -223,6 +223,38 @@ def teste_a_mao():
         com_custos(g)
 
 
+def teste_krystal():
+    """O auto rebalance da Krystal: remonta depois de 1 h fora (pagando 0,01% da posição) e reinveste as taxas uma vez
+    por dia (pagando 2% delas)."""
+    g = sem_custos()
+    try:
+        k = PL.Conta(cfg("krystal10"), T0)
+        h = PL.Conta(cfg("r10h"), T0)
+        for c in (k, h):
+            c.troca(T0, None, sq(2500), 0)
+        # sobe 15% e fica: as duas remontam depois de 1 h; a da Krystal paga 0,01% a mais
+        precos = [2600, 2750, 2875] + [2875] * 70
+        for c in (k, h):
+            caminho(c, precos, T0 + MIN, s0=sq(2500))
+        assert k.acc["repos"] == 1 and h.acc["repos"] == 1 and k.dentro(sq(2875))
+        assert perto(k.acc["krystal"], h.valor(sq(2875)) * PL.KRYSTAL_REBAL, 1e-2)
+        assert k.valor(sq(2875)) < h.valor(sq(2875))
+        # vai e vem dentro da faixa por 3 dias: reinveste uma vez por dia, a liquidez cresce e a Krystal fica com 2%
+        t, s_ant = T0 + 2 * HORA, sq(2875)
+        L0, kr0 = k.L, k.acc["krystal"]
+        while t < T0 + 3 * DIA + 2 * HORA:
+            for p_ in (2900, 2850):
+                k.troca(t, s_ant, sq(p_), 0)
+                s_ant, t = sq(p_), t + 30 * MIN
+        assert 2 <= k.acc["reinv"] <= 3 and k.L > L0 and k.acc["krystal"] > kr0
+        assert k.acc["krystal"] - kr0 < 0.03 * k.acc["taxas"]
+        k.marcar(t)
+        assert k.curva.extra["taxaKrystal"] == round(k.acc["krystal"], 4)
+        assert PL.grupo_da_versao(PL.cfg_de(cfg("krystal10"))) == "Automático (Krystal)"
+    finally:
+        com_custos(g)
+
+
 def teste_marinho():
     """"espera3": fora, só reposiciona depois de 3 dias e longe da faixa; "sobra": remonta sem trocar, toda numa moeda,
     logo do outro lado do preço."""
@@ -613,6 +645,7 @@ if __name__ == "__main__":
     teste_reposicionar()
     teste_resumo_do_dia()
     teste_a_mao()
+    teste_krystal()
     teste_par_invertido()
     teste_volatilidade()
     teste_gauge()
