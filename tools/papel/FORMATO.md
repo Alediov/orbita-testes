@@ -992,7 +992,8 @@ enquanto o banco tem menos de 300 jogos.
   0, a justa dele ×1000 ou 0], até 1.100 dias; semeado pelos jogos do teste no passado (quando é refeito, 1×/semana) e
   posto em dia uma vez por dia pela temporada de agora (6 planilhas, sem chave). As chances justas são refeitas na
   leitura pelo `sem_margem`, as mesmas do teste no passado (o controle faz as mesmas apostas que a conta `valor3`).
-  Cada aposta é decidida e liquidada no dia do jogo. Contas em R$ (`regras.moeda` = "R$"); `aoVivo.membros` = [],
+  Cada aposta é decidida e liquidada no dia do jogo; no laboratório, menos de 20 apostas no período = sem nota (as que
+  quase não apostam ganhavam com nota ~0). Contas em R$ (`regras.moeda` = "R$"); `aoVivo.membros` = [],
   `acertos` e `resolvidas` (as apostas); `regras.jogos` = quantos jogos o banco tem.)
 
 Pedido do Alediov: versões que evoluem sozinhas (as piores saem, as melhores se cruzam, às vezes uma mutação), para

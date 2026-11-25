@@ -21,7 +21,8 @@ o placar, as odds da Bet365, a melhor comum, as chances justas e o mais/menos de
 3 temporadas (o teste no passado, 1×/semana) e posto em dia uma vez por dia pela temporada de agora (sem chave). As
 planilhas chegam com uns 2 dias de atraso: a liga anda conforme os jogos novos entram nelas.
 
-Cada aposta é decidida e liquidada no dia do jogo, pelo placar final (o mesmo `ganhou` da forma). O controle é o
+No laboratório, uma versão com menos de MIN_APOSTAS apostas no período fica sem nota (as que quase não apostam não
+dizem nada). Cada aposta é decidida e liquidada no dia do jogo, pelo placar final (o mesmo `ganhou` da forma). O controle é o
 `valor3` REFEITO aqui (não bate centavo a centavo com a conta valor3 do teste no passado, que marca a curva jogo a jogo).
 
 O laboratório e a liga são os do motor comum (`evolucao_series.py`). Estado em `est["evolucao"]` (o da forma); saída
@@ -37,9 +38,12 @@ import evolucao_series as ES
 from conta import CAPITAL, DIA, HORA, cdi_ano_da_serie, dia_de, metricas
 from genetica import reparar
 
-VERSAO = 1
+VERSAO = 2               # 2 (25/11/2026, no mesmo dia): o mínimo de apostas para ter nota; recomeçou
 CDI_PADRAO = 0.149
 MIN_JOGOS = 300            # menos que isso no banco: sem a espécie ainda
+# no laboratório, uma versão com menos apostas que isso fica sem nota: na 1ª rodada real (25/11/2026) as melhores eram
+# as que quase não apostavam (1 a 3 apostas em 3 temporadas, nota ~0), o que não diz nada; o Valor 3% fez 29
+MIN_APOSTAS = 20
 BANCO_DIAS = 1100          # os jogos guardados (as 3 temporadas)
 ATUALIZAR = DIA            # o banco é posto em dia pela temporada de agora uma vez por dia
 LIGAS = [k for k, *_ in A.LIGAS if k != "lib"]
@@ -177,7 +181,8 @@ def atualizar(est, fonte, agora, log, erros, jogos=None):
 class Dados:
     """O banco para o simulador: os jogos em ordem, cada um com o dia (Brasília) em que é liquidado."""
 
-    def __init__(self, est):
+    def __init__(self, est, min_apostas=MIN_APOSTAS):
+        self.min_apostas = min_apostas
         js = list(((est.get("bancoEv") or {}).get("jogos") or {}).values())
         js.sort(key=lambda x: x[0])
         self.jogos = []
@@ -198,7 +203,9 @@ class Dados:
         return len(self.jogos) >= MIN_JOGOS
 
     def simular(self, genes, inicio, hoje):
-        return simular(self, genes, inicio, hoje)
+        c = simular(self, genes, inicio, hoje)
+        c["montou"] = c["ops"] >= self.min_apostas
+        return c
 
     @staticmethod
     def extras(c):
@@ -281,7 +288,7 @@ def avancar(ctx, est, agora, fonte, log, erros, jogos=None):
     """O banco em dia, o laboratório e a liga do valor. Devolve o bloco `evolucao` do apostas.json (None enquanto o
     banco não tem MIN_JOGOS jogos)."""
     atualizar(est, fonte, agora, log, erros, jogos)
-    D = Dados(est)
+    D = Dados(est, 3 if getattr(ctx, "exemplo", False) else MIN_APOSTAS)
     if not D.tem_dados:
         return None
     ev = ES.rodar(est, Definicao(), D, agora, ES.parametros(bool(getattr(ctx, "exemplo", False))), log)
