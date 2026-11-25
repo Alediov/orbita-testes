@@ -126,6 +126,12 @@ acabavam; aqui os executores padrão não têm limite.
   segurar BTC e o CDI; o volume das velas entra no buffer (`robos.Vela`, para o VWAP); e a 4ª espécie da Evolução,
   `indicadores` (o indicador é um gene). FORMATO.md, "Robôs de sinal" e "Evolução". Teste em `teste_robos.py`
   (`teste_indicadores_familia`).
+- **Evolução das Pools** (25/11/2026, o 5º do plano): `pools_evolucao.py`, a espécie `faixa` (controle `r3h`; genes:
+  o pool WETH/USDC ou cbBTC/USDC, a largura ou cheia, a regra de remontar, as horas fora, os dias de espera e de quanto
+  em quanto reinvestir), refeita pela própria `pools.Conta` (as constantes viraram `opc`; a `troca` ganhou o `peso`)
+  pelo **caminho do preço de hora em hora** (`bancoEv` de cada pool: abertura, extremos, fechamento e o vai e vem em
+  baldes de 0,1% de √P, gravado com o ao vivo e semeado com os 28 dias do RPC grátis). Aproximado. Saída: `evolucao`
+  no `pools.json`. Teste: `teste_pools_evolucao.py` (contra o troca a troca).
 - **Evolução do Copy trading: o lado** (25/11/2026, o 4º do plano): genes `lado` (normal | ao contrário) e `alavC`
   (1×/3×) na carteira de carteiras; o contrário segue as carteiras do `contrario.py` pelas séries `i1`/`i3` do banco de
   lá (com o selo). `tools/mercado/LEIA-ME.md`, "Evolução do copy trading". Teste em `teste_evolucao_copia.py`.

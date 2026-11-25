@@ -1015,6 +1015,28 @@ a forma já guarda (`est["taxas"]`), como o teste no passado (os controles batem
 `est["evolucoes"][laco|alavancado]["evolucao"]`. `aoVivo.membros` = "laço de 3×", "só wstETH (1×)", "ether 2×" ou "em
 dólar no Aave (fora)", `largadas` = desmontagens e defesas, `nLiq` = liquidações; `regras.dias` = as velas de 1 dia.)
 
+(As **Pools** também, desde 25/11/2026 (o 5º do plano): o `pools.json` traz o bloco `evolucao`, `formas: [{ id: "pools",
+nome: "Pools", especies: [faixa] }]`; `null` enquanto o banco não tem 24 horas.
+
+- **Faixa** (`pools_evolucao.py`, espécie `faixa`, 📏, controle `r3h`; sementes: as versões do WETH/USDC menos o r3h e
+  o "segurar"). Genes: `pool` (weth_usdc | cbbtc_usdc, os dois em dólar), `largura` 0,5/1/2/3/5/8/10/15% ou 0 = cheia
+  (a cheia sempre "nunca"), `regra` (sai | hora | dia | espera | sobra | krystal | nunca), `fora` 1/2/4/8/24 h (hora e
+  Krystal), `espera` 1/2/3/5/7 dias (espera e sobra) e `reinv` 0/1/3/7/14 dias (à mão, espera, sobra e Krystal; 0 = não
+  põe as taxas de volta). As constantes de cada regra viraram opções da `pools.Conta` (`opc`: `fora` em ms,
+  `esperaDias`, `reinvDias`) e a `troca` ganhou o `peso`.
+- **O banco de hora em hora** (`est["pools"][weth_usdc|cbbtc_usdc]["bancoEv"]`, até 60 dias): o `Gravador` anda junto
+  com o ao vivo (mesmas trocas) e, quando novo, é semeado do bloco de 28 dias atrás com o tempo que sobra depois dos
+  passados. Cada hora: `[abertura, mínima, máxima, fechamento (√P), s da mínima, s da máxima, salto, {balde: caminho}]`;
+  os baldes são de 0,1% em √P (`BW`) e o caminho (o quanto o preço andou dentro do balde, idas e voltas) vai em
+  décimos de milionésimo de ln √P. O simulador refaz a hora pelo caminho resumido (abertura → 1º extremo → 2º → fecha),
+  cortado nos baldes, com o `peso` = caminho de verdade ÷ caminho resumido em cada balde: a taxa por balde é a do troca
+  a troca; a ordem dentro da hora se perde (a hora da remontagem muda um pouco). No teste, as regras sem remontagem
+  ficam a menos de 0,2% da conta troca a troca e as que remontam, a menos de 1,5%.
+
+Estado em `est["evolucoes"]["faixa"]["evolucao"]`; o laboratório começa com 25 dias de banco. `aoVivo.membros` = a faixa
+de agora ("US$ 2.900 a US$ 3.100", "(fora)") ou "faixa cheia", `largadas` = remontagens, `taxas` e `dentroFrac`;
+`regras.horas` = as horas de banco de cada pool.)
+
 Pedido do Alediov: versões que evoluem sozinhas (as piores saem, as melhores se cruzam, às vezes uma mutação), para
 achar os melhores parâmetros de cada estratégia. Regras e números no começo do `evolucao.py`. Começa pelos Robôs (BTC):
 cinco **espécies** (os Indicadores e o DCA desde 25/11/2026), cada uma com os seus **genes** (os parâmetros que mudam).

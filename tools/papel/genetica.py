@@ -80,6 +80,8 @@ def reparar(esp, genes):
         elif v not in g["opcoes"]:
             v = g["neutro"]
         out[g["k"]] = v
+    if esp["id"] == "faixa" and out.get("largura") == 0:
+        out["regra"] = "nunca"  # a faixa cheia nunca sai: as regras de remontar não valem (pools_evolucao.py)
     for g in esp["genes"]:
         if not ativo(g, out):
             out[g["k"]] = g["neutro"]

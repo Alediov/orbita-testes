@@ -159,6 +159,7 @@ VOL_MEIA_VIDA_H = 7 * 24               # meia-vida da volatilidade medida (horas
 LARGURA_MAX = 0.5
 OBSERVADOR_VIRA = 50_000               # US$ por dia: com mais que isso, o observador avisa que dá para virar teste
 AMOSTRAS_GAUGE = 200
+POOLS_EVOLUCAO = ("weth_usdc", "cbbtc_usdc")  # os pools com o banco de hora em hora da Evolução (pools_evolucao.py)
 UNSTAKED_PADRAO = 100_000              # 10%: a parte da taxa de quem NÃO está no gauge que vai para o gauge (se não ler)
 
 # (id, nome, largura da faixa (fração, None = cheia), regra, risco, frase): as versões do WETH/USDC de sempre
@@ -542,9 +543,12 @@ class Conta:
     """Uma versão: liquidez `L` na faixa [`sa`, `sb`] (√P), as taxas ainda não coletadas (`fx` token0, `fy` token1) e,
     na referência, `x`/`y` parados. Por dentro em token1; a curva na unidade da conta (`Par.u1`)."""
 
-    def __init__(self, cfg, inicio, estado=None, par=None):
+    def __init__(self, cfg, inicio, estado=None, par=None, opc=None):
         cfg = cfg_de(cfg)
         self.cfg = cfg
+        # as constantes de cada regra viram opções (a Evolução das Pools, pools_evolucao.py): `fora` (ms fora antes de
+        # remontar na "hora" e na Krystal), `esperaDias` (na espera e na sobra) e `reinvDias` (reinvestir a cada; 0 = não)
+        self.opc = opc or {}
         self.id, self.nome, self.largura, self.regra = cfg["id"], cfg["nome"], cfg["largura"], cfg["regra"]
         self.risco, self.frase, self.mult, self.gauge = cfg["risco"], cfg["frase"], cfg.get("mult"), bool(cfg.get("gauge"))
         self.par = par or LEGADO
@@ -794,7 +798,7 @@ class Conta:
             return
         self.olhou = d
         if not self.dentro(s):
-            espera = ESPERA_DIAS.get(self.regra, 0) * DIA
+            espera = self.opc.get("esperaDias", ESPERA_DIAS.get(self.regra, 0)) * DIA
             if self.fora is None:
                 self.fora = t
             if self.regra == "dia":
@@ -804,9 +808,10 @@ class Conta:
                     self.remontar_sobra(t, s, gas_wei, ev)
                 elif not self.perto(s):
                     self.reposicionar(t, s, gas_wei, sigma)
+        cada = self.opc.get("reinvDias", REINVESTIR_DIAS)
         if self.reinvestiu is None:
             self.reinvestiu = d
-        elif d - self.reinvestiu >= REINVESTIR_DIAS:
+        elif cada and d - self.reinvestiu >= cada:
             if self.reinvestir(t, s, gas_wei):
                 self._ev(ev, t, "reequilibrou", f"Pôs de volta na posição as taxas da semana (até agora "
                                                 f"{moeda_br(self.acc['taxas'])} ganhos no total).")
@@ -830,9 +835,10 @@ class Conta:
         self.aero = 0.0
 
     # ------------------------------------------------------------------ cada troca
-    def troca(self, t, s0, s1, gas_wei, ev=None, sigma=None, liq=None, aero=None):
+    def troca(self, t, s0, s1, gas_wei, ev=None, sigma=None, liq=None, aero=None, peso=1.0):
         """O preço andou de √P = s0 (a troca anterior, ou None) para s1 no instante t. `sigma` = a volatilidade diária
-        do pool; `liq` = a liquidez ativa crua no trecho; `aero` = (AERO por segundo, fração em stake, preço do AERO)."""
+        do pool; `liq` = a liquidez ativa crua no trecho; `aero` = (AERO por segundo, fração em stake, preço do AERO);
+        `peso` = quantas vezes o preço passou por esse trecho (o caminho resumido de hora em hora da Evolução)."""
         self._aero_info = aero if aero else self._aero_info
         self._gas = gas_wei
         if not self.montada:
@@ -863,7 +869,7 @@ class Conta:
             if s0 is not None and not self.gauge:
                 fx, fy = taxa_no_trecho(self.L, s0, s1, self.sa, self.sb, self.par.taxa)
                 if fx or fy:
-                    k = 1 - self.par.parte_gauge
+                    k = (1 - self.par.parte_gauge) * peso
                     fx, fy = fx * k, fy * k
                     self.fx += fx
                     self.fy += fy
@@ -878,9 +884,9 @@ class Conta:
             else:
                 if self.fora is None:
                     self.fora = t
-                if self.regra == "sai" or (self.regra == "hora" and t - self.fora >= FORA_ESPERA):
+                if self.regra == "sai" or (self.regra == "hora" and t - self.fora >= self.opc.get("fora", FORA_ESPERA)):
                     self.reposicionar(t, s1, gas_wei, sigma)
-                elif self.regra == "krystal" and t - self.fora >= KRYSTAL_ESPERA:
+                elif self.regra == "krystal" and t - self.fora >= self.opc.get("fora", KRYSTAL_ESPERA):
                     self.remontar_krystal(t, s1, gas_wei, sigma)
                 elif self.regra == "nunca" and (self.largura is not None or self.mult is not None) \
                         and not self.aviso_fora and t - self.fora >= FORA_ESPERA:
@@ -895,7 +901,7 @@ class Conta:
             if self.regra == "krystal":
                 if self.reinvestiu is None:
                     self.reinvestiu = t
-                elif t - self.reinvestiu >= KRYSTAL_COMPOUND:
+                elif self.opc.get("reinvDias", 1) and t - self.reinvestiu >= self.opc.get("reinvDias", 1) * KRYSTAL_COMPOUND:
                     self.reinvestir(t, s1, gas_wei, KRYSTAL_COMP, sempre=True)
                     self.reinvestiu = t
         self.t, self.s = t, s1
@@ -1456,11 +1462,20 @@ class Corrida:
         self.novo = novo
         af = funcao_aero(st) if gauge else None
         self.vivo.aero = self.hist.aero = af
+        # o banco de hora em hora da Evolução (pools_evolucao.py, 25/11/2026): começa 28 dias antes, como o passado
+        self.banco = None
+        if spec["id"] in POOLS_EVOLUCAO and not self.observador:
+            import pools_evolucao as PE
+            self.banco = PE.Gravador(st.get("bancoEv"))
+            if not self.banco.bloco:
+                self.banco.bloco = topo - HIST_DIAS * BLOCOS_DIA
 
     def guardar(self):
         self.st["vivo"] = self.vivo.para_json()
         if not self.observador:
             self.st["hist"] = self.hist.para_json()
+        if self.banco is not None:
+            self.st["bancoEv"] = self.banco.para_json()
 
 
 def rodar(ctx):
@@ -1545,6 +1560,10 @@ def rodar(ctx):
             est["vez"] = vez + 1
             for cor in com_passado[vez:] + com_passado[:vez]:
                 passado(cor, rpc, ref, gas_wei, tempo, log)
+            # o banco da Evolução, depois dos passados (o que sobrar de tempo)
+            for cor in com_passado:
+                if cor.banco is not None and cor.banco.bloco < cor.vivo.bloco:
+                    passado(cor, rpc, ref, gas_wei, tempo, log, cor.banco, "o banco da Evolução")
 
         gk = conferencia_gecko(gecko, pst["weth_usdc"], agora, log, erros)
         # as arrojadas pelo filtro do Marinho (11/11/2026): uma vez por dia, pelo GeckoTerminal (arrojadas.py)
@@ -1565,6 +1584,14 @@ def rodar(ctx):
         if arr:
             saida["pools"].append(arr[0])
             saida["versoes"] += arr[1]
+        # a Evolução (25/11/2026, pools_evolucao.py): a Faixa, pelo banco de hora em hora
+        try:
+            import pools_evolucao as PE
+            saida["evolucao"] = PE.avancar(ctx, est, agora, {c.spec["id"]: c.par for c in corridas}, gas_wei)
+        except Exception as e:  # noqa: BLE001 (a Evolução nunca derruba a forma)
+            erros.append(f"evolução: {e}")
+            log(f"  pools: a evolução falhou: {e}")
+            saida["evolucao"] = None
         ctx.est.clear()
         ctx.est.update(est)
         return saida
@@ -1591,7 +1618,8 @@ def avancar(cor, grupos, de, ate, rpc, ref, gas_wei, ev, tempo, log):
 
 def ao_vivo(cor, rpc, topo, ref, gas_wei, ev, tempo, log, erros):
     vivo, hist = cor.vivo, cor.hist
-    juntos = [vivo] + ([hist] if hist.bloco == vivo.bloco and not cor.observador else [])
+    juntos = [vivo] + ([hist] if hist.bloco == vivo.bloco and not cor.observador else []) + (
+        [cor.banco] if cor.banco is not None and cor.banco.bloco == vivo.bloco else [])
     if vivo.bloco >= topo:
         return
     try:
@@ -1608,8 +1636,9 @@ def ao_vivo(cor, rpc, topo, ref, gas_wei, ev, tempo, log, erros):
         raise rede.Erro(f"o RPC recusou os blocos do ao vivo: {e}") from None
 
 
-def passado(cor, rpc, ref, gas_wei, tempo, log):
-    vivo, hist = cor.vivo, cor.hist
+def passado(cor, rpc, ref, gas_wei, tempo, log, hist=None, nome="o teste no passado"):
+    """Lê do grupo `hist` (o passado; ou o banco da Evolução) até alcançar o ao vivo, enquanto houver tempo."""
+    vivo, hist = cor.vivo, hist or cor.hist
     if hist.bloco >= vivo.bloco:
         return
     while hist.bloco < vivo.bloco and tempo():
@@ -1618,19 +1647,19 @@ def passado(cor, rpc, ref, gas_wei, tempo, log):
             break
         except Arquivo as e:
             pulo = hist.bloco + BLOCOS_DIA
-            log(f"  pools: {cor.spec['id']}: o RPC recusou blocos antigos ({str(e)[:100]}); o teste no passado começa "
+            log(f"  pools: {cor.spec['id']}: o RPC recusou blocos antigos ({str(e)[:100]}); {nome} começa "
                 f"1 dia depois")
             hist.bloco = pulo
             hist.pulo()
         except ERROS as e:
-            log(f"  pools: {cor.spec['id']}: o passado parou nesta rodada ({str(e)[:100]})")
+            log(f"  pools: {cor.spec['id']}: {nome} parou nesta rodada ({str(e)[:100]})")
             break
     falta = vivo.bloco - hist.bloco
     if falta > 0:
-        log(f"  pools: {cor.spec['id']}: o teste no passado continua na próxima rodada (faltam {falta} blocos, "
+        log(f"  pools: {cor.spec['id']}: {nome} continua na próxima rodada (faltam {falta} blocos, "
             f"~{falta / BLOCOS_DIA:.1f} dias)")
     else:
-        log(f"  pools: {cor.spec['id']}: o teste no passado alcançou o ao vivo")
+        log(f"  pools: {cor.spec['id']}: {nome} alcançou o ao vivo")
 
 
 def _usd_base(cor, t):
