@@ -126,6 +126,12 @@ acabavam; aqui os executores padrão não têm limite.
   segurar BTC e o CDI; o volume das velas entra no buffer (`robos.Vela`, para o VWAP); e a 4ª espécie da Evolução,
   `indicadores` (o indicador é um gene). FORMATO.md, "Robôs de sinal" e "Evolução". Teste em `teste_robos.py`
   (`teste_indicadores_familia`).
+- **Evolução das Memecoins** (25/11/2026, o 6º e último do plano): `memes_evolucao.py`, a espécie `cacada` (controle
+  `min1rc`; genes: quando entra, os filtros RugCheck, criador, os 10 maiores, bundle, redes e carteira velha, e a saída
+  alvo, stop e tempo), refeita pelas contas da própria forma (`memes.entrada`/`entrar`/`sair`) sobre o banco de tokens
+  analisados (`bancoEv`: os sinais, o p24 e as velas das 2 primeiras horas em múltiplos do lançamento, sem nome nem
+  endereço; gravado pelo `analisar` daqui para frente). Saída: `evolucao` no `memes.json`. Teste:
+  `teste_memes_evolucao.py` (bate aposta a aposta com as regras da forma).
 - **Evolução das Pools** (25/11/2026, o 5º do plano): `pools_evolucao.py`, a espécie `faixa` (controle `r3h`; genes:
   o pool WETH/USDC ou cbBTC/USDC, a largura ou cheia, a regra de remontar, as horas fora, os dias de espera e de quanto
   em quanto reinvestir), refeita pela própria `pools.Conta` (as constantes viraram `opc`; a `troca` ganhou o `peso`)

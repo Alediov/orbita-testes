@@ -1037,6 +1037,27 @@ Estado em `est["evolucoes"]["faixa"]["evolucao"]`; o laboratório começa com 25
 de agora ("US$ 2.900 a US$ 3.100", "(fora)") ou "faixa cheia", `largadas` = remontagens, `taxas` e `dentroFrac`;
 `regras.horas` = as horas de banco de cada pool.)
 
+(As **Memecoins** também, desde 25/11/2026 (o 6º e último do plano): o `memes.json` traz o bloco `evolucao`, `formas: [{
+id: "memes", nome: "Memecoins", especies: [cacada] }]`; `null` enquanto o banco não tem tokens.
+
+- **Caçada** (`memes_evolucao.py`, espécie `cacada`, 🐸, controle `min1rc`; sementes min1, min5, momento e segura).
+  Genes: `entra` (min1 | min5 | momento: os 60 SOL, só na 1ª hora), os filtros `rc` (bool, RugCheck "ok"), `criador`
+  1/0,1/0,05/0,02 (o criador comprou no máximo; 1 = sem filtro), `donos` 1/0,5/0,35/0,25 (os 10 maiores), `bundle`,
+  `redes` e `velha` (bool; com o filtro ligado, o token sem o sinal anotado fica de fora) e a saída: `alvo`
+  1,5/2/3/5/0 (×; 0 = sem alvo), `stop` 0,8/0,7/0,5/0,3/0 (a fração da entrada; 0 = sem stop) e `tempo` 5/15/30/60/1440
+  min (1440 = segura até as 24 h: o alvo e o stop só na 1ª hora depois da entrada, depois o preço de 24 h com o teto da
+  liquidez). As apostas usam as contas da forma (`memes.entrada`, `entrar`, `sair`): o controle e as sementes batem com
+  as regras `min1rc`, `min1`, `min5`, `momento` e `segura` aposta a aposta.
+- **O banco** (`est["bancoEv"]`, os últimos `MAX_BANCO` = 6.000 tokens), gravado pelo `analisar` em cada token com velas:
+  `[t, p0, pB/p0, minuto da graduação (−1), SOL em US$, custo de rede em SOL, p24/p0 (−1), liquidez de 24 h, RugCheck,
+  criador, os 10 maiores (−1), bundle (−1), redes (1/0/−1), carteira nova (1/0/−1), velas]`, as velas das 2 primeiras
+  horas achatadas `[minuto, abre, máx., mín., fecha, …]` em múltiplos de p0. Nenhum nome, link ou endereço. Só daqui
+  para frente (as velas de antes não foram guardadas).
+
+Estado em `est["evolucoes"]["cacada"]["evolucao"]`; o laboratório começa com 14 dias de banco e, nele, menos de 20
+apostas = sem nota. Cada aposta conta no dia do lançamento. `aoVivo.membros` = [], `resolvidas` (apostas) e `acertos`
+(com lucro); `regras.tokens` = os tokens do banco e `regras.aposta` = US$ 10.)
+
 Pedido do Alediov: versões que evoluem sozinhas (as piores saem, as melhores se cruzam, às vezes uma mutação), para
 achar os melhores parâmetros de cada estratégia. Regras e números no começo do `evolucao.py`. Começa pelos Robôs (BTC):
 cinco **espécies** (os Indicadores e o DCA desde 25/11/2026), cada uma com os seus **genes** (os parâmetros que mudam).

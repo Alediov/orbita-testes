@@ -1202,6 +1202,9 @@ def analisar(amostra, fonte, cli, est, contas, ev, log, erros, restante, agora=N
         resumos.append(res)
         if faltou or sem_dados:
             continue  # sem as velas não dá para simular as regras (nem dizer que morreu)
+        # o banco da Evolução (memes_evolucao.py, 25/11/2026): os sinais e as velas da 1ª hora
+        import memes_evolucao as ME
+        ME.guardar(est, tok, velas, sol_usd, custo)
         golpe = eh_golpe(res)
         for v in VERSOES:
             partes = {}
@@ -1526,6 +1529,14 @@ def rodar(ctx):
         versoes = [{"id": v[0], "nome": v[1], "frase": v[6], "risco": v[5], "alav": 1,
                     "grupo": "Referência" if v[4] == "segura" else "Regras",
                     "aoVivo": contas[v[0]].resumo() if contas[v[0]].serie else None, "historico": None} for v in VERSOES]
+        # a Evolução (25/11/2026, memes_evolucao.py): a Caçada, pelo banco de tokens analisados
+        try:
+            import memes_evolucao as ME
+            evolucao = ME.avancar(ctx, est, agora)
+        except Exception as e:  # noqa: BLE001 (a Evolução nunca derruba a forma)
+            erros.append(f"evolução: {e}")
+            log(f"  memes: a evolução falhou: {e}")
+            evolucao = None
         cfg = {"frequencia": "3 vezes por dia (cada amostra é analisada 24 h depois e os vivos de novo em 7 dias)",
                "rede": "Solana", "plataforma": "pump.fun",
                "aposta": APOSTA, "amostra": AMOSTRA, "ouvirSegundos": OUVIR_S,
@@ -1540,7 +1551,7 @@ def rodar(ctx):
         ctx.est.update(est)
         return {"frase": FRASE, "comoFunciona": COMO_FUNCIONA, "padrao": "min1", "versoes": versoes,
                 "eventos": est["eventos"], "itens": itens, "observatorio": obs, "avisos": AVISOS, "config": cfg,
-                "erros": erros}
+                "erros": erros, "evolucao": evolucao}
     finally:
         for f, p0 in fontes.values():
             rede.somar_pedidos(ctx, f, p0)
