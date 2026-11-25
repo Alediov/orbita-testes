@@ -996,6 +996,25 @@ enquanto o banco tem menos de 300 jogos.
   quase não apostam ganhavam com nota ~0). Contas em R$ (`regras.moeda` = "R$"); `aoVivo.membros` = [],
   `acertos` e `resolvidas` (as apostas); `regras.jogos` = quantos jogos o banco tem.)
 
+(O **Looping** também, desde 25/11/2026 (o 3º do plano): o `looping.json` traz o bloco `evolucao`, `formas: [{ id:
+"looping", nome: "Looping", especies: [laco, alavancado] }]` (duas espécies, porque uma é medida em ether e a outra em
+dólar); `null` enquanto não há 60 dias de velas e as taxas.
+
+- **Laço** (`looping_evolucao.py`, espécie `laco`, 🔁, controle `wst3`; sementes wst6, wstAuto3, wstAuto6 e um 1,5×).
+  Genes: `alav` 1,5–6× (a regra dele: 6× só no looping), `regra` (sempre | só quando compensa) e, no "quando compensa",
+  `entra` 0/0,25/0,5/1/2% (a diferença staking − juro do ether por × a mais), `diasEntra` 3/7/14/30, `pagaDias`
+  30/60/120/365, `sai` −0,5/0/0,25/0,5%, `diasSai` 3/7/14, `dispara` 1/2/4% e `fica` 7/14/30/60 dias (os mesmos números
+  das constantes `AUTO_*` do `looping.py`, que viraram opções da `Conta`: `opc`). Medido em ether.
+- **Ether alavancado** (espécie `alavancado`, 📈, controle `eth2`; sementes eth15, eth2def, eth2tend e um 3× só na
+  alta). Genes: `alav` 1,25–3×, `regra` (sempre | só na alta), `media` 20/50/100/200 dias (só na alta; as velas de 1 dia
+  são buscadas com `MEDIA_MAX` 200 dias de folga) e `defesa` 0/1,2/1,3/1,5 (o fator de saúde em que desalavanca).
+  Em dólar.
+
+Sem banco próprio: a própria `looping.Conta`, um passo por dia, pelas velas de 1 dia do ether e pelas taxas diárias que
+a forma já guarda (`est["taxas"]`), como o teste no passado (os controles batem com ele). Estado em
+`est["evolucoes"][laco|alavancado]["evolucao"]`. `aoVivo.membros` = "laço de 3×", "só wstETH (1×)", "ether 2×" ou "em
+dólar no Aave (fora)", `largadas` = desmontagens e defesas, `nLiq` = liquidações; `regras.dias` = as velas de 1 dia.)
+
 Pedido do Alediov: versões que evoluem sozinhas (as piores saem, as melhores se cruzam, às vezes uma mutação), para
 achar os melhores parâmetros de cada estratégia. Regras e números no começo do `evolucao.py`. Começa pelos Robôs (BTC):
 cinco **espécies** (os Indicadores e o DCA desde 25/11/2026), cada uma com os seus **genes** (os parâmetros que mudam).

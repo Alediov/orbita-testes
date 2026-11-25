@@ -126,6 +126,10 @@ acabavam; aqui os executores padrão não têm limite.
   segurar BTC e o CDI; o volume das velas entra no buffer (`robos.Vela`, para o VWAP); e a 4ª espécie da Evolução,
   `indicadores` (o indicador é um gene). FORMATO.md, "Robôs de sinal" e "Evolução". Teste em `teste_robos.py`
   (`teste_indicadores_familia`).
+- **Evolução do Looping** (25/11/2026, o 3º do plano): `looping_evolucao.py`, duas espécies (o `laco`, wstETH ×
+  ether em ether, controle `wst3`; o `alavancado`, ETH × USDC em dólar, controle `eth2`), refeitas pela própria
+  `looping.Conta` um passo por dia (as constantes do laço quando compensa e a média viraram opções da conta, `opc`).
+  Saída: `evolucao` no `looping.json`. Teste: `teste_looping_evolucao.py`.
 - **Evolução dos Robôs: o DCA e a moeda** (25/11/2026, o 2º do plano `docs/plano-evolucao.md` do app): a 5ª espécie,
   `dca` (o jeito semanal, na queda ou com proteção é um gene), e o gene `moeda` (BTC, ETH, SOL, HYPE) em todas as
   espécies dos Robôs, com os dados separados por "mercado|moeda" e as contas de antes migradas para "BTC"

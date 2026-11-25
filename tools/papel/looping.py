@@ -124,6 +124,7 @@ AUTO_DIAS_ENTRA, AUTO_DIAS_SAI = 14, 7
 AUTO_FICA_DIAS = 30
 # ETH só na alta (eth2tend)
 MEDIA_DIAS, MEDIA_MIN = 50, 20
+MEDIA_MAX = 200           # a maior média que a Evolução usa (as velas de 1 dia são buscadas com essa folga)
 # estresse
 ESTRESSE_JURO = (2, 5)
 ESTRESSE_DESVIO = (0.02, 0.05, 0.06)
@@ -314,10 +315,12 @@ class Conta:
     ether (cresce com o staking; começa em 1); `u` = dólar no depósito de USDC (só no ETH 2× só na alta, quando fora);
     `L` = a alavancagem em que a conta está montada (no laço quando compensa, 1 ou a da versão; no só na alta, 0 = fora)."""
 
-    def __init__(self, cfg, inicio, params, estado=None):
+    def __init__(self, cfg, inicio, params, estado=None, opc=None):
         self.id, self.nome, self.tipo, self.alav, self.defesa, self.risco, self.frase = cfg
         assert self.alav <= ALAV_MAX
-        self.opc = OPCOES.get(self.id, {})
+        # `opc`: as opções de uma versão que não está em OPCOES (a Evolução, 25/11/2026, com os números das regras:
+        # entra, pagaDias, diasEntra, sai, diasSai, dispara, fica e media; sem eles, as constantes de cima)
+        self.opc = opc if opc is not None else OPCOES.get(self.id, {})
         self.auto, self.tend = bool(self.opc.get("auto")), bool(self.opc.get("tend"))
         self.chave_usdc = chave_taxa(self.id)
         e = estado or {}
@@ -428,7 +431,7 @@ class Conta:
             self._ev(ev, t, "abriu", f"Depositou {moeda_br(self.a)} em USDC na {onde}." if onde != "Aave"
                      else f"Depositou {moeda_br(self.a)} em USDC no Aave.")
         elif self.tend and L == 0:
-            self._ev(ev, t, "abriu", f"O ether está abaixo da média de {MEDIA_DIAS} dias (ou ainda sem a média): deixou "
+            self._ev(ev, t, "abriu", f"O ether está abaixo da média de {self._o('media', MEDIA_DIAS)} dias (ou ainda sem a média): deixou "
                                      f"{moeda_br(self.u)} em USDC no Aave, esperando a alta.", "queda")
         elif L == 1:
             moeda = "wstETH" if self.tipo == "wst" else "ether"
@@ -477,32 +480,36 @@ class Conta:
         por_x = TAXA_TROCA + DESLIZE + TAXA_RELAMPAGO
         return 2 * por_x * (self.alav - 1)
 
+    def _o(self, k, padrao):
+        v = self.opc.get(k)
+        return padrao if v is None else v
+
     def _compensa(self, t, tx):
-        g = self._ganho_extra(t, tx, AUTO_DIAS_ENTRA)
-        return (g / max(1e-9, self.alav - 1) >= AUTO_ENTRA
-                and g * AUTO_PAGA_DIAS / 365 >= self._custo_ida_volta()
+        g = self._ganho_extra(t, tx, self._o("diasEntra", AUTO_DIAS_ENTRA))
+        return (g / max(1e-9, self.alav - 1) >= self._o("entra", AUTO_ENTRA)
+                and g * self._o("pagaDias", AUTO_PAGA_DIAS) / 365 >= self._custo_ida_volta()
                 and tx.taxa("bor:WETH", t) < tx.taxa("stake", t) + tx.taxa("sup:wstETH", t))
 
     def _decidir_auto(self, t, p, tx, ev):
         if self.L <= 1:
             if self._compensa(t, tx):
-                g = self._ganho_extra(t, tx, AUTO_DIAS_ENTRA)
+                g = self._ganho_extra(t, tx, self._o("diasEntra", AUTO_DIAS_ENTRA))
                 self.montouEm = t
                 self._rebalancear(t, p, self.alav, "compensa",
                                   f"Montou o laço de {num_br(self.alav, 0)}×: o staking passou a pagar "
                                   f"{num_br(g / (self.alav - 1) * 100, 2)} ponto ao ano a mais que o juro do ether (média de "
-                                  f"{AUTO_DIAS_ENTRA} dias), {num_br(g * 100, 2)} pontos a mais no laço", ev)
+                                  f"{self._o('diasEntra', AUTO_DIAS_ENTRA)} dias), {num_br(g * 100, 2)} pontos a mais no laço", ev)
             return
         s = tx.taxa("stake", t) + tx.taxa("sup:wstETH", t)
         b = tx.taxa("bor:WETH", t)
         montou = getattr(self, "montouEm", None)
-        cedo = montou is not None and t - montou < AUTO_FICA_DIAS * DIA
-        if b >= s + AUTO_DISPARA:
+        cedo = montou is not None and t - montou < self._o("fica", AUTO_FICA_DIAS) * DIA
+        if b >= s + self._o("dispara", AUTO_DISPARA):
             self._rebalancear(t, p, 1, "juro", f"Desmontou para 1×: o juro do ether disparou a {pct_br(b, 2)} ao ano, "
                                                f"contra {pct_br(s, 2)} do staking", ev)
-        elif not cedo and self._ganho_extra(t, tx, AUTO_DIAS_SAI) < AUTO_SAI:
+        elif not cedo and self._ganho_extra(t, tx, self._o("diasSai", AUTO_DIAS_SAI)) < self._o("sai", AUTO_SAI):
             self._rebalancear(t, p, 1, "diferenca", f"Desmontou para 1×: a diferença entre o staking e o juro do ether "
-                                                    f"sumiu (média de {AUTO_DIAS_SAI} dias)", ev)
+                                                    f"sumiu (média de {self._o('diasSai', AUTO_DIAS_SAI)} dias)", ev)
 
     def _decidir_tend(self, t, p, tend, ev):
         fech, media = tend or (None, None)
@@ -513,10 +520,10 @@ class Conta:
             return
         if alvo:
             self._rebalancear(t, p, alvo, "alta", f"O ether fechou a {moeda_br(fech, 0)}, acima da média de "
-                                                  f"{MEDIA_DIAS} dias ({moeda_br(media, 0)}): montou o 2× de novo", ev)
+                                                  f"{self._o('media', MEDIA_DIAS)} dias ({moeda_br(media, 0)}): montou o {f"{self.alav:g}".replace(".", ",")}× de novo", ev)
         else:
             self._rebalancear(t, p, 0, "queda", f"O ether fechou a {moeda_br(fech, 0)}, abaixo da média de "
-                                                f"{MEDIA_DIAS} dias ({moeda_br(media, 0)}): vendeu tudo, pagou a dívida e "
+                                                f"{self._o('media', MEDIA_DIAS)} dias ({moeda_br(media, 0)}): vendeu tudo, pagou a dívida e "
                                                 f"deixou o dólar no Aave", ev)
 
     # ------------------------------------------------------------------ passo
@@ -1243,7 +1250,7 @@ def rodar(ctx):
         est["formatoVisto"] = True
 
         # ---------------------------------------------------------------- velas de 1 dia (média de 50 dias e o passado)
-        diarias = [x for x in velas(cli, "1d", agora - (HIST_DIAS + 1 + MEDIA_DIAS + 5) * DIA, agora, erros) if x[0] <= agora]
+        diarias = [x for x in velas(cli, "1d", agora - (HIST_DIAS + 1 + MEDIA_MAX + 5) * DIA, agora, erros) if x[0] <= agora]
 
         # ---------------------------------------------------------------- ao vivo (de hora em hora)
         fim = hora_de(agora - FOLGA_MS)
@@ -1295,6 +1302,15 @@ def rodar(ctx):
                     log(f"  looping: staking − juro do ether no ano: média {pct_br(sum(difs) / len(difs), 2)} ao ano "
                         f"(de {pct_br(min(difs), 2)} a {pct_br(max(difs), 2)}); montar custa ~"
                         f"{pct_br(TAXA_TROCA + DESLIZE + TAXA_RELAMPAGO, 2)} do dinheiro por × a mais")
+
+        # ---------------------------------------------------------------- a Evolução (25/11/2026, looping_evolucao.py)
+        evolucao = None
+        try:
+            import looping_evolucao as LE
+            evolucao = LE.avancar(ctx, est, agora, diarias, tx, params)
+        except Exception as e:  # noqa: BLE001 (a Evolução não derruba a forma)
+            erros.append(f"evolução: {type(e).__name__}: {e}")
+            log(f"  looping: evolução com erro ({type(e).__name__}: {e})")
 
         # ---------------------------------------------------------------- saída
         cdi = (getattr(ctx, "ref", None) or {}).get("cdi") or {}
@@ -1351,7 +1367,7 @@ def rodar(ctx):
         ctx.est.clear()
         ctx.est.update(est)
         return {"frase": FRASE, "comoFunciona": COMO_FUNCIONA, "padrao": "wst3", "versoes": versoes,
-                "eventos": est["eventos"], "itens": itens, "avisos": AVISOS, "dolar": onde,
+                "eventos": est["eventos"], "itens": itens, "avisos": AVISOS, "dolar": onde, "evolucao": evolucao,
                 "config": {"frequencia": "a cada 6 h (de hora em hora pelas velas)", "rede": "Base", "protocolo": "Aave v3",
                            "pool": POOL, "alavMax": ALAV_MAX, "emode": params["emode"], "fontesParametros": params.get("fontes"),
                            "custos": {"troca": TAXA_TROCA, "deslize": DESLIZE, "relampago": TAXA_RELAMPAGO, "gas": GAS_US},
