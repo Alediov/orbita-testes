@@ -134,6 +134,14 @@ parar de copiar), `quem` (as melhores, só robôs, só pessoas, todas), `n` 1–
 (só nas melhores), `troca` a cada 3/7/14 dias e `largar` (a fatia que cai 10/15/20/30% do topo dela vira dinheiro
 parado até a troca).
 
+**O lado** (25/11/2026, o 4º do plano `docs/plano-evolucao.md` do app): genes `lado` ("normal" ou "ao contrário") e
+`alavC` (1× ou 3×, só no contrário; o `jeito` vale só no normal). Ao contrário, a versão segue as carteiras do
+`contrario.py` (as que perdem de forma consistente) pelas contas `i1`/`i3` de lá (cada compra vira venda, com os custos de
+verdade), lidas do banco do próprio contrário (`est["contrario"]["banco"]`, que agora guarda também o selo robô/pessoa
+pelas medidas); "as melhores" são as que mais renderam ao contrário. Semente nova: "Ao contrário 1×, todas". As versões
+de antes ficaram no lado normal, sem recomeçar; na saída, a versão ao contrário leva `aoVivo.contrario` (o app diz "Ao
+contrário de: …").
+
 (17/11/2026: o motor do laboratório e da liga saiu daqui para `tools/papel/evolucao_series.py`, que os Cofres e o
 Funding também usam; aqui ficaram a espécie, o banco de séries e o simulador. O estado e a saída não mudaram.)
 

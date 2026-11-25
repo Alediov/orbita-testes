@@ -229,6 +229,7 @@ def atualizar_banco(ct, agora):
             for d, v in ((c.get("resumo") or {}).get(k) or {}).get("serie") or []:
                 b["serie"][d] = v
             b["ate"] = None
+            b["selo"] = K.selo(c.get("medidas")) or b.get("selo")  # o palpite de agora (a Evolução filtra por ele)
         for e, b in banco.items():
             if e not in ct["carteiras"] and b.get("ate") is None:
                 b["ate"] = agora

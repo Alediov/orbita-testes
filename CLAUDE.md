@@ -126,6 +126,9 @@ acabavam; aqui os executores padrão não têm limite.
   segurar BTC e o CDI; o volume das velas entra no buffer (`robos.Vela`, para o VWAP); e a 4ª espécie da Evolução,
   `indicadores` (o indicador é um gene). FORMATO.md, "Robôs de sinal" e "Evolução". Teste em `teste_robos.py`
   (`teste_indicadores_familia`).
+- **Evolução do Copy trading: o lado** (25/11/2026, o 4º do plano): genes `lado` (normal | ao contrário) e `alavC`
+  (1×/3×) na carteira de carteiras; o contrário segue as carteiras do `contrario.py` pelas séries `i1`/`i3` do banco de
+  lá (com o selo). `tools/mercado/LEIA-ME.md`, "Evolução do copy trading". Teste em `teste_evolucao_copia.py`.
 - **Evolução do Looping** (25/11/2026, o 3º do plano): `looping_evolucao.py`, duas espécies (o `laco`, wstETH ×
   ether em ether, controle `wst3`; o `alavancado`, ETH × USDC em dólar, controle `eth2`), refeitas pela própria
   `looping.Conta` um passo por dia (as constantes do laço quando compensa e a média viraram opções da conta, `opc`).

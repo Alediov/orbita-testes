@@ -13,7 +13,12 @@ Os genes (o que evolui):
   trás (0 = desde o começo);
 - `troca`: de quantos em quantos dias refaz a escolha (3, 7 ou 14);
 - `largar`: a fatia de uma carteira que cai tanto assim do topo dela vira dinheiro parado até a próxima troca
-  (0 = não larga).
+  (0 = não larga);
+- `lado` e `alavC` (25/11/2026, o 4º do plano `docs/plano-evolucao.md` do app): "normal" segue as carteiras do teste
+  (as que ganham) ou "ao contrário" segue as do `contrario.py` (as que perdem de forma consistente), com cada compra
+  delas virando venda, em 1× ou 3× (`alavC`, as contas `i1`/`i3` de lá, com os custos de verdade). No contrário, as
+  "melhores" são as que mais renderam AO CONTRÁRIO; o selo robô/pessoa vem das medidas que o contrário guarda.
+  Versões de antes ficam no lado normal (o gene novo entra no neutro, sem recomeçar).
 
 Não precisa de rede: as contas saem do **banco de séries** (`est["bancoEv"]`: a série diária de TODOS os jeitos de
 copiar de cada carteira que já foi seguida; o `banco` das agregadas guarda só o jeito padrão, e dele vêm o começo, a
@@ -53,6 +58,7 @@ VERSAO = 1
 CAPITAL = 1000.0
 CUSTO_LADO = 0.0015
 DIA = 86_400_000
+CONTRARIO = ["i1", "i3"]  # as contas do contrario.py que o gene `alavC` escolhe (Ao contrário 1× e 3×)
 FRASE = ("Carteiras de carteiras que evoluem: toda semana as piores regras saem, as melhores se cruzam e, às vezes, "
          "um gene muda. Só no papel.")
 AVISOS = ["Só simulação, com saldo fictício: nenhuma ordem, nenhuma conta.",
@@ -74,8 +80,12 @@ def especie(jeitos, padrao, nome_jeito=None):
         "frase": "Toda troca, o dinheiro é dividido entre as carteiras da regra: o jeito de copiar, quem copiar, "
                  "quantas, a troca e a hora de largar evoluem.",
         "genes": [
+            {"k": "lado", "nome": "Lado", "tipo": "op", "opcoes": ["normal", "contrario"],
+             "rotulos": {"normal": "Normal", "contrario": "Ao contrário"}, "neutro": "normal"},
             {"k": "jeito", "nome": "Jeito de copiar", "tipo": "op", "opcoes": list(jeitos), "rotulos": rot,
-             "neutro": padrao},
+             "neutro": padrao, "so": {"lado": "normal"}},
+            {"k": "alavC", "nome": "Alavancagem do contrário", "tipo": "op", "opcoes": list(CONTRARIO),
+             "rotulos": {"i1": "1×", "i3": "3×"}, "neutro": CONTRARIO[0], "so": {"lado": "contrario"}},
             {"k": "quem", "nome": "Quem copiar", "tipo": "op", "opcoes": ["top", "robos", "humanos", "todas"],
              "rotulos": {"top": "As melhores", "robos": "Só robôs", "humanos": "Só pessoas", "todas": "Todas"},
              "neutro": "top"},
@@ -98,10 +108,11 @@ def genes_controle(esp):
 
 
 def sementes(esp):
-    """As outras carteiras de carteiras que já existem (só robôs, só pessoas) e todas."""
+    """As outras carteiras de carteiras que já existem (só robôs, só pessoas, todas e o Ao contrário 1× de todas)."""
     base = genes_controle(esp)
     return [("robos", reparar(esp, {**base, "quem": "robos"})), ("humanos", reparar(esp, {**base, "quem": "humanos"})),
-            ("todas", reparar(esp, {**base, "quem": "todas"}))]
+            ("todas", reparar(esp, {**base, "quem": "todas"})),
+            ("contrario", reparar(esp, {**base, "lado": "contrario", "quem": "todas"}))]
 
 
 def descrever(esp, genes):
@@ -110,7 +121,8 @@ def descrever(esp, genes):
     quem = f"as {genes['n']} melhores" if genes["quem"] == "top" else rot("quem").lower()
     if genes["quem"] == "top" and genes["n"] == 1:
         quem = "a melhor"
-    out = [genes["jeito"], quem, f"troca a cada {genes['troca']} d"]
+    lado = f"ao contrário {rot('alavC')}" if genes.get("lado") == "contrario" else genes["jeito"]
+    out = [lado, quem, f"troca a cada {genes['troca']} d"]
     if genes["largar"]:
         out.append(f"larga a −{round(genes['largar'] * 100)}%")
     return " · ".join(out)
@@ -129,25 +141,21 @@ def atualizar_banco(est):
     return bv
 
 
-class Dados:
-    """As séries das cópias: o valor (US$ 1.000 no começo) da cópia de uma carteira, num jeito, num dia."""
+class Lado:
+    """As carteiras de um lado (as cópias normais ou as do `contrario.py`): começo, saída, selo e as séries."""
 
-    def __init__(self, est, padrao):
-        self.padrao = padrao
-        self.bv = est.get("bancoEv") or {}
-        info = {e: b for e, b in (est.get("banco") or {}).items() if b.get("desde")}
+    def __init__(self, info, series, padrao=None, velho=None):
         self.ini = {e: dia_de(b["desde"]) for e, b in info.items()}
         self.fim = {e: (dia_de(b["ate"]) if b.get("ate") else None) for e, b in info.items()}
         self.selo = {e: b.get("selo") for e, b in info.items()}
-        self.velho = {e: b.get("serie") or {} for e, b in info.items()}  # o jeito padrão, do banco das agregadas
+        self.series, self.padrao, self.velho = series, padrao, velho or {}
         self.carteiras = sorted(info)
-        self.primeiro = min(self.ini.values()) if info else None
         self._c = {}
 
     def _serie(self, e, jeito):
         k = (e, jeito)
         if k not in self._c:
-            s = (self.bv.get(e) or {}).get(jeito)
+            s = self.series(e, jeito)
             if not s and jeito == self.padrao:
                 s = self.velho.get(e)
             s = s or {}
@@ -168,38 +176,86 @@ class Dados:
     def ativa(self, e, dia):
         return dia >= self.ini[e] and (self.fim[e] is None or dia < self.fim[e])
 
+
+def contrarias(est):
+    """O lado "ao contrário": as carteiras do `contrario.py` (as que perdem de forma consistente), com as séries de cada
+    conta (`n1`, `i1`, `i3`) que o próprio teste guarda no banco dele, mesmo depois de a carteira sair."""
+    banco = (est.get("contrario") or {}).get("banco") or {}
+    info = {}
+    for k in CONTRARIO:
+        for e, b in (banco.get(k) or {}).items():
+            if b.get("desde") and e not in info:
+                info[e] = b
+    return Lado(info, lambda e, j: ((banco.get(j) or {}).get(e) or {}).get("serie"))
+
+
+class Dados:
+    """As séries das cópias: o valor (US$ 1.000 no começo) da cópia de uma carteira, num jeito, num dia. Dois lados:
+    as carteiras seguidas normalmente (`normal`) e as do Ao contrário (`contrario`)."""
+
+    def __init__(self, est, padrao):
+        self.padrao = padrao
+        bv = est.get("bancoEv") or {}
+        info = {e: b for e, b in (est.get("banco") or {}).items() if b.get("desde")}
+        self.lados = {"normal": Lado(info, lambda e, j: (bv.get(e) or {}).get(j), padrao,
+                                    {e: b.get("serie") or {} for e, b in info.items()}),  # o jeito padrão, das agregadas
+                      "contrario": contrarias(est)}
+        n = self.lados["normal"]
+        self.ini, self.fim, self.selo, self.carteiras = n.ini, n.fim, n.selo, n.carteiras
+        inis = [x for L in self.lados.values() for x in L.ini.values()]
+        self.primeiro = min(inis) if inis else None
+
+    def lado(self, genes):
+        return self.lados[genes.get("lado") or "normal"]
+
+    # o lado normal (os testes antigos e quem chama sem genes)
+    def tem(self, e, jeito):
+        return self.lados["normal"].tem(e, jeito)
+
+    def valor(self, e, jeito, dia):
+        return self.lados["normal"].valor(e, jeito, dia)
+
+    def ativa(self, e, dia):
+        return self.lados["normal"].ativa(e, dia)
+
     # o que o motor comum pede
     @property
     def tem_dados(self):
-        return bool(self.carteiras)
+        return any(L.carteiras for L in self.lados.values())
 
     def simular(self, genes, inicio, hoje):
         return simular(self, genes, inicio, hoje)
 
     @staticmethod
     def extras(c):
-        return {"membros": c["membros"], "custos": c["custos"], "largadas": c["largadas"]}
+        return {"membros": c["membros"], "custos": c["custos"], "largadas": c["largadas"],
+                **({"contrario": True} if c.get("contrario") else {})}
+
+
+def jeito_de(genes):
+    """A conta seguida: o `jeito` no lado normal, a `alavC` (Ao contrário 1× ou 3×) no outro."""
+    return (genes.get("alavC") or CONTRARIO[0]) if genes.get("lado") == "contrario" else genes["jeito"]
 
 
 def escolher(D, genes, dia):
-    """As carteiras da regra num dia (só as que estão no teste e têm série naquele jeito)."""
-    j = genes["jeito"]
-    ativas = [e for e in D.carteiras if D.ativa(e, dia) and D.tem(e, j)]
+    """As carteiras da regra num dia (só as que estão no teste e têm série naquele jeito), do lado da versão."""
+    j, L = jeito_de(genes), D.lado(genes)
+    ativas = [e for e in L.carteiras if L.ativa(e, dia) and L.tem(e, j)]
     q = genes["quem"]
     if q in ("robos", "humanos"):
         alvo = "robo" if q == "robos" else "humano"
-        return [e for e in ativas if D.selo.get(e) == alvo]
+        return [e for e in ativas if L.selo.get(e) == alvo]
     if q == "todas":
         return ativas
     nota = []
     for e in ativas:
-        n = dias_entre(D.ini[e], dia)
-        v = D.valor(e, j, dia)
+        n = dias_entre(L.ini[e], dia)
+        v = L.valor(e, j, dia)
         if n < genes["minDias"] or not v or v <= 0:
             continue
         v0 = CAPITAL
         if genes["olhar"] and n > genes["olhar"]:
-            v0, n = D.valor(e, j, mais_dias(dia, -genes["olhar"])) or CAPITAL, genes["olhar"]
+            v0, n = L.valor(e, j, mais_dias(dia, -genes["olhar"])) or CAPITAL, genes["olhar"]
         if v0 <= 0:
             continue
         nota.append(((v / v0) ** (30 / max(1, n)) - 1, e))
@@ -209,13 +265,13 @@ def escolher(D, genes, dia):
 def simular(D, genes, inicio, hoje):
     """A conta de uma versão de `inicio` a `hoje` (dias): { serie: [[dia, US$]], retorno, piorQueda, ops (trocas),
     custos, membros, largadas, montou }. Antes de a regra achar alguma carteira, o dinheiro fica parado."""
-    j, larga = genes["jeito"], genes["largar"]
+    j, larga, L = jeito_de(genes), genes["largar"], D.lado(genes)
     fatias, caixa, proxima, montou = {}, CAPITAL, None, False
     serie, ops, custos, largadas, pico, queda = [], 0, 0.0, 0, CAPITAL, 0.0
     dia = inicio
 
     def vale(e, f):
-        return f["fora"] if f["fora"] is not None else f["v0"] * (D.valor(e, j, dia) or f["base"]) / f["base"]
+        return f["fora"] if f["fora"] is not None else f["v0"] * (L.valor(e, j, dia) or f["base"]) / f["base"]
 
     while dia <= hoje:
         for e, f in fatias.items():
@@ -227,7 +283,7 @@ def simular(D, genes, inicio, hoje):
                 custos += v * CUSTO_LADO
                 f["fora"] = v * (1 - CUSTO_LADO)
                 largadas += 1
-            elif not D.ativa(e, dia):  # a carteira saiu do teste: dinheiro parado até a troca
+            elif not L.ativa(e, dia):  # a carteira saiu do teste: dinheiro parado até a troca
                 f["fora"] = v
         total = caixa + sum(vale(e, f) for e, f in fatias.items())
         if not montou or dia >= proxima:
@@ -240,7 +296,7 @@ def simular(D, genes, inicio, hoje):
                 total -= custo
                 if not montou or set(novos) != set(atuais):
                     ops += 1
-                fatias = {e: {"v0": total / len(alvo), "base": D.valor(e, j, dia) or CAPITAL, "pico": total / len(alvo),
+                fatias = {e: {"v0": total / len(alvo), "base": L.valor(e, j, dia) or CAPITAL, "pico": total / len(alvo),
                               "fora": None} for e in alvo}
                 caixa = 0.0 if alvo else total
                 montou, proxima = True, mais_dias(dia, genes["troca"])
@@ -250,7 +306,7 @@ def simular(D, genes, inicio, hoje):
         dia = mais_dias(dia, 1)
     ultimo = serie[-1][1] if serie else CAPITAL
     return {"serie": serie, "retorno": round(ultimo / CAPITAL - 1, 5), "piorQueda": round(queda, 4), "ops": ops,
-            "custos": round(custos, 2), "largadas": largadas, "montou": montou,
+            "custos": round(custos, 2), "largadas": largadas, "montou": montou, "contrario": genes.get("lado") == "contrario",
             "membros": sorted(e[:6] + "…" + e[-4:] if len(e) > 12 else e for e, f in fatias.items() if f["fora"] is None)}
 
 

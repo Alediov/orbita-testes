@@ -49,7 +49,8 @@ est = mundo()
 esp = EV.especie(JEITOS, "3x1")
 D = EV.Dados(est, "3x1")
 ctrl = EV.genes_controle(esp)
-ok(ctrl == {"jeito": "3x1", "quem": "top", "n": 5, "minDias": 7, "olhar": 0, "troca": 7, "largar": 0}, f"o controle: {ctrl}")
+ok(ctrl == {"lado": "normal", "jeito": "3x1", "alavC": "i1", "quem": "top", "n": 5, "minDias": 7, "olhar": 0, "troca": 7,
+            "largar": 0}, f"o controle: {ctrl}")
 ok(EV.descrever(esp, ctrl) == "3x1 · as 5 melhores · troca a cada 7 d", EV.descrever(esp, ctrl))
 
 # ---- dias e semanas
@@ -103,6 +104,35 @@ nl = EV.nota_lab(EV.simular(D, g(n=1), dia(0), dia(N)))
 ok(nl and len(nl["jan"]) == 3 and nl["val"] > 0 and nl["nota"] > 0, f"a nota do laboratório: {nl}")
 ok(EV.nota_lab(EV.simular(D, g(minDias=21, n=1), dia(0), dia(10))) is None, "quem nunca montou a carteira fica sem nota")
 
+# ---- o lado "ao contrário" (o banco do contrario.py: X cai 2% ao dia na cópia normal, então sobe ao contrário)
+def com_contrario(est):
+    ser = {"n1": lambda n: 0.98, "i1": lambda n: 1.015, "i3": lambda n: 1.04}
+    banco = {}
+    for k, f in ser.items():
+        for e, sel in (("X", "humano"), ("Y", "robo")):
+            v, s = 1000.0, {}
+            for n in range(1, N + 1):
+                v *= f(n) if e == "X" else (2 - f(n))  # Y é o espelho: ao contrário ela perde
+                s[dia(n)] = round(v, 2)
+            banco.setdefault(k, {})[e] = {"desde": T0 + 2 * DIA, "serie": s, "selo": sel, "ate": None}
+    est["contrario"] = {"banco": banco, "carteiras": {}}
+    return est
+
+
+estc = com_contrario(mundo())
+Dc = EV.Dados(estc, "3x1")
+gc = lambda **k: EV.reparar(esp, {**ctrl, "lado": "contrario", **k})  # noqa: E731
+ok(gc(jeito="5x1")["jeito"] == "3x1" and g(alavC="i3")["alavC"] == "i1", "o jeito só vale no normal e a alavC só no contrário")
+ok(EV.escolher(Dc, gc(n=1), dia(12)) == ["X"] and EV.escolher(Dc, gc(quem="robos"), dia(12)) == ["Y"], "as melhores ao contrário e o selo")
+ok(EV.escolher(Dc, g(n=2), dia(10)) == ["A", "D"], "o lado normal não muda com o contrário no banco")
+c1, c3 = EV.simular(Dc, gc(n=1), dia(0), dia(40)), EV.simular(Dc, gc(n=1, alavC="i3"), dia(0), dia(40))
+ok(EV.Dados.extras(c1).get("contrario") and "contrario" not in EV.Dados.extras(EV.simular(Dc, g(n=1), dia(0), dia(40))), "o app sabe que é ao contrário")
+ok(c1["membros"] == ["X"] and c1["retorno"] > 0 and c3["retorno"] > c1["retorno"], f"o contrário 3× rende mais aqui: {c1['retorno']} {c3['retorno']}")
+ok(EV.descrever(esp, gc(alavC="i3")) == "ao contrário 3× · as 5 melhores · troca a cada 7 d", EV.descrever(esp, gc(alavC="i3")))
+ok(EV.Dados({"banco": {}, "contrario": estc["contrario"]}, "3x1").tem_dados, "só com o contrário já há dados")
+velho = {k: v for k, v in ctrl.items() if k not in ("lado", "alavC")}
+ok(EV.reparar(esp, velho) == ctrl, "as versões de antes do gene ficam no lado normal")
+
 # ---- a evolução dia a dia (números pequenos, como no mercado de mentira)
 def rodar_dias(est, de, ate, vezes=1):
     ev = None
@@ -118,7 +148,7 @@ e = est["evolucao"]
 P = ev.P
 ok(e["liga"] and len(e["liga"]["pop"]) == P["POP_LIGA"] and e["liga"]["controle"]["genes"] == ctrl, "a liga começa na 1ª rodada, com o controle")
 ok(len({EV.chave(i["genes"]) for i in e["liga"]["pop"]} | {EV.chave(ctrl)}) == P["POP_LIGA"] + 1, "sem versões repetidas na liga")
-ok([i.get("de") for i in e["liga"]["pop"][:3]] == ["robos", "humanos", "todas"], "as sementes: as outras carteiras de carteiras")
+ok([i.get("de") for i in e["liga"]["pop"][:4]] == ["robos", "humanos", "todas", "contrario"], "as sementes: as outras carteiras de carteiras")
 ok(e.get("labEspera") == {"faltam": P["MIN_DIAS_LAB"] - 3, "dias": 3, "precisa": P["MIN_DIAS_LAB"]} and not e["lab"], f"o laboratório espera: {e.get('labEspera')}")
 ok(len({i["nome"] for i in e["liga"]["pop"]}) == P["POP_LIGA"], "nomes diferentes")
 antes = copy.deepcopy(e["liga"]["pop"])
@@ -163,7 +193,7 @@ if liga["campea"]:
 r = EV.resumo(ev, DD, T0 + 45 * DIA)
 json.dumps(r)
 sp = r["formas"][0]["especies"][0]
-ok(r["formas"][0]["id"] == "copy" and sp["id"] == "carteiras" and [x["k"] for x in sp["genes"]] == ["jeito", "quem", "n", "minDias", "olhar", "troca", "largar"], "a espécie")
+ok(r["formas"][0]["id"] == "copy" and sp["id"] == "carteiras" and [x["k"] for x in sp["genes"]] == ["lado", "jeito", "alavC", "quem", "n", "minDias", "olhar", "troca", "largar"], "a espécie")
 ok(sp["controle"]["descricao"] and sp["liga"]["controle"]["aoVivo"]["serie"] and sp["liga"]["semanaDe"] == EV.segunda_de(liga["semana"]), "o controle da liga")
 ok(len(sp["liga"]["pop"]) == P["POP_LIGA"] and sum(1 for x in sp["liga"]["pop"] if "serie" in x["aoVivo"]) >= min(EV.COM_SERIE, P["POP_LIGA"]), "as séries das melhores")
 ok(all(set(x["aoVivo"]) >= {"retorno", "piorQueda", "ops", "inicio", "membros"} and x["descricao"] and isinstance(x["notas"], list) for x in sp["liga"]["pop"]), "cada versão da liga")
