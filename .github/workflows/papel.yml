@@ -58,7 +58,8 @@ jobs:
           ODDSPAPI_KEY: ${{ secrets.ODDSPAPI_KEY }}
           # chaves GRATUITAS só para o árbitro dos cartões (22/11/2026; cartoes.py); sem elas, só as fontes sem chave
           FOOTBALLDATA_KEY: ${{ secrets.FOOTBALLDATA_KEY }}
-          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+          # APIFOOTBALL_KEY desligada em 26/11/2026: a API-Football suspendeu a conta grátis (endereços compartilhados do
+          # GitHub Actions). Sem a chave, as apostas, os cartões e o robô do intervalo pulam a API-Football; o vigia segue.
         run: python3 -I tools/papel/papel.py --dados dados --prazo 24 ${{ (github.event_name == 'push' || github.event.schedule == '53 * * * *') && '--formas apostas' || (inputs.formas && format('--formas {0}', inputs.formas) || '') }}
       - name: Guardar no ramo papel
         if: always()

@@ -186,7 +186,7 @@ def teste_leitura_oddspapi():
     pin = A.mercados(A._no_da_casa(r, "pinnacle"))
     so = A.mercados(A._no_da_casa(r, "betano"))
     # o mais/menos de 2,5 gols vem pelo id 1010, sem o nome do mercado (como na resposta de verdade)
-    assert set(pin) == {"1x2", "ou"} and not A.mercados(A._no_da_casa(r, "betano.bet.br"))
+    assert set(pin) == {"1x2", "ou", "btts"} and not A.mercados(A._no_da_casa(r, "betano.bet.br"))
     assert len(pin["1x2"][0]) == len(FA.MOMENTOS)
     fx = {"id": jw["id"], "l": "eng", "c": jw["casa"], "f": jw["fora"], "i": jw["inicio"]}
     j = A.jogo_vivo(fx, pin, so, "Betano (internacional)")
@@ -525,6 +525,31 @@ def teste_bdm_arquivos():
         shutil.rmtree(pasta, ignore_errors=True)
 
 
+def teste_ambas_e_europeus():
+    """26/11/2026: o ambas marcam entra no teste (OddsPapi) e as competições europeias só nos jogos do Theo."""
+    assert A.ganhou("btts", 0, (1, 1)) and not A.ganhou("btts", 0, (2, 0)) and A.ganhou("btts", 1, (0, 0))
+    assert A.saida("btts", 2, 1) == 0 and A.saida("btts", 0, 3) == 1
+    assert A.nome_sel("A", "B", "btts", 1) == "não ambas marcam"
+    assert A.indice_bdm(_pk(mercado="btts", selecao="sim"), True) == 0
+    assert A.precificavel(A.palpite_bdm({"id": "x-1", "mandante": "A", "visitante": "B", "mercado": "btts",
+                                         "selecao": "sim"}, "2026-11-26", "x"))[0]
+    # pelo nome (se o id não for o 104): "Both Teams To Score" com Yes/No
+    no = {"markets": [{"marketName": "Both Teams To Score", "outcomes": [
+        {"outcomeName": "Yes", "price": 1.8, "createdAt": "2026-11-26T10:00:00Z"},
+        {"outcomeName": "No", "price": 2.0, "createdAt": "2026-11-26T10:00:00Z"}]},
+        {"marketName": "Both Teams To Score - 1st Half", "outcomes": [
+            {"outcomeName": "Yes", "price": 4.0, "createdAt": "2026-11-26T10:00:00Z"}]}]}
+    m = A.mercados(no)
+    assert m.get("btts") and [h[-1][1] for h in m["btts"]] == [1.8, 2.0], m
+    # os campeonatos europeus: os nomes da OddsPapi e o que não serve
+    assert A.bate_torneio("ucl", "UEFA Champions League", "International Clubs")
+    assert not A.bate_torneio("ucl", "AFC Champions League", "Asia")
+    assert not A.bate_torneio("ucl", "UEFA Champions League, Qualification", "International Clubs")
+    assert A.bate_torneio("uel", "UEFA Europa League", "") and not A.bate_torneio("uel", "UEFA Europa Conference League", "")
+    assert A.bate_torneio("uecl", "UEFA Conference League", "International Clubs")
+    assert A.NOME_LIGA["uel"] == "Europa League" and "uel" not in [k for k, *_ in A.LIGAS]
+
+
 def teste_bdm_rodadas():
     """A conta Seguir o BDM nas rodadas: cada palpite vira aposta, fica fora (com o motivo) ou espera; a odd é a da
     hora em que a rodada viu o palpite, sem pedido a mais à OddsPapi."""
@@ -544,8 +569,8 @@ def teste_bdm_rodadas():
         assert e["cobertura"] == round(e["noTeste"] / e["palpitesVistos"], 4)
         assert e["noTeste"] + e["esperando"] + sum(f["n"] for f in e["fora"]) >= e["palpitesVistos"]
         motivos = {f["motivo"] for f in e["fora"]}
-        assert {"plano para o ao vivo", "mercado fora do teste: Ambas marcam",
-                "jogo fora dos campeonatos acompanhados"} <= motivos, motivos
+        assert {"plano para o ao vivo", "jogo fora dos campeonatos acompanhados"} <= motivos, motivos
+        assert not any(m.startswith("mercado fora do teste: Ambas") for m in motivos), motivos  # 26/11/2026
         assert e["apostas"] > 5 and e["acerto"] is not None and e["clvMedio"] is not None and e["piorSequencia"] >= 1
         assert e["oddCitadaMedia"] and e["oddPegaMedia"] and 0 < len(e["ultimos"]) <= A.BDM_ULTIMOS
         # cada aposta: R$ 20, a odd da casa no 1º preço a partir da hora em que foi visto, antes do início
@@ -833,6 +858,7 @@ if __name__ == "__main__":
     teste_formato_estranho()
     teste_bdm_palpites()
     teste_bdm_arquivos()
+    teste_ambas_e_europeus()
     teste_bdm_rodadas()
     teste_bdm_historico()
     teste_bdm_api_football()

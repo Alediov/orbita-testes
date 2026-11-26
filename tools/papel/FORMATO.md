@@ -504,6 +504,18 @@ Futebol, só no papel (`apostas.py`). Diferenças das outras formas:
   minutos vem da lista do dia). Sem foto que sirva, vale a OddsPapi como antes. Até 30 pedidos por dia e 12 por rodada
   (`V["af"]`). Teste: `teste_bdm_api_football` (com e sem a OddsPapi).
 
+- **Sem a API-Football, os europeus e o ambas marcam pela OddsPapi** (26/11/2026): a API-Football suspendeu a conta
+  grátis (os endereços do GitHub Actions são compartilhados, e a proteção contra várias contas grátis suspende sozinha;
+  o suporte só reativa com um endereço fixo). A chave saiu do `papel.yml` e do `intervalo.yml` (o vigia segue; as fotos,
+  os cartões ao vivo e os árbitros dela param). No lugar: (1) `LIGAS_THEO` (Champions, Europa League e Conference,
+  `TORNEIOS` "ucl"/"uel"/"uecl", lista refeita pelo `TORNEIOS_V`): a lista de jogos da competição só é pedida quando há
+  palpite do Theo esperando nela (`esperando_theo`, a competição pelo nome que ele deu, `COMP_THEO`), de 6 em 6 h, e só
+  os jogos dos palpites entram no acompanhamento; o placar vem da ESPN ("uefa.champions", "uefa.europa",
+  "uefa.europa.conf"). (2) o **ambas marcam** (`btts`, 0 = sim, 1 = não) entra no teste: lido do `/historical-odds`
+  (id suposto 104/105, ou pelo nome "Both Teams To Score" com Yes/No; o log de 1ª vez num jogo do Theo lista os ids
+  dos mercados, `viuMercados`), liquidado pelo placar; os palpites que tinham ficado "fora do teste" só por isso e cujo
+  jogo não começou voltam a esperar (`bttsV`). As versões de valor continuam só no 1X2 e no mais/menos.
+
 - **theo.json, o arquivo do Placar** (22/11/2026, pedido do Alediov: "o Placar com mais detalhes do que o Theo
   escolheu"): a cada rodada das apostas o `papel.py` grava, ao lado do `apostas.json`, o `theo.json` (a forma devolve
   `_arquivos` {nome: dados}; o `papel.py` grava e tira da saída). `theo_publico`: {v 1, agora, dias (21), palpites

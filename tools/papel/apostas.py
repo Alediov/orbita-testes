@@ -84,7 +84,16 @@ LIGAS = [
     ("fra", "Ligue 1", "F1", "fra.1"),
     ("lib", "Libertadores", None, "conmebol.libertadores"),
 ]
-NOME_LIGA = {k: n for k, n, _, _ in LIGAS}
+# 26/11/2026 (a API-Football suspendeu a conta grátis por causa dos endereços compartilhados do GitHub Actions): as
+# competições europeias entram pela OddsPapi SÓ nos jogos com palpite do Theo (a lista do campeonato só é pedida quando
+# há palpite esperando nela, e só os jogos dos palpites entram no acompanhamento)
+LIGAS_THEO = [
+    ("ucl", "Champions League", None, "uefa.champions"),
+    ("uel", "Europa League", None, "uefa.europa"),
+    ("uecl", "Conference League", None, "uefa.europa.conf"),
+]
+COMP_THEO = {"ucl": ("champions",), "uel": ("europa league", "liga europa"), "uecl": ("conference",)}
+NOME_LIGA = {k: n for k, n, _, _ in LIGAS + LIGAS_THEO}
 NOME_LIGA["outra"] = "Outros campeonatos"  # 22/11/2026: os jogos dos palpites que só a API-Football acompanha
 PRIORIDADE = {k: i for i, (k, _, _, _) in enumerate(LIGAS)}
 
@@ -336,6 +345,8 @@ def clv(odd, p_fech):
 
 def ganhou(mk, sel, placar):
     h, a = placar
+    if mk == "btts":  # 26/11/2026: ambas marcam (0 = sim, 1 = não)
+        return sel == (0 if h > 0 and a > 0 else 1)
     r = 0 if h > a else 1 if h == a else 2
     if mk == "1x2":
         return sel == r
@@ -404,6 +415,8 @@ def nome_sel(casa, fora, mk, i):
         return [f"{casa} ou empate", f"{casa} ou {fora}", f"empate ou {fora}"][i]
     if mk == "dnb":
         return [f"{casa} (empate anula)", f"{fora} (empate anula)"][i]
+    if mk == "btts":
+        return ["ambas marcam", "não ambas marcam"][i]
     return ["mais de 2,5 gols", "menos de 2,5 gols"][i]
 
 
@@ -434,7 +447,8 @@ FAIXAS_ODD = [(1.5, "até 1,49"), (2.0, "1,50 a 1,99"), (3.0, "2,00 a 2,99"), (1
 NOME_SELECAO = {("1x2", 0): "Vitória do mandante", ("1x2", 1): "Empate", ("1x2", 2): "Vitória do visitante",
                 ("ou", 0): "Mais de 2,5 gols", ("ou", 1): "Menos de 2,5 gols",
                 ("dupla", 0): "Mandante ou empate", ("dupla", 1): "Sem empate", ("dupla", 2): "Empate ou visitante",
-                ("dnb", 0): "Mandante (empate anula)", ("dnb", 1): "Visitante (empate anula)"}
+                ("dnb", 0): "Mandante (empate anula)", ("dnb", 1): "Visitante (empate anula)",
+                ("btts", 0): "Ambas marcam", ("btts", 1): "Não ambas marcam"}
 
 
 def faixa_odd(o):
@@ -1017,7 +1031,12 @@ TORNEIOS = {
     "ger": (["germany"], ["bundesliga"], ["2", "3", "women", "frauen", "austria", "osterreich"], None),
     "fra": (["france"], ["ligue 1"], ["women", "feminine", "d1"], None),
     "lib": ([], ["libertadores"], ["women", "femenina", "femenino", "u20", "sub"], "libertadores"),
+    "ucl": ([], ["champions league"], ["women", "u19", "youth", "afc", "caf", "concacaf", "ofc", "asian", "african",
+            "qualification", "qualifying", "arab"], None),
+    "uel": ([], ["europa league"], ["women", "u19", "youth", "qualification", "qualifying", "conference"], None),
+    "uecl": ([], ["conference league"], ["women", "u19", "youth", "qualification", "qualifying", "concacaf"], None),
 }
+TORNEIOS_V = 2  # 26/11/2026: os europeus do Theo (a lista de campeonatos é refeita uma vez)
 
 
 def bate_torneio(chave, nome, categoria):
@@ -1053,6 +1072,8 @@ def _no_da_casa(r, slug):
 
 
 CAMPOS_PRECO = ("price", "odds", "decimalOdds", "odd")
+MERCADO_BTTS = "104"  # 26/11/2026: ambas marcam na OddsPapi (resultados 104 = sim, 105 = não; suposto, conferir no log)
+NOMES_BTTS = ("both teams to score", "btts", "both teams score", "ambas marcam")
 CAMPOS_HORA = ("createdAt", "changedAt", "updatedAt", "timestamp", "time", "ts", "t", "lastUpdate", "date")
 
 
@@ -1097,7 +1118,8 @@ def _linha(d):
 
 
 def mercados(no):
-    """{"1x2": [hist casa, hist empate, hist fora], "ou": [hist mais, hist menos]} de uma casa; hist = [(ms, preço)]."""
+    """{"1x2": [hist casa, hist empate, hist fora], "ou": [hist mais, hist menos], "btts": [hist sim, hist não]} de uma
+    casa; hist = [(ms, preço)]."""
     if not isinstance(no, (dict, list)):
         return {}
     mk = no.get("markets") if isinstance(no, dict) and isinstance(no.get("markets"), (dict, list)) else no
@@ -1120,6 +1142,19 @@ def mercados(no):
                     h[i] = _precos(o)
             if all(h):
                 out["1x2"] = h
+        elif "btts" not in out and (mid == MERCADO_BTTS or any(t in nome for t in NOMES_BTTS)) and "half" not in nome \
+                and "1st" not in nome and "2nd" not in nome:
+            # 26/11/2026: ambas marcam (o id da OddsPapi é suposto; o nome também serve; o log da 1ª vez confere)
+            h = [None, None]
+            for oid, o in _itens(outs):
+                on = _norm(_pega(o, "outcomeName", "name", "label") or "") if isinstance(o, dict) else ""
+                i = {MERCADO_BTTS: 0, str(int(MERCADO_BTTS) + 1): 1}.get(oid)
+                if i is None:
+                    i = 0 if on in ("yes", "sim", "y") else 1 if on in ("no", "nao", "n") else None
+                if i is not None:
+                    h[i] = _precos(o)
+            if all(h):
+                out["btts"] = h
         elif "ou" not in out and mid == "1010":
             # OddsPapi: o mercado 1010 é o mais/menos de 2,5 gols (resultados 1010 = mais, 1011 = menos); a resposta
             # do /historical-odds não traz o nome do mercado (conferido no log de 05/11/2026)
@@ -1412,6 +1447,8 @@ def precificavel(pk):
         return True, None
     if pk["mk"] in SINTETICOS and pk.get("sel"):
         return True, None
+    if pk["mk"] == "btts" and pk.get("sel") in ("sim", "nao"):
+        return True, None  # 26/11/2026: pelo mercado de ambas marcam da OddsPapi (quando a resposta o traz)
     return False, f"mercado fora do teste: {nome_mercado(pk)}"
 
 
@@ -1438,6 +1475,8 @@ def achar_jogo(pk, fxs):
 def indice_bdm(pk, inv):
     if pk["mk"] == "ou":
         return 0 if pk["sel"] == "mais" else 1
+    if pk["mk"] == "btts":
+        return 0 if pk["sel"] == "sim" else 1
     if pk["mk"] == "dupla":
         i = ("1x", "12", "x2").index(pk["sel"])
         return 2 - i if inv else i
@@ -1527,6 +1566,8 @@ def saida(mk, gc, gf):
     """O índice da seleção que saiu num placar: 1X2 (0 casa, 1 empate, 2 fora) ou gols (0 mais de 2,5, 1 menos)."""
     if mk == "1x2":
         return 0 if gc > gf else 1 if gc == gf else 2
+    if mk == "btts":
+        return 0 if gc > 0 and gf > 0 else 1
     return 0 if gc + gf > 2.5 else 1
 
 
@@ -1810,8 +1851,9 @@ class Vivo:
     def torneios(self):
         V = self.V
         cada = TORNEIOS_CADA if V.get("torneios") else DIA  # nada achado: tenta de novo só amanhã (o limite é curto)
-        if self.agora - int(V.get("torneiosEm") or 0) < cada:
+        if self.agora - int(V.get("torneiosEm") or 0) < cada and V.get("torneiosV") == TORNEIOS_V:
             return
+        V["torneiosV"] = TORNEIOS_V
         esporte = V.get("esporte") or ESPORTE_PADRAO
         r = self.orc.pedir("/tournaments", sportId=esporte)
         lista = _lista(r)
@@ -1846,14 +1888,38 @@ class Vivo:
             self.log(f"  apostas: campeonatos não achados na OddsPapi: {', '.join(faltam)}")
 
     # ------------------------------------------------------------------ jogos
+    def liga_do_palpite(self, pk):
+        """A chave da competição europeia do palpite (pelo nome que o Theo deu), ou None."""
+        c = _norm(pk.get("comp") or "")
+        return next((k for k, frases in COMP_THEO.items() if any(f in c for f in frases)), None)
+
+    def esperando_theo(self, chave):
+        """Os palpites do Theo que esperam um jogo da competição `chave` nos próximos dias (sem jogo ainda)."""
+        B = self.V.get("bdm") or {}
+        out = []
+        for pk in (B.get("p") or {}).values():
+            if pk.get("st") != "esperando" or pk.get("fx") or self.liga_do_palpite(pk) != chave:
+                continue
+            fim = pk["i"] if pk.get("i") is not None else _ms(pk["dia"] + "T23:59:00-03:00")
+            if fim and self.agora - DIA <= fim <= self.agora + FX_DEPOIS:
+                out.append(pk)
+        return out
+
     def jogos(self):
         V = self.V
-        for chave, *_ in LIGAS:
+        for chave, *_ in LIGAS + LIGAS_THEO:
             tor = (V.get("torneios") or {}).get(chave)
             if not tor:
                 continue
+            theo = None
+            if chave in COMP_THEO:
+                theo = self.esperando_theo(chave)
+                if not theo:
+                    continue  # sem palpite do Theo nela: não gasta a OddsPapi
             ultimo = int(V["fxEm"].get(chave) or 0)
             cada = FX_VAZIO_CADA if V["fxVazio"].get(chave) else FX_CADA
+            if theo is not None:
+                cada = 6 * HORA  # a lista da competição do Theo: de novo se ainda há palpite sem jogo
             if self.agora - ultimo < cada:
                 continue
             de = max(self.agora - 7 * DIA, min(self.agora - DIA, int(V["fxAte"].get(chave) or self.agora - DIA)))
@@ -1885,6 +1951,14 @@ class Vivo:
                 V["viuFixture"] = True
             novos = 0
             for x in lista:
+                if theo is not None:
+                    # só os jogos dos palpites (o resto da rodada europeia não entra: o limite do mês é curto)
+                    casa = _pega(x, "participant1Name", "homeTeam", "home", "homeName", "participant1")
+                    fora = _pega(x, "participant2Name", "awayTeam", "away", "awayName", "participant2")
+                    ini = _ms(_pega(x, "startTime", "start_time", "startDate", "commence_time", "date", "kickoff"))
+                    if not casa or not fora or ini is None or not any(
+                            achar_jogo(pk, [{"c": str(casa), "f": str(fora), "i": ini}])[0] for pk in theo):
+                        continue
                 fid = _pega(x, "fixtureId", "id")
                 ini = _ms(_pega(x, "startTime", "start_time", "startDate", "commence_time", "date", "kickoff"))
                 casa = _pega(x, "participant1Name", "homeTeam", "home", "homeName", "participant1")
@@ -2151,6 +2225,12 @@ class Vivo:
                 if not V.get("viuHistorico"):
                     self.log(f"  apostas: formato de /historical-odds: {estrutura(r, 8)}")
                     V["viuHistorico"] = True
+                if f.get("bdm") and not V.get("viuMercados"):
+                    # 26/11/2026: os ids dos mercados que vieram num jogo do Theo (para conferir o do ambas marcam)
+                    no = _no_da_casa(r, "pinnacle")
+                    mm = no.get("markets") if isinstance(no, dict) and isinstance(no.get("markets"), (dict, list)) else no
+                    self.log(f"  apostas: mercados da Pinnacle num jogo do Theo: {[k for k, _v in _itens(mm)][:60]}")
+                    V["viuMercados"] = True
                 pin = mercados(_no_da_casa(r, "pinnacle"))
                 dados = {s: mercados(_no_da_casa(r, s)) for s in pedidas}
                 self._anotar_soft(pedidas, dados)
@@ -2214,7 +2294,7 @@ class Vivo:
 
     # ------------------------------------------------------------------ placares
     def _espn(self, liga, ini):
-        cod = next((e for k, _n, _d, e in LIGAS if k == liga), None)
+        cod = next((e for k, _n, _d, e in LIGAS + LIGAS_THEO if k == liga), None)
         if not cod:
             return []
         dias = {_iso(ini, True).replace("-", ""), dia_de(ini).replace("-", "")}
@@ -2310,6 +2390,19 @@ class Vivo:
         comeco = "desde" not in B
         B.setdefault("desde", self.agora)
         ign = set(B["ignorados"])
+        if not B.get("bttsV"):
+            # 26/11/2026: o ambas marcam passou a entrar no teste: os palpites que ficaram fora só por isso e cujo jogo
+            # ainda não começou voltam a esperar (vistos agora)
+            B["bttsV"] = 1
+            for pk in B["p"].values():
+                if pk.get("st") == "fora" and pk.get("mk") == "btts" and str(pk.get("motivo") or "").startswith(
+                        "mercado fora do teste") and precificavel(pk)[0] and (pk.get("i") or 0) > self.agora:
+                    m = pk["motivo"]
+                    fo = B["cont"]["fora"]
+                    fo[m] = max(0, fo.get(m, 0) - 1)
+                    if not fo[m]:
+                        fo.pop(m, None)
+                    pk["st"], pk["motivo"], pk["visto"] = "esperando", None, self.agora
         for arq in self.bdm_dias:
             dia = str(arq.get("data") or "")[:10]
             if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", dia):

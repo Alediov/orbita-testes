@@ -29,7 +29,8 @@ jobs:
           if git fetch -q --depth=1 origin intervalo; then git archive FETCH_HEAD | tar -x -C dados; else echo "ramo intervalo ainda não existe"; fi
       - name: Laço (uma volta a cada 5 min)
         env:
-          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+          # APIFOOTBALL_KEY desligada em 26/11/2026: a API-Football suspendeu a conta grátis (endereços compartilhados do
+          # GitHub Actions). Sem a chave, as apostas, os cartões e o robô do intervalo pulam a API-Football; o vigia segue.
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |

@@ -312,6 +312,10 @@ def historico_livro(j, livro, agora):
     if not precos:
         return {}
 
+    def hist_btts(i):
+        return {"players": {"0": [{"createdAt": _iso(t), "price": round(o["ou"][i] * (1.04 if i == 0 else 0.97), 2),
+                                   "limit": 1000, "active": True} for t, o in precos]}}
+
     def hist(mk, i):
         return {"players": {"0": [{"createdAt": _iso(t), "price": o[mk][i], "limit": 1000, "active": True}
                                   for t, o in precos]}}
@@ -319,6 +323,8 @@ def historico_livro(j, livro, agora):
         "101": {"outcomes": {"101": hist("1x2", 0), "102": hist("1x2", 1), "103": hist("1x2", 2)}},
         # como na resposta de verdade (log de 05/11/2026): sem o nome do mercado nem do resultado, só os ids
         "1010": {"outcomes": {"1010": hist("ou", 0), "1011": hist("ou", 1)}},
+        # 26/11/2026: ambas marcam (o id 104 é o que supomos da OddsPapi; preço tirado do mais/menos de gols)
+        "104": {"outcomes": {"104": hist_btts(0), "105": hist_btts(1)}},
     }}
 
 
