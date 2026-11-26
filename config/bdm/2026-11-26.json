@@ -1,0 +1,122 @@
+{
+ "versao": 1,
+ "data": "2026-11-26",
+ "video": {
+  "id": "s4LpnVEmpao",
+  "publicado": "2026-11-26T00:25:04+00:00"
+ },
+ "palpites": [
+  {
+   "id": "s4LpnVEmpao-1",
+   "mandante": "Union Saint-Gilloise",
+   "visitante": "Lech Poznan",
+   "competicao": "Europa League",
+   "inicio": "2026-11-26T14:45:00-03:00",
+   "mercado": "1x2",
+   "linha": null,
+   "selecao": "mandante",
+   "oddCitada": null,
+   "fora": false,
+   "motivo": null,
+   "conviccao": "normal"
+  },
+  {
+   "id": "s4LpnVEmpao-2",
+   "mandante": "Celta Vigo",
+   "visitante": "Bournemouth",
+   "competicao": "Europa League",
+   "inicio": "2026-11-26T14:45:00-03:00",
+   "mercado": "btts",
+   "linha": null,
+   "selecao": "sim",
+   "oddCitada": null,
+   "fora": false,
+   "motivo": null,
+   "conviccao": "normal"
+  },
+  {
+   "id": "s4LpnVEmpao-3",
+   "mandante": "Viktoria Plzen",
+   "visitante": "Benfica",
+   "competicao": "Europa League",
+   "inicio": "2026-11-26T14:45:00-03:00",
+   "mercado": "ou",
+   "linha": 2.5,
+   "selecao": "mais",
+   "oddCitada": null,
+   "fora": false,
+   "motivo": null,
+   "conviccao": "normal"
+  },
+  {
+   "id": "s4LpnVEmpao-4",
+   "mandante": "Viktoria Plzen",
+   "visitante": "Benfica",
+   "competicao": "Europa League",
+   "inicio": "2026-11-26T14:45:00-03:00",
+   "mercado": "btts",
+   "linha": null,
+   "selecao": "sim",
+   "oddCitada": null,
+   "fora": false,
+   "motivo": null,
+   "conviccao": "normal"
+  },
+  {
+   "id": "s4LpnVEmpao-5",
+   "mandante": "Dinamo Zagreb",
+   "visitante": "Bayer Leverkusen",
+   "competicao": "Europa League",
+   "inicio": "2026-11-26T14:45:00-03:00",
+   "mercado": "ou",
+   "linha": 2.5,
+   "selecao": "mais",
+   "oddCitada": null,
+   "fora": false,
+   "motivo": null,
+   "conviccao": "normal"
+  },
+  {
+   "id": "s4LpnVEmpao-6",
+   "mandante": "Dinamo Zagreb",
+   "visitante": "Bayer Leverkusen",
+   "competicao": "Europa League",
+   "inicio": "2026-11-26T14:45:00-03:00",
+   "mercado": "btts",
+   "linha": null,
+   "selecao": "sim",
+   "oddCitada": null,
+   "fora": false,
+   "motivo": null,
+   "conviccao": "normal"
+  },
+  {
+   "id": "s4LpnVEmpao-7",
+   "mandante": "Olympiacos",
+   "visitante": "AC Milan",
+   "competicao": "Europa League",
+   "inicio": "2026-11-26T14:45:00-03:00",
+   "mercado": "btts",
+   "linha": null,
+   "selecao": "sim",
+   "oddCitada": null,
+   "fora": false,
+   "motivo": null,
+   "conviccao": "normal"
+  },
+  {
+   "id": "s4LpnVEmpao-8",
+   "mandante": "Juventus",
+   "visitante": "Omonia Nicosia",
+   "competicao": "Europa League",
+   "inicio": "2026-11-26T17:00:00-03:00",
+   "mercado": "btts",
+   "linha": null,
+   "selecao": "sim",
+   "oddCitada": null,
+   "fora": false,
+   "motivo": null,
+   "conviccao": "baixa"
+  }
+ ]
+}
