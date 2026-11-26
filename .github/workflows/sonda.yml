@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       qual:
-        description: "apifootball | theodds"
+        description: "apifootball | theodds | espn"
         default: "theodds"
 permissions:
   contents: read
@@ -21,4 +21,5 @@ jobs:
           ODDSAPI_KEY: ${{ secrets.ODDSAPI_KEY }}
         run: |
           if [ "${{ inputs.qual }}" = "apifootball" ]; then python3 -I tools/papel/sonda_odds.py
+          elif [ "${{ inputs.qual }}" = "espn" ]; then python3 -I tools/papel/sonda_theodds.py --espn
           else python3 -I tools/papel/sonda_theodds.py; fi

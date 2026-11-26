@@ -30,7 +30,27 @@ def pedir(caminho, chave, **q):
         return {"erroSonda": str(e).replace(chave, "***")}, {}
 
 
+def agenda_espn():
+    """O que o robô do intervalo vê na ESPN agora (grátis, sem crédito)."""
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import intervalo as I
+    import theodds as T
+    agora = int(dt.datetime.now(dt.timezone.utc).timestamp() * 1000)
+    for liga, (esp, cod) in T.LIGAS.items():
+        for d in sorted({I.dia(agora - 6 * I.HORA), I.dia(agora)}):
+            try:
+                js = T.espn(I.json_url(T.URL_ESPN.format(liga=cod, dia=d.replace("-", ""))))
+            except Exception as e:  # noqa: BLE001
+                print("ESPN", cod, d, "erro", e)
+                continue
+            vivos = [j for j in js if j["st"] == "in" or j["ht"]]
+            print("ESPN", cod, d, len(js), "jogos;", [(j["casa"], j["fora"], j["gols"], j["ht"], j["periodo"], j["min"]) for j in vivos][:6])
+
+
 def main():
+    if "--espn" in sys.argv:
+        agenda_espn()
+        return 0
     chave = (os.environ.get("ODDSAPI_KEY") or "").strip()
     if not chave:
         print("sem ODDSAPI_KEY")
