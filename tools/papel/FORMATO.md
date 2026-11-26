@@ -516,6 +516,19 @@ Futebol, só no papel (`apostas.py`). Diferenças das outras formas:
   dos mercados, `viuMercados`), liquidado pelo placar; os palpites que tinham ficado "fora do teste" só por isso e cujo
   jogo não começou voltam a esperar (`bttsV`). As versões de valor continuam só no 1X2 e no mais/menos.
 
+- **O robô do intervalo pela The Odds API** (26/11/2026, a chave grátis no segredo `ODDSAPI_KEY` do `intervalo.yml`;
+  500 créditos por mês): `theodds.py` + `RoboTOA` do `intervalo.py` (usado quando não há a chave da API-Football). O
+  placar, o intervalo e o minuto vêm do placar da ESPN (grátis: a agenda de cada campeonato de `theodds.LIGAS` de hora
+  em hora e, com jogo entre 40 e 125 min do início, a cada volta). No intervalo, as odds ao vivo do evento
+  (`/events/{id}/odds`, região eu): `alternate_totals_cards` (a Pinnacle; atenção: a Pinnacle conta "bookings", conferir
+  se vermelho vale 2), `alternate_totals_corners` (a LeoVegas) e, só no 0 × 0, `alternate_totals`; perto dos 75' só se
+  estiver empatado, `alternate_totals`. Cada mercado que volta gasta 1 crédito; freio de `LIMITE_TOA_DIA` (14) por dia e
+  `FOLGA_TOA` (25) no mês. A saída é a mesma `cap` (chave "e" + id da ESPN, `fonte` "theodds"); os mercados viram
+  "Cards Over/Under · pinnacle", "Corners Over/Under · leovegas" e "Goals Over/Under · casa", a Pinnacle primeiro, que o
+  Observatório já reconhece. O fechamento dos palpites do Theo não usa a The Odds API (a OddsPapi já cobre quase todos).
+  Sondas à mão: `sonda.yml` com `qual` = theodds (as ligas, as casas e os mercados de um jogo, ~5 créditos) ou espn
+  (o que o robô vê, grátis). Teste: `teste_robo_theodds` em `teste_intervalo.py`.
+
 - **theo.json, o arquivo do Placar** (22/11/2026, pedido do Alediov: "o Placar com mais detalhes do que o Theo
   escolheu"): a cada rodada das apostas o `papel.py` grava, ao lado do `apostas.json`, o `theo.json` (a forma devolve
   `_arquivos` {nome: dados}; o `papel.py` grava e tira da saída). `theo_publico`: {v 1, agora, dias (21), palpites
