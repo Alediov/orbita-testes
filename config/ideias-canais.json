@@ -44,6 +44,42 @@
         "apostas de valor futebol",
         "trader esportivo"
       ]
+    },
+    {
+      "chave": "sabrina",
+      "nome": "Manual Da Sabrina 2",
+      "handle": "Manualdasabrinanovo",
+      "channel_id": "UCZf4bWFfuHotqwg5YVmyrFw",
+      "foco": "apps e sites que pagam no Pix, testados com prova de pagamento",
+      "buscas": [
+        "apps que pagam via pix",
+        "testei apps de renda extra"
+      ],
+      "seguidoEm": "2026-11-26"
+    },
+    {
+      "chave": "rendaapps",
+      "nome": "Renda com Aplicativos",
+      "handle": "RENDACOMAPLICATIVOS-2025",
+      "channel_id": "UCIjUCaOLKEfNEPMheoAnpMA",
+      "foco": "lançamentos de apps que pagam no Pix (tarefas, anúncios, no automático)",
+      "buscas": [
+        "aplicativo pagando no automático",
+        "novo app que paga no pix"
+      ],
+      "seguidoEm": "2026-11-26"
+    },
+    {
+      "chave": "tusa",
+      "nome": "Tusa Renda Extra",
+      "handle": "tusarendaextra398",
+      "channel_id": "UCQI2PbPce_y1B7xUP5VgWBw",
+      "foco": "faucets e sites de cripto grátis, com saque ao vivo",
+      "buscas": [
+        "faucet pagando 2026",
+        "faucetpay saque ao vivo"
+      ],
+      "seguidoEm": "2026-11-26"
     }
   ],
   "idiomas": [
