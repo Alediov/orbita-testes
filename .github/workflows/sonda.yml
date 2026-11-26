@@ -1,6 +1,10 @@
 name: Sonda das odds (uma vez, à mão)
 on:
   workflow_dispatch:
+    inputs:
+      qual:
+        description: "apifootball | theodds"
+        default: "theodds"
 permissions:
   contents: read
 jobs:
@@ -13,4 +17,8 @@ jobs:
         env:
           # chave GRATUITA da API-Football (o mesmo segredo dos cartões); o log mostra só os nomes dos mercados
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
-        run: python3 -I tools/papel/sonda_odds.py
+          # chave GRATUITA da The Odds API (26/11/2026); o log mostra só nomes e cotas usadas
+          ODDSAPI_KEY: ${{ secrets.ODDSAPI_KEY }}
+        run: |
+          if [ "${{ inputs.qual }}" = "apifootball" ]; then python3 -I tools/papel/sonda_odds.py
+          else python3 -I tools/papel/sonda_theodds.py; fi
