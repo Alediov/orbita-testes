@@ -160,8 +160,92 @@ def teste_contas():
     assert C.resumo(est, AGORA, robo)["intervalo"]["contas"]
 
 
+
+
+# ------------------------------------------------------------------------------------ pela The Odds API (26/11/2026)
+def _espn(jogos):
+    """Um placar da ESPN: jogos = [(id, início, casa, fora, gols, estado, intervalo, período, relógio)]."""
+    ev = []
+    for i, ms, c, f, g, st, ht, per, rel in jogos:
+        ev.append({"id": i, "date": iso(ms), "competitions": [{
+            "status": {"displayClock": rel, "period": per,
+                       "type": {"state": st, "name": "STATUS_HALFTIME" if ht else "STATUS_SECOND_HALF", "shortDetail": "HT" if ht else rel}},
+            "competitors": [{"homeAway": "home", "score": str(g[0]), "team": {"displayName": c}},
+                            {"homeAway": "away", "score": str(g[1]), "team": {"displayName": f}}]}]})
+    return {"events": ev}
+
+
+class FalsaTOA:
+    def __init__(self, resto=400):
+        self.pedidos, self.resto, self.ultimo = [], resto, None
+
+    def pedir(self, caminho, **q):
+        assert "apiKey" not in q
+        self.pedidos.append((caminho, q))
+        if caminho.endswith("/events"):
+            self.ultimo = 0
+            return [{"id": "ev1", "commence_time": iso(AGORA - 55 * MIN), "home_team": "Arsenal", "away_team": "Chelsea"},
+                    {"id": "ev2", "commence_time": iso(AGORA - 95 * MIN), "home_team": "Liverpool", "away_team": "Everton"}], self.resto
+        mks = q["markets"].split(",")
+        self.ultimo = len(mks)
+        self.resto -= len(mks)
+        casas = [{"key": "betway", "markets": [{"key": "alternate_totals", "outcomes": [{"name": "Over", "point": 0.5, "price": 1.3}]}]},
+                 {"key": "pinnacle", "markets": [
+                     {"key": "alternate_totals_cards", "outcomes": [{"name": "Over", "point": 1.5, "price": 1.8}, {"name": "Under", "point": 1.5, "price": 2.0}]},
+                     {"key": "alternate_totals", "outcomes": [{"name": "Over", "point": 0.5, "price": 1.4}, {"name": "Over", "point": 2.5, "price": 2.1}]}]},
+                 {"key": "leovegas", "markets": [{"key": "alternate_totals_corners", "outcomes": [{"name": "Over", "point": 7.5, "price": 1.9}]}]}]
+        return {"id": caminho.split("/")[4], "bookmakers": casas}, self.resto
+
+
+def teste_robo_theodds():
+    import theodds as T
+    E, logs = {}, []
+    placar = _espn([("901", AGORA - 55 * MIN, "Arsenal", "Chelsea", [0, 0], "in", True, 1, "45'"),
+                    ("902", AGORA - 95 * MIN, "Liverpool", "Everton", [1, 1], "in", False, 2, "76'"),
+                    ("903", AGORA - 95 * MIN, "Spurs", "Fulham", [2, 0], "in", False, 2, "76'")])
+    urls = []
+
+    def buscar(url):
+        urls.append(url)
+        return placar if "eng.1" in url else {"events": []}
+    cli = FalsaTOA()
+    R = I.RoboTOA(E, cli, AGORA, logs.append, buscar=buscar)
+    n = R.ao_vivo()
+    assert n == 2, (n, logs)
+    a, b = E["cap"]["e901"], E["cap"]["e902"]
+    assert a["liga"] == "eng" and a["ht"]["gols"] == [0, 0] and a["fonte"] == "theodds"
+    m = a["ht"]["m"]
+    assert m["Cards Over/Under · pinnacle"] == [["over", 1.5, 1.8], ["under", 1.5, 2.0]], m
+    assert list(m)[0].endswith("pinnacle")  # a Pinnacle antes das outras casas
+    assert b["m75"]["min"] == 76 and b["m75"]["gols"] == [1, 1] and all("Goals" in k for k in b["m75"]["m"])
+    assert "e903" not in E["cap"]  # 2 × 0 aos 76': não está empatado, não gasta
+    odds = [q for c, q in cli.pedidos if c.endswith("/odds")]
+    assert sorted(q["markets"] for q in odds) == ["alternate_totals", "alternate_totals_cards,alternate_totals_corners,alternate_totals"]
+    assert R.X["uso"][R.hoje] == 4 and R.X["resto"] == 396
+    # o Observatório lê como antes: cartões e escanteios pela 1ª casa que bate, a betway fica fora (o "away" no nome)
+    assert C._odd_int(m, C.RX_INT_CART, 1.5) == 1.8 and C._odd_int(m, C.RX_INT_ESC, 7.5) == 1.9
+    assert C._odd_int(m, C.RX_INT_GOL, 0.5) == 1.4
+    # a 2ª volta não pede odds de novo
+    pedidos = len(cli.pedidos)
+    R2 = I.RoboTOA(E, cli, AGORA + 5 * MIN, logs.append, buscar=buscar)
+    assert R2.ao_vivo() == 0 and len(cli.pedidos) == pedidos
+    # o freio do mês e o do dia
+    E2 = {"toa": {"resto": I.FOLGA_TOA + 1}}
+    cli2 = FalsaTOA(resto=I.FOLGA_TOA + 1)
+    I.RoboTOA(E2, cli2, AGORA, logs.append, buscar=buscar).ao_vivo()
+    assert [c for c, _ in cli2.pedidos if c.endswith("/odds")] == ["/sports/soccer_epl/events/ev2/odds"], cli2.pedidos  # só o de 1 crédito
+    E3 = {"toa": {"uso": {I.dia(AGORA): I.LIMITE_TOA_DIA}}}
+    cli3 = FalsaTOA()
+    I.RoboTOA(E3, cli3, AGORA, logs.append, buscar=buscar).ao_vivo()
+    assert not cli3.pedidos
+    # a leitura da ESPN
+    j = T.espn(placar)
+    assert j[0]["ht"] and j[1]["min"] == 76 and j[1]["periodo"] == 2 and j[2]["gols"] == [2, 0]
+
+
 if __name__ == "__main__":
     teste_leitura_af()
     teste_robo()
     teste_contas()
+    teste_robo_theodds()
     print("ok")

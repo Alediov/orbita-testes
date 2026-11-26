@@ -31,6 +31,8 @@ jobs:
         env:
           # APIFOOTBALL_KEY desligada em 26/11/2026: a API-Football suspendeu a conta grátis (endereços compartilhados do
           # GitHub Actions). Sem a chave, as apostas, os cartões e o robô do intervalo pulam a API-Football; o vigia segue.
+          # Desde 26/11/2026 o robô usa a The Odds API (chave GRATUITA só no segredo ODDSAPI_KEY, na URL, nunca no log).
+          ODDSAPI_KEY: ${{ secrets.ODDSAPI_KEY }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |

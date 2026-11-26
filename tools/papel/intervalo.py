@@ -206,6 +206,164 @@ class Robo:
         return {"v": 1, "agora": self.agora, "cap": self.E["cap"], "theo": self.E["theo"]}
 
 
+# ------------------------------------------------------------------------------------ pela The Odds API (26/11/2026)
+LIMITE_TOA_DIA = 14          # créditos por dia (500 por mês; sobra para a sonda e os imprevistos)
+FOLGA_TOA = 25               # não pede se restarem menos créditos que isso no mês
+AGENDA_CADA = 60 * MIN       # a agenda de cada campeonato (ESPN, grátis) quando nenhum jogo está rolando
+EVENTOS_CADA = 30 * MIN      # a lista de eventos da The Odds API (grátis)
+JANELA_ESPN = (40, 125)      # minutos depois do início em que a ESPN é olhada a cada volta
+TENT_TOA = 3
+
+
+def json_url(url, prazo=30):
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (orbita-testes)"})
+    with urllib.request.urlopen(req, timeout=prazo) as r:
+        return json.loads(r.read().decode("utf-8", "replace"))
+
+
+class RoboTOA:
+    """O robô do intervalo pela The Odds API: o placar, o intervalo e o minuto pela ESPN (grátis, a cada volta só dos
+    campeonatos com jogo rolando) e, no intervalo e perto dos 75' (só empatado), as odds ao vivo do jogo (cartões,
+    escanteios e gols) pelas odds do evento. Mesma saída (`cap`) que o Observatório já lê."""
+
+    def __init__(self, E, cli, agora, log, buscar=json_url):
+        import theodds as T
+        self.T, self.E, self.cli, self.agora, self.log, self.buscar = T, E, cli, agora, log, buscar
+        for k in ("cap", "theo"):
+            E.setdefault(k, {})
+        X = E.setdefault("toa", {})
+        for k in ("agenda", "ev", "tent"):
+            X.setdefault(k, {})
+        self.hoje = dia(agora)
+        X["uso"] = {self.hoje: int((X.get("uso") or {}).get(self.hoje, 0))}
+        self.X = X
+
+    def creditos(self, n):
+        X = self.X
+        return X["uso"][self.hoje] + n <= LIMITE_TOA_DIA and (X.get("resto") is None or X["resto"] - n >= FOLGA_TOA)
+
+    def pedir(self, caminho, **q):
+        try:
+            r, resto = self.cli.pedir(caminho, **q)
+        except Exception as e:  # noqa: BLE001
+            self.log(f"The Odds API, erro em {caminho.split('/odds')[0]}: {e}")
+            return None
+        ult = getattr(self.cli, "ultimo", None)
+        if ult is None and resto is not None and self.X.get("resto") is not None:
+            ult = max(0, self.X["resto"] - resto)
+        if resto is not None:
+            self.X["resto"] = resto
+        self.X["uso"][self.hoje] += int(ult or 0)
+        return r
+
+    def agenda(self, liga):
+        """Os jogos de hoje e de ontem (UTC) do campeonato pela ESPN; refeita a cada volta se algum está rolando."""
+        T, X = self.T, self.X
+        cod = T.LIGAS[liga][1]
+        a = X["agenda"].get(liga) or {}
+        rolando = any(JANELA_ESPN[0] <= (self.agora - j["ms"]) / MIN <= JANELA_ESPN[1] for j in a.get("j") or [] if j.get("ms"))
+        if a and not rolando and self.agora - int(a.get("em") or 0) < AGENDA_CADA:
+            return a.get("j") or []
+        js = {}
+        for d in sorted({dia(self.agora - 6 * HORA), self.hoje}):
+            try:
+                for j in T.espn(self.buscar(T.URL_ESPN.format(liga=cod, dia=d.replace("-", "")))):
+                    if j.get("ms"):
+                        js[j["id"]] = j
+            except Exception as e:  # noqa: BLE001
+                self.log(f"ESPN {cod} {d}: {type(e).__name__}: {str(e)[:120]}")
+                return a.get("j") or []
+        j = sorted(js.values(), key=lambda x: x["ms"])
+        X["agenda"][liga] = {"em": self.agora, "j": j}
+        return j
+
+    def evento(self, liga, j):
+        """O evento da The Odds API do jogo da ESPN (pela lista grátis de eventos), ou None."""
+        from apostas import mesmo_time
+        T, X = self.T, self.X
+        esporte = T.LIGAS[liga][0]
+        ev = X["ev"].get(esporte) or {}
+        def achar(lista):
+            return next((e for e in lista if abs(e["ms"] - j["ms"]) <= 3 * HORA and mesmo_time(e["casa"], j["casa"])
+                         and mesmo_time(e["fora"], j["fora"])), None)
+        e = achar(ev.get("l") or [])
+        if e or self.agora - int(ev.get("em") or 0) < 5 * MIN:
+            return e
+        r = self.pedir(f"/sports/{esporte}/events")
+        if r is None:
+            return None
+        lista = T.eventos(r)
+        X["ev"][esporte] = {"em": self.agora, "l": lista}
+        e = achar(lista)
+        if not e:
+            self.log(f"sem o evento da The Odds API de {j['casa']} × {j['fora']} ({len(lista)} eventos em {esporte})")
+        return e
+
+    def odds(self, liga, e, mercados):
+        r = self.pedir(f"/sports/{self.T.LIGAS[liga][0]}/events/{e['id']}/odds", regions="eu",
+                       markets=",".join(mercados), oddsFormat="decimal")
+        if r is None:
+            return None
+        m = self.T.linhas(r)
+        if not self.X.get("viu"):
+            casas = sorted({b.get("key") for b in (r or {}).get("bookmakers") or []}) if isinstance(r, dict) else []
+            self.log(f"The Odds API ao vivo, 1ª resposta: casas {casas[:12]}, mercados {sorted(m)[:12]}")
+            self.X["viu"] = True
+        return m
+
+    def ao_vivo(self):
+        E, X = self.E, self.X
+        n = 0
+        vivos = set()
+        for liga in self.T.LIGAS:
+            for j in self.agenda(liga):
+                mins = (self.agora - j["ms"]) / MIN
+                if not (JANELA_ESPN[0] <= mins <= JANELA_ESPN[1]) or (j.get("st") != "in" and not j.get("ht")):
+                    continue
+                k = "e" + j["id"]
+                vivos.add(k)
+                c = E["cap"].get(k) or {}
+                fase = None
+                if j.get("ht") and "ht" not in c:
+                    fase = "ht"
+                elif (j.get("periodo") == 2 and j.get("min") and MIN_75[0] <= j["min"] <= MIN_75[1] and "m75" not in c
+                      and None not in j["gols"] and j["gols"][0] == j["gols"][1]):
+                    fase = "m75"
+                if not fase or X["tent"].get(f"{k}:{fase}", 0) >= TENT_TOA:
+                    continue
+                mercados = (["alternate_totals_cards", "alternate_totals_corners"]
+                            + (["alternate_totals"] if j["gols"] == [0, 0] else [])) if fase == "ht" else ["alternate_totals"]
+                if not self.creditos(len(mercados)):
+                    if not X.get("avisou") == self.hoje:
+                        self.log(f"sem créditos para {j['casa']} × {j['fora']} ({X['uso'][self.hoje]} hoje, restam {X.get('resto')})")
+                        X["avisou"] = self.hoje
+                    continue
+                X["tent"][f"{k}:{fase}"] = X["tent"].get(f"{k}:{fase}", 0) + 1
+                e = self.evento(liga, j)
+                m = self.odds(liga, e, mercados) if e else None
+                if not m:
+                    continue
+                c = E["cap"].setdefault(k, {"ms": j["ms"], "liga": liga, "c": j["casa"], "f": j["fora"], "fonte": "theodds"})
+                if fase == "ht":
+                    c["ht"] = {"t": self.agora, "gols": j["gols"], "m": _so_linhas(m)}
+                    self.log(f"intervalo: {j['casa']} × {j['fora']} ({j['gols'][0]} × {j['gols'][1]}), {len(c['ht']['m'])} mercados")
+                else:
+                    c["m75"] = {"t": self.agora, "min": j["min"], "gols": j["gols"],
+                                "m": {k2: v for k2, v in _so_linhas(m).items() if RX_GOL.search(k2)}}
+                    self.log(f"75': {j['casa']} × {j['fora']} ({j['gols'][0]} × {j['gols'][1]}, {j['min']}')")
+                n += 1
+        X["tent"] = {k: v for k, v in X["tent"].items() if k.split(":")[0] in vivos}
+        return n
+
+    def limpar(self):
+        E = self.E
+        E["cap"] = {k: c for k, c in E["cap"].items() if c["ms"] >= self.agora - GUARDA_CAP}
+        E["theo"] = {k: v for k, v in E["theo"].items() if v and v[-1]["t"] >= self.agora - GUARDA_THEO}
+
+    def saida(self):
+        return {"v": 1, "agora": self.agora, "cap": self.E["cap"], "theo": self.E["theo"]}
+
+
 def palpites_do_theo(agora, pasta=None):
     """Os palpites que o teste precifica (o mesmo filtro das apostas), dos arquivos de config/bdm/."""
     from apostas import PASTA_BDM, ler_bdm, palpite_bdm, precificavel
@@ -232,6 +390,7 @@ def main():
     ap.add_argument("--dados", required=True)
     a = ap.parse_args()
     chave = (os.environ.get("APIFOOTBALL_KEY") or "").strip()
+    chave_toa = (os.environ.get("ODDSAPI_KEY") or "").strip()
     os.makedirs(a.dados, exist_ok=True)
     linhas = []
     agora = int(time.time() * 1000)
@@ -240,19 +399,27 @@ def main():
         s = f"{dt.datetime.now(dt.timezone.utc):%Y-%m-%d %H:%M} {x}"
         print(s)
         linhas.append(s)
-    if not chave:
-        log("sem a chave APIFOOTBALL_KEY")
-        return 0
     E = ler(os.path.join(a.dados, "estado.json"), {})
-    R = Robo(E, Cliente(chave), agora, log)
-    try:
-        R.theo(palpites_do_theo(agora))
-    except Exception as e:  # noqa: BLE001
-        log(f"fechamento do Theo: {type(e).__name__}: {e}")
-    n = R.ao_vivo()
-    R.limpar()
-    log(f"rodada: {n} capturas, {E['uso'].get(R.hoje, 0)} pedidos hoje"
-        + (f", restam {E['resto']} na API-Football" if E.get("resto") is not None else ""))
+    if chave:
+        R = Robo(E, Cliente(chave), agora, log)
+        try:
+            R.theo(palpites_do_theo(agora))
+        except Exception as e:  # noqa: BLE001
+            log(f"fechamento do Theo: {type(e).__name__}: {e}")
+        n = R.ao_vivo()
+        R.limpar()
+        log(f"rodada: {n} capturas, {E['uso'].get(R.hoje, 0)} pedidos hoje"
+            + (f", restam {E['resto']} na API-Football" if E.get("resto") is not None else ""))
+    elif chave_toa:
+        import theodds
+        R = RoboTOA(E, theodds.Cliente(chave_toa), agora, log)
+        n = R.ao_vivo()
+        R.limpar()
+        if n or R.X["uso"][R.hoje]:
+            log(f"rodada: {n} capturas, {R.X['uso'][R.hoje]} créditos hoje, restam {R.X.get('resto')} na The Odds API")
+    else:
+        log("sem a chave ODDSAPI_KEY nem a APIFOOTBALL_KEY")
+        return 0
     with open(os.path.join(a.dados, "estado.json"), "w", encoding="utf-8") as f:
         json.dump(E, f, ensure_ascii=False, separators=(",", ":"))
     with open(os.path.join(a.dados, "intervalo.json"), "w", encoding="utf-8") as f:
