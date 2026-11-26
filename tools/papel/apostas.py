@@ -435,8 +435,12 @@ def _f(x):
         return None
 
 
+_LETRAS = str.maketrans({"æ": "ae", "Æ": "ae", "ø": "o", "Ø": "o", "ß": "ss", "œ": "oe", "Œ": "oe", "ł": "l", "Ł": "l",
+                         "đ": "d", "Đ": "d", "ı": "i", "þ": "th", "ð": "d"})  # as que o NFKD não desmonta (26/11/2026)
+
+
 def _norm(s):
-    s = unicodedata.normalize("NFKD", str(s or "")).encode("ascii", "ignore").decode().lower()
+    s = unicodedata.normalize("NFKD", str(s or "").translate(_LETRAS)).encode("ascii", "ignore").decode().lower()
     return re.sub(r"[^a-z0-9]+", " ", s).strip()
 
 
