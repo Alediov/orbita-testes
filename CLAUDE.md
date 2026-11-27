@@ -126,6 +126,9 @@ acabavam; aqui os executores padrão não têm limite.
   OddsPapi (`LIGAS_THEO`, só os jogos dos palpites) e o ambas marcam entrou no teste. FORMATO.md, "Sem a API-Football".
   No mesmo dia o robô do intervalo passou para a **The Odds API** (chave grátis no segredo `ODDSAPI_KEY`, 500 créditos
   por mês, até 14 por dia; o placar e o minuto pela ESPN): FORMATO.md, "O robô do intervalo pela The Odds API".
+- **Ranking de palpites do clube do Theo** (27/11/2026, pedido do Alediov: simular os palpites de 1X2 do ranking mensal,
+  acerto +2 e erro −1, "por variações, como seguindo a odd"): `concurso.py`, bloco `concurso` do `apostas.json`, o
+  passado pelo banco da Evolução e o ao vivo pelos jogos que as apostas processam. FORMATO.md, "O ranking de palpites".
 - **Indicadores** (25/11/2026, pedido do Alediov pela proposta da Antena de ideias): `grupo` "Indicadores" dos Robôs
   (`indichi`, `inddmi`, `indvwap`, `indkst`, `indck`, `indpivo`, `indmm`; o RSI é o `rrsi`), BTC à vista 1×, contra
   segurar BTC e o CDI; o volume das velas entra no buffer (`robos.Vela`, para o VWAP); e a 4ª espécie da Evolução,

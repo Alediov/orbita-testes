@@ -2251,6 +2251,9 @@ class Vivo:
                     self.ev.add(self.agora, "aviso", "O ao vivo pausou 3 dias: as odds chegaram num formato que o papel "
                                                      "não entendeu.", None)
                     return
+                # 27/11/2026: o ranking de palpites do clube do Theo (concurso.py): todo jogo com a Pinnacle entra,
+                # mesmo sem a casa comum
+                self.concurso_anotar(f, pin)
                 if not pin.get("1x2") or not usada:
                     V["semOdds"] = int(V.get("semOdds", 0)) + 1
                     f["st"] = "semOdds"
@@ -2280,6 +2283,34 @@ class Vivo:
                     _e, jj, mk, i = m
                     sem = str(semana_de(j["inicio"]))
                     V["gratis"].setdefault(sem, []).append({"e": round(_e, 5), "ap": nova_aposta(jj, mk, i, GRATIS_VALOR, True)})
+
+    # ------------------------------------------------------------------ o ranking de palpites (concurso.py)
+    def theo_1x2(self, f):
+        """O lado (0/1/2, já na ordem do jogo) do palpite de 1X2 do Theo neste jogo, ou None."""
+        for pk in ((self.V.get("bdm") or {}).get("p") or {}).values():
+            if pk.get("fx") == f["id"] and pk.get("mk") == "1x2":
+                try:
+                    return indice_bdm(pk, pk.get("inv"))
+                except (KeyError, ValueError):
+                    return None
+        return None
+
+    def concurso_anotar(self, f, pin):
+        try:
+            import concurso as CO
+            p = CO.chance_antes(pin, f["i"], sem_margem, preco_em)
+            CO.anotar(self.V.setdefault("concurso", {}), f, p, self.theo_1x2(f))
+        except Exception as e:  # noqa: BLE001  (o ranking nunca derruba as apostas)
+            self.erros.append(f"ranking de palpites: {type(e).__name__}: {e}")
+
+    def concurso_liquidar(self):
+        try:
+            import concurso as CO
+            CO.liquidar(self.V.setdefault("concurso", {}),
+                        lambda k, j: self.placar({"j": k, "i": j["i"], "l": j["l"], "jogo": f"{j['c']} × {j['f']}"}),
+                        self.agora)
+        except Exception as e:  # noqa: BLE001
+            self.erros.append(f"ranking de palpites: {type(e).__name__}: {e}")
 
     # ------------------------------------------------------------------ aposta grátis
     def gratis_da_semana(self):
@@ -2640,6 +2671,7 @@ class Vivo:
         self._bloco(self.processar)
         self.gratis_da_semana()
         self.liquidar()
+        self.concurso_liquidar()
         self.bdm_fechar()
         self.limpar()
 
@@ -2787,6 +2819,15 @@ def rodar(ctx):
     for d in [d for d in evdia if d < d0]:
         del evdia[d]
 
+    # ---------------------------------------------------------------- o ranking de palpites (27/11/2026)
+    concurso = None
+    try:
+        import concurso as CO
+        import apostas_evolucao as AE
+        concurso = CO.resumo(V.get("concurso") or {}, AE.Dados(est), dia_de, NOME_LIGA)
+    except Exception as e:  # noqa: BLE001
+        erros.append(f"ranking de palpites: {type(e).__name__}: {e}")
+
     # ---------------------------------------------------------------- saída
     versoes = []
     hv = (hist or {}).get("versoes") or {}
@@ -2848,5 +2889,6 @@ def rodar(ctx):
     return {"frase": FRASE, "comoFunciona": COMO_FUNCIONA, "padrao": PADRAO, "versoes": versoes,
             "eventos": est["eventos"], "itens": itens_pendentes(contas) if contas else [], "avisos": avisos,
             "config": config, "erros": erros, "cartoes": cartoes.resumo(C, agora, robo), "evolucao": evolucao,
+            "concurso": concurso,
             # 22/11/2026: o arquivo pequeno do Placar (papel.py grava os `_arquivos` ao lado do apostas.json)
             "_arquivos": {"theo.json": theo_publico(V.get("bdm") or {}, contas or {}, agora, _fotos_theo(V, robo))}}

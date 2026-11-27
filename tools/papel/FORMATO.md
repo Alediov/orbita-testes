@@ -541,6 +541,25 @@ Futebol, só no papel (`apostas.py`). Diferenças das outras formas:
   existem depois do jogo (o teste busca o histórico de odds quando o jogo acaba, para caber na cota grátis); antes,
   só a odd citada. Só campos públicos.
 
+### O ranking de palpites do clube do Theo (`concurso`, 27/11/2026)
+
+Pedido do Alediov: o clube de membros do Theo tem um ranking mensal de palpites de 1X2 (palpite até 1 h antes, sem
+mudar; desde novembro de 2026 acerto +2, erro −1, anulado 0; desempate pelo aproveitamento e depois pelos acertos; os 5
+primeiros dividem R$ 1.000). `concurso.py` conta, só no papel, como cada estratégia pontuaria: `fav` (o favorito da
+Pinnacle em todos os jogos, a padrão), `fav40`/`fav50`/`fav60` (só com o favorito acima disso), `empate` (o empate
+quando mandante e visitante estão a menos de 10 pontos), `casa`, `theo` e `theoFav` (os palpites 1X2 do Theo; só ao
+vivo) e as réguas `sorteio` e `azarao`. A conta de fundo: um palpite com chance p vale em média 3p − 1, então o favorito
+(p ≥ 1/3) nunca perde em média e o volume ganha.
+
+- Passado (aproximado): o banco da Evolução das Apostas (`apostas_evolucao.Dados`), mês a mês (só meses com 20+ jogos).
+- Ao vivo: `Vivo.concurso_anotar` guarda cada jogo que o ao vivo processa com a chance justa da Pinnacle 65 min antes
+  (ou 6 h antes) e o lado do Theo (`theo_1x2`); `concurso_liquidar` põe o resultado pelo placar da ESPN (sem placar em
+  10 dias: anulado). Estado em `vivo.concurso.jogos` (120 dias).
+- Saída `concurso` no `apostas.json`: `regra`, `conta`, `padrao`, `passado` {jogos, de, ate}, `aoVivo` {jogos,
+  esperando}, `ligas` {chave: nome} e `estrategias[]` {id, nome, frase, grupo, soAoVivo, aoVivo, passado}, cada conta
+  com `total`, `meses` e `ligas` ({palpites, acertos, pontos, esperado, aproveitamento, porPalpite}) e, no passado,
+  `porMes` {meses, media, pior, melhor, palpitesPorMes}. Teste: `teste_concurso.py`.
+
 ## Looping (`looping.json`)
 
 Aave v3 na Base (`looping.py`): juros diários do GraphQL do Aave (`supplyAPYHistory`/`borrowAPYHistory`, 365 dias), o
