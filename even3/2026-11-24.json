@@ -1,0 +1,341 @@
+{
+ "versao": 1,
+ "fonte": "even3",
+ "data": "2026-11-24",
+ "geradoEm": "2026-11-23T19:15:33+00:00",
+ "erro": null,
+ "criterios": "online, começa na data, inscrições abertas (REALIZAR INSCRIÇÃO e um ingresso vigente), certificado para o participante dito na página",
+ "totalLista": 33,
+ "analisados": 33,
+ "eventos": [
+  {
+   "id": "e3-709785",
+   "nome": "IX Congresso Amazônico de Educação a Distância: Qualidade, Inclusão e Soberania Digital na EaD Amazônica",
+   "resumo": "IX Congresso Amazônico de Educação a Distância: Qualidade, Inclusão e Soberania Digital na EaD Amazônica",
+   "url": "https://www.even3.com.br/congressoamazonicoead-709785/",
+   "urlFinal": null,
+   "data": "2026-11-24",
+   "dataFim": "2026-11-27",
+   "inicio": "08:00",
+   "fim": "23:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Estudantes de cursos Técnicos e de Graduação",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Estudantes de Pós-Graduação",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Profissionais da Educação",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Servidores Públicos",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Profissionais de outras áreas e comunidade externa",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "A participação é gratuita, e os certificados serão emitidos digitalmente por atividade, mediante inscrição e atendimento aos critérios de frequência estabelecidos pela organização.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-810625",
+   "nome": "Capacitação Teste do Pezinho - Novembro 2026",
+   "resumo": "O curso será realizado no dia 24/11, às 08h30, e terá certificação para os participantes (para ter direito ao certificado é necessário assinar a lista de presença disponível ao final da capacitação com os dados corretos).",
+   "url": "https://www.even3.com.br/capacitacao-teste-do-pezinho-novembro-2026-810625/",
+   "urlFinal": null,
+   "data": "2026-11-24",
+   "dataFim": null,
+   "inicio": "08:30",
+   "fim": "11:30",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Inscrição",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "YouTube, Google Meet, Even3 (área do participante)",
+   "certificado": {
+    "trecho": "O curso será realizado no dia 24/11, às 08h30, e terá certificação para os participantes (para ter direito ao certificado é necessário assinar a lista de presença disponível ao final da capacitação com os dados corretos…",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-811438",
+   "nome": "CRFTO Apoia: Apresentação e Formação - Programa Apadrinha Palmas",
+   "resumo": "CRFTO Apoia: Programa de Apadrinhamento Para Crianças e Adolescentes Acolhidos - Apresentação e Formação",
+   "url": "https://www.even3.com.br/crfto-apoia-programa-de-apadrinhamento-para-criancas-e-adolescentes-acolhidos-institucionalmente-participacao-da-secretaria-municipal-de-desenvolvimento-social-de-palmasto-811438/",
+   "urlFinal": null,
+   "data": "2026-11-24",
+   "dataFim": null,
+   "inicio": "14:30",
+   "fim": "17:30",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Farmacêuticos",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Acadêmicos de Farmácia",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Pessoas em Treinamento",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "Google Meet",
+   "certificado": {
+    "trecho": "CERTIFICADO: 03 horas",
+    "horas": 3
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  }
+ ],
+ "descartados": {
+  "formato presencial": 242,
+  "inscrições fechadas": 18,
+  "sem certificado para o participante": 12
+ },
+ "foraLista": [
+  {
+   "nome": "Pulsão e Édipo - Conceitos Fundamentais da Psicanálise Freudiana",
+   "url": "https://www.even3.com.br/pulsao-e-edipo-conceitos-fundamentais-da-psicanalise-freudiana-802393/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "VII Fórum de Graduação do IFAM",
+   "url": "https://www.even3.com.br/vii-forum-de-graduacao-do-ifam-807723/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "SYMPOSIUM: JOINT RESEARCH OPPORTUNITIES SHINSHU UNIVERSITY AND UTFPR",
+   "url": "https://www.even3.com.br/symposium-joint-research-opportunities-shinshu-university-and-utfpr-809395/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "SYMPOSIUM: JOINT RESEARCH OPPORTUNITIES SHINSHU UNIVERSITY AND UTFPR-2026",
+   "url": "https://www.even3.com.br/symposium-joint-research-opportunities-shinshu-university-and-utfpr-802233/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Crefono4 - Conecta 2026. 4",
+   "url": "https://www.even3.com.br/crefono4-conecta-2026-4-809564/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "III Encontro Internacional e IX Encontro Nacional do Grupo de Estudos de Linguagem do Centro-Oeste",
+   "url": "https://www.even3.com.br/gelco2026-773399/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "PNQSP: caminhos para a APS e a AAE",
+   "url": "https://www.even3.com.br/pnqsp-caminhos-para-a-aps-e-a-aae-805306/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Live: Seu dinheiro, negócio e a reforma tributaria",
+   "url": "https://www.even3.com.br/live-seu-dinheiro-negocio-e-a-reforma-tributaria-802420/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Identificação da Dislexia: Processos Cognitivos e Sinais de Alerta",
+   "url": "https://www.even3.com.br/identificacao-da-dislexia-processos-cognitivos-e-sinais-de-alerta-810643/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Atuação Fonoaudiológica e Fisioterápica na UTI neonatal",
+   "url": "https://www.even3.com.br/atuacao-da-fono-x-fisio-na-uti-neonatal-802424/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "VI SIMPÓSIO PRIMAVERA - II SIMPÓSIO INTERNACIONAL GEPCENF",
+   "url": "https://www.even3.com.br/vi-simposio-primavera-ii-simposio-Internacional-gepcenf-797876/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Semana Acadêmica de Gastronomia Gira 2026",
+   "url": "https://www.even3.com.br/semana-academica-de-gastronomia-gira-2026-807146/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Cria. Edu",
+   "url": "https://www.even3.com.br/cria-edu-782721/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Explorando a Ranicultura- Manejo e desafios na fase da engorda",
+   "url": "https://www.even3.com.br/explorando-a-ranicultura-manejo-e-desafios-na-fase-da-engorda-802166/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Webinar: A representação da mulher e a misoginia na internet",
+   "url": "https://www.even3.com.br/Representacao_da_mulher-810490/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "ALÉM DA DRENAGEM — A ATUAÇÃO FISIOTERAPÊUTICA NO PRÉ, INTRA E PÓS-OPERATÓRIO DE CIRURGIAS PLÁSTICAS",
+   "url": "https://www.even3.com.br/alem-da-drenagem-a-atuacao-fisioterapeutica-no-pre-intra-e-pos-operatorio-de-cirurgias-plasticas-812120/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "I CONGRESSO BRASILEIRO DE IMPLANTODONTIA AVANÇADA",
+   "url": "https://www.even3.com.br/congresso-brasileiro-de-cirurgia-e-traumatologia-bucomaxilofacial-807358/",
+   "motivo": "sem certificado para o participante",
+   "odonto": true
+  },
+  {
+   "nome": "Sujeito contemporâneo participar para o mundo melhora",
+   "url": "https://www.even3.com.br/sujeito-contemporaneo-participar-para-o-mundo-melhora-802367/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Reunião de votação da nova diretoria, CBCMC. 2026 a 2028",
+   "url": "https://www.even3.com.br/reuniao-de-votacao-da-nova-diretoria-cbcmc-2026-a-2028-802408/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Pedro35henrique. 42@gmail. com",
+   "url": "https://www.even3.com.br/pedro35henrique-42gmail-com-802353/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "2º Simpósio de Iniciação a Pesquisa e Extensão - SIPE Líbano",
+   "url": "https://www.even3.com.br/2-simposio-de-iniciacao-a-pesquisa-e-extensao-sipe-libano-801992/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "PROJETO: Família e Escola em Diálogo: Construindo Caminhos Inclusivos",
+   "url": "https://www.even3.com.br/projeto-familia-e-escola-em-dialogo-construindo-caminhos-inclusivos-811444/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Brawl Stars TriCup",
+   "url": "https://www.even3.com.br/brawl-stars-tricup-802407/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Passo a Passo da Sondagem Nasoenteral: Protocolo, Técnica e Cuidados",
+   "url": "https://www.even3.com.br/-passo-a-passo-da-sondagem-nasoenteral-protocolo-tecnica-e-cuidados-811105/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Consulta psicotécnico",
+   "url": "https://www.even3.com.br/consulta-psicotecnico-802365/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Clube de Gestores | Ciclo: Nov/2026",
+   "url": "https://www.even3.com.br/clubedegestoresciclonov2026-803191/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Analyse Statistiques",
+   "url": "https://www.even3.com.br/analyse-statistiques-802387/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Evelyn Oliveira",
+   "url": "https://www.even3.com.br/evelyn-oliveira-802456/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "47º EVENTO DE ANÁLISE DE PERFIL PARA RECOMENDAÇÃO AO MERCADO – ÁREA FINANCEIRA",
+   "url": "https://www.even3.com.br/308triagem-804757/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "47º Evento de Análise de Perfil para Recomendação ao Mercado – Área Administrativa",
+   "url": "https://www.even3.com.br/11encontrodenovosjobhunters-809678/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  }
+ ],
+ "totalDia": 275,
+ "modos": {
+  "on": 33,
+  "off": 242
+ },
+ "odontologia": 0,
+ "duracaoS": 75
+}

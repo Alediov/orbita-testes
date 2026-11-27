@@ -1,0 +1,253 @@
+{
+ "versao": 1,
+ "fonte": "even3",
+ "data": "2026-11-20",
+ "geradoEm": "2026-11-19T16:35:49+00:00",
+ "erro": null,
+ "criterios": "online, começa na data, inscrições abertas (REALIZAR INSCRIÇÃO e um ingresso vigente), certificado para o participante dito na página",
+ "totalLista": 33,
+ "analisados": 33,
+ "eventos": [
+  {
+   "id": "e3-811479",
+   "nome": "\"Scarlett Marton e Nietzsche: Uma conversa sobre seus três livros mais recentes\"",
+   "resumo": "Scarlett Marton é uma das mais importantes pesquisadoras brasileiras da filosofia de Friedrich Nietzsche.",
+   "url": "https://www.even3.com.br/scarlett-marton-e-nietzsche-uma-conversa-sobre-seus-tres-livros-mais-recentes-811479/",
+   "urlFinal": null,
+   "data": "2026-11-20",
+   "dataFim": null,
+   "inicio": "19:00",
+   "fim": "20:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Todos",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "YouTube",
+   "certificado": {
+    "trecho": "Para obter o certificado de participação é necessário fazer a inscrição pela plataforma EVEN, estar inscrito no Canal Linha de Divisa, e assistir pelo link abaixo.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  }
+ ],
+ "descartados": {
+  "formato presencial": 211,
+  "inscrições fechadas": 26,
+  "sem certificado para o participante": 6
+ },
+ "foraLista": [
+  {
+   "nome": "A Saúde no trabalho NR1",
+   "url": "https://www.even3.com.br/a-saude-no-trabalho-nr1-800701/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Webnario",
+   "url": "https://www.even3.com.br/webnario-801031/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Certificado Assinantes | Psicologia, Redes Sociais e Manipulação das Subjetividades",
+   "url": "https://www.even3.com.br/certificado-assinantes-psicologia-redes-sociais-e-manipulacao-das-subjetividades-801080/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Noções básicas da pesquisa científica",
+   "url": "https://www.even3.com.br/nocoes-basicas-da-pesquisa-cientifica-800732/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "V Jornada Acadêmica de Psicologia: Psicologia do Envelhecimento — um olhar Interdisciplinar",
+   "url": "https://www.even3.com.br/v-jornada-academica-de-psicologia-psicologia-do-envelhecimento-um-olhar-interdisciplinar-809591/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Certificado | Psicologia, Redes Sociais e Manipulação das Subjetividades",
+   "url": "https://www.even3.com.br/certificado-psicologia-redes-sociais-e-manipulacao-das-subjetividades-801079/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "VI SIMPÓSIO PRODECA: Infância e Adolescência na Era Digital, Desafios da Proteção Integral e Direitos no Ciberespaço",
+   "url": "https://www.even3.com.br/vi-simposio-prodeca-infancia-e-adolescencia-na-era-digital-desafios-da-protecao-integral-e-direitos-no-ciberespaco-800736/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Mente Empreendedora",
+   "url": "https://www.even3.com.br/mente-empreendedora-801040/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "1temporada da vandinha e Wanderley",
+   "url": "https://www.even3.com.br/1temporada-da-vandinha-e-wanderley-800771/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "FOCO MÍDIA FILMES",
+   "url": "https://www.even3.com.br/foco-midia-filmes-800726/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Bazar da Second Hand",
+   "url": "https://www.even3.com.br/bazar-da-second-hand-800704/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "AgroUp",
+   "url": "https://www.even3.com.br/agroup-800863/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Aprenda a profissão de Massoterapia",
+   "url": "https://www.even3.com.br/aprenda-a-profissao-de-massoterapia-801097/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "AULA ABERTA - Sibo e os impactos em praticantes de atividade física",
+   "url": "https://www.even3.com.br/aula-aberta-sibo-e-os-impactos-em-praticantes-de-atividade-fisica-800739/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Ciclo em Foco: acompanhamento menstrual e promoção do autocuidado.",
+   "url": "https://www.even3.com.br/ciclo-em-foco-acompanhamento-menstrual-e-promocao-do-autocuidado-807063/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "XII PROFT 2026",
+   "url": "https://www.even3.com.br/xii-proft-2026-727562/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "MAC Sustentável 2026 - SEM FRONTEIRAS: Diálogos Globais de Pesquisa",
+   "url": "https://www.even3.com.br/mac-sustentavel-2026-sem-fronteiras-dialogos-globais-de-pesquisa-793079/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Anestesiologia e Cirurgia em Grandes animais",
+   "url": "https://www.even3.com.br/anestesiologia-e-cirurgia-em-grandes-animais-807262/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Curso de alongamento",
+   "url": "https://www.even3.com.br/curso-de-alongamento-800900/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Aniversario da estela",
+   "url": "https://www.even3.com.br/aniversario-da-estela-801053/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Teste apresentação",
+   "url": "https://www.even3.com.br/teste-apresentacao-801126/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "RETIRADA DE LUCROS E PROLABORE",
+   "url": "https://www.even3.com.br/retirada-de-lucros-e-prolabore-800913/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "TESTE",
+   "url": "https://www.even3.com.br/teste-8d42ba4a-47a2-463f-b0a2-68eb5a189f42-800990/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Prova",
+   "url": "https://www.even3.com.br/prova-800847/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Desafio 21 dias",
+   "url": "https://www.even3.com.br/desafio-21-dias-801113/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Doces sonhos",
+   "url": "https://www.even3.com.br/doces-sonhos-800676/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Educação",
+   "url": "https://www.even3.com.br/educacao-800944/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "ANDRESSA ESTHEFANI DOS SANTOS",
+   "url": "https://www.even3.com.br/andressa-esthefani-dos-santos-800834/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Encontro LATCCPI – Liga Acadêmica de Terapia Cognitivo Comportamental do Piauí",
+   "url": "https://www.even3.com.br/encontro-latccpi-liga-academica-de-terapia-cognitivo-comportamental-do-piaui-805926/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Reunião Matinal",
+   "url": "https://www.even3.com.br/reuniao-matinal-800705/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Deep Thunderstorm for Sleep",
+   "url": "https://www.even3.com.br/deep-thunderstorm-for-sleep-806319/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Masterclass ZENTYA: Herramientas digitales para trabajar sin internet",
+   "url": "https://www.even3.com.br/masterclass-zentya-herramientas-digitales-para-trabajar-sin-internet-807105/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  }
+ ],
+ "totalDia": 244,
+ "modos": {
+  "off": 211,
+  "on": 33
+ },
+ "odontologia": 0,
+ "duracaoS": 69
+}

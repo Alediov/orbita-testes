@@ -1,0 +1,403 @@
+{
+ "versao": 1,
+ "fonte": "even3",
+ "data": "2026-11-27",
+ "geradoEm": "2026-11-26T17:44:14+00:00",
+ "erro": null,
+ "criterios": "online, começa na data, inscrições abertas (REALIZAR INSCRIÇÃO e um ingresso vigente), certificado para o participante dito na página",
+ "totalLista": 31,
+ "analisados": 31,
+ "eventos": [
+  {
+   "id": "e3-753851",
+   "nome": "Congresso Sul-Americano de Medicina & Saúde",
+   "resumo": "O Congresso Sul-Americano de Medicina e Saúde (CSAMS) é um evento científico de abrangência internacional, realizado integralmente na modalidade on-line, entre os dias 27 de setembro e 29 de novembro de 2026.",
+   "url": "https://www.even3.com.br/congresso-sul-americano-de-medicina-saude-753851/",
+   "urlFinal": null,
+   "data": "2026-11-27",
+   "dataFim": "2026-11-29",
+   "inicio": "09:00",
+   "fim": "19:00",
+   "formato": "online",
+   "preco": "R$ 30,80 a R$ 121,00",
+   "gratuito": false,
+   "ingressos": [
+    {
+     "nome": "Ouvintes [Certificado de 70 Hrs] Black Friday",
+     "valor": "R$ 30,80",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Ouvintes [Certificado de 70 Hrs] Lote Promocional 01",
+     "valor": "R$ 25,50",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Ouvintes [Certificado de 70 Hrs] Lote 1",
+     "valor": "R$ 82,50",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Monitoria [Certificado de 190 Hrs] Black Friday",
+     "valor": "R$ 35,20",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Monitoria [Certificado de 190 Hrs] Lote Promocional 01",
+     "valor": "R$ 36,30",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Monitoria [Certificado de 190 Hrs] Lote 1",
+     "valor": "R$ 121,00",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Ouvintes [Certificado de 70 Hrs] Lote 2",
+     "valor": "R$ 93,50",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Monitoria [Certificado de 190 Hrs] Lote 2",
+     "valor": "R$ 121,00",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "Os trabalhos aprovados poderão contar com certificação de apresentação e publicação nos anais oficiais do evento, conforme as disposições estabelecidas pela organização.",
+    "horas": 70
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-789871",
+   "nome": "I CONGRESSO BRASILEIRO DE PROFESSORES PESQUISADORES",
+   "resumo": "Inclui a submissão de 1 trabalho: resumo simples (até 1 página) ou resumo expandido (até 5 páginas).",
+   "url": "https://www.even3.com.br/i-congresso-brasileiro-de-professores-pesquisadores-789871/",
+   "urlFinal": null,
+   "data": "2026-11-27",
+   "dataFim": "2026-11-29",
+   "inicio": "12:00",
+   "fim": null,
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Participante Ouvinte - Estudante de Graduação",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Participante Ouvinte - Professores",
+     "valor": "R$ 26,10",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Participante Ouvinte - Professores",
+     "valor": "R$ 35,10",
+     "situacao": "em breve"
+    },
+    {
+     "nome": "Participante Ouvinte - Público Geral",
+     "valor": "R$ 44,10",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Participante Ouvinte - Público Geral",
+     "valor": "R$ 53,10",
+     "situacao": "em breve"
+    },
+    {
+     "nome": "Participante - Publicação de Resumo ou Resumo Expandido",
+     "valor": "R$ 89,10",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Participante - Publicação de Resumo ou Resumo Expandido",
+     "valor": "R$ 98,10",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Participante - Publicação de Artigo Completo",
+     "valor": "R$ 107,10",
+     "situacao": "encerrado"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "Inclui acesso a todas as palestras e apresentações e certificado de participação de 40 horas.",
+    "horas": 40
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-805676",
+   "nome": "Bioinformática para Biomédicos: sua primeira análise de DNA",
+   "resumo": "Você já ouviu falar em bioinformática, mas ainda não sabe por onde começar ou como ela se conecta à Biomedicina?",
+   "url": "https://www.even3.com.br/bioinformatica-para-biomedicos-sua-primeira-analise-de-dna-805676/",
+   "urlFinal": null,
+   "data": "2026-11-27",
+   "dataFim": null,
+   "inicio": "16:00",
+   "fim": "18:30",
+   "formato": "online",
+   "preco": "R$ 26,91",
+   "gratuito": false,
+   "ingressos": [
+    {
+     "nome": "Inscrição Única",
+     "valor": "R$ 26,91",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "Com certificado de participação",
+    "horas": 3
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-806938",
+   "nome": "Onde há onças, há vida: Diálogos sobre conservação de onças na Caatinga",
+   "resumo": "O ciclo de palestras “Onde há onças, há vida: Diálogos sobre conservação de onças na Caatinga” reunirá pesquisadoras para compartilhar experiências e discutir os desafios e as perspectivas da conservação das onças-pardas e das onças-pintadas na Caatinga, em alusão ao Dia Nacional da Onça-Pintada, c…",
+   "url": "https://www.even3.com.br/palestras-onca-pintada-806938/",
+   "urlFinal": null,
+   "data": "2026-11-27",
+   "dataFim": null,
+   "inicio": "18:30",
+   "fim": "20:00",
+   "formato": "online",
+   "preco": "R$ 12,50 a R$ 17,50",
+   "gratuito": false,
+   "ingressos": [
+    {
+     "nome": "Estudante",
+     "valor": "R$ 12,50",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Público Geral",
+     "valor": "R$ 17,50",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "O evento será realizado em 27 de novembro de 2026, a partir das 18h30, em formato on-line, com emissão de certificado aos participantes.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  }
+ ],
+ "descartados": {
+  "formato presencial": 311,
+  "inscrições fechadas": 18,
+  "sem certificado para o participante": 9
+ },
+ "foraLista": [
+  {
+   "nome": "I Seminário de pesquisa do grupo Densidade",
+   "url": "https://www.even3.com.br/i-seminario-de-pesquisa-do-grupo-densidade-802999/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "I ENCONTRO INTERSETORIAL DE EDUCAÇÃO PARA AS RELAÇÕES ÉTNICO-RACIAIS EM SAÚDE",
+   "url": "https://www.even3.com.br/i-encontro-intersetorial-de-educacao-para-as-relacoes-etnico-raciais-em-saud-807900/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "I Seminário Virtual de Marketing, Empreendedorismo e Inovação do PROFIALI/UFSJ",
+   "url": "https://www.even3.com.br/i-seminario-virtual-de-marketing-empreendedorismo-e-inovacao-do-profialiufsj-795185/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "15 ANOS",
+   "url": "https://www.even3.com.br/15-anos-803275/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Curso Estratégias da Revolução Brasileira: debates e controvérsias marxistas",
+   "url": "https://www.even3.com.br/curso-estrategias-da-revolucao-brasileira-debates-e-controversias-marxistas-804303/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "I CONAPEMSUS",
+   "url": "https://www.even3.com.br/i-conapemsus-803380/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Webinário - Parâmetros de aplicação da prisão preventiva: fundamentação, contemporaneidade, excepcionalidade e substitui",
+   "url": "https://www.even3.com.br/webinario-parametros-de-aplicacao-da-prisao-preventiva-fundamentacao-contemporaneidade-excepcionalidade-e-substituicao-pela-prisao-domiciliar-803367/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Revisão de Conteúdos - Prova de Especialidade em Fisioterapia do Trabalho 2026",
+   "url": "https://www.even3.com.br/revisao-de-conteudos-prova-de-especialidade-em-fisioterapia-do-trabalho-2026-812210/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Além dos Números: KPIs e Dashboards que Transformam Decisões",
+   "url": "https://www.even3.com.br/alem-dos-numeros-kpis-e-dashboards-que-transformam-decisoes-812777/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "Iniciação Científica sem Barreiras, Trilha Digital e Acesso ao Fomento",
+   "url": "https://www.even3.com.br/iniciacao-cientifica-sem-barreiras-trilha-digital-e-acesso-ao-fomento-813025/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Endometriose: do reconhecimento dos sintomas ao diagnóstico e ao cuidado",
+   "url": "https://www.even3.com.br/endometriose-do-reconhecimento-dos-sintomas-ao-diagnostico-e-ao-cuidado-813284/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "SEMINÁRIO INTERNO DE EDUCAÇÃO E HISTÓRIA",
+   "url": "https://www.even3.com.br/seminario-interno-de-educacao-e-historia-803198/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Coleta de materiais",
+   "url": "https://www.even3.com.br/coleta-de-materiais-803044/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Do Cuidado ao Bem Viver: Deslocamentos em Aberto | 5º Seminário Mulher, Cidade e Arquitetura",
+   "url": "https://www.even3.com.br/do-cuidado-ao-bem-viver-deslocamentos-em-aberto-5-seminario-mulher-cidade-e-arquitetura-803100/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "App rebrand",
+   "url": "https://www.even3.com.br/app-rebrand-803011/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Fortalecendo a Articulação: Notificação, Comunicação e Cuidado em Rede às Pessoas em Situação de Violência.",
+   "url": "https://www.even3.com.br/fortalecendo-a-articulacao-notificacao-comunicacao-e-cuidado-em-rede-as-pessoas-em-situacao-de-violencia-809588/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "WEBINAR",
+   "url": "https://www.even3.com.br/webinar-803386/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Terapia Coletiva Lumina",
+   "url": "https://www.even3.com.br/TRlumina-813266/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "Princípios básicos da Análise Citológica",
+   "url": "https://www.even3.com.br/principios-basicos-da-analise-citologica-813267/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "conispe",
+   "url": "https://www.even3.com.br/conispe-783568/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Simposio de Biología con mención en biotecnología",
+   "url": "https://www.even3.com.br/simposio-de-biologia-con-mencion-en-biotecnologia-802994/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Desafios da comunidade",
+   "url": "https://www.even3.com.br/desafios-da-comunidade-803230/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Sorteio croche matelier",
+   "url": "https://www.even3.com.br/sorteio-croche-matelier-803147/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "TREINAMENTO - FORMULÁRIO DE ADMISSÃO",
+   "url": "https://www.even3.com.br/treinamento-formulario-de-admissao-803264/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Rede Samaúma - Encontro de Formação",
+   "url": "https://www.even3.com.br/rede-samauma-encontro-de-formacao-810910/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "IV Congresso Regional de Ginecologia e Obstetrícia",
+   "url": "https://www.even3.com.br/iv-congresso-regional-de-ginecologia-e-obstetricia-744381/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Caracterização de Polímeros Aplicada à Indústria: Controle de Qualidade e Análise de Falhas",
+   "url": "https://www.even3.com.br/caracterizacao-de-polimeros-aplicada-a-industria-controle-de-qualidade-e-analise-de-falhas-803272/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  }
+ ],
+ "totalDia": 342,
+ "modos": {
+  "off": 311,
+  "on": 31
+ },
+ "odontologia": 0,
+ "duracaoS": 67
+}

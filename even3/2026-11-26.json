@@ -1,0 +1,563 @@
+{
+ "versao": 1,
+ "fonte": "even3",
+ "data": "2026-11-26",
+ "geradoEm": "2026-11-25T18:02:42+00:00",
+ "erro": null,
+ "criterios": "online, começa na data, inscrições abertas (REALIZAR INSCRIÇÃO e um ingresso vigente), certificado para o participante dito na página",
+ "totalLista": 52,
+ "analisados": 52,
+ "eventos": [
+  {
+   "id": "e3-807814",
+   "nome": "ENTRE O TEMPO E O VENTO: A SAGA DE ERICO VERISSIMO E A SÉRIE DE TELEVISÃO.",
+   "resumo": "A Universidade Federal do Pará (UFPA), por meio do Campus Universitário do Marajó – Breves, e o projeto de pesquisa “O Marajó das Letras: por uma História da Literatura Brevense” têm a honra de convidar a comunidade acadêmica, pesquisadores, estudantes e demais interessados para a conferência on-li…",
+   "url": "https://www.even3.com.br/entre-o-tempo-e-o-vento-a-saga-de-erico-verissimo-e-a-serie-de-televisao-807814/",
+   "urlFinal": null,
+   "data": "2026-11-26",
+   "dataFim": null,
+   "inicio": "09:00",
+   "fim": "11:30",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Inscrição",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "Google Meet, Even3 (área do participante)",
+   "certificado": {
+    "trecho": "Ao final do evento, os participantes receberão certificado de participação.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-810712",
+   "nome": "Integridade acadêmica na era da IA: detecção de plágio e textos gerados por IA com o StrikePlagiarism",
+   "resumo": "Integridade acadêmica na era da IA: detecção de plágio e textos gerados por IA com o StrikePlagiarism",
+   "url": "https://www.even3.com.br/integridade-academica-strikeplagiarism-810712/",
+   "urlFinal": null,
+   "data": "2026-11-26",
+   "dataFim": null,
+   "inicio": "16:00",
+   "fim": "17:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Inscrição gratuita",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "Zoom, Even3 (área do participante)",
+   "certificado": {
+    "trecho": "Os participantes receberão certificado de participação.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-797605",
+   "nome": "I Ciclo de Palestras Sobre Conservação de Raças Ameaçadas",
+   "resumo": "O I Ciclo de Palestras Sobre Conservação de Raças Ameaçadas nasce com o propósito de fomentar a discussão técnico-científica, o intercâmbio de experiências e a conscientização sobre a salvaguarda da agrobiodiversidade e dos Recursos Genéticos Animais (RGNA).",
+   "url": "https://www.even3.com.br/i-ciclo-de-palestras-sobre-conservacao-de-racas-ameacadas-797605/",
+   "urlFinal": null,
+   "data": "2026-11-26",
+   "dataFim": "2026-11-27",
+   "inicio": "17:00",
+   "fim": "21:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Estudante de Graduação",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Profissional da Área",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Estudante de Pós-Graduação",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "Certificação: Emissão de certificado para participantes com frequência mínima de 75% nas atividades.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-807541",
+   "nome": "II Evento de Gestão da Qualidade em Projetos",
+   "resumo": "A gestão da qualidade é um elemento fundamental para o planejamento, a execução e o sucesso de projetos, contribuindo para a otimização de processos, a redução de falhas e a entrega de resultados que atendam aos objetivos estabelecidos.",
+   "url": "https://www.even3.com.br/gestao-da-qualidade-em-projetos-807541/",
+   "urlFinal": null,
+   "data": "2026-11-26",
+   "dataFim": null,
+   "inicio": "19:00",
+   "fim": "22:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Estudante Graduação",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Professor",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Visitante",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "Ao final do evento, será disponibilizado um certificado de participação.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": "fraco",
+    "motivos": [
+     "texto: “cfo” (CRO)"
+    ],
+    "porque": "uma menção só no texto: CRO"
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-811916",
+   "nome": "Além da Profissão: Emoções e Crescimento Profissional.",
+   "resumo": "A LANUCLIN – Liga Acadêmica de Nutrição Clínica convida você para uma conversa sobre um tema pouco debatido na formação, mas essencial para quem vai atuar como profissional liberal: as emoções e o impacto delas na carreira.",
+   "url": "https://www.even3.com.br/alem-da-profissao-emocoes-e-crescimento-profissional-811916/",
+   "urlFinal": null,
+   "data": "2026-11-26",
+   "dataFim": null,
+   "inicio": "19:30",
+   "fim": "21:30",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Estudante de Graduação da Área de Saúde",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "🎓 Evento gratuito, com certificado",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-810636",
+   "nome": "Mpox no Rio: o que a APS precisa saber agora?",
+   "resumo": "Diante do aumento expressivo de casos no Rio de Janeiro, que já ultrapassaram 300 registros em 2026 (mais que o dobro de todo o ano passado), a AMFaC-RJ e o INI/Fiocruz convidam profissionais da Atenção Primária à Saúde (APS), residentes e estudantes para uma aula on-line de atualização.",
+   "url": "https://www.even3.com.br/mpox-no-rio-o-que-a-aps-precisa-saber-agora-810636/",
+   "urlFinal": null,
+   "data": "2026-11-26",
+   "dataFim": null,
+   "inicio": "19:30",
+   "fim": "21:30",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Mpox no Rio: o que a APS precisa saber agora?",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "Zoom",
+   "certificado": {
+    "trecho": "Atenção: Após o evento, o prazo para baixar seu certificado de participação é de até 90 dias.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-812337",
+   "nome": "Reforma Tributária do Consumo: o que muda com o IBS, a CBS e a Apuração Assistida",
+   "resumo": "Reforma Tributária do Consumo: o que muda com o IBS, a CBS e a Apuração Assistida",
+   "url": "https://www.even3.com.br/reforma-tributaria-do-consumo-o-que-muda-com-o-ibs-a-cbs-e-a-apuracao-assistida-812337/",
+   "urlFinal": null,
+   "data": "2026-11-26",
+   "dataFim": null,
+   "inicio": "19:30",
+   "fim": "21:30",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Participante",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "Microsoft Teams",
+   "certificado": {
+    "trecho": "Inscrição gratuita, com certificado de participação de 2 horas.",
+    "horas": 2
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  }
+ ],
+ "descartados": {
+  "formato presencial": 317,
+  "sem certificado para o participante": 20,
+  "inscrições fechadas": 25
+ },
+ "foraLista": [
+  {
+   "nome": "Corpo, Voz e Expressão: Encontro com a sua Voz - 2ª Edição",
+   "url": "https://www.even3.com.br/corpo-voz-e-expressao-encontro-com-a-sua-voz-2-edicao-810473/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Webinário - Novas ferramentas de Inteligência Artificial aplicadas à produção científica",
+   "url": "https://www.even3.com.br/webinario-novas-ferramentas-de-IA-na-producao-cientifica-809437/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "II Conferência de Ciências Humanas e Transformação Digital (CCHTD)",
+   "url": "https://www.even3.com.br/ii-cchtd/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "BIOSSEGURANÇA NA PRÁTICA ODONTOLÓGICA - MANHÃ",
+   "url": "https://www.even3.com.br/biosseguranca-na-pratica-odontologica-manha-809296/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": true
+  },
+  {
+   "nome": "Grupo de Gestantes e Plano de Parto",
+   "url": "https://www.even3.com.br/grupo-de-gestantes-e-plano-de-parto-807122/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "Minicurso \"Oportunidades na pesquisa científica: publicações, financiamentos e intercâmbios",
+   "url": "https://www.even3.com.br/minicurso-oportunidades-805421/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Congresso de Educação Médica e Cuidados Integrados.",
+   "url": "https://www.even3.com.br/congresso-de-educacao-medica-e-cuidados-integrados-811522/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "CAPACITAÇÃO EM HANSENÍASE PARA A ATENÇÃO BÁSICA - DIAGNÓSTICO E TRATAMENTO",
+   "url": "https://www.even3.com.br/capacitacao-em-hanseniase-para-a-atencao-basica-diagnostico-e-tratamento-796654/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "1º Encontro - Ciclo de Formação de Atendentes - Pode Falar",
+   "url": "https://www.even3.com.br/ciclo-de-formacao-pode-falar-812940/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Palestra: Nanotecnologia e nanomateriais na Construção Civil",
+   "url": "https://www.even3.com.br/palestra-nanotecnologia-e-nanomateriais-na-construcao-civil-806820/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "Laboratorizando: Estratégias do Trabalho do Psicopedagogo",
+   "url": "https://www.even3.com.br/laboratorizando-estrategias-do-trabalho-do-psicopedagogo-806845/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "2° Fórum Científico da ABRAFIT",
+   "url": "https://www.even3.com.br/2-forum-cientifico-da-abrafit-805086/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "IV CIRCUITO DE FORMAÇÃO CONTINUADA DO IFAM 2026. 2",
+   "url": "https://www.even3.com.br/iv-circuito-de-formacao-continuada-do-ifam-2026-2-802173/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "II Seminário Direito e hierarquias raciais: conflitos, permanências e possibilidades de transformação",
+   "url": "https://www.even3.com.br/ii-seminario-direito-e-hierarquias-raciais-conflitos-permanencias-e-possibilidades-de-transformacao-789963/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Atualizações na RDC978 e seus impactos nas Análises Clínicas",
+   "url": "https://www.even3.com.br/atualizacoes-na-rdc978-e-seus-impactos-nas-analises-clinicas-810292/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Economia para a vida: diálogos internacionais sobre economia solidária",
+   "url": "https://www.even3.com.br/economia-para-a-vida-dialogos-internacionais-sobre-economia-solidaria-806651/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "8º Seminário Logicom",
+   "url": "https://www.even3.com.br/8-seminario-logicom-807306/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Corujão Clínico: Geriatria veterinária na rotina da clínica de pequenos animais",
+   "url": "https://www.even3.com.br/corujao-clinico-geriatria-veterinaria-na-rotina-da-clinica-de-pequenos-animais-812613/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Eloina Galdino De Jesus",
+   "url": "https://www.even3.com.br/eloina-galdino-de-jesus-802953/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Amamentar sem dor - da pega ao ganho de peso",
+   "url": "https://www.even3.com.br/amamentar-sem-dor-da-pega-ao-ganho-de-peso-805808/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "TCC da Pesquisa à Apresentação",
+   "url": "https://www.even3.com.br/tcc-da-pesquisa-a-apresentacao-809601/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Inteligência Artificial na Educação: possibilidades, limites e responsabilidades",
+   "url": "https://www.even3.com.br/inteligencia-artificial-na-educacao-possibilidades-limites-e-responsabilidades-809833/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "Desidratação durante o exercício: impactos no desempenho físico e cognitivo",
+   "url": "https://www.even3.com.br/desidratacao-durante-o-exercicio-impactos-no-desempenho-fisico-e-cognitivo-809805/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Distúrbio Hidroeletrolítico",
+   "url": "https://www.even3.com.br/disturbio-hidroeletrolitico-802896/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Redes e sociais",
+   "url": "https://www.even3.com.br/redes-e-sociais-802544/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Sua empresa vende, mas o dinheiro não sobra?",
+   "url": "https://www.even3.com.br/sua-empresa-vende-mas-o-dinheiro-nao-sobra-802842/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "RDC ANVISA Nº 1. 002/2025: ATUALIZAÇÕES E ADEQUAÇÕES PARA OS SERVIÇOS ODONTOLÓGICOS - TARDE",
+   "url": "https://www.even3.com.br/rdc-anvisa-n-1-0022025-atualizacoes-e-adequacoes-para-os-servicos-odontologicos-809311/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": true
+  },
+  {
+   "nome": "CONGRESSO NACIONAL INTEGRADO DE CIÊNCIAS VEGETAIS & AGRÁRIAS",
+   "url": "https://www.even3.com.br/congresso-nacional-integrado-de-ciencias-vegetais-e-agrarias-773357/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "CELLE IFPE Recife: formação sobre abordagem colaborativa no ensino e aprendizagem de inglês",
+   "url": "https://www.even3.com.br/celle-ifpe-recife-formacao-sobre-abordagem-colaborativa-no-ensino-e-aprendizagem-de-ingles-811111/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Inscrições para o mister fox 2",
+   "url": "https://www.even3.com.br/inscricoes-para-o-mister-fox-2-802643/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Imersão em Altas Habilidades e Superdotação: ampliando o olhar para além dos sinais.",
+   "url": "https://www.even3.com.br/imersao-em-altas-habilidades-e-superdotacao-ampliando-o-olhar-para-alem-dos-sinais-805690/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Seminário \"Cartório do Júri: história do crime e da justiça em Campinas\"",
+   "url": "https://www.even3.com.br/seminario-cartorio-do-juri-historia-do-crime-e-da-justica-em-campinas-802627/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "ESCRITA CIENTÍFICA COM IA - Da ideia à publicação: como utilizar a Inteligência Artificial para potencializar a produção",
+   "url": "https://www.even3.com.br/escrita-ia-804889/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Pré inscrição CEGEC",
+   "url": "https://www.even3.com.br/pre-inscricao-cegec-802911/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Rifa para VECU",
+   "url": "https://www.even3.com.br/rifa-para-vecu-802927/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Acolhimento dos Médicos",
+   "url": "https://www.even3.com.br/acolhimento-dos-medicos-802549/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "XI Seminário Ensino em Saúde do Programa de Pós-Graduação - EnSa UFVJM 2026",
+   "url": "https://www.even3.com.br/xi-seminario-ensino-em-saude-do-programa-de-pos-graduacao-ensa-ufvjm-2026-790757/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Morte Súbita No Esporte",
+   "url": "https://www.even3.com.br/morte-subita-no-esporte-812432/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Reunião Científica Novembro/2026",
+   "url": "https://www.even3.com.br/reuniao-cientifica-novembro2026-812718/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "15º Encontro de Formação Continuada do CEPMMIF - Prematuridade: Do reconhecimento precoce do risco aos cuidados neonatai",
+   "url": "https://www.even3.com.br/15-encontro-de-formacao-continuada-do-cepmmif-prematuridade-do-reconhecimento-precoce-do-risco-aos-cuidados-neonatais-qualificados-798306/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "O caminho do desenvolvimento farmacotécnico: da graduação à indústria",
+   "url": "https://www.even3.com.br/o-caminho-do-desenvolvimento-farmacotecnico-da-graduacao-a-industria-809470/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "3ª edição da Conferência Brasileira de Especialidades em Medicina Veterinária",
+   "url": "https://www.even3.com.br/IIICONFRAVET-807180/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Carreira o Exterior",
+   "url": "https://www.even3.com.br/carreira-o-exterior-802836/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Normas de Saúde e Segurança do Trabalho",
+   "url": "https://www.even3.com.br/normas-de-saude-e-seguranca-do-trabalho-813147/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Ciclo de Palestras Wolfgang J. Junk",
+   "url": "https://www.even3.com.br/ciclo-de-palestras-wolfgang-j-junk-813049/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  }
+ ],
+ "totalDia": 369,
+ "modos": {
+  "off": 317,
+  "on": 52
+ },
+ "odontologia": 0,
+ "duracaoS": 144
+}

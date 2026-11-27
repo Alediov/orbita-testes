@@ -1,0 +1,589 @@
+{
+ "versao": 1,
+ "fonte": "even3",
+ "data": "2026-11-17",
+ "geradoEm": "2026-11-16T16:58:51+00:00",
+ "erro": null,
+ "criterios": "online, começa na data, inscrições abertas (REALIZAR INSCRIÇÃO e um ingresso vigente), certificado para o participante dito na página",
+ "totalLista": 45,
+ "analisados": 45,
+ "eventos": [
+  {
+   "id": "e3-804830",
+   "nome": "INOVA AMAZONAS",
+   "resumo": "🚀 Você está pronto para embarcar em uma jornada repleta de inovação e conhecimento?",
+   "url": "https://www.even3.com.br/inova-amazonas-804830/",
+   "urlFinal": null,
+   "data": "2026-11-17",
+   "dataFim": null,
+   "inicio": "08:00",
+   "fim": "12:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "ESTUDANTE",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "PROFESSOR",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "CONVIDADO (PALESTRANTE)",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "OUTROS",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "Google Meet, Even3 (área do participante)",
+   "certificado": {
+    "trecho": "Além disso, cada participante terá direito à certificação de 3 horas complementares.",
+    "horas": 3
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-799065",
+   "nome": "IMERSÃO PRÁTICA PENAL - RECURSOS E HABEAS CORPUS - ELEBORAÇÃO E SUSTENTAÇÃO",
+   "resumo": "IMERSÃO PRÁTICA PENAL - RECURSO DE APELAÇÃO RECURSO EM SENTIDO ESTRITO (RESE) HABEAS CORPUS TÉCNICAS DE SUSTENTAÇÃO ORAL",
+   "url": "https://www.even3.com.br/imersao-pratica-penal-recursos-e-habeas-corpus-eleboracao-e-sustentacao-799065/",
+   "urlFinal": null,
+   "data": "2026-11-17",
+   "dataFim": "2027-01-17",
+   "inicio": "10:00",
+   "fim": "17:00",
+   "formato": "online",
+   "preco": "R$ 141,30",
+   "gratuito": false,
+   "ingressos": [
+    {
+     "nome": "IMERSAO EM RECURSOS E HABEAS CORPUS - ELBORACAO E SUSTENTACAO",
+     "valor": "R$ 141,30",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "Google Meet",
+   "certificado": {
+    "trecho": "🎓 Certificado de participação.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-795232",
+   "nome": "Semana do ACS e do ACE",
+   "resumo": "A Semana do ACS e do ACE, a ser realizada de 17 a 19 de novembro de 2026, em formato on-line, constitui um espaço de diálogo, formação e valorização dos Agentes Comunitários de Saúde (ACS) e dos Agentes de Combate às Endemias (ACE), profissionais estratégicos para o fortalecimento do Sistema Único…",
+   "url": "https://www.even3.com.br/semana-do-acs-e-do-ace-795232/",
+   "urlFinal": null,
+   "data": "2026-11-17",
+   "dataFim": "2026-11-19",
+   "inicio": "14:00",
+   "fim": "17:40",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Agente Comunitártio de Saúde e Agente de Combate às Endemias",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "Inscrição gratuita com emissão de certificado para os participantes",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-788257",
+   "nome": "Curso O Futuro das Cores: Tintas Automotivas Sustentáveis",
+   "resumo": "*Curso gratuito para profissionais da Química registrados em CRQs e estudantes de cursos da área da Química em todo o território nacional.",
+   "url": "https://www.even3.com.br/crqsp-ofuturodascores-nov2026-788257/",
+   "urlFinal": null,
+   "data": "2026-11-17",
+   "dataFim": "2026-11-18",
+   "inicio": "19:00",
+   "fim": "21:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Profissional Registrado CRQ-SP",
+     "valor": "Gratuito",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Palestrante",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Estudante da área da Química em SP",
+     "valor": "Gratuito",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Profissional Registrado CRQ - demais regiões (fora de SP)",
+     "valor": "Gratuito",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Estudante da área da Química fora de SP",
+     "valor": "Gratuito",
+     "situacao": "encerrado"
+    }
+   ],
+   "plataforma": "Microsoft Teams",
+   "certificado": {
+    "trecho": "O certificado será emitido ao final do curso para os participantes que assistirem ao vivo ou acessarem todas as gravações.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-760921",
+   "nome": "MedOn - Congresso Médico 100% online",
+   "resumo": "O MedON é um congresso médico, realizado em formato 100% online, criado para que desejam ir além da formação tradicional e desenvolver competências essenciais para uma carreira de excelência.",
+   "url": "https://www.even3.com.br/medon-congresso-medico-on-line-760921/",
+   "urlFinal": null,
+   "data": "2026-11-17",
+   "dataFim": "2026-11-18",
+   "inicio": "19:00",
+   "fim": "22:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "PROFISSIONAIS DA SAÚDE",
+     "valor": "R$ 60,50",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "PROFISSIONAIS DA SAÚDE",
+     "valor": "R$ 93,50",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "• MÉDICOS(A)",
+     "valor": "R$ 71,50",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "• ACADÊMICOS DE MEDICINA",
+     "valor": "R$ 49,50",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "ACADÊMICOS DOS CURSOS DA ÁREA DA SAÚDE",
+     "valor": "R$ 49,50",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "• PROFISSIONAIS DA SAÚDE",
+     "valor": "R$ 71,50",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Organizador MedON",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Unoeste Guarujá - Acadêmicos de medicina",
+     "valor": "R$ 38,50",
+     "situacao": "encerrado"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "✨ Certificado incluso na inscrição!",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-805293",
+   "nome": "Ciclo de Palestras em Medicina de Emergência: Tempo é músculo, tempo é cérebro: manejo e atualização em IAM e AVE",
+   "resumo": "Ciclo de Palestras em Medicina de Emergência: Tempo é músculo, tempo é cérebro: manejo e atualização em IAM e AVE",
+   "url": "https://www.even3.com.br/medicina-de-emergencia-805293/",
+   "urlFinal": null,
+   "data": "2026-11-17",
+   "dataFim": null,
+   "inicio": "19:30",
+   "fim": "21:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Médicos",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Estudantes de medicina",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Autoridades de mesa e Palestrante",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "Even3 (área do participante)",
+   "certificado": {
+    "trecho": "Haverá emissão de certificado, desde que cumpridos os pré-requisitos.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-809373",
+   "nome": "Programa de Difusão Científica",
+   "resumo": "O Programa Institucional de Difusão Científica da Logos University International convida você para três encontros dedicados ao diálogo acadêmico, à reflexão e ao compartilhamento de conhecimentos, reunindo diferentes perspectivas sobre educação, inclusão, tecnologia e saúde.",
+   "url": "https://www.even3.com.br/programa-de-difusao-cientifica-809373/",
+   "urlFinal": null,
+   "data": "2026-11-17",
+   "dataFim": "2026-11-19",
+   "inicio": "20:30",
+   "fim": "21:30",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Estudantes UniLogos",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Professores UniLogos",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Público Geral",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "🎓 Participação gratuita e com certificação.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  }
+ ],
+ "descartados": {
+  "formato presencial": 276,
+  "sem certificado para o participante": 18,
+  "inscrições fechadas": 20
+ },
+ "foraLista": [
+  {
+   "nome": "Expertise em práticas injetáveis, hipodermóclise e ultrassonografia",
+   "url": "https://www.even3.com.br/expertise-em-praticas-injetaveis-hipodermoclise-e-ultrassonografia-809169/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Certificado | Introdução à Psicologia Comunitária",
+   "url": "https://www.even3.com.br/certificado-instroducao-a-psicologia-comunitaria-799043/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Webinário Conexão Viral",
+   "url": "https://www.even3.com.br/webinario-conexao-viral-803723/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "chá de bebê",
+   "url": "https://www.even3.com.br/cha-de-bebe-798966/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Educação Especial em Movimento: Práticas, Acolhimento e Inclusão no Município de Ibipitanga – BA",
+   "url": "https://www.even3.com.br/educacao-especial-em-movimento-praticas-acolhimento-e-inclusao-no-municipio-de-ibipitanga-ba-809043/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Inscrições dos organizadores da Jornada Farmacêutica",
+   "url": "https://www.even3.com.br/inscricoes-dos-colaboradores-da-jornada-809366/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Aula ( sábado Letivo)",
+   "url": "https://www.even3.com.br/aula-sabado-letivo-798996/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "III Congresso CESPAM de Produção Animal",
+   "url": "https://www.even3.com.br/iii-congresso-cespam-de-producao-animal-803757/",
+   "motivo": "inscrições fechadas (ingressos: em breve, encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "I Workshop de Intensificação da Cria na Bovinocultura de Corte",
+   "url": "https://www.even3.com.br/workshopbovinoculturadecorte-791058/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Inclusão no Transtornos de Aprendizagem: Construindo pontes",
+   "url": "https://www.even3.com.br/inclusao-no-transtornos-de-aprendizagem-construindo-pontes-809259/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Seminário Final do ProLEEI – ''Palavras que abraçam e histórias que encantam: Caminhos da Leitura e Escrita na Educação",
+   "url": "https://www.even3.com.br/seminario-final-do-proleei-807749/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Psicologia e Política - Subjetividade, poder e as lutas que atravessam o sofrimento psíquico",
+   "url": "https://www.even3.com.br/psicologia-e-politica-subjetividade-poder-e-as-lutas-que-atravessam-o-sofrimento-psiquico-799086/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "As principais habilidades do líder de 2027",
+   "url": "https://www.even3.com.br/as-principais-habilidades-do-lider-de-2027-804499/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "Copa",
+   "url": "https://www.even3.com.br/copa-798972/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Curso de Capacitação Científica Básica ABLCP-AEMED 2026",
+   "url": "https://www.even3.com.br/CursoCientificoBasicoABLCPAEMED-802131/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "IV CICLO DE PALESTRAS E DEBATES - EDUCAÇÃO SEM FRONTEIRAS: CONECTANDO CONHECIMENTO E PERSPECTIVAS GLOBAIS",
+   "url": "https://www.even3.com.br/iv-ciclo-de-palestras-e-debates-educacao-sem-fronteiras-conectando-conhecimento-e-perspectivas-globais-787298/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "I Seminário Internacional de Fenomenologia e Existencialismo: Angústia, Medo e Cura",
+   "url": "https://www.even3.com.br/i-seminario-internacional-de-fenomenologia-e-existencialismo-angustia-medo-e-cura-772472/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Certificado Assinantes | Introdução à Psicologia Comunitária",
+   "url": "https://www.even3.com.br/certificado-assinantes-introducao-a-psicologia-comunitaria-799056/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "PPWR - Novas Regras da UE para Embalagens",
+   "url": "https://www.even3.com.br/ppwr-novas-regras-da-ue-para-embalagens-790554/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Frequencia de aula dia 17 de outubro",
+   "url": "https://www.even3.com.br/frequencia-de-aula-dia-17-de-outubro-798999/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Aniversário",
+   "url": "https://www.even3.com.br/aniversario-799017/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "International Symposium on Deamonification Processes - DEAMS",
+   "url": "https://www.even3.com.br/international-deamonification-symposium-isdeam-758421/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Oficinas de Planejamento da Rede Estadual de Telessaúde e Saúde Digital do Pará",
+   "url": "https://www.even3.com.br/oficinas-de-planejamento-da-rede-estadual-de-telessaude-e-saude-digital-do-para-809669/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "Palestra: Interiores, bem-estar e humanização",
+   "url": "https://www.even3.com.br/palestra-interiores-bem-estar-e-humanizacao-806815/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "Quinzena da Imagem",
+   "url": "https://www.even3.com.br/quinzena-da-imagem-799054/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Webinário - Os desafios estratégicos da Amazônia Azul na Margem Equatorial Brasileira",
+   "url": "https://www.even3.com.br/webinario-os-desafios-estrategicos-da-amazonia-azul-na-margem-equatorial-brasileira-805896/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "CURSO NR 10 GESTÃO EFICIENTE",
+   "url": "https://www.even3.com.br/curso-nr-10-gestao-eficiente-803756/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "II SAVet - Simpósio de Anestesiologia Veterinária",
+   "url": "https://www.even3.com.br/ii-savet-simposio-de-anestesiologia-veterinaria-807052/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Fórum IBROSS, ONA e IES - Notificação de eventos adversos e melhoria dos processos através da acreditação ONA",
+   "url": "https://www.even3.com.br/forum-ibross-ona-e-ies-notificacao-de-eventos-adversos-e-melhoria-dos-processos-atraves-da-acreditacao-ona-801736/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Lavínia workshop",
+   "url": "https://www.even3.com.br/lavinia-workshop-798980/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Curso de Perícia Judicial 60h - TURMA 3 2026",
+   "url": "https://www.even3.com.br/curso-de-pericia-judicial-60h-turma-3-2026-805532/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Workshop",
+   "url": "https://www.even3.com.br/workshop-810258/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Oficina de Coerência, coesão e revisão textual de artigos cientificos.",
+   "url": "https://www.even3.com.br/oficina-de-coerencia-coesao-e-revisao-textual-do-artigos-cientificos-807553/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "O lado invisível do maternar - Tempo, cuidado e saúde mental na maternidade",
+   "url": "https://www.even3.com.br/o-lado-invisivel-do-maternar-tempo-cuidado-e-saude-mental-no-maternar-803404/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "III Congresso Internacional em Administração Pública (CIAP) e o IV Congresso Nacional em Administração Pública (CONAP)",
+   "url": "https://www.even3.com.br/iii-congresso-internacional-em-administracao-publica-ciap-e-o-iv-congresso-nacional-em-administracao-publica-conap-704059/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Palestra: Instalações e Comando Eléricos",
+   "url": "https://www.even3.com.br/palestra-instalacoes-e-comando-elericos-806811/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "Encontro dos Núcleos de Estudos em Agroecologia e Produção Orgânica da Região Sul do Brasil",
+   "url": "https://www.even3.com.br/NEAs_Sul-788093/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Energias Renováveis e Recursos Minerais na Amazônia Azul",
+   "url": "https://www.even3.com.br/energias-renovaveis-e-recursos-minerais-na-amazonia-azul-807616/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  }
+ ],
+ "totalDia": 321,
+ "modos": {
+  "off": 276,
+  "on": 45
+ },
+ "odontologia": 0,
+ "duracaoS": 114
+}

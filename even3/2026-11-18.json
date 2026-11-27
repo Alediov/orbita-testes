@@ -1,0 +1,622 @@
+{
+ "versao": 1,
+ "fonte": "even3",
+ "data": "2026-11-18",
+ "geradoEm": "2026-11-17T13:34:47+00:00",
+ "erro": null,
+ "criterios": "online, começa na data, inscrições abertas (REALIZAR INSCRIÇÃO e um ingresso vigente), certificado para o participante dito na página",
+ "totalLista": 57,
+ "analisados": 57,
+ "eventos": [
+  {
+   "id": "e3-783066",
+   "nome": "XIX Jornada de Fisioterapia do CAISM/UNICAMP",
+   "resumo": "A Jornada de Fisioterapia é um evento anual da Seção de Fisioterapia do CAISM/UNICAMP, realizado pelas alunas do Curso de Pós - Graduação Lato Sensu em Fisioterapia Aplicada à Saúde da Mulher, com a apresentação dos trabalhos de conclusão de curso.",
+   "url": "https://www.even3.com.br/xix-jornada-de-fisioterapia-do-caismunicamp-783066/",
+   "urlFinal": null,
+   "data": "2026-11-18",
+   "dataFim": null,
+   "inicio": "08:00",
+   "fim": "15:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "ESTUDANTES",
+     "valor": "R$ 44,00",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "ESTUDANTES",
+     "valor": "R$ 55,00",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "EX-ALUNOS",
+     "valor": "R$ 44,00",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "EX-ALUNOS",
+     "valor": "R$ 55,00",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "PROFISSIONAIS",
+     "valor": "R$ 55,00",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "PROFISSIONAIS",
+     "valor": "R$ 66,00",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "PALESTRANTE",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "COMISSÃO ORGANIZADORA",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "OS CERTIFICADOS SERÃO ENVIADOS, VIA E-MAIL, APÓS A CONCLUSÃO DO EVENTO.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-805329",
+   "nome": "3ª edição do Minicurso de Oncologia Veterinária",
+   "resumo": "Saber avaliar as possibilidades terapêuticas, definir condutas e acompanhar o paciente faz toda a diferença na rotina clínica.",
+   "url": "https://www.even3.com.br/3oncovet-805329/",
+   "urlFinal": null,
+   "data": "2026-11-18",
+   "dataFim": "2026-11-19",
+   "inicio": "18:00",
+   "fim": "21:30",
+   "formato": "online",
+   "preco": "R$ 36,19 a R$ 212,30",
+   "gratuito": false,
+   "ingressos": [
+    {
+     "nome": "Estudante de Graduação",
+     "valor": "R$ 29,59",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Estudante de Graduação",
+     "valor": "R$ 39,49",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Estudante de Graduação",
+     "valor": "R$ 43,89",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Profissional",
+     "valor": "R$ 38,39",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Profissional",
+     "valor": "R$ 51,59",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Profissional",
+     "valor": "R$ 62,59",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Grupos de 3 - Estudantes e/ou Profissionais",
+     "valor": "R$ 27,40",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Grupos de 3 - Estudantes e/ou Profissionais",
+     "valor": "R$ 35,09",
+     "situacao": "encerrado"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "💻 100% online | 🎓 Certificado de 12h",
+    "horas": 12
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-masterclassquemcuidadequemcuida",
+   "nome": "MasterClass - Quem Cuida de Quem Cuida? O que está acontecendo com a saúde mental dos profissionais da saúde?",
+   "resumo": "Você já parou para pensar sobre quem cuida de quem dedica a vida a cuidar dos outros?",
+   "url": "https://www.even3.com.br/masterclassquemcuidadequemcuida/",
+   "urlFinal": null,
+   "data": "2026-11-18",
+   "dataFim": null,
+   "inicio": "19:00",
+   "fim": "20:00",
+   "formato": "online",
+   "preco": "R$ 7,50",
+   "gratuito": false,
+   "ingressos": [
+    {
+     "nome": "INGRESSO ÚNICO",
+     "valor": "R$ 7,50",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "Garanta o seu certificado com carga horária de 4 horas!",
+    "horas": 4
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-809830",
+   "nome": "Webnário: Avaliação das feridas: ferramentas e estratégias para o cuidado da pele",
+   "resumo": "Webnário: Avaliação das feridas: ferramentas e estratégias para o cuidado da pele",
+   "url": "https://www.even3.com.br/webnario-avaliacao-das-feridas-ferramentas-e-estrategias-para-o-cuidado-da-pele-809830/",
+   "urlFinal": null,
+   "data": "2026-11-18",
+   "dataFim": null,
+   "inicio": "19:00",
+   "fim": "21:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Estudantes de graduação em Enfermagem, Medicina e demais cursos da área da Saúd…",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "Google Meet",
+   "certificado": {
+    "trecho": "🎓 Com emissão de certificado!",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-802749",
+   "nome": "Ciclo de Palestras em Nefrologia: Diálise Peritoneal",
+   "resumo": "O Conselho Regional de Medicina do Paraná (CRM-PR), por meio do Projeto de Educação Médica Continuada e em parceria com a Câmara Técnica de Nefrologia do CRM-PR e a Sociedade Paranaense de Nefrologia, promove o Ciclo de Palestras em Nefrologia com o tema “Diálise Peritoneal”.",
+   "url": "https://www.even3.com.br/dialise-peritoneal-802749/",
+   "urlFinal": null,
+   "data": "2026-11-18",
+   "dataFim": null,
+   "inicio": "19:30",
+   "fim": "21:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Medicos",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Estudantes de medicina",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Autoridades de mesa e Palestrantes",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "Haverá emissão de certificado, desde que cumpridos os pré-requisitos.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-809473",
+   "nome": "GLOBALIZA AÊ!",
+   "resumo": "\"GLOBALIZA AÊ\" é um evento voltado para vivenciarmos experiências culturais e internacionais que geram impacto positivo para a sociedade, sua vida profissional e pessoal.",
+   "url": "https://www.even3.com.br/globaliza-ae-809473/",
+   "urlFinal": null,
+   "data": "2026-11-18",
+   "dataFim": null,
+   "inicio": "20:00",
+   "fim": "22:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "GLOBALIZA AÊ!",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "*O evento contará com emissão de certificado de participação.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  }
+ ],
+ "descartados": {
+  "formato presencial": 279,
+  "sem certificado para o participante": 31,
+  "inscrições fechadas": 20
+ },
+ "foraLista": [
+  {
+   "nome": "Residências de Enfermagem em Cardiologia",
+   "url": "https://www.even3.com.br/residencias-de-enfermagem-em-cardiologia-810030/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Pornografia: Expectativas irreais e cobranças de desempenho",
+   "url": "https://www.even3.com.br/pornografia-expectativas-irreais-e-cobrancas-de-desempenho-807271/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Nossas Raízes, Nosso Futuro: Negritude em foco.",
+   "url": "https://www.even3.com.br/nossas-raizes-nosso-futuro-negritude-em-foco-809875/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Saúde Mental no Câncer de Mama",
+   "url": "https://www.even3.com.br/saude-mental-no-cancer-de-mama-799198/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Curso de Extensão Assinantes | Diálogos entre Jung e Espinosa: contribuições da Psicologia Analítica e da Psicologia Soc",
+   "url": "https://www.even3.com.br/curso-de-extensao-dialogos-entre-jung-e-espinosa-contribuicoes-da-psicologia-analitica-e-da-psicologia-social-797861/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Entre o Ideal e o Possível. Os Desafios Reais de Quem Faz Inclusão",
+   "url": "https://www.even3.com.br/entre-o-ideal-e-o-possivel-os-desafios-reais-de-quem-faz-inclusao-809857/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Mediação e Arbitragem para a Administração: Introdução Estratégica",
+   "url": "https://www.even3.com.br/mediacao-arbitragem-804430/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Palestra: Riqueza Descoberta - Educação e Literatura Antirracista",
+   "url": "https://www.even3.com.br/riqueza-descoberta-Educaxe-801551/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Programa Teórico Anual da Comissão de Ligas da SBGG",
+   "url": "https://www.even3.com.br/nov-806124/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Diagnóstico audiológico no Transtorno do Espectro Autista",
+   "url": "https://www.even3.com.br/diagnostico-audiologico-no-transtorno-do-espectro-autista-760870/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Curso de Extensão | Diálogos entre Jung e Espinosa: contribuições da Psicologia Analítica e da Psicologia Social",
+   "url": "https://www.even3.com.br/dialogos-entre-jung-e-espinosa-contribuicoes-da-psicologia-analitica-e-da-psicologia-social-797820/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "IV Congresso Nacional Interdisciplinar em Saúde Coletiva - CONASCO",
+   "url": "https://www.even3.com.br/ivconasco-758383/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Fênix telecom associados",
+   "url": "https://www.even3.com.br/fenix-telecom-associados-799166/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Saúde masculina e o profissional da saúde no Novembro Azul",
+   "url": "https://www.even3.com.br/saude-masculina-e-o-profissional-da-saude-no-novembro-azul-809966/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Residência ARQ 01 | Revit com Mentoria (Turma Fundadora)",
+   "url": "https://www.even3.com.br/residencia-arq-01-revit-com-mentoria-turma-fundadora-799072/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "Segurança Cibernética Quântica: Primeiros Passos",
+   "url": "https://www.even3.com.br/seguranca-cibernetica-quantica-primeiros-passos-807894/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Trocas Clínicas: O Miasma entre Histeria e Feminilidade",
+   "url": "https://www.even3.com.br/trocas-clinicas-o-miasma-entre-histeria-e-feminilidade-809164/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "AULA INAUGURAL - Pós-graduação em Psicomotricidade na Prática nos Contextos Educacional, Clínico e nos Espaços de Ativid",
+   "url": "https://www.even3.com.br/aula-inaugural-pos-graduacao-em-psicomotricidade-na-pratica-nos-contextos-educacional-clinico-e-nos-espacos-de-atividades-corporais-804068/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Pietro Guedes Brito",
+   "url": "https://www.even3.com.br/pietro-guedes-brito-799143/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Novembro da Privacidade e Segurança da Informação: Privacidade e proteção de dados no ambiente educacional",
+   "url": "https://www.even3.com.br/novembro-da-privacidade-e-seguranca-da-informacao-privacidade-e-protecao-de-dados-no-ambiente-educacional-807865/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "II Encontro de Bolsistas do Programa Unesp: Por Uma Geração Sem Nicotina",
+   "url": "https://www.even3.com.br/ii-encontro-de-bolsistas-do-programa-unesp-por-uma-geracao-sem-nicotina/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Aplicação prática da LGPD em Arquivos Permanentes analógicos e digitais",
+   "url": "https://www.even3.com.br/aplicacao-pratica-da-lgpd-em-arquivos-permanentes-analogicos-e-digitais-810521/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Webinar: Tecnologia Eliminando Barreiras: Inovação, Autonomia e Inclusão",
+   "url": "https://www.even3.com.br/webinar-tecnologia-eliminando-barreiras-inovacao-autonomia-e-inclusao-791236/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Seminário Final do ProLEEI – ''Palavras que abraçam e histórias que encantam: Caminhos da Leitura e Escrita na Educação",
+   "url": "https://www.even3.com.br/seminario-final-do-proleei-palavras-que-abracam-e-historias-que-encantam-caminhos-da-leitura-e-escrita-na-educacao-infantil-809252/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "I JORNADA INTERNACIONAL DE PSICOSSOCIOLOGIA, CONSUMO E SUSTENTABILIDADE SOCIOAMBIENTAL (JIPCS)",
+   "url": "https://www.even3.com.br/i-jornada-internacional-de-psicossociologia-consumo-e-sustentabilidade-socioambiental-jipcs-765969/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Encontro Estudantil Lafiped: o método RTA na criança asmática",
+   "url": "https://www.even3.com.br/encontro-estudantil-lafiped-o-metodo-rta-na-crianca-asmatica-809886/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Encantar para vender: como transformar a experiência do cliente em mais vendas no fim de ano",
+   "url": "https://www.even3.com.br/encantar-para-vender-como-transformar-a-experiencia-do-cliente-em-mais-vendas-no-fim-de-ano-809416/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "A360 NA PRÁTICA - Contratos do Contas a Pagar",
+   "url": "https://www.even3.com.br/a360-na-pratica-contratos-do-contas-a-pagar-806525/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Treinamento ABACT: Legislação, Obrigações e Procedimentos para o Mercado de Arte",
+   "url": "https://www.even3.com.br/treinamento-abact-legislacao-obrigacoes-e-procedimentos-para-o-mercado-de-arte-797556/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Além do Trauma: Prevenção de Acidentes Pediátricos na Prática Clínica - com dra Kaliane Melo",
+   "url": "https://www.even3.com.br/luep-806212/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "II Processo e(m) Debate: vírus autoritário e processo civil: Luís Correia de Mendonça e o Direito brasileiro",
+   "url": "https://www.even3.com.br/ii-processo-em-debate-virus-autoritario-e-processo-civil-luis-correia-de-mendonca-e-o-direito-brasileiro-809708/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "2° Edição Simpósio Online de Clínica e Emergência de Grandes Animais",
+   "url": "https://www.even3.com.br/2-edicao-simposio-online-de-clinica-e-emergencia-de-grandes-animais-803180/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "MASTERCLASS - GESTÃO ESTRATÉGICA DE MATERIAIS",
+   "url": "https://www.even3.com.br/masterclass-gestao-estrategica-de-materiais-798323/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "I Colóquio Carpeaux",
+   "url": "https://www.even3.com.br/icoloquiocarpeaux-786146/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Semana Nacional saúde única",
+   "url": "https://www.even3.com.br/semana-nacional-saude-unica-799141/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "SIVA EaD 2027/1 - Mostre Seu Talento Unicive - 2ª Edição",
+   "url": "https://www.even3.com.br/SIVAEAD2027/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "GEROGERI SUMMIT NOVEMBRO",
+   "url": "https://www.even3.com.br/gerogerinovembro-808963/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Congresso Brasileiro de Urgências e Traumatologia Ocular no Pronto Atendimento",
+   "url": "https://www.even3.com.br/congresso-brasileiro-de-urgencias-e-traumatologia-ocular-no-pronto-atendimento-799139/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Consciência Negra 2026: Literatura, Memória e Identidade - UninCor",
+   "url": "https://www.even3.com.br/unincor-807588/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Treinamento PowerB Online - Novembro 2026",
+   "url": "https://www.even3.com.br/treinamento-powerb-online-novembro-2026-790824/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "CURSO DE ADOÇÃO",
+   "url": "https://www.even3.com.br/curso-de-adocao-799197/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Geoconceito Debate: Consciência Negra - Formação de professores de Geografia para uma educação antirracista",
+   "url": "https://www.even3.com.br/geoconceito-debate-consciencia-negra-conexoes-entre-formacao-e-acao-docente-em-geografia-804517/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Além do diagnóstico",
+   "url": "https://www.even3.com.br/alem-do-diagnostico-799196/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Sua Carreira Não É um Trilho, É uma Trilha!",
+   "url": "https://www.even3.com.br/sua-carreira-nao-e-um-trilho-e-uma-trilha-807360/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "O samba é terapia popular: A proposta de clínica passante",
+   "url": "https://www.even3.com.br/o-samba-e-terapia-popular-a-proposta-de-clinica-passante-794041/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "I Semana da Consciência Negra",
+   "url": "https://www.even3.com.br/i-semana-da-consciencia-negra-810069/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "teste",
+   "url": "https://www.even3.com.br/teste-799210/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Upgrade ISO 9001: 2026",
+   "url": "https://www.even3.com.br/upgrade-iso-9001-2026-805220/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Meet & Greet - Can Yaman 2026",
+   "url": "https://www.even3.com.br/meet-greet-can-yaman-807861/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Da Avaliação Diagnóstica à Ação Pedagógica: o PIBID e a Transformação das Aprendizagens: Experiências e resultados de in",
+   "url": "https://www.even3.com.br/da_avaliacao_diagnostica_a_acao_pedagogica-809982/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Policlínica Itinerante: Diálogos Sobre o Trabalho em Saúde - Diálogos com Especialistas",
+   "url": "https://www.even3.com.br/policlinica-itinerante-dialogos-sobre-o-trabalho-em-saude-dialogos-com-especialistas-810825/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  }
+ ],
+ "totalDia": 336,
+ "modos": {
+  "off": 279,
+  "on": 57
+ },
+ "odontologia": 0,
+ "duracaoS": 238
+}

@@ -1,0 +1,179 @@
+{
+ "versao": 1,
+ "fonte": "even3",
+ "data": "2026-11-15",
+ "geradoEm": "2026-11-14T14:07:22+00:00",
+ "erro": null,
+ "criterios": "online, começa na data, inscrições abertas (REALIZAR INSCRIÇÃO e um ingresso vigente), certificado para o participante dito na página",
+ "totalLista": 16,
+ "analisados": 16,
+ "eventos": [
+  {
+   "id": "e3-805352",
+   "nome": "Workshop Nacional de Avaliação de Investimentos Operacionais: Fluxos Incrementais, Payback e Comparação de Projetos",
+   "resumo": "Workshop Nacional de Avaliação de Investimentos Operacionais: Fluxos Incrementais, Payback e Comparação de Projetos",
+   "url": "https://www.even3.com.br/workshop-nacional-de-avaliacao-de-investimentos-operacionais-fluxos-incrementais-payback-e-comparacao-de-projetos-805352/",
+   "urlFinal": null,
+   "data": "2026-11-15",
+   "dataFim": null,
+   "inicio": "14:00",
+   "fim": "18:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Participação Geral",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "A certificação de participação deve refletir o cumprimento dos critérios efetivos da atividade.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-790396",
+   "nome": "Destravando o centro cirúrgico: Confiança, competência e segurança para o técnico em radiologia",
+   "resumo": "Destravando o centro cirúrgico: Confiança, competência e segurança para o técnico em radiologia",
+   "url": "https://www.even3.com.br/destravando-o-centro-cirurgico-confianca-competencia-e-seguranca-para-o-tecnico-em-radiologia-790396/",
+   "urlFinal": null,
+   "data": "2026-11-15",
+   "dataFim": null,
+   "inicio": "18:00",
+   "fim": "22:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Inscrição",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "Zoom",
+   "certificado": {
+    "trecho": "Para ADQUIRIR o certificado digital de participação juntamente com a gravação da aula, basta efetuar o pagamento de uma taxa de adesão no valor de R$59,90 que você receberá posteriormente via e-mail.",
+    "horas": 4
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  }
+ ],
+ "descartados": {
+  "formato presencial": 144,
+  "inscrições fechadas": 14
+ },
+ "foraLista": [
+  {
+   "nome": "GRAVAÇÃO - Amamentar sem dor",
+   "url": "https://www.even3.com.br/gravacao-amamentar-sem-dor-798152/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Teste",
+   "url": "https://www.even3.com.br/teste-798232/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Imersão Talt 29 de Setembro",
+   "url": "https://www.even3.com.br/imersao-talt-29-de-setembro-798233/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Bloco de Reprodução em Bovinos - GERA FCAV",
+   "url": "https://www.even3.com.br/bloco-de-reproducao-em-bovinos-gera-fcav-798090/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Festa 40 anos de Marinha",
+   "url": "https://www.even3.com.br/festa-40-anos-de-marinha-798093/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "RECEPCIONA PRO - A Arte de receber bem",
+   "url": "https://www.even3.com.br/recepciona-pro-a-arte-de-receber-bem-799253/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "AEE na prática: afinal, como complementar sem repetir?",
+   "url": "https://www.even3.com.br/aee-na-pratica-afinal-como-complementar-sem-repetir-798069/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "teste",
+   "url": "https://www.even3.com.br/teste-798482/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "NOITE DOS QUADRADOS",
+   "url": "https://www.even3.com.br/noite-dos-quadrados-797947/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "Descomplicando a Anotação de Enfermagem",
+   "url": "https://www.even3.com.br/descomplicando-a-anotacao-de-enfermagem-798408/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Guarda Mirim Ferrense",
+   "url": "https://www.even3.com.br/guarda-mirim-ferrense-798110/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Conect Skin: A trilha perfeita para o gerenciamento de pele",
+   "url": "https://www.even3.com.br/conect-skin-a-trilha-perfeita-para-o-gerenciamento-de-pele-798081/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Chá rifa de casa nova",
+   "url": "https://www.even3.com.br/cha-rifa-de-casa-nova-798074/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Voa Talks",
+   "url": "https://www.even3.com.br/voa-talks-798281/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  }
+ ],
+ "totalDia": 160,
+ "modos": {
+  "off": 144,
+  "on": 16
+ },
+ "odontologia": 0,
+ "duracaoS": 56
+}

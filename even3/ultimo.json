@@ -1,0 +1,577 @@
+{
+ "versao": 1,
+ "fonte": "even3",
+ "data": "2026-11-28",
+ "geradoEm": "2026-11-27T17:29:04+00:00",
+ "erro": null,
+ "criterios": "online, começa na data, inscrições abertas (REALIZAR INSCRIÇÃO e um ingresso vigente), certificado para o participante dito na página",
+ "totalLista": 57,
+ "analisados": 57,
+ "eventos": [
+  {
+   "id": "e3-779163",
+   "nome": "IV Congresso Nacional de Neurologia Multidisciplinar",
+   "resumo": "Conhecimento e produção científica para fortalecer sua trajetória acadêmica e profissional",
+   "url": "https://www.even3.com.br/iv-congresso-nacional-de-neurologia-multidisciplinar-779163/",
+   "urlFinal": null,
+   "data": "2026-11-28",
+   "dataFim": null,
+   "inicio": "08:00",
+   "fim": "20:00",
+   "formato": "online",
+   "preco": "Gratuito (há ingressos pagos)",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Acadêmicos",
+     "valor": "R$ 33,00",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Acadêmicos",
+     "valor": "R$ 38,50",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Acadêmicos",
+     "valor": "R$ 44,00",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Profissionais",
+     "valor": "R$ 38,50",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Profissionais",
+     "valor": "R$ 44,00",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Profissionais",
+     "valor": "R$ 49,50",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "INSCRIÇÃO + ARTIGO COMPLETO",
+     "valor": "R$ 99,00",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Monitores e Ligas",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "Even3 (área do participante), WhatsApp",
+   "certificado": {
+    "trecho": "Os participantes terão direito ao certificado de participação de 80 horas e ao certificado de minicursos de 20 horas.",
+    "horas": 80
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-806384",
+   "nome": "Tilapicultura em Foco: Inovação, Sanidade e Gestão Sustentável",
+   "resumo": "O avanço da Tilapicultura no Brasil exige constante atualização científica, inovação tecnológica e adoção de práticas de gestão que garantam a sustentabilidade e a sanidade dos sistemas de produção.",
+   "url": "https://www.even3.com.br/tilapicultura-em-foco-inovacao-sanidade-e-gestao-sustentavel-806384/",
+   "urlFinal": null,
+   "data": "2026-11-28",
+   "dataFim": null,
+   "inicio": "09:00",
+   "fim": "11:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Geral",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "Certificação Oficial: Emissão de certificado de participação para os inscritos que acompanharem a transmissão ao vivo.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-813903",
+   "nome": "\"A vida cotidiana na antiguidade\"",
+   "resumo": "A vida cotidiana na Antiguidade era muito mais fascinante e complexa do que imaginamos.",
+   "url": "https://www.even3.com.br/a-vida-cotidiana-na-antiguidade-813903/",
+   "urlFinal": null,
+   "data": "2026-11-28",
+   "dataFim": null,
+   "inicio": "12:00",
+   "fim": "13:30",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Todos",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "YouTube",
+   "certificado": {
+    "trecho": "Para obter o certificado gratuito é necessário estar inscrito no Canal Linha de Divisa e fazer sua inscrição neste evento pela plataforma EVEN.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-810367",
+   "nome": "A Evolução dos Projetos Educacionais no Brasil",
+   "resumo": "O Instituto de Ensino Superior do Araguaia (IESA) convida estudantes, professores, gestores escolares e todos os interessados em educação para a aula A Evolução dos Projetos Educacionais no Brasil, conduzida pela Dra.",
+   "url": "https://www.even3.com.br/evolucao-de-projetos-educacionais-810367/",
+   "urlFinal": null,
+   "data": "2026-11-28",
+   "dataFim": null,
+   "inicio": "15:00",
+   "fim": "17:00",
+   "formato": "online",
+   "preco": "R$ 45,00",
+   "gratuito": false,
+   "ingressos": [
+    {
+     "nome": "Inscrição",
+     "valor": "R$ 45,00",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "Certificado: os participantes receberão certificado digital de 40 horas, emitido pela Even3, com código de autenticidade.",
+    "horas": 40
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-803540",
+   "nome": "Hanseníase conectada: tecnologias digitais para um cuidado mais coordenado no SUS",
+   "resumo": "Hanseníase conectada: tecnologias digitais para um cuidado mais coordenado no SUS",
+   "url": "https://www.even3.com.br/hanseniase-conectada-tecnologias-digitais-para-um-cuidado-mais-coordenado-no-sus-803540/",
+   "urlFinal": null,
+   "data": "2026-11-28",
+   "dataFim": "2027-01-28",
+   "inicio": "18:30",
+   "fim": "20:30",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Participante",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "YouTube, Google Meet",
+   "certificado": {
+    "trecho": "Hanseníase Conectada: tecnologias digitais para um cuidado mais coordenado no SUS é um evento online, gratuito e com emissão de certificado, sobre as soluções digitais que já estão sendo usadas no enfrentamento da hanse…",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-812656",
+   "nome": "Varíola dos Macacos (Mpox): Mecanismos Patológicos e Resposta Imunológica",
+   "resumo": "A Mpox, anteriormente conhecida como varíola dos macacos, é uma doença infecciosa causada pelo vírus Monkeypox (MPXV), pertencente ao gênero Orthopoxvirus, da família Poxviridae.",
+   "url": "https://www.even3.com.br/variola-dos-macacos-mpox-mecanismos-patologicos-e-resposta-imunologica-812656/",
+   "urlFinal": null,
+   "data": "2026-11-28",
+   "dataFim": null,
+   "inicio": "19:00",
+   "fim": "22:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Inscrição",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "Certificado: Certificado de participação de palestra.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  }
+ ],
+ "descartados": {
+  "formato presencial": 283,
+  "sem certificado para o participante": 24,
+  "inscrições fechadas": 27
+ },
+ "foraLista": [
+  {
+   "nome": "MEDSCHOOL - APROVAÇÃO ENAMED",
+   "url": "https://www.even3.com.br/medschool-aprovacao-enamed-803694/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "1º Colóquio Redes de Saberes e Relatos de Experiências dos Profissionais da Educação Especial e Inclusiva Pré-Encontro C",
+   "url": "https://www.even3.com.br/redes-de-saberes-e-relatos-de-experiencias-dos-profissionais-da-educacao-especial-e-inclusiva-765571/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Encontro para Pensar: A democracia está em risco?",
+   "url": "https://www.even3.com.br/encontro-para-pensar-796641/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Clínica po-lítica e po-ética",
+   "url": "https://www.even3.com.br/grupo-de-estudos-sankofa-807802/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Aulão Preparatório",
+   "url": "https://www.even3.com.br/aulao-preparatorio-809992/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "1° Workshop Nanociência Descomplicada",
+   "url": "https://www.even3.com.br/minicursos-aplicados-a-nanotecnologia-786814/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Cidade do Futuro e o Cuidado Conectado: Envelhecimento saudável, ambientes inteligentes e Saúde Digital",
+   "url": "https://www.even3.com.br/cidade-do-futuro-e-o-cuidado-conectado-envelhecimento-saudavel-ambientes-inteligentes-e-saude-digital-803604/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "2026/02 PALESTRA SOBRE MAT PILATES - CURSO DE FISIOTERAPIA",
+   "url": "https://www.even3.com.br/202602-palestra-sobre-mat-pilates-curso-de-fisioterapia-803729/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "A dependência química e as relações familiares",
+   "url": "https://www.even3.com.br/a-dependencia-quimica-e-as-relacoes-familiares-810767/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "LESÃO MUSCULAR DE ISQUIOTIBIAIS: Reabilitação com foco no retorno ao esporte",
+   "url": "https://www.even3.com.br/lesao-muscular-de-isquiotibiais-reabilitacao-com-foco-no-retorno-ao-esporte-810774/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Bate-Papo Educativo",
+   "url": "https://www.even3.com.br/bate-papo-educativo-813143/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "Saúde do Homem: prevenção, conscientização e cuidado com a próstata",
+   "url": "https://www.even3.com.br/novembro-azul-812122/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "GRUPO GEOGRAFANDO 2027 — Geografia: Novos Horizontes",
+   "url": "https://www.even3.com.br/geografando-2027-geografia-novos-horizontes-803732/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Além da sala de aula: a extensão universitária como instrumento de formação crítica, cidadã e profissional dos estudante",
+   "url": "https://www.even3.com.br/alem-da-sala-de-aula-a-extensao-universitaria-como-instrumento-de-formacao-critica-cidada-e-profissional-dos-estudantes-de-direito-813412/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Congresso Virtual de Pesquisa e Inovação Acadêmica - CONVEP",
+   "url": "https://www.even3.com.br/congresso-virtual-de-pesquisa-e-inovacao-academica-803701/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Cuidar com integridade: A jornada ética do psicólogo em formação",
+   "url": "https://www.even3.com.br/cuidar-com-integridade-a-jornada-etica-do-psicologo-em-formacao-809076/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Muito além do currículo: Comunicação e posicionamento em saúde",
+   "url": "https://www.even3.com.br/muito-alem-do-curriculo-comunicacao-e-posicionamento-em-saude-803611/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Virada de chave 2027",
+   "url": "https://www.even3.com.br/virada-de-chave-2027-812703/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Aulão: Homens, violência, solidão e saúde mental",
+   "url": "https://www.even3.com.br/aulao-masculinidades-e-letramento-779286/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "I Cajun Mock",
+   "url": "https://www.even3.com.br/i-cajun-mock-806144/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Dimensão subjetiva da realidade",
+   "url": "https://www.even3.com.br/dimensao-subjetiva-da-realidade-794277/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "ll CONGRESSO DE EXTENSÃO E CULTURA",
+   "url": "https://www.even3.com.br/conexaofai-696177/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Estética Regenerativa e Protocolos In & Out - Conectando Procedimento, Regeneração e Cuidado de Dentro para Fora",
+   "url": "https://www.even3.com.br/estetica-regenerativa-e-protocolos-in-out-800829/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "preparación de clases",
+   "url": "https://www.even3.com.br/preparacion-de-clases-803447/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Como lucrar com revenda de seguidores?",
+   "url": "https://www.even3.com.br/como-lucrar-com-revenda-de-seguidores-803679/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Psicomotricidade",
+   "url": "https://www.even3.com.br/psicomotricidade-803411/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "20Anos lei Maria Penha",
+   "url": "https://www.even3.com.br/20anos-lei-maria-penha-803596/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "V Colóquio do Núcleo de Educação a Distância da Universidade Federal de São João del-Rei",
+   "url": "https://www.even3.com.br/v-coloquio-do-nucleo-de-educacao-a-distancia-da-ufsj-811984/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Educação",
+   "url": "https://www.even3.com.br/educacao-803628/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "Partilha Ministeral 2026 - Área 3 IEAB",
+   "url": "https://www.even3.com.br/pm2026a3ieab-811811/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "As Faces Invisíveis do Racismo Ambiental e Seus Impactos nas Comunidades",
+   "url": "https://www.even3.com.br/as-faces-invisiveis-do-racismo-ambiental-e-seus-impactos-nas-comunidades-811347/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Da Bancada à Decisão: Discussão de Casos Clínicos na Rotina das Análises Laboratoriais",
+   "url": "https://www.even3.com.br/casosclinicos-805518/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Formação para professores do Eja",
+   "url": "https://www.even3.com.br/formacao-para-professores-do-eja-803805/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "CAPACITAÇÃO SELETIVO EDUCAÇÃO TIMON 2026",
+   "url": "https://www.even3.com.br/capacitacao-seletivo-educacao-timon-2026-803750/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Dúvidas sobre morar no Paraguai",
+   "url": "https://www.even3.com.br/duvidas-sobre-morar-no-paraguai-803433/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "CAPACITAÇÃO SELETIVO TIMON 2026",
+   "url": "https://www.even3.com.br/capacitacao-seletivo-timon-2026-803744/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Diálogos da Profissão: inovação e marketing no agronegócio brasileiro",
+   "url": "https://www.even3.com.br/dialogos-da-profissao-inovacao-e-marketing-no-agronegocio-brasileiro-803626/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Onde acho seguidores brasileiros reais?",
+   "url": "https://www.even3.com.br/onde-acho-seguidores-brasileiros-reais-803676/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Empresas Não Quebram Só por Falta de Vendas: O Poder do Controle Financeiro",
+   "url": "https://www.even3.com.br/empresas-nao-quebram-so-por-falta-de-vendas-o-poder-do-controle-financeiro-812780/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "Turma Prática de Mindfulness",
+   "url": "https://www.even3.com.br/turma-pratica-de-mindfulness-803595/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Gran CPA",
+   "url": "https://www.even3.com.br/gran-cpa-803506/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Noite incrível",
+   "url": "https://www.even3.com.br/noite-incrivel-803606/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "1º Simpósio de Síndrome Braquicefálica",
+   "url": "https://www.even3.com.br/1-simposio-de-sindrome-braquicefalica-804549/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Introdução a Docker",
+   "url": "https://www.even3.com.br/introducao-a-docker-813005/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "EXAMES LABORATORIAIS: INTERPRETAÇÃO E CORRELAÇÃO CLÍNICA",
+   "url": "https://www.even3.com.br/exames-laboratoriais-interpretacao-e-correlacao-clinica-799293/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Formei, e agora? — Primeiros passos para construir sua clínica psicológica.",
+   "url": "https://www.even3.com.br/formei-e-agora-804681/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Hippocurso de Ecologia",
+   "url": "https://www.even3.com.br/hippocurso-de-ecologia-812119/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Olhando para Dentro",
+   "url": "https://www.even3.com.br/olhando-para-dentro-811797/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Palestra: ARDUINO NA ROBÓTICA - Introdução",
+   "url": "https://www.even3.com.br/palestra-arduino-na-robotica-introducao-802406/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Triagem do Paciente Oncológico",
+   "url": "https://www.even3.com.br/triagem/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "I Encontro de Psicologia no Automobilismo",
+   "url": "https://www.even3.com.br/psicologianoautomobilismo-687150/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  }
+ ],
+ "totalDia": 340,
+ "modos": {
+  "off": 283,
+  "on": 57
+ },
+ "odontologia": 0,
+ "duracaoS": 81
+}

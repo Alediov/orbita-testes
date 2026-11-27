@@ -1,0 +1,478 @@
+{
+ "versao": 1,
+ "fonte": "even3",
+ "data": "2026-11-25",
+ "geradoEm": "2026-11-24T18:54:32+00:00",
+ "erro": null,
+ "criterios": "online, começa na data, inscrições abertas (REALIZAR INSCRIÇÃO e um ingresso vigente), certificado para o participante dito na página",
+ "totalLista": 51,
+ "analisados": 51,
+ "eventos": [
+  {
+   "id": "e3-803749",
+   "nome": "VI Seminário Corpo-Território-Terreiro: aspectos jurídicos sensíveis em terreiros, regulamentação, funcionamento e respo",
+   "resumo": "VI Seminário Corpo-Território-Terreiro: aspectos jurídicos sensíveis em terreiros, regulamentação, funcionamento e responsabilidade.",
+   "url": "https://www.even3.com.br/vi-seminario-corpo-territorio-terreiro-803749/",
+   "urlFinal": null,
+   "data": "2026-11-25",
+   "dataFim": null,
+   "inicio": "11:15",
+   "fim": "12:30",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Estudante de graduação UNIVALE",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Professores",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Mestrandos",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Estudante de graduação",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "Haverá emissão de certificados para fins de horas complementares e participação no evento, correspondendo a 2 horas, sem nenhum custo.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-804538",
+   "nome": "X Encontro de Ciência e Tecnologia em Plantas Medicinais & XIX Ciclo de Palestras em Plantas Medicinais, Aromáticas e Co",
+   "resumo": "X Encontro de Ciência e Tecnologia em Plantas Medicinais & XIX Ciclo de Palestras em Plantas Medicinais, Aromáticas e Condimentares (X ECTPM & XIX CPPMAC)",
+   "url": "https://www.even3.com.br/x-encontro-de-ciencia-e-tecnologia-em-plantas-medicinais-xix-ciclo-de-palestras-em-plantas-medicinais-aromaticas-e-condimentares-x-ectpm-xix-cppmac-804538/",
+   "urlFinal": null,
+   "data": "2026-11-25",
+   "dataFim": "2026-11-27",
+   "inicio": "19:00",
+   "fim": "23:59",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Estudante Graduação, Pós Graduação, Docentes, Profissionais da área",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "Emissão de certificados de (I) participação no evento, (II) apresentação online e publicação dos trabalhos científicos no livro de resumos (até 2 por participante), ou seja, você pode receber vários certificados!",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-796772",
+   "nome": "LANPSI CONECTA | Atenção: A Moeda Mais Valiosa do Século XXI",
+   "resumo": "Somos convocados a olhar, responder, acompanhar e consumir, enquanto aquilo que merece nossa atenção compete, a todo instante, com inúmeras outras demandas.",
+   "url": "https://www.even3.com.br/lanpsi-conecta-atencao-a-moeda-mais-valiosa-do-seculo-xxi-796772/",
+   "urlFinal": null,
+   "data": "2026-11-25",
+   "dataFim": null,
+   "inicio": "19:30",
+   "fim": "21:30",
+   "formato": "online",
+   "preco": "R$ 22,50",
+   "gratuito": false,
+   "ingressos": [
+    {
+     "nome": "Estudantes de graduação",
+     "valor": "R$ 17,50",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Estudantes de graduação",
+     "valor": "R$ 22,50",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Profissionais",
+     "valor": "R$ 38,50",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "Profissionais",
+     "valor": "R$ 44,00",
+     "situacao": "encerrado"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "✔️ Certificado de participação equivalente a 8 horas.",
+    "horas": 8
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-809937",
+   "nome": "Novembro: Mês da videocirurgia",
+   "resumo": "“Entre câmeras e pequenos acessos: uma nova visão da cirurgia urinária”, pela Profa.",
+   "url": "https://www.even3.com.br/novembro-mes-da-videocirurgia-809937/",
+   "urlFinal": null,
+   "data": "2026-11-25",
+   "dataFim": null,
+   "inicio": "19:30",
+   "fim": "21:30",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Estudantes e Profissionais",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "📲 Evento online com emissão de certificado",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  }
+ ],
+ "descartados": {
+  "formato presencial": 229,
+  "inscrições fechadas": 23,
+  "sem certificado para o participante": 24
+ },
+ "foraLista": [
+  {
+   "nome": "Implante Coclear em Adultos e Idosos",
+   "url": "https://www.even3.com.br/implante-coclear-em-adultos-e-idosos-744639/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Workshop: Do projeto à operação Garantindo Estações de Recarga Confiáveis",
+   "url": "https://www.even3.com.br/workshop-do-projeto-a-operacao-garantindo-estacoes-de-recarga-confiaveis-804326/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "2° Edição Simpósio Online de Clínica de Mamíferos Silvestres",
+   "url": "https://www.even3.com.br/2-edicao-simposio-online-de-clinica-de-mamiferos-silvestres-805264/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "IV Seminário Internacional de Inovações Frugais",
+   "url": "https://www.even3.com.br/iv-seminario-internacional-de-inovacoes-frugais-797537/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "PLATAFORMA MULTITÉCNICA - Integração, Confiabilidade e Resultados positivos",
+   "url": "https://www.even3.com.br/plataforma-multitecnica-integracao-confiabilidade-e-resultados-positivos-810214/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "CAPACITAÇÃO TÉCNICA - VAF-ICMS ESSENCIAL Formação Técnica Aplicada | Apuração, fiscalização e estratégias para o fortale",
+   "url": "https://www.even3.com.br/capacitacao-tecnica-vaf-icms-essencial-formacao-tecnica-aplicada-apuracao-fiscalizacao-e-estrategias-para-o-fortalecimento-da-receita-de-transferencias-o-ipm-a-reforma-tributaria-e-o-periodo-de-transicao-807080/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Vendas e Relacionamento no Agro",
+   "url": "https://www.even3.com.br/vendas-e-relacionamento-no-agro-804511/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "Neuropsicologia em quadros demenciais: desafios e possibilidades de atuação",
+   "url": "https://www.even3.com.br/neuropsicologia-em-quadros-demenciais-desafios-e-possibilidades-de-atuacao-812217/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "IV Congresso Nacional de Avanços Interdisciplinares em Geriatria e Gerontologia - CONAGER",
+   "url": "https://www.even3.com.br/ivconager-758384/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "CAPACITAÇÃO TÉCNICA - VAF-ICMS ESSENCIAL Formação Técnica Aplicada | Apuração, fiscalização e estratégias para o fortale",
+   "url": "https://www.even3.com.br/capacitacao-tecnica-vaf-icms-essencial-formacao-tecnica-aplicada-apuracao-fiscalizacao-e-estrategias-para-o-fortalecimento-da-receita-de-transferencias-o-ipm-a-reforma-tributaria-e-o-periodo-de-transicao-807078/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "Síntese visual: aprenda a desenhar para comunicar",
+   "url": "https://www.even3.com.br/sintese-visual-aprenda-a-desenhar-para-comunicar-804334/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Diabetes mellitus tipo 1, tipo 2 e LADA: diferenças e diagnóstico",
+   "url": "https://www.even3.com.br/diabetes-mellitus-tipo-1-tipo-2-e-lada-diferencas-e-diagnostico-811311/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Aulão Preparatório ENADE26- \"Projeto de softwares\" - TI -Unisul",
+   "url": "https://www.even3.com.br/aulao-preparatorio-enade26-projeto-de-softwares-ti-unisul-789705/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Ansiedade",
+   "url": "https://www.even3.com.br/ansiedade-802467/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "MasterClass - Teste",
+   "url": "https://www.even3.com.br/masterclass-teste-802502/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Cesariana em Pequenos Animais",
+   "url": "https://www.even3.com.br/cesariana-em-pequenos-animais-810927/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "VI International Week on Education, Human Rights, Sexual Diversity and Gender & IV National Conference on Human Rights",
+   "url": "https://www.even3.com.br/vi-international-week-on-education-human-rights-sexual-diversity-and-gender-iv-national-conference-on-hman-rights-751900/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "IV Amostra de Pesquisa do curso de Direito FCAP 2026",
+   "url": "https://www.even3.com.br/iv-amostra-de-pesquisa-direito/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Apresentação do plano de trabalho da CBBU Gestão 2026-2029",
+   "url": "https://www.even3.com.br/plano-de-trabalho-cbbu-2026-2029-810868/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "I Congresso Nacional de Integração Médica",
+   "url": "https://www.even3.com.br/i-congresso-nacional-de-integracao-medica-804255/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Ciclo de Palestras em Cardiologia: Alimentação saudável, o que ensina o coração?",
+   "url": "https://www.even3.com.br/alimentacao-saudavel-coracao-791313/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Curso de qualificação de gestão da urgência e emergência em articulação com a atenção primária em saúde",
+   "url": "https://www.even3.com.br/curso-de-qualificacao-de-gestao-da-urgencia-e-emergencia-em-articulacao-com-a-atencao-primaria-em-saude-811526/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "GEPPRUM em Pauta: Manejo de rebanhos com cães de pastoreio.",
+   "url": "https://www.even3.com.br/gepprum-em-pauta-manejo-de-rebanhos-com-caes-de-pastoreio-810197/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "4. º Seminario de Estudios sobre Envejecimiento, Territorio y Hábitat",
+   "url": "https://www.even3.com.br/4-enve-802009/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Novembro da Privacidade e Segurança da Informação: Proteção de dados na área da saúde",
+   "url": "https://www.even3.com.br/novembro-da-privacidade-e-seguranca-da-informacao-protecao-de-dados-na-area-da-saude-807864/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "PROVA DO LIVRO B2 - 2026/2",
+   "url": "https://www.even3.com.br/prova-do-livro-b2-20262-796769/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "SEMINÁRIO EDUCACIONAL - ESCOLAS, VIVÊNCIAS E POTENCIAIS",
+   "url": "https://www.even3.com.br/seminario-educacional-escolas-vivencias-e-potenciais-802483/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Cuidar, Incluir e Ensinar: Formação para uma Atuação Ética e Humanizada no Paradesporto,",
+   "url": "https://www.even3.com.br/etica-comunicacao-inclusiva-e-manejo-de-situacoes-de-crise-no-paradesporto-804464/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "A vida acelerou. O ser humano está conseguindo acompanhar?",
+   "url": "https://www.even3.com.br/a-vida-acelerou-o-ser-humano-esta-conseguindo-acompanhar-811538/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Roda de Diálogo para as OSCs, sobre Níveis de reconhecimento de entidades de Assistência social.",
+   "url": "https://www.even3.com.br/roda-de-dialogo-para-as-oscs-sobre-niveis-de-reconhecimento-de-entidades-de-assistencia-social-809613/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Comportamento Humano: por que agimos como agimos?",
+   "url": "https://www.even3.com.br/comportamento-humano-por-que-agimos-como-agimos-812171/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "Terapia Coletiva",
+   "url": "https://www.even3.com.br/Lumina-812285/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Empreendedor da Manutenção",
+   "url": "https://www.even3.com.br/empreendedor-da-manutencao-809596/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Tech Talk #004 - Fundamentos não se negociam em tempos de IA",
+   "url": "https://www.even3.com.br/tech-talk-04-fundamentos-nao-se-negociam-em-tempos-de-ia-811434/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "MasterClass - Workshop de Metas 2027",
+   "url": "https://www.even3.com.br/masterclass-workshop-de-metas-2027-798400/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "teste",
+   "url": "https://www.even3.com.br/teste-802501/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Aniversário",
+   "url": "https://www.even3.com.br/aniversario-802458/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Bem-Estar",
+   "url": "https://www.even3.com.br/bem-estar-802526/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Conexão Biomed - Congresso de Biomedicina",
+   "url": "https://www.even3.com.br/conexao-biomed-congresso-de-biomedicina-802496/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "II Congresso Brasileiro de Testes Psicológicos e Neuropsicológicos",
+   "url": "https://www.even3.com.br/ii-congresso-brasileiro-de-testes-psicologicos-e-neuropsicologicos-777062/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "VI Semana Internacional sobre Educação, Direitos Humanos, Diversidade Sexual e Gênero & IV Jornada Nacional dos Direitos",
+   "url": "https://www.even3.com.br/vi-semana-internacional-sobre-educacao-direitos-humanos-diversidade-sexual-e-genero-iv-jornada-nacional-dos-direitos-humanos-711009/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "II CONGRESSO DO GRUPO DE PESQUISA ESPERANÇA GARCIA (2026)",
+   "url": "https://www.even3.com.br/ii-congresso-do-grupo-de-pesquisa-esperanca-garcia-2026-747812/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "I SIMPÓSIO LUMINENSE DE ESTUDOS AFRO-BRASILEIROS E DIVERSIDADE (I SILUAD)",
+   "url": "https://www.even3.com.br/i-simposio-luminense-de-estudos-afro-brasileiros-e-diversidade-i-siluad-802755/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Webinar \"Escala 5x2 - A polemica sob ótica da Magistratura\"",
+   "url": "https://www.even3.com.br/webinar-escala-5x2-a-polemica-sob-otica-da-magistratura-809158/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "CNEAS em Debate: Níveis de Reconhecimento das Entidades de Assistência Social",
+   "url": "https://www.even3.com.br/cneas-em-debate-niveis-de-reconhecimento-das-entidades-de-assistencia-social-809629/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "A ultradireita na Nova República: História e política",
+   "url": "https://www.even3.com.br/historiapolitica-804971/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "CONEDI - CONGRESSO NACIONAL DE EDUCAÇÃO DIVERSIDADE E INCLUSÃO",
+   "url": "https://www.even3.com.br/conedi-congresso-nacional-de-educacao-diversidade-e-inclusao-775428/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  }
+ ],
+ "totalDia": 280,
+ "modos": {
+  "off": 229,
+  "on": 51
+ },
+ "odontologia": 0,
+ "duracaoS": 169
+}

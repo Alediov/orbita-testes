@@ -1,0 +1,223 @@
+{
+ "versao": 1,
+ "fonte": "even3",
+ "data": "2026-11-21",
+ "geradoEm": "2026-11-20T16:11:20+00:00",
+ "erro": null,
+ "criterios": "online, começa na data, inscrições abertas (REALIZAR INSCRIÇÃO e um ingresso vigente), certificado para o participante dito na página",
+ "totalLista": 28,
+ "analisados": 28,
+ "eventos": [
+  {
+   "id": "e3-811265",
+   "nome": "GLOBALIZA AÊ!",
+   "resumo": "O \"GLOBALIZA AÊ\" é um evento voltado para vivenciarmos experiências culturais e internacionais que geram impacto positivo para a sociedade, sua vida profissional e pessoal.",
+   "url": "https://www.even3.com.br/globaliza-ae-293442e6-7f8c-4d0c-bba9-5b0f4bf8b1a9-811265/",
+   "urlFinal": null,
+   "data": "2026-11-21",
+   "dataFim": null,
+   "inicio": "10:00",
+   "fim": "12:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "GLOBALIZA AÊ!",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "*O evento contará com emissão de certificado de participação.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  }
+ ],
+ "descartados": {
+  "formato presencial": 222,
+  "inscrições fechadas": 24,
+  "sem certificado para o participante": 3
+ },
+ "foraLista": [
+  {
+   "nome": "Curso de Extensão em Fundamentos da Produção Científica e Escrita Acadêmica",
+   "url": "https://www.even3.com.br/curso-de-extensao-em-fundamentos-da-producao-cientifica-e-escrita-academica-791323/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "INSCRIÇÃO PARA VOLUNTARIADO Cruz Vermelha Brasileira - polo Soure",
+   "url": "https://www.even3.com.br/inscricao-para-voluntariado-cruz-vermelha-brasileira-polo-soure-801149/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Agricultura Sustentável: conceitos, fundamentos e apliações práticas",
+   "url": "https://www.even3.com.br/agricultura-sustentavel-conceitos-fundamentos-e-apliacoes-praticas-801186/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "teste nti",
+   "url": "https://www.even3.com.br/teste-nti-801443/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Aula 8 | Curso de Formação Política para Psicólogas",
+   "url": "https://www.even3.com.br/aula-8-curso-de-formacao-politica-para-psicologas-801569/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Ebook XV Ciclo de Palestras Parasitologia em Foco e IV Simpósio de Doenças Infecciosas e Parasitárias - Território, Clim",
+   "url": "https://www.even3.com.br/ebook-xv-ciclo-de-palestras-parasitologia-em-foco-e-iv-simposio-de-doencas-infecciosas-e-parasitarias-territorio-clima-e-saude-desafios-urbanos-atuais-em-doencas-infecciosas-801440/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Formação em Psiconefrologia - TURMA 3",
+   "url": "https://www.even3.com.br/formacao-em-psiconefrologia-turma-3-801274/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Tech In Sertão - 6ª Edição",
+   "url": "https://www.even3.com.br/tech-in-sertao-6-edicao-798035/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Teste",
+   "url": "https://www.even3.com.br/teste-801408/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Aula aberta Lifim",
+   "url": "https://www.even3.com.br/aula-aberta-lifim-799216/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Divulgando CiêncIA nos dias atuais: fazendo uso de ferramentas de Inteligência Artificial na Popularização da Ciência",
+   "url": "https://www.even3.com.br/divulgando-ciencia-nos-dias-atuais-fazendo-uso-de-ferramentas-de-inteligencia-artificial-na-popularizacao-da-ciencia-801199/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Formação em Psicogerontologia",
+   "url": "https://www.even3.com.br/formacao-em-psicogerontologia-801305/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "CAO 2026",
+   "url": "https://www.even3.com.br/cao-2026-801335/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Even3",
+   "url": "https://www.even3.com.br/even3-801445/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Jornada Acadêmica 2026. 2 - UNIGAMA DIGITAL",
+   "url": "https://www.even3.com.br/jornada-academica-2026-2-unigama-digital-801479/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Sankofa: Psicologia e política",
+   "url": "https://www.even3.com.br/sankofa-psicologia-e-politica-806424/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "Ventilação mecânica e gasometria arterial",
+   "url": "https://www.even3.com.br/ventilacao-mecanica-e-gasometria-arterial-810286/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Retiro Geração Kadosh",
+   "url": "https://www.even3.com.br/retiro-geracao-kadosh-801140/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "teste",
+   "url": "https://www.even3.com.br/teste-801379/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Fórum Internacional de Educação",
+   "url": "https://www.even3.com.br/education-international-forum-786140/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "INTEGRAÇÃO DE SEGURANÇA RDANTAS",
+   "url": "https://www.even3.com.br/integracao-de-seguranca-rdantas-801223/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "teste",
+   "url": "https://www.even3.com.br/teste-801413/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Tokdaborboleta",
+   "url": "https://www.even3.com.br/tokdaborboleta-801517/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Imersão em Comportamento de Felinos Domésticos",
+   "url": "https://www.even3.com.br/imersao-em-comportamento-de-felinos-domesticos-793861/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Palestra Manejo da dor em animais silvestres",
+   "url": "https://www.even3.com.br/palestra-manejo-da-dor-em-animais-silvestres-801456/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "INTELIGÊNCIA ARTIFICIAL NA GESTÃO DE OBRAS: O FUTURO JÁ COMEÇOU",
+   "url": "https://www.even3.com.br/inteligencia-artificial-na-gestao-de-obras-o-futuro-ja-comecou-811570/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Bright Future",
+   "url": "https://www.even3.com.br/bright-future-801407/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  }
+ ],
+ "totalDia": 250,
+ "modos": {
+  "off": 222,
+  "on": 28
+ },
+ "odontologia": 0,
+ "duracaoS": 49
+}

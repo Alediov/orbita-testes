@@ -1,0 +1,441 @@
+{
+ "versao": 1,
+ "fonte": "even3",
+ "data": "2026-11-19",
+ "geradoEm": "2026-11-18T16:34:00+00:00",
+ "erro": null,
+ "criterios": "online, começa na data, inscrições abertas (REALIZAR INSCRIÇÃO e um ingresso vigente), certificado para o participante dito na página",
+ "totalLista": 39,
+ "analisados": 39,
+ "eventos": [
+  {
+   "id": "e3-780234",
+   "nome": "2º Congresso Nacional de Biomedicina - CONABIOM",
+   "resumo": "O 2º Congresso Nacional de Biomedicina – CONABIOM chega à sua segunda edição consolidando-se como um espaço de encontro, diálogo e construção de conhecimentos para estudantes, profissionais, docentes e pesquisadores de todo o Brasil.",
+   "url": "https://www.even3.com.br/2-congresso-nacional-de-biomedicina-conabiom-780234/",
+   "urlFinal": null,
+   "data": "2026-11-19",
+   "dataFim": "2026-11-21",
+   "inicio": "09:00",
+   "fim": "22:00",
+   "formato": "online",
+   "preco": "Gratuito (há ingressos pagos)",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "GRATUITO - Certificado de 10h - Assista o Evento durante a Transmissão",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "PREMIUM - Certificado de 40h + Acesso às Gravações",
+     "valor": "R$ 44,00",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "PREMIUM - Certificado de 40h + Acesso às Gravações",
+     "valor": "R$ 49,50",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "PREMIUM - Certificado de 40h + Acesso às Gravações",
+     "valor": "R$ 55,00",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "PREMIUM - Certificado de 40h + Acesso às Gravações",
+     "valor": "R$ 66,00",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "PREMIUM - Certificado de 40h + Acesso às Gravações + Publicação de 1 Capítulo d…",
+     "valor": "R$ 106,70",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "PREMIUM - Certificado de 40h + Acesso às Gravações + Publicação de 1 Capítulo d…",
+     "valor": "R$ 139,70",
+     "situacao": "encerrado"
+    },
+    {
+     "nome": "PREMIUM - Certificado de 40h + Acesso às Gravações + Publicação de 1 Capítulo d…",
+     "valor": "R$ 161,70",
+     "situacao": "encerrado"
+    }
+   ],
+   "plataforma": "WhatsApp",
+   "certificado": {
+    "trecho": "GRATUITO - Certificado de 10h - Assista o Evento durante a Transmissão",
+    "horas": 10
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-791792",
+   "nome": "II Workshop de Urgencias y Emergencia Cardiovasculares Quirúrgicas y Clínicas.",
+   "resumo": "🫀 II Workshop de Urgencias y Emergencias Cardiovasculares Quirúrgicas y Clínicas 🚨",
+   "url": "https://www.even3.com.br/ii-workshop-de-urgencias-y-emergencia-cardiovasculares-quirurgicas-y-clinicas-791792/",
+   "urlFinal": null,
+   "data": "2026-11-19",
+   "dataFim": "2026-11-23",
+   "inicio": "18:00",
+   "fim": null,
+   "formato": "online",
+   "preco": "R$ 22,50",
+   "gratuito": false,
+   "ingressos": [
+    {
+     "nome": "Estudante de Medicina UCP CDE",
+     "valor": "R$ 22,50",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "ESTUDANTE MEDICINA DE OUTRAS INSTITUIÇÕES",
+     "valor": "R$ 22,50",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "MÉDICOS",
+     "valor": "R$ 22,50",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "PROFISSIONAIS OU ESTUDANTES DA ÁREA DA SAÚDE",
+     "valor": "R$ 22,50",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "MÉDICOS RESIDENTES",
+     "valor": "R$ 22,50",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "📜 Certificación: Certificado de participación con carga horaria acreditada",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-811281",
+   "nome": "Acessibilidade Digital: o que acontece por trás de uma experiência inclusiva? Por Flávio Correia",
+   "resumo": "Uma experiência digital acessível vai muito além de uma interface bem desenhada ou de um código que funciona.",
+   "url": "https://www.even3.com.br/acessibilidade-digital-o-que-acontece-por-tras-de-uma-experiencia-inclusiva-por-flavio-correia-811281/",
+   "urlFinal": null,
+   "data": "2026-11-19",
+   "dataFim": null,
+   "inicio": "19:00",
+   "fim": "21:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "ingresso",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": "Google Meet",
+   "certificado": {
+    "trecho": "🎓 Certificado de participação.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  },
+  {
+   "id": "e3-791147",
+   "nome": "Ciclo de Palestras em Cardiologia: Bases Cardiológicas de casos clínicos virais da internet",
+   "resumo": "Ciclo de Palestras em Cardiologia: Bases Cardiológicas de casos clínicos virais da internet",
+   "url": "https://www.even3.com.br/casos-clinicos-virais-da-internet-791147/",
+   "urlFinal": null,
+   "data": "2026-11-19",
+   "dataFim": null,
+   "inicio": "19:30",
+   "fim": "21:00",
+   "formato": "online",
+   "preco": "Gratuito",
+   "gratuito": true,
+   "ingressos": [
+    {
+     "nome": "Autoridade de mesa e Palestrante",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Médicos e Estudantes de Medicina",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    },
+    {
+     "nome": "Público Geral",
+     "valor": "Gratuito",
+     "situacao": "vigente"
+    }
+   ],
+   "plataforma": null,
+   "certificado": {
+    "trecho": "Haverá emissão de certificado, desde que cumpridos os pré-requisitos.",
+    "horas": null
+   },
+   "odonto": {
+    "sim": false,
+    "nivel": null,
+    "motivos": [],
+    "porque": ""
+   },
+   "ok": true,
+   "motivo": "",
+   "avisos": []
+  }
+ ],
+ "descartados": {
+  "formato presencial": 259,
+  "inscrições fechadas": 23,
+  "sem certificado para o participante": 12
+ },
+ "foraLista": [
+  {
+   "nome": "Webinar WIN Latam - WINfluence - Selfie sin filtros: Una reflexión sobre confianza, liderazgo y proyección profesional",
+   "url": "https://www.even3.com.br/webinar-win-latam-winfluence-selfie-sin-filtros-una-reflexion-sobre-confianza-liderazgo-y-proyeccion-profesional-802511/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "II Congresso de Psicologia e Direito Dialogando: Interfaces da Saúde Mental e do Sistema Jurídico",
+   "url": "https://www.even3.com.br/ii-congresso-de-psicologia-e-direito-dialogando-interfaces-da-saude-mental-e-do-sistema-juridico-804570/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "CREW ESTÁCIO NA PISTA (CAMISAS)",
+   "url": "https://www.even3.com.br/crew-estacio-na-pista-camisas-799597/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "III Congresso Internacional de Tecnologias Emergentes (CITE)",
+   "url": "https://www.even3.com.br/iii-cite/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "COMPRAS PY",
+   "url": "https://www.even3.com.br/compras-py-799429/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Emagrecer na era dos Análogos de GLP-1",
+   "url": "https://www.even3.com.br/emagrecer-na-era-dos-analogos-de-glp-1-805468/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "AREA DE ATUAÇÃO DO FARMACÊUTICO",
+   "url": "https://www.even3.com.br/area-de-atuacao-do-farmaceutico-799565/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Congresso Internacional de Medicina e Inovação em Saúde - CONAMED",
+   "url": "https://www.even3.com.br/congresso-de-medicina-e-inovacao-em-saude-conamed-799265/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Laboratorizando: Dificuldades de Aprendizagem",
+   "url": "https://www.even3.com.br/laboratorizando-dificuldades-de-aprendizagem-806844/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "VII Jornada de Letras – Formas da personagem: estratégias, cenas e vozes na narrativa literária",
+   "url": "https://www.even3.com.br/vii-jornada-de-letras-formas-da-personagem-estrategias-cenas-e-vozes-na-narrativa-literaria-790408/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "IV EXPOLIGAS: O que o Recém-formado precisa saber",
+   "url": "https://www.even3.com.br/iv-expoligas-o-que-o-recem-formado-precisa-saber-799431/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Oficina Integrada para o Manejo Clínico, Diagnóstico Laboratorial, Imunização e Vigilância das Meningites e Doenças Inva",
+   "url": "https://www.even3.com.br/oficina-integrada-para-o-manejo-clinico-diagnostico-laboratorial-imunizacao-e-vigilancia-das-meningites-e-doencas-invasivas-bacterianas-da-macrorregiao-centro-sul-809569/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Além do diagnóstico compreender, acolher e potencializarna Educação inclusiva",
+   "url": "https://www.even3.com.br/alem-do-diagnostico-compreender-acolher-e-potencializarna-educacao-inclusiva-799300/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Workshop: Territorialidade Amazônica e Clima",
+   "url": "https://www.even3.com.br/territorio-ancestralidade-e-direito-aquilombando-a-pauta-ambiental-amazonica-802978/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Biosfera Amazônica",
+   "url": "https://www.even3.com.br/biosfera-amazonica-799576/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Administração",
+   "url": "https://www.even3.com.br/administracao-800636/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Aula Aberta Oncoliga: Reabilitação e qualidade de vida após o câncer",
+   "url": "https://www.even3.com.br/aula-aberta-oncoliga-reabilitacao-e-qualidade-de-vida-apos-o-cancer-799267/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Descomplicando o CEP: Da Pesquisa à Submissão",
+   "url": "https://www.even3.com.br/descomplicando-o-cep-da-pesquisa-a-submissao-800631/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "proibição das bets",
+   "url": "https://www.even3.com.br/proibicao-das-bets-799595/",
+   "motivo": "inscrições fechadas (ingressos: encerrado)",
+   "odonto": false
+  },
+  {
+   "nome": "Revisão N3 Medexplique",
+   "url": "https://www.even3.com.br/11959639576-807519/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "ESTÁGIO ELETIVO SUPERVISIONADO",
+   "url": "https://www.even3.com.br/estagio-eletivo-supervisionado-799612/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Simpósio da Clínica Medic Imagem Diagnósticos – CMID-26.",
+   "url": "https://www.even3.com.br/simposio-da-clinica-medic-imagem-diagnosticos-cmid-26-809481/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "COMPRAS PY IMPORTS",
+   "url": "https://www.even3.com.br/compras-py-imports-799430/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Além do diagnóstico compreender, acolher e potencializar na Educação inclusivae potencializarna Educação inclusiva",
+   "url": "https://www.even3.com.br/alem-do-diagnostico-compreender-acolher-e-potencializar-na-educacao-inclusivae-potencializarna-educacao-inclusiva-799329/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Desfile de primavera",
+   "url": "https://www.even3.com.br/desfile-de-primavera-799472/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Aprendendo Torá sigulote",
+   "url": "https://www.even3.com.br/aprendendo-tora-sigulote-800632/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Jornada que Transforma — Ensino, Pesquisa e Extensão em Movimento.",
+   "url": "https://www.even3.com.br/jornada-que-transforma-ensino-pesquisa-e-extensao-em-movimento-01947122-ff9e-43d0-83dc-e65d7904bfab-804362/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "INGRESSÃO BI CAAT",
+   "url": "https://www.even3.com.br/ingressao-bi-caat-799392/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Nova diretoria para 2027",
+   "url": "https://www.even3.com.br/nova-diretoria-para-2027-799585/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "REVISÃO MEDEXPLIQUE N3",
+   "url": "https://www.even3.com.br/revisao-medexplique-n3-806968/",
+   "motivo": "inscrições fechadas (ingressos: em breve)",
+   "odonto": false
+  },
+  {
+   "nome": "\"Fenomenologia da Adição: Clínica e Valores\"",
+   "url": "https://www.even3.com.br/fenomenologia-da-adicao-clinica-e-valores-807168/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  },
+  {
+   "nome": "Evento Test",
+   "url": "https://www.even3.com.br/evento-test-799572/",
+   "motivo": "inscrições fechadas (sem o botão REALIZAR INSCRIÇÃO)",
+   "odonto": false
+  },
+  {
+   "nome": "Mentoria Friggi",
+   "url": "https://www.even3.com.br/mentoria-friggi-799370/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "A cura da criança interior",
+   "url": "https://www.even3.com.br/a-cura-da-crianca-interior-799378/",
+   "motivo": "inscrições fechadas (ingressos: não disponível)",
+   "odonto": false
+  },
+  {
+   "nome": "Fundamentos da Dosagem de Concreto: Do Traço à Resistência (ABCP e Caldas Branco)",
+   "url": "https://www.even3.com.br/fundamentos-da-dosagem-de-concreto-do-traco-a-resistencia-abcp-e-caldas-branco-811057/",
+   "motivo": "sem certificado para o participante",
+   "odonto": false
+  }
+ ],
+ "totalDia": 298,
+ "modos": {
+  "off": 259,
+  "on": 39
+ },
+ "odontologia": 0,
+ "duracaoS": 97
+}
