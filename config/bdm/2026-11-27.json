@@ -1,0 +1,122 @@
+{
+ "versao": 1,
+ "data": "2026-11-27",
+ "video": {
+  "id": "QqnlPfdJJbw",
+  "publicado": "2026-11-26T22:30:32+00:00"
+ },
+ "palpites": [
+  {
+   "id": "QqnlPfdJJbw-1",
+   "mandante": "Werder Bremen",
+   "visitante": "Borussia Mönchengladbach",
+   "competicao": "Bundesliga",
+   "inicio": "2026-11-27",
+   "mercado": "btts",
+   "linha": null,
+   "selecao": "sim",
+   "oddCitada": null,
+   "fora": false,
+   "motivo": null,
+   "conviccao": "normal"
+  },
+  {
+   "id": "QqnlPfdJJbw-2",
+   "mandante": "Werder Bremen",
+   "visitante": "Borussia Mönchengladbach",
+   "competicao": "Bundesliga",
+   "inicio": "2026-11-27",
+   "mercado": "ou",
+   "linha": 2.5,
+   "selecao": "mais",
+   "oddCitada": null,
+   "fora": false,
+   "motivo": null,
+   "conviccao": "normal"
+  },
+  {
+   "id": "QqnlPfdJJbw-3",
+   "mandante": "Nottingham Forest",
+   "visitante": "Chelsea",
+   "competicao": "Premier League",
+   "inicio": "2026-11-27T17:00:00-03:00",
+   "mercado": "dupla",
+   "linha": null,
+   "selecao": "x2",
+   "oddCitada": null,
+   "fora": false,
+   "motivo": null,
+   "conviccao": "baixa"
+  },
+  {
+   "id": "QqnlPfdJJbw-4",
+   "mandante": "Nottingham Forest",
+   "visitante": "Chelsea",
+   "competicao": "Premier League",
+   "inicio": "2026-11-27T17:00:00-03:00",
+   "mercado": "dnb",
+   "linha": null,
+   "selecao": "visitante",
+   "oddCitada": null,
+   "fora": false,
+   "motivo": null,
+   "conviccao": "baixa"
+  },
+  {
+   "id": "QqnlPfdJJbw-5",
+   "mandante": "Nottingham Forest",
+   "visitante": "Chelsea",
+   "competicao": "Premier League",
+   "inicio": "2026-11-27T17:00:00-03:00",
+   "mercado": "1x2",
+   "linha": null,
+   "selecao": "visitante",
+   "oddCitada": null,
+   "fora": false,
+   "motivo": null,
+   "conviccao": "baixa"
+  },
+  {
+   "id": "QqnlPfdJJbw-6",
+   "mandante": "Vila Nova",
+   "visitante": "Atlético Goianiense",
+   "competicao": "Série B",
+   "inicio": "2026-11-27",
+   "mercado": "ou",
+   "linha": 2.5,
+   "selecao": "menos",
+   "oddCitada": null,
+   "fora": false,
+   "motivo": null,
+   "conviccao": "normal"
+  },
+  {
+   "id": "QqnlPfdJJbw-7",
+   "mandante": "Fluminense",
+   "visitante": "Cruzeiro",
+   "competicao": "Brasileirão",
+   "inicio": "2026-11-27",
+   "mercado": "ou",
+   "linha": 2.5,
+   "selecao": "mais",
+   "oddCitada": null,
+   "fora": false,
+   "motivo": null,
+   "conviccao": "normal"
+  },
+  {
+   "id": "QqnlPfdJJbw-8",
+   "mandante": "Fluminense",
+   "visitante": "Cruzeiro",
+   "competicao": "Brasileirão",
+   "inicio": "2026-11-27",
+   "mercado": "btts",
+   "linha": null,
+   "selecao": "sim",
+   "oddCitada": null,
+   "fora": false,
+   "motivo": null,
+   "conviccao": "baixa"
+  }
+ ]
+}
