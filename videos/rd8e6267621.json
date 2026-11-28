@@ -1,0 +1,17 @@
+{
+ "canal": "livecoins",
+ "id": "rd8e6267621",
+ "titulo": "Arkham começa a monitorar transações de mixers de Bitcoin, incluindo CoinJoin da Wasabi e Whirlpool da Samourai",
+ "publicado": "2026-11-27T17:42:34+00:00",
+ "url": "https://livecoins.com.br/arkham-comeca-a-monitorar-transacoes-de-mixers-de-bitcoin-incluindo-coinjoin-da-wasabi-e-whirlpool-da-samourai/",
+ "duracao": null,
+ "descricao": "Mixers aumentam a privacidade dos investidores, mas também são utilizados por hackers para quebrar o rastro das transações\n Fonte: Arkham começa a monitorar transações de mixers de Bitcoin, incluindo CoinJoin da Wasabi e Whirlpool da Samourai \n Veja mais notícias sobre Bitcoin. Siga o Livecoins no Facebook , Twitter , Instagram e YouTube .",
+ "tipo": "blog",
+ "transcricao": "A Arkham, famosa plataforma de inteligência on-chain, divulgou nesta sexta-feira (27) que estará monitorando mixers de Bitcoin em sua plataforma. As duas ferramentas monitoradas no momento são o CoinJoin da Wasabi e o Whirlpool da Samourai.\n O destaque fica para a identificação de 13.892 bitcoins, avaliados em US$ 825 milhões na cotação atual, que não foram gastos em transações posteriores.\n Embora mixers não sejam ilegais, sendo vistos como ferramentas para aumentar a privacidade, algumas corretoras monitoram transações que passaram por esses serviços, podendo aplicar análises adicionais em depósitos.\n CoinJoin da Wasabi movimentou US$ 734 milhões nos últimos 30 dias, diz Arkham\n Apresentando seu serviço, a Arkham diz identificar rodadas, depósitos, saques e até mesmo hackers e mercados da darknet que enviaram Bitcoin para esses serviços que, como o nome sugere, misturam os bitcoins de usuários para dificultar o rastreamento das transações.\n “Cada página mostra quanto ainda permanece em moedas misturadas. No Wasabi, são 9.041,54 BTC (US$ 537,49 milhões), distribuídos em 225.248 moedas.”\n Arkham mostra dados sobre transações de CoinJoin na Wasabi. Fonte: Arkham/Reprodução. \n Segundo a empresa, 12.345 bitcoins entraram na ferramenta e outros 11.810 saíram nos últimos 30 dias.\n “Os depósitos mostram o endereço ou entidade que financiou cada entrada no CoinJoin, incluindo o endereço utilizado, o valor e a quantidade de UTXOs.”\n Arkham identifica hackers e mercados da darknet famosos que utilizaram o CoinJoin da Wasabi. Fonte: Arkham/Reprodução. \n Como pode ser observado no canto inferior direito da imagem acima, os hackers da Bitget e da Binance aparecem com os maiores depósitos, com 3.966 e 2.379 bitcoins, respectivamente.\n Whirlpool da Samourai está inativo desde 2024, mas moedas continuam sendo movimentadas\n Seguindo, a Arkham nota que o Whirlpool da Wasabi Wallet foi desativado ainda em abril de 2024 após uma operação dos EUA contra a carteira.\n Portanto, a empresa nota que nenhum depósito foi realizado nos últimos 30 dias, mas que 74 bitcoins (US$ 4,4 milhões) saíram do mixer no mesmo período.\n Empresa está monitorando transações na Whirlpool da Samourai Wallet. Fonte: Arkham/Reprodução. \n Como pode ser visto no gráfico acima, o número de moedas misturadas apresenta uma forte queda após a descontinuação do serviço.\n Fonte: Arkham começa a monitorar transações de mixers de Bitcoin, incluindo CoinJoin da Wasabi e Whirlpool da Samourai \n Veja mais notícias sobre Bitcoin. Siga o Livecoins no Facebook , Twitter , Instagram e YouTube .",
+ "idioma": null,
+ "fonte": "feed",
+ "motivoSemTranscricao": null,
+ "tentativas": 6,
+ "visto": "2026-11-27T18:58:50Z",
+ "atualizado": "2026-11-27T18:58:50Z"
+}

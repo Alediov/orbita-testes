@@ -1,0 +1,586 @@
+{
+ "versao": 1,
+ "em": "2026-11-26T20:26:07Z",
+ "proxima": "2026-12-03T20:26:07Z",
+ "sobre": "Canais parecidos com os que a antena segue (tools/ideias/descobrir.py, 1×/semana). Só sugestões: seguir ou dispensar é no app.",
+ "buscas": [
+  "ganhar dinheiro com IA",
+  "renda extra com inteligência artificial",
+  "pools de liquidez",
+  "renda passiva DeFi",
+  "faucet bitcoin grátis",
+  "airdrop cripto grátis",
+  "apostas de valor futebol",
+  "trader esportivo",
+  "apps que pagam via pix",
+  "renda passiva internet ociosa",
+  "aplicativo que paga para deixar o celular ligado",
+  "faucet pagando 2026",
+  "app de mineração no celular pagando"
+ ],
+ "fontes": {
+  "destaque": 0,
+  "busca": 144,
+  "citado": 8
+ },
+ "candidatos": 141,
+ "canais": [
+  {
+   "chave": "manualdasabrinanovo",
+   "nome": "Manual Da Sabrina 2",
+   "handle": "Manualdasabrinanovo",
+   "channel_id": "UCZf4bWFfuHotqwg5YVmyrFw",
+   "url": "https://www.youtube.com/@Manualdasabrinanovo",
+   "nota": 88,
+   "parecidoCom": "Cripto BR",
+   "parecidoComChave": "criptobr",
+   "parecenca": 0.212,
+   "videos30": 11,
+   "ultimo": 1.2,
+   "inscritos": 12100,
+   "origens": [
+    "busca"
+   ],
+   "motivo": "busca “apps que pagam via pix”",
+   "titulos": [
+    "3 Formas de fazer RENDA EXTRA no PIX (Testei na Prática e 100% grátis)",
+    "ESSES 3 SITES PAGAM NO PIX! Eu testei e Mostrei Provas de Pagamento",
+    "TESTEI 3 APPS DE RENDA EXTRA POR 24 HORAS! Quando eu recebi?",
+    "ESSES 3 APPS PAGAM EM DÓLAR PELO CELULAR! Testei na Prática e Recebi"
+   ],
+   "primeiraVez": "2026-11-26T20:26:07Z",
+   "novo": true
+  },
+  {
+   "chave": "rendacomaplicativos2025",
+   "nome": "RENDA COM APLICATIVOS",
+   "handle": "RENDACOMAPLICATIVOS-2025",
+   "channel_id": "UCIjUCaOLKEfNEPMheoAnpMA",
+   "url": "https://www.youtube.com/@RENDACOMAPLICATIVOS-2025",
+   "nota": 80,
+   "parecidoCom": "Craft Gold",
+   "parecidoComChave": "craftgold",
+   "parecenca": 0.179,
+   "videos30": 15,
+   "ultimo": 0.2,
+   "inscritos": 3850,
+   "origens": [
+    "busca"
+   ],
+   "motivo": "busca “apps que pagam via pix”",
+   "titulos": [
+    "💥PAGA NO PIX! NOVO APP DE TAREFAS SIMPLES NO CELULAR | 100% SEGURO",
+    "💥ESSE É NOVO 🤑 !! APLICATIVO P4GANDO MUITO VIA P!X NO AUTOMÁTICO | RECEBA R$15,03 NO AUTOMÁTICO ",
+    "💥TOP 6 APLICATIVOS PARA GANHAR DINHEIRO DE VERDADE VIA P!X GRÁTIS NO CELULAR ",
+    "💥PAGOUU !! LANÇAMENTO 2 NOVOS APPS PARA GANHAR DINHEIRO DE VERDADE NO P!X ASSISTINDO PELO CELULAR "
+   ],
+   "primeiraVez": "2026-11-26T20:26:07Z",
+   "novo": true
+  },
+  {
+   "chave": "ganhecomfaucet",
+   "nome": "Ganhe com faucet",
+   "handle": "ganhecomfaucet",
+   "channel_id": "UCfchcFpj4uO07Sd8hYejL2g",
+   "url": "https://www.youtube.com/@ganhecomfaucet",
+   "nota": 71,
+   "parecidoCom": "Cripto BR",
+   "parecidoComChave": "criptobr",
+   "parecenca": 0.13,
+   "videos30": 4,
+   "ultimo": 1.1,
+   "inscritos": 1230,
+   "origens": [
+    "busca"
+   ],
+   "motivo": "busca “faucet bitcoin grátis”; busca “faucet pagando 2026”",
+   "titulos": [
+    "🔥 LIMERCOIN, GANHE MÁQUINAS JOGANDO E MINERE BITCOIN GRÁTIS. MONTE SUA SALA DE MINERAÇÃO.",
+    "🔥 FAUCET DO CANAL, GANHE COM FAUCET. GANHE BTC CADA 2 MINUTOS! #btc #solana",
+    "CRYPTOFLARE PAGANDO DIRETO NA FAUCETPAY!",
+    "FAUCET LOOTIZY PAGOU NA HORA, GANHE CRIPTOMOEDAS GRATIS. FAZENDO TAREFAS."
+   ],
+   "primeiraVez": "2026-11-11T21:17:57Z",
+   "novo": false
+  },
+  {
+   "chave": "ramoncunha",
+   "nome": "Ramon Cunha",
+   "handle": "Ramon_Cunha",
+   "channel_id": "UCBcV3Bks6FkOHn6aiEN1_Tg",
+   "url": "https://www.youtube.com/@Ramon_Cunha",
+   "nota": 71,
+   "parecidoCom": "Canal do Marinho",
+   "parecidoComChave": "marinho",
+   "parecenca": 0.13,
+   "videos30": 15,
+   "ultimo": 0.9,
+   "inscritos": 59100,
+   "origens": [
+    "busca"
+   ],
+   "motivo": "busca “pools de liquidez”",
+   "titulos": [
+    "Parei de Investir Só em Cripto: O Que Me Fez Mudar?",
+    "20% de Taxa É Caro? Faça a Conta Antes",
+    "O Luxo Te Convenceu ou Foi o Conteúdo?",
+    "O APR Saiu de 70% para 10%: O Que Aconteceu?"
+   ],
+   "primeiraVez": "2026-11-11T21:17:57Z",
+   "novo": false
+  },
+  {
+   "chave": "tusarendaextra398",
+   "nome": "Tusa Renda Extra",
+   "handle": "tusarendaextra398",
+   "channel_id": "UCQI2PbPce_y1B7xUP5VgWBw",
+   "url": "https://www.youtube.com/@tusarendaextra398",
+   "nota": 63,
+   "parecidoCom": "Cripto BR",
+   "parecidoComChave": "criptobr",
+   "parecenca": 0.091,
+   "videos30": 9,
+   "ultimo": 0.0,
+   "inscritos": 1540,
+   "origens": [
+    "busca"
+   ],
+   "motivo": "busca “faucet pagando 2026”",
+   "titulos": [
+    "🔥MONSTER FAUCET JOGUE E GANHE CRIPTOMOEDAS GRÁTIS 💰PROVA DE PAGAMENTO AO VIVO💰",
+    "🔥PAGOU NA HORA! 2 MELHORES SITES PARA GANHAR CRIPTOMOEDAS EM 2026",
+    "🎯TEASERFAST ATUALIZOUU | AGORA PAGA USDT NA FAUCETPAY | SAQUE AO VIVO",
+    "🔥COMO GANHAR CRIPTOMOEDAS 2026 | MONSTER FAUCET PAGANDO MUITO"
+   ],
+   "primeiraVez": "2026-11-26T20:26:07Z",
+   "novo": true
+  },
+  {
+   "chave": "defiemfoco",
+   "nome": "DeFi em Foco",
+   "handle": "DEFIEMFOCO",
+   "channel_id": "UCHrsqdrZW3GbBkaR7Xqgv5g",
+   "url": "https://www.youtube.com/@DEFIEMFOCO",
+   "nota": 61,
+   "parecidoCom": "Canal do Marinho",
+   "parecidoComChave": "marinho",
+   "parecenca": 0.083,
+   "videos30": 15,
+   "ultimo": 0.3,
+   "inscritos": 11800,
+   "origens": [
+    "busca"
+   ],
+   "motivo": "busca “renda passiva DeFi”",
+   "titulos": [
+    "GRIDBOT EM NASDAQ. VALE A PENA??",
+    "INVERSE COIN M TUTORIAL PRATICO",
+    "BITCOIN E MERCADO FIZERAM FUNDO???",
+    "RENDA PASSIVA EM DOLAR E SEUS RISCOS"
+   ],
+   "primeiraVez": "2026-11-26T03:34:48Z",
+   "novo": false
+  },
+  {
+   "chave": "novariquezaia",
+   "nome": "Nova Riqueza IA",
+   "handle": "NovaRiquezaIA",
+   "channel_id": "UCPiFnumppJKeNVGo5DS-xKQ",
+   "url": "https://www.youtube.com/@NovaRiquezaIA",
+   "nota": 58,
+   "parecidoCom": "Craft Gold",
+   "parecidoComChave": "craftgold",
+   "parecenca": 0.073,
+   "videos30": 15,
+   "ultimo": 1.2,
+   "inscritos": 179000,
+   "origens": [
+    "busca"
+   ],
+   "motivo": "busca “ganhar dinheiro com IA”",
+   "titulos": [
+    "🚀 NOVA IA GRÁTIS Cria FILME 3D Sozinha (Canal Sem Aparecer Me Pagou R$72 MIL)",
+    "🚀 NOVA IA no Claude Cria VÍDEOS Que Monetizam com 1 FOTO (Sem Aparecer)",
+    "🔥 Como Criar Seu PRIMEIRO Vídeo BÍBLICO com IA Só Conversando (Sem Aparecer e Sem Editar)",
+    "🚀 LIBEROU: NOVA IA Secreta Cria NOVELINHA com o MESMO Personagem em Todos os Episódios (Sem Editar)"
+   ],
+   "primeiraVez": "2026-11-26T20:26:07Z",
+   "novo": true
+  },
+  {
+   "chave": "tramponainternet",
+   "nome": "Trampo na Internet",
+   "handle": "TramponaInternet",
+   "channel_id": "UC9LxHk6jkjIGO5cRrgo4xRQ",
+   "url": "https://www.youtube.com/@TramponaInternet",
+   "nota": 57,
+   "parecidoCom": "Craft Gold",
+   "parecidoComChave": "craftgold",
+   "parecenca": 0.061,
+   "videos30": 11,
+   "ultimo": 0.8,
+   "inscritos": 12500,
+   "origens": [
+    "busca"
+   ],
+   "motivo": "busca “renda passiva internet ociosa”",
+   "titulos": [
+    "Como Criar Site Igual Youtube - Monetização na Hora",
+    "COMO GANHAR $10 MIL COM LIVES INFINITAS - Descubra Como!",
+    "GANHAR $10 MIL POR MÊS COM LIVES NO AUTOMÁTICO? Aprenda a Criar Lives Infinitas!",
+    "🔴GTA 6: Gameplay Insana -  Aventuras, Missões e Muita Ação!"
+   ],
+   "primeiraVez": "2026-11-26T20:26:07Z",
+   "novo": true
+  },
+  {
+   "chave": "rendacomianapratica",
+   "nome": "Renda Com IA na Prática",
+   "handle": "rendacomianapratica",
+   "channel_id": "UCfSnIFEHQ2outrrEqYYgTnw",
+   "url": "https://www.youtube.com/@rendacomianapratica",
+   "nota": 55,
+   "parecidoCom": "Craft Gold",
+   "parecidoComChave": "craftgold",
+   "parecenca": 0.222,
+   "videos30": 0,
+   "ultimo": 44.6,
+   "inscritos": 1,
+   "origens": [
+    "busca"
+   ],
+   "motivo": "busca “renda extra com inteligência artificial”",
+   "titulos": [
+    "Como Criar um E-book de 10 Páginas com IA Usando o Gamma | Passo a Passo ",
+    "2032: A Inteligência Artificial Vai Acabar com os Empregos",
+    "Como Usar IA para Criar Renda Extra pelo Celular",
+    "Como fazer seu celular ou notebook   gerar renda ! #ganhardinheiro #negóciosdigitais #rendaextra"
+   ],
+   "primeiraVez": "2026-11-11T21:17:57Z",
+   "novo": false
+  },
+  {
+   "chave": "upignata1",
+   "nome": "UPignata",
+   "handle": "UPignata1",
+   "channel_id": "UC3_A6CJU-l0wTCoVPTQ3STw",
+   "url": "https://www.youtube.com/@UPignata1",
+   "nota": 55,
+   "parecidoCom": "Cripto BR",
+   "parecidoComChave": "criptobr",
+   "parecenca": 0.058,
+   "videos30": 8,
+   "ultimo": 3.0,
+   "inscritos": 1560,
+   "origens": [
+    "busca"
+   ],
+   "motivo": "busca “app de mineração no celular pagando”",
+   "titulos": [
+    "SERÁ ESSE O MELHOR PROGRAMA DE 2026 PARA MINERAR CRIPTOMOEDAS NO PC? 😱 UPRIG-PC",
+    "UPRIG ATUALIZADO! MINERAÇÃO SOLO NA HELIOSPOOL PELO CELULAR? 😱",
+    "ZPOOL MINERA VERUSCOIN? FIZ O TESTE COM O UPRIG!",
+    "🔥 MINERANDO VERUSCOIN NO CELULAR! Veja Como É Fácil com UPRIG!"
+   ],
+   "primeiraVez": "2026-11-26T20:26:07Z",
+   "novo": true
+  },
+  {
+   "chave": "marceloo10",
+   "nome": "Tio Itachi",
+   "handle": "marcelo_o_10",
+   "channel_id": "UCd0jaU3BBwAc0qRC8TRYLxA",
+   "url": "https://www.youtube.com/@marcelo_o_10",
+   "nota": 55,
+   "parecidoCom": "Craft Gold",
+   "parecidoComChave": "craftgold",
+   "parecenca": 0.061,
+   "videos30": 8,
+   "ultimo": 2.3,
+   "inscritos": 25600,
+   "origens": [
+    "busca"
+   ],
+   "motivo": "busca “aplicativo que paga para deixar o celular ligado”",
+   "titulos": [
+    "AUTOMATIZE SEU WHATSAPP COM INTELIGÊNCIA ARTIFICIAL VENDA MAIS COM A YCLOUD",
+    "COMO CONSEGUIR UM NÚMERO VIRTUAL GRÁTIS em 2026 (SEM CHIP)",
+    "NÚMERO VIRTUAL 2026: Como Criar para WhatsApp e Outros Apps SEM CHIP",
+    "COMO FAZER NÚMERO VIRTUAL PARA WHATSAPP E VARIOS APPS SEM CHIP - NÚMERO VIRTUAL SEM ERRO 2026"
+   ],
+   "primeiraVez": "2026-11-26T20:26:07Z",
+   "novo": true
+  },
+  {
+   "chave": "coinnaconta",
+   "nome": "Coin na Conta",
+   "handle": "coinnaconta",
+   "channel_id": "UCVyOIUY3CdszULZGQ_6ZC-Q",
+   "url": "https://www.youtube.com/@coinnaconta",
+   "nota": 54,
+   "parecidoCom": "Cripto BR",
+   "parecidoComChave": "criptobr",
+   "parecenca": 0.06,
+   "videos30": 8,
+   "ultimo": 3.9,
+   "inscritos": 1080,
+   "origens": [
+    "busca"
+   ],
+   "motivo": "busca “faucet pagando 2026”",
+   "titulos": [
+    "GANHE DINHEIRO JOGANDO (BATALHAS) OU ASSISTINDO VIDEOS | MONSTERFAUCET #faucetpay #usdt_earn",
+    "PEPEON | GANHE CRIPTOMOEDA PEPE NA FAUCETPAY.IO (FAUCET e FORTUNE WHEEL) 2026 #pepe #faucetpay",
+    "COINADS | COMO GANHAR DINHEIRO NA INTERNET (OFFERWALL.ME | BITCOTASKS) #faucetpay #litecoingratis",
+    "CRIPTOMEDIA | FAUCET PAGANDO NA HORA EM DIGIBYTE (A CADA 10 MINUTOS) NA FAUCETPAY.IO 2026 #digibyte"
+   ],
+   "primeiraVez": "2026-11-26T20:26:07Z",
+   "novo": true
+  }
+ ],
+ "ignorados": {
+  "sem postar": 37,
+  "nota baixa": 3
+ },
+ "avaliados": [
+  {
+   "nome": "Manual Da Sabrina 2",
+   "nota": 88,
+   "parecenca": 0.212,
+   "perto": "criptobr",
+   "videos30": 11,
+   "pt": 0.36,
+   "peso": 0.5
+  },
+  {
+   "nome": "RENDA COM APLICATIVOS",
+   "nota": 80,
+   "parecenca": 0.179,
+   "perto": "craftgold",
+   "videos30": 15,
+   "pt": 0.38,
+   "peso": 0.42
+  },
+  {
+   "nome": "Ganhe com faucet",
+   "nota": 71,
+   "parecenca": 0.13,
+   "perto": "criptobr",
+   "videos30": 4,
+   "pt": 0.18,
+   "peso": 1.0
+  },
+  {
+   "nome": "Ramon Cunha",
+   "nota": 71,
+   "parecenca": 0.13,
+   "perto": "marinho",
+   "videos30": 15,
+   "pt": 0.25,
+   "peso": 0.48
+  },
+  {
+   "nome": "Tusa Renda Extra",
+   "nota": 63,
+   "parecenca": 0.091,
+   "perto": "criptobr",
+   "videos30": 9,
+   "pt": 0.24,
+   "peso": 0.46
+  },
+  {
+   "nome": "DeFi em Foco",
+   "nota": 61,
+   "parecenca": 0.083,
+   "perto": "marinho",
+   "videos30": 15,
+   "pt": 0.11,
+   "peso": 0.48
+  },
+  {
+   "nome": "Nova Riqueza IA",
+   "nota": 58,
+   "parecenca": 0.073,
+   "perto": "craftgold",
+   "videos30": 15,
+   "pt": 0.31,
+   "peso": 0.46
+  },
+  {
+   "nome": "Trampo na Internet",
+   "nota": 57,
+   "parecenca": 0.061,
+   "perto": "craftgold",
+   "videos30": 11,
+   "pt": 0.26,
+   "peso": 0.5
+  },
+  {
+   "nome": "Renda Com IA na Prática",
+   "nota": 55,
+   "parecenca": 0.222,
+   "perto": "craftgold",
+   "videos30": 0,
+   "pt": 0.3,
+   "peso": 0.5
+  },
+  {
+   "nome": "UPignata",
+   "nota": 55,
+   "parecenca": 0.058,
+   "perto": "criptobr",
+   "videos30": 8,
+   "pt": 0.19,
+   "peso": 0.5
+  },
+  {
+   "nome": "Tio Itachi",
+   "nota": 55,
+   "parecenca": 0.061,
+   "perto": "craftgold",
+   "videos30": 8,
+   "pt": 0.27,
+   "peso": 0.42
+  },
+  {
+   "nome": "Coin na Conta",
+   "nota": 54,
+   "parecenca": 0.06,
+   "perto": "criptobr",
+   "videos30": 8,
+   "pt": 0.2,
+   "peso": 0.42
+  },
+  {
+   "nome": "Jhonatas Silva",
+   "nota": 50,
+   "parecenca": 0.036,
+   "perto": "craftgold",
+   "videos30": 13,
+   "pt": 0.25,
+   "peso": 0.44
+  },
+  {
+   "nome": "Dinheiro com IA",
+   "nota": 50,
+   "parecenca": 0.034,
+   "perto": "craftgold",
+   "videos30": 15,
+   "pt": 0.29,
+   "peso": 0.42
+  },
+  {
+   "nome": "Renda Extra com IA",
+   "nota": 49,
+   "parecenca": 0.037,
+   "perto": "craftgold",
+   "videos30": 15,
+   "pt": 0.22,
+   "peso": 0.46
+  },
+  {
+   "nome": "App Assistente",
+   "nota": 47,
+   "parecenca": 0.067,
+   "perto": "craftgold",
+   "videos30": 4,
+   "pt": 0.23,
+   "peso": 0.44
+  },
+  {
+   "nome": "MarcosSurreal - Dinheiro com Internet",
+   "nota": 47,
+   "parecenca": 0.085,
+   "perto": "craftgold",
+   "videos30": 3,
+   "pt": 0.27,
+   "peso": 0.44
+  },
+  {
+   "nome": "Rogério Menezes",
+   "nota": 46,
+   "parecenca": 0.026,
+   "perto": "marinho",
+   "videos30": 11,
+   "pt": 0.1,
+   "peso": 0.44
+  },
+  {
+   "nome": "​Mizael | Renda Extra & IA",
+   "nota": 42,
+   "parecenca": 0.058,
+   "perto": "craftgold",
+   "videos30": 4,
+   "pt": 0.22,
+   "peso": 0.42
+  },
+  {
+   "nome": "Jonathan Godoy",
+   "nota": 35,
+   "parecenca": 0.062,
+   "perto": "marinho",
+   "videos30": 1,
+   "pt": 0.23,
+   "peso": 0.46
+  },
+  {
+   "nome": "Renda Extra no Pix | Apps que Pagam",
+   "nota": 29,
+   "parecenca": 0.098,
+   "perto": "craftgold",
+   "videos30": 0,
+   "pt": 0.33,
+   "peso": 0.46
+  },
+  {
+   "nome": "Renda Extra com IA",
+   "nota": 25,
+   "parecenca": 0.044,
+   "perto": "craftgold",
+   "videos30": 0,
+   "pt": 0.31,
+   "peso": 0.79
+  },
+  {
+   "nome": "eeuteus",
+   "nota": 16,
+   "parecenca": 0.03,
+   "perto": "craftgold",
+   "videos30": 0,
+   "pt": 0.35,
+   "peso": 0.48
+  }
+ ],
+ "dispensados": 0,
+ "vistos": {
+  "UCYFernhiwoC2qOrOIkNY8Xg": "2026-11-11T21:10:32Z",
+  "UC6iL_ebwOrIzvUx7uG5E8-A": "2026-11-11T21:10:32Z",
+  "UCBcV3Bks6FkOHn6aiEN1_Tg": "2026-11-11T21:17:57Z",
+  "UCVYomcwGfbA1eCqb3nsk86A": "2026-11-11T21:17:57Z",
+  "UCZecy2-Ech9LZM3MkVB1_JA": "2026-11-11T21:17:57Z",
+  "UCW8pUg1HYjkrzxkmW8gm-Kg": "2026-11-11T21:17:57Z",
+  "UCfchcFpj4uO07Sd8hYejL2g": "2026-11-11T21:17:57Z",
+  "UCgZHUsIfZnqHPNg03vht7pg": "2026-11-11T21:17:57Z",
+  "UC9MMn_6qKyuk4RjDRJV0CKA": "2026-11-11T21:17:57Z",
+  "UCfSnIFEHQ2outrrEqYYgTnw": "2026-11-11T21:17:57Z",
+  "UC47HCgMIr0dOnKktoz1ADNA": "2026-11-11T21:17:57Z",
+  "UCeOlO_8twGQEm3SUpP_8qJQ": "2026-11-11T21:17:57Z",
+  "UCINztrlU6mXEH0H4r31oEGw": "2026-11-11T21:17:57Z",
+  "UCFa0L3uDOgBnxoT17Z4KgEQ": "2026-11-19T02:35:05Z",
+  "UCtWjL95b4wsQZ4IWYlvvdlQ": "2026-11-19T02:35:05Z",
+  "UC1hR2rnLEr4whKKIsDiMU3A": "2026-11-19T02:35:05Z",
+  "UCk9fXOH4sM6C8dRpWztXKFQ": "2026-11-19T02:35:05Z",
+  "UCHrsqdrZW3GbBkaR7Xqgv5g": "2026-11-26T03:34:48Z",
+  "UC9btJUE2BQS0ZUOBQp14PBQ": "2026-11-26T03:34:48Z",
+  "UCGqR8hjrr6fXBJwDQv2M7Sw": "2026-11-26T03:34:48Z",
+  "UCZf4bWFfuHotqwg5YVmyrFw": "2026-11-26T20:26:07Z",
+  "UCIjUCaOLKEfNEPMheoAnpMA": "2026-11-26T20:26:07Z",
+  "UCQI2PbPce_y1B7xUP5VgWBw": "2026-11-26T20:26:07Z",
+  "UCPiFnumppJKeNVGo5DS-xKQ": "2026-11-26T20:26:07Z",
+  "UC9LxHk6jkjIGO5cRrgo4xRQ": "2026-11-26T20:26:07Z",
+  "UC3_A6CJU-l0wTCoVPTQ3STw": "2026-11-26T20:26:07Z",
+  "UCd0jaU3BBwAc0qRC8TRYLxA": "2026-11-26T20:26:07Z",
+  "UCVyOIUY3CdszULZGQ_6ZC-Q": "2026-11-26T20:26:07Z"
+ },
+ "erros": []
+}

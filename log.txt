@@ -1,0 +1,54 @@
+03:19:05 rodada 2026-11-28T03:19:05Z; yt-dlp sim, youtube-transcript-api sim
+03:19:05 craftgold: 15 no feed/lista, channel_id UCo-JPwjQ6wEMLXhPJDV7xLg
+03:19:05 marinho: 15 no feed/lista, channel_id UCgO3Yasdf1gbLwtbZ69o_6w
+03:19:05 criptobr: 15 no feed/lista, channel_id UCD9A8nZLAtZiM_1ZgLkn-kg
+03:19:05 theoborges: 15 no feed/lista, channel_id UCLWt2kCXdBlc2qWlUrP4vqw
+03:19:05 sabrina: 15 no feed/lista, channel_id UCZf4bWFfuHotqwg5YVmyrFw
+03:19:06 rendaapps: 15 no feed/lista, channel_id UCIjUCaOLKEfNEPMheoAnpMA
+03:19:06 tusa: 15 no feed/lista, channel_id UCQI2PbPce_y1B7xUP5VgWBw
+03:19:07 livecoins: 3 itens no feed (blog), 0 novos
+03:19:07 portaldobitcoin: 3 itens no feed (blog), 0 novos
+03:19:07 cointelegraphbr: feed de fora falhou (HTTP Error 410: Gone)
+03:19:07 4 vídeos novos
+03:19:09 sem transcrição rendaapps Tmu-c3Xszvg: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:19:15 sem transcrição criptobr 6aqr9Hoxb34: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:19:21 sem transcrição tusa -0WWYKQ0dX8: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:19:27 sem transcrição sabrina K4qZcwxGf0Q: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:19:32 ok rendaapps vphF9l5Nn84 (youtube-transcript-api, pt, 2102 caracteres)
+03:19:38 sem transcrição rendaapps ZCsvceXVnLA: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:19:44 sem transcrição tusa 03wzYiOcyCY: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:19:50 sem transcrição rendaapps nq4OBWEbqOY: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:19:56 sem transcrição rendaapps u2unB3UroHs: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:20:02 sem transcrição rendaapps MnHWCgLFp6Y: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:20:08 sem transcrição sabrina DTSJtrnuQmo: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:20:14 sem transcrição tusa UOvibJ_UImk: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:20:20 sem transcrição sabrina wmMP8XlbwVI: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:20:26 sem transcrição sabrina Or6T3xxQQQo: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:20:33 sem transcrição sabrina duwGzWlfCmA: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:20:39 sem transcrição tusa uZ2ZrKHj5Gw: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:20:45 sem transcrição tusa qghTiIIgOoc: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:20:50 sem transcrição tusa 7uHncQd3iJg: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:20:56 sem transcrição sabrina W_AB3HI0oQ8: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:21:02 sem transcrição sabrina C_7LYzWhLVo: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:21:08 sem transcrição sabrina mcwZjlpjsZQ: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:21:14 sem transcrição tusa _Huu-sd9mKo: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:21:20 sem transcrição tusa SPGd76_8PfE: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:21:27 sem transcrição sabrina 1DnjEaMwIes: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:21:33 sem transcrição sabrina M4axnlD2kIg: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:21:38 sem transcrição tusa J_UDhRwHVg4: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:21:44 sem transcrição sabrina R5yzZp3Jpn4: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:21:51 sem transcrição tusa BGuP2NNIZ7U: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:21:57 sem transcrição sabrina Ryk1L4O5vxo: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:22:03 sem transcrição sabrina frFJwVgz6JY: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:22:09 sem transcrição sabrina JnuMNV_zxdc: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:22:15 sem transcrição tusa 01ot0L51IVw: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:22:21 sem transcrição tusa 1U3TndW2f8U: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:22:27 sem transcrição tusa fwCwoGcr8og: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:22:33 sem transcrição tusa 6n-9Zme38r8: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:22:39 sem transcrição tusa MMU-tJc5B7w: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:22:44 sem transcrição sabrina QfOphFMCy9o: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:22:50 sem transcrição tusa ka5ELpkpeXY: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:22:56 sem transcrição rendaapps Y3l9_1k_188: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:23:02 sem transcrição sabrina Ft4ysLuQ2fg: yt-dlp: bloqueio do YouTube a este IP; youtube-transcript-api: bloqueio do YouTube a este IP
+03:23:02 224 ficaram para a próxima rodada
+03:23:02 fim: 308 vídeos, 41 com transcrição
