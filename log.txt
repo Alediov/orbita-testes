@@ -1,0 +1,400 @@
+  robos: segbtc 244 velas de 1m, patrimônio 820,03
+  robos: geth10 244 velas de 1m, patrimônio 783,63
+  robos: tcruzeth 244 velas de 1m, patrimônio 930,08
+  robos: segeth 244 velas de 1m, patrimônio 810,36
+  robos: gneutra1 244 velas de 1m, patrimônio 866,29
+  robos: gneutra3 244 velas de 1m, patrimônio 598,87
+  robos: dcam3 244 velas de 1m, patrimônio 476,52
+  robos: gsaida1 244 velas de 1m, patrimônio 923,08
+  robos: gsaida3 244 velas de 1m, patrimônio 781,74
+  robos: tcruzls 244 velas de 1m, patrimônio 974,17
+  robos: rbandasls 244 velas de 1m, patrimônio 1.003,02
+  robos: irbandas 244 velas de 1m, patrimônio 922,34
+  robos: irsi 244 velas de 1m, patrimônio 1.023,26
+  robos: icruzls 244 velas de 1m, patrimônio 1.008,81
+  robos: gsol1 244 velas de 1m, patrimônio 918,33
+  robos: ghype1 244 velas de 1m, patrimônio 984,70
+  robos: ok (39 versões, 12 pedidos, 12.6 s)
+  apostas: ok (17 versões, 2 pedidos, 0.8 s)
+  looping: moonwell: DefiLlama: nenhum pool de USDC na Base do projeto moonwell
+  looping: teste no passado refeito (2025-11-26 a 2026-11-26)
+  looping: staking − juro do ether no ano: média 0,14% ao ano (de -1,79% a 13,04%); montar custa ~0,13% do dinheiro por × a mais
+  looping: ok (13 versões, 4 pedidos, 2.1 s)
+  opcoes: ok (18 versões, 16 pedidos, 4.6 s)
+  pools: gauge: RPC eth_call: execution reverted
+  pools: ok (68 versões, 34 pedidos, 10.6 s)
+  previsao: ok (8 versões, 231 pedidos, 56.9 s)
+fim: 474 pedidos, 239 s
+rodada 2026-11-27 10:11Z
+  apostas: ok (17 versões, 2 pedidos, 0.7 s)
+fim: 3 pedidos, 2 s
+rodada 2026-11-27 11:33Z
+  apostas: ok (17 versões, 2 pedidos, 0.7 s)
+fim: 3 pedidos, 2 s
+rodada 2026-11-27 12:23Z
+  memes: PumpPortal: PumpPortal: o servidor recusou o websocket: HTTP/1.1 502 Bad Gateway
+  memes: ok (8 versões, 1 pedidos, 0.2 s)
+fim: 2 pedidos, 2 s
+rodada 2026-11-27 12:54Z
+  apostas: ok (17 versões, 2 pedidos, 0.8 s)
+fim: 3 pedidos, 2 s
+rodada 2026-11-27 13:03Z
+  HTTP 429 em GeckoTerminal /networks/solana/pools/9UuvWuUMFBRjmdM9xcccD8ADDFTb11EASVF2w; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/9PcfMkSJJXTSasnpzdousjdULAJwDYhbQvaF; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/H4x39y6euEpyp2jATT7CenJj1h3uayCxQZFR; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/6YJHG6YQpdcGrxrRWiPfVGMDGsVkBjFU1hQD9; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/CeDDrqGKhYNNP6dTikDi9NhXFJLAibZsrAMv; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/37m9bcoUfCeY7RpCbs1WaL4uXAimUwpCqCFU; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/HDGXTMobDPN9ts3R8wtBku5roxkPib39psmSG; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/Bh5FJWjGK86KbC4gJbkxWtzoBw5mpbTNFYH51; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/61JEpmbVi32PA5QLX6U5XaR1Pr26JRF7sPw3T; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/ATqEbjctYyXYBe4MdbBLSDqEBJPkvqdMwbeH; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/4pqkFiBwCsTkgnFbtdziJ43MLjQrxKYSEiwb; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/48ouytmdRUnEBFWemeA45RrVwMVxJGFD3vJhx; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/AgBVnJqPtn9BbZdpXvddiwdzbMfJzRkmB9YF; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/D2CqDRVJXFWarjjNRu52aGqHKTfUJRpmV6c9; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/79Yw35H7xMWdHZwsrKFBfYW2t2gdbsVVpNox; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/3qCgoVdD3PkuZRXecvgWkNFEXCQqDjAzrsHq; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/2AvBhywkNmQebDFfKSC1EfBuSnGad674PGeie; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/CggERwbXx2TXQCwbLy1E7375SmZS6Tt2m9V8n; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/12cw3rqjFHtG1pTRU1f2ut4ygp8oeZZZuvRBi; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/6oiQhHpAy1PkpSZsxeimRRxkRND3b6seNkVsv; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/2BXfm1QSLcvxTiMZRSMoogS28vVXxs6esmUR; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/8XF3WHPJ96sLwDcGAEwWGiMyfvXg5MWWHgUh6; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/HbdpyPa58CYKYoaMBsJW1gSA8gGkJC1FK4aqb; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/DZctiuSEDc8xEsq88MyMKxPVio3yqdwqogb7j; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/61vxaB9c9DJFnweLMpzdMXdrRAy4x1ppJGENo; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/GCopWaNdX6wepgHQKkhqqPpdYNcqf5k9gtPN; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/56xiYUGebsn2DiGehLyaENXxmrBZ5ucUX4Vbq; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/DAobfKQevj8aTVZuSXPNmzziPfo5nzpQtNyL5; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/9B2G44wfy2ap4nVrqL5tk4yMbt66hBXCu94b; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/tokens/5YT5oMZBtFdKeu4n7n9hPEWW8cj73rT7FYu6; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/22g2ssa2EoVTwYo76HC7Z3ZGzzVciJ63V1d8h; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/D8XTr8BnXKqmYPkb9XL981Q9n2TVrwhH8ghuF; espera 30s
+  HTTP 429 em GeckoTerminal /networks/solana/pools/BZtv81GLMgxunM6VfW9cnkJ8Pbg64QxLDfZXc; espera 30s
+  memes: amostra de 2026-11-26 analisada (59 tokens)
+  memes: ok (8 versões, 133 pedidos, 1215.1 s)
+fim: 134 pedidos, 1217 s
+rodada 2026-11-27 14:16Z
+  apostas: ok (17 versões, 2 pedidos, 0.7 s)
+fim: 3 pedidos, 2 s
+rodada 2026-11-27 14:20Z
+  apostas: ok (17 versões, 2 pedidos, 0.9 s)
+fim: 3 pedidos, 2 s
+rodada 2026-11-27 14:27Z
+  apostas: ok (17 versões, 2 pedidos, 0.9 s)
+fim: 3 pedidos, 2 s
+rodada 2026-11-27 15:48Z
+  apostas: evolução: banco posto em dia (733 jogos da temporada de agora; 5050 no total)
+  apostas: ok (17 versões, 8 pedidos, 8.6 s)
+fim: 9 pedidos, 10 s
+rodada 2026-11-27 15:53Z
+  cofre × líder: 5 de 5 cofres em dia
+  cofres: ok (10 versões, 156 pedidos, 121.9 s)
+  funding: ok (13 versões, 30 pedidos, 43.5 s)
+  robos: gbtc10 424 velas de 1m, patrimônio 801,36
+  robos: gbtc20r 424 velas de 1m, patrimônio 844,07
+  robos: dca 424 velas de 1m, patrimônio 977,06
+  robos: dcaqueda 424 velas de 1m, patrimônio 977,06
+  robos: dcam1 424 velas de 1m, patrimônio 806,01
+  robos: gvol2 424 velas de 1m, patrimônio 847,25
+  robos: gvol4 424 velas de 1m, patrimônio 860,84
+  robos: dcaC 424 velas de 1m, patrimônio 985,56
+  robos: tcruz 424 velas de 1m, patrimônio 931,46
+  robos: trompe 424 velas de 1m, patrimônio 1.000,00
+  robos: tmovel 424 velas de 1m, patrimônio 1.000,00
+  robos: rfaixa 424 velas de 1m, patrimônio 934,43
+  robos: rfaixavol 424 velas de 1m, patrimônio 915,88
+  robos: rbandas 424 velas de 1m, patrimônio 978,56
+  robos: rbandastend 424 velas de 1m, patrimônio 1.000,00
+  robos: rrsi 424 velas de 1m, patrimônio 927,22
+  robos: indichi 424 velas de 1m, patrimônio 963,32
+  robos: inddmi 424 velas de 1m, patrimônio 970,17
+  robos: indvwap 424 velas de 1m, patrimônio 979,63
+  robos: indkst 424 velas de 1m, patrimônio 970,39
+  robos: indck 424 velas de 1m, patrimônio 991,08
+  robos: indpivo 424 velas de 1m, patrimônio 1.071,18
+  robos: indmm 424 velas de 1m, patrimônio 1.018,09
+  robos: segbtc 424 velas de 1m, patrimônio 796,98
+  robos: geth10 424 velas de 1m, patrimônio 757,04
+  robos: tcruzeth 424 velas de 1m, patrimônio 898,13
+  robos: segeth 424 velas de 1m, patrimônio 782,47
+  robos: gneutra1 424 velas de 1m, patrimônio 844,06
+  robos: gneutra3 424 velas de 1m, patrimônio 532,19
+  robos: dcam3 424 velas de 1m, patrimônio 406,61
+  robos: gsaida1 424 velas de 1m, patrimônio 923,24
+  robos: gsaida3 424 velas de 1m, patrimônio 782,11
+  robos: tcruzls 424 velas de 1m, patrimônio 946,90
+  robos: rbandasls 424 velas de 1m, patrimônio 1.015,85
+  robos: irbandas 424 velas de 1m, patrimônio 908,79
+  robos: irsi 424 velas de 1m, patrimônio 980,19
+  robos: icruzls 424 velas de 1m, patrimônio 1.037,43
+  robos: gsol1 424 velas de 1m, patrimônio 902,52
+  robos: ghype1 424 velas de 1m, patrimônio 964,50
+  robos: ok (39 versões, 10 pedidos, 11.6 s)
+  apostas: ok (17 versões, 2 pedidos, 0.8 s)
+  looping: Morpho (blue-api): HTTP 400 em Morpho GraphQL; tentando a DefiLlama
+  looping: moonwell: DefiLlama: nenhum pool de USDC na Base do projeto moonwell
+  looping: ok (13 versões, 12 pedidos, 10.9 s)
+  opcoes: ok (18 versões, 16 pedidos, 1.9 s)
+  pools: gauge: RPC eth_call: execution reverted
+  pools: ok (68 versões, 47 pedidos, 14.0 s)
+  previsao: ok (8 versões, 243 pedidos, 58.3 s)
+fim: 517 pedidos, 265 s
+rodada 2026-11-27 17:15Z
+  apostas: ok (17 versões, 2 pedidos, 0.9 s)
+fim: 3 pedidos, 4 s
+rodada 2026-11-27 18:36Z
+  cartões: planilha dos árbitros: 490 jogos, 25 árbitros, 0 jogos daqui preenchidos; escanteios de 2300 jogos em 5 ligas
+  apostas: ok (17 versões, 12 pedidos, 28.3 s)
+fim: 13 pedidos, 31 s
+rodada 2026-11-27 18:46Z
+  evolucao: 4319 velas de 1 h de @142 (2026-05-31 a 2026-11-27)
+  evolucao: 4319 velas de 1 h de BTC (2026-05-31 a 2026-11-27)
+  evolucao: 4319 velas de 1 h de @151 (2026-05-31 a 2026-11-27)
+  evolucao: 4319 velas de 1 h de ETH (2026-05-31 a 2026-11-27)
+  evolucao: 4319 velas de 1 h de @156 (2026-05-31 a 2026-11-27)
+  evolucao: 4319 velas de 1 h de SOL (2026-05-31 a 2026-11-27)
+  evolucao: 4319 velas de 1 h de @107 (2026-05-31 a 2026-11-27)
+  evolucao: 4319 velas de 1 h de HYPE (2026-05-31 a 2026-11-27)
+  evolucao: grade geração 120 (10 hoje)
+  evolucao: bandas geração 120 (10 hoje)
+  evolucao: tendencia geração 120 (10 hoje)
+  evolucao: indicadores geração 30 (10 hoje)
+  evolucao: dca geração 30 (10 hoje)
+  evolucao: 42 contas ao vivo no perpétuo de BTC (1432 velas de 1m)
+  evolucao: 60 contas ao vivo no à vista de BTC (1432 velas de 1m)
+  evolucao: 2 contas ao vivo no perpétuo de HYPE (1432 velas de 1m)
+  evolucao: 16 contas ao vivo no à vista de SOL (1432 velas de 1m)
+  evolucao: 1 contas ao vivo no perpétuo de SOL (1432 velas de 1m)
+  evolucao: 3 contas ao vivo no à vista de HYPE (1432 velas de 1m)
+  evolucao: 1 contas ao vivo no à vista de ETH (1432 velas de 1m)
+  evolucao: ok (0 versões, 56 pedidos, 193.2 s)
+fim: 57 pedidos, 196 s
+rodada 2026-11-27 19:58Z
+  apostas: ok (17 versões, 2 pedidos, 1.2 s)
+fim: 3 pedidos, 3 s
+rodada 2026-11-27 21:19Z
+  apostas: ok (17 versões, 2 pedidos, 0.9 s)
+fim: 3 pedidos, 2 s
+rodada 2026-11-27 21:28Z
+  cofre × líder: 5 de 5 cofres em dia
+  cofres: ok (10 versões, 150 pedidos, 114.3 s)
+  funding: ok (13 versões, 30 pedidos, 43.2 s)
+  robos: gbtc10 335 velas de 1m, patrimônio 799,05
+  robos: gbtc20r 335 velas de 1m, patrimônio 842,55
+  robos: dca 335 velas de 1m, patrimônio 976,54
+  robos: dcaqueda 335 velas de 1m, patrimônio 976,54
+  robos: dcam1 335 velas de 1m, patrimônio 803,67
+  robos: gvol2 335 velas de 1m, patrimônio 845,94
+  robos: gvol4 335 velas de 1m, patrimônio 859,42
+  robos: dcaC 335 velas de 1m, patrimônio 985,19
+  robos: tcruz 335 velas de 1m, patrimônio 928,75
+  robos: trompe 335 velas de 1m, patrimônio 1.000,00
+  robos: tmovel 335 velas de 1m, patrimônio 1.000,00
+  robos: rfaixa 335 velas de 1m, patrimônio 931,71
+  robos: rfaixavol 335 velas de 1m, patrimônio 915,88
+  robos: rbandas 335 velas de 1m, patrimônio 975,71
+  robos: rbandastend 335 velas de 1m, patrimônio 1.000,00
+  robos: rrsi 335 velas de 1m, patrimônio 924,52
+  robos: indichi 335 velas de 1m, patrimônio 963,32
+  robos: inddmi 335 velas de 1m, patrimônio 970,17
+  robos: indvwap 335 velas de 1m, patrimônio 979,63
+  robos: indkst 335 velas de 1m, patrimônio 970,39
+  robos: indck 335 velas de 1m, patrimônio 991,08
+  robos: indpivo 335 velas de 1m, patrimônio 1.068,05
+  robos: indmm 335 velas de 1m, patrimônio 1.018,09
+  robos: segbtc 335 velas de 1m, patrimônio 794,65
+  robos: geth10 335 velas de 1m, patrimônio 754,76
+  robos: tcruzeth 335 velas de 1m, patrimônio 896,04
+  robos: segeth 335 velas de 1m, patrimônio 780,07
+  robos: gneutra1 335 velas de 1m, patrimônio 841,51
+  robos: gneutra3 335 velas de 1m, patrimônio 524,53
+  robos: dcam3 335 velas de 1m, patrimônio 398,59
+  robos: gsaida1 335 velas de 1m, patrimônio 923,24
+  robos: gsaida3 335 velas de 1m, patrimônio 782,12
+  robos: tcruzls 335 velas de 1m, patrimônio 943,77
+  robos: rbandasls 335 velas de 1m, patrimônio 1.012,50
+  robos: irbandas 335 velas de 1m, patrimônio 911,87
+  robos: irsi 335 velas de 1m, patrimônio 980,19
+  robos: icruzls 335 velas de 1m, patrimônio 1.040,71
+  robos: gsol1 335 velas de 1m, patrimônio 902,24
+  robos: ghype1 335 velas de 1m, patrimônio 965,40
+  robos: ok (39 versões, 10 pedidos, 10.7 s)
+  apostas: ok (17 versões, 2 pedidos, 0.8 s)
+  looping: moonwell: DefiLlama: nenhum pool de USDC na Base do projeto moonwell
+  looping: ok (13 versões, 4 pedidos, 2.0 s)
+  opcoes: ok (18 versões, 16 pedidos, 3.6 s)
+  pools: gauge: RPC eth_call: execution reverted
+  pools: ok (68 versões, 40 pedidos, 9.7 s)
+  previsao: ok (8 versões, 232 pedidos, 54.6 s)
+fim: 485 pedidos, 242 s
+rodada 2026-11-27 21:46Z
+  apostas: ok (17 versões, 2 pedidos, 0.8 s)
+fim: 3 pedidos, 3 s
+rodada 2026-11-27 23:00Z
+  apostas: ok (17 versões, 16 pedidos, 41.4 s)
+fim: 17 pedidos, 44 s
+rodada 2026-11-27 23:06Z
+  HTTP 429 em RPC getTokenLargestAccounts; espera 5s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 10s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 5s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 10s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 5s
+  HTTP 429 em RPC getTokenLargestAccounts; espera 10s
+  HTTP 429 em RPC getTokenAccountsByOwner; espera 5s
+  memes: amostra nova: 4 de 4 lançamentos em 40 s
+  memes: ok (8 versões, 44 pedidos, 140.2 s)
+fim: 45 pedidos, 141 s
+rodada 2026-11-28 00:23Z
+  cartões: football-data.org 2026-11-27–2026-12-06: 5 árbitros
+  cartões: 12 listas de jogos e 5 resumos; 379 jogos guardados, 0 esperando o resumo
+  apostas: ok (17 versões, 20 pedidos, 5.4 s)
+fim: 21 pedidos, 8 s
+rodada 2026-11-28 01:45Z
+  cartões: football-data.org 2026-11-27–2026-12-06: 1 árbitros
+  cartões: 12 listas de jogos e 2 resumos; 381 jogos guardados, 0 esperando o resumo
+  apostas: ok (17 versões, 17 pedidos, 5.1 s)
+fim: 18 pedidos, 8 s
+rodada 2026-11-28 02:08Z
+  memes: ok (8 versões, 0 pedidos, 0.0 s)
+fim: 1 pedidos, 2 s
+rodada 2026-11-28 03:06Z
+  evolução (apostas): laboratório na geração 40, melhor 0.00066
+  cartões: 12 listas de jogos e 0 resumos; 381 jogos guardados, 0 esperando o resumo
+  apostas: ok (17 versões, 17 pedidos, 7.3 s)
+fim: 18 pedidos, 9 s
+rodada 2026-11-28 04:27Z
+  apostas: ok (17 versões, 2 pedidos, 1.2 s)
+fim: 3 pedidos, 4 s
+rodada 2026-11-28 04:32Z
+  cofre × líder: 5 de 5 cofres em dia
+  evolução (cofres): banco com 80 cofres; 78 andaram até hoje
+  evolução (cofres): laboratório na geração 120, melhor 0.02709
+  cofres: ok (10 versões, 139 pedidos, 102.0 s)
+  evolução (funding): laboratório na geração 120, melhor 0.00445
+  funding: ok (13 versões, 30 pedidos, 43.1 s)
+  robos: gbtc10 424 velas de 1m, patrimônio 801,40
+  robos: gbtc20r 424 velas de 1m, patrimônio 844,10
+  robos: dca 424 velas de 1m, patrimônio 977,07
+  robos: dcaqueda 424 velas de 1m, patrimônio 977,07
+  robos: dcam1 424 velas de 1m, patrimônio 806,05
+  robos: gvol2 424 velas de 1m, patrimônio 847,57
+  robos: gvol4 424 velas de 1m, patrimônio 860,87
+  robos: dcaC 424 velas de 1m, patrimônio 985,62
+  robos: tcruz 424 velas de 1m, patrimônio 926,23
+  robos: trompe 424 velas de 1m, patrimônio 1.000,00
+  robos: tmovel 424 velas de 1m, patrimônio 1.000,00
+  robos: rfaixa 424 velas de 1m, patrimônio 934,48
+  robos: rfaixavol 424 velas de 1m, patrimônio 915,88
+  robos: rbandas 424 velas de 1m, patrimônio 978,61
+  robos: rbandastend 424 velas de 1m, patrimônio 1.000,00
+  robos: rrsi 424 velas de 1m, patrimônio 927,27
+  robos: indichi 424 velas de 1m, patrimônio 963,32
+  robos: inddmi 424 velas de 1m, patrimônio 970,17
+  robos: indvwap 424 velas de 1m, patrimônio 979,63
+  robos: indkst 424 velas de 1m, patrimônio 970,39
+  robos: indck 424 velas de 1m, patrimônio 991,08
+  robos: indpivo 424 velas de 1m, patrimônio 1.071,23
+  robos: indmm 424 velas de 1m, patrimônio 1.018,09
+  robos: segbtc 424 velas de 1m, patrimônio 797,02
+  robos: geth10 423 velas de 1m, patrimônio 754,00
+  robos: tcruzeth 423 velas de 1m, patrimônio 896,04
+  robos: segeth 423 velas de 1m, patrimônio 779,28
+  robos: gneutra1 424 velas de 1m, patrimônio 843,61
+  robos: gneutra3 424 velas de 1m, patrimônio 530,83
+  robos: dcam3 424 velas de 1m, patrimônio 405,19
+  robos: gsaida1 424 velas de 1m, patrimônio 924,34
+  robos: gsaida3 424 velas de 1m, patrimônio 784,81
+  robos: tcruzls 424 velas de 1m, patrimônio 936,51
+  robos: rbandasls 424 velas de 1m, patrimônio 1.015,26
+  robos: irbandas 424 velas de 1m, patrimônio 909,33
+  robos: irsi 424 velas de 1m, patrimônio 980,19
+  robos: icruzls 424 velas de 1m, patrimônio 1.044,76
+  robos: gsol1 424 velas de 1m, patrimônio 898,77
+  robos: ghype1 424 velas de 1m, patrimônio 966,91
+  robos: ok (39 versões, 11 pedidos, 12.3 s)
+  apostas: ok (17 versões, 2 pedidos, 1.1 s)
+  looping: Morpho (blue-api): HTTP 400 em Morpho GraphQL; tentando a DefiLlama
+  looping: moonwell: DefiLlama: nenhum pool de USDC na Base do projeto moonwell
+  evolução (looping, laço): laboratório na geração 40, melhor 0.00199
+  evolução (looping, ether alavancado): laboratório na geração 40, melhor 0.00464
+  looping: ok (13 versões, 12 pedidos, 12.4 s)
+  evolução (opções): laboratório na geração 100, melhor 0.05929
+  opcoes: ok (18 versões, 16 pedidos, 8.5 s)
+  pools: gauge: RPC eth_call: execution reverted
+  HTTP 429 em GeckoTerminal /networks/base/pools/0x532e0f46d1e528507fc9454d5847c231f23bd; espera 30s
+  HTTP 429 em GeckoTerminal /networks/base/pools; espera 30s
+  pools arrojadas: 40 na lista, 15 no pré-filtro, 0 no filtro; do dia: nenhum (controle: AMDc / USDC 0.05%)
+  evolução (pools): laboratório na geração 40, melhor 0.00166
+  pools: ok (68 versões, 57 pedidos, 90.2 s)
+  evolução (previsão): laboratório na geração 100, melhor 0.51056
+  previsao: ok (8 versões, 228 pedidos, 54.2 s)
+fim: 496 pedidos, 325 s
+rodada 2026-11-28 05:01Z
+  apostas: ok (17 versões, 2 pedidos, 1.6 s)
+fim: 3 pedidos, 5 s
+rodada 2026-11-28 06:23Z
+  apostas: ok (17 versões, 2 pedidos, 1.4 s)
+fim: 3 pedidos, 4 s
+rodada 2026-11-28 07:45Z
+  apostas: ok (17 versões, 2 pedidos, 1.3 s)
+fim: 3 pedidos, 3 s
+rodada 2026-11-28 08:06Z
+  cofre × líder: 5 de 5 cofres em dia
+  cofres: ok (10 versões, 150 pedidos, 113.5 s)
+  funding: ok (13 versões, 30 pedidos, 43.3 s)
+  robos: gbtc10 214 velas de 1m, patrimônio 798,23
+  robos: gbtc20r 214 velas de 1m, patrimônio 842,01
+  robos: dca 214 velas de 1m, patrimônio 976,36
+  robos: dcaqueda 214 velas de 1m, patrimônio 976,36
+  robos: dcam1 214 velas de 1m, patrimônio 802,84
+  robos: gvol2 214 velas de 1m, patrimônio 846,00
+  robos: gvol4 214 velas de 1m, patrimônio 858,92
+  robos: dcaC 214 velas de 1m, patrimônio 985,10
+  robos: tcruz 214 velas de 1m, patrimônio 926,23
+  robos: trompe 214 velas de 1m, patrimônio 1.000,00
+  robos: tmovel 214 velas de 1m, patrimônio 1.000,00
+  robos: rfaixa 214 velas de 1m, patrimônio 930,74
+  robos: rfaixavol 214 velas de 1m, patrimônio 915,88
+  robos: rbandas 214 velas de 1m, patrimônio 974,70
+  robos: rbandastend 214 velas de 1m, patrimônio 1.000,00
+  robos: rrsi 214 velas de 1m, patrimônio 923,57
+  robos: indichi 214 velas de 1m, patrimônio 963,32
+  robos: inddmi 214 velas de 1m, patrimônio 970,17
+  robos: indvwap 214 velas de 1m, patrimônio 979,63
+  robos: indkst 214 velas de 1m, patrimônio 970,39
+  robos: indck 214 velas de 1m, patrimônio 991,08
+  robos: indpivo 214 velas de 1m, patrimônio 1.066,95
+  robos: indmm 214 velas de 1m, patrimônio 1.018,09
+  robos: segbtc 214 velas de 1m, patrimônio 793,83
+  robos: geth10 215 velas de 1m, patrimônio 751,45
+  robos: tcruzeth 215 velas de 1m, patrimônio 896,04
+  robos: segeth 215 velas de 1m, patrimônio 776,61
+  robos: gneutra1 214 velas de 1m, patrimônio 840,49
+  robos: gneutra3 214 velas de 1m, patrimônio 521,48
+  robos: dcam3 214 velas de 1m, patrimônio 395,39
+  robos: gsaida1 214 velas de 1m, patrimônio 923,77
+  robos: gsaida3 214 velas de 1m, patrimônio 783,41
+  robos: tcruzls 214 velas de 1m, patrimônio 940,33
+  robos: rbandasls 214 velas de 1m, patrimônio 1.011,15
+  robos: irbandas 214 velas de 1m, patrimônio 913,11
+  robos: irsi 214 velas de 1m, patrimônio 980,19
+  robos: icruzls 214 velas de 1m, patrimônio 1.040,54
+  robos: gsol1 214 velas de 1m, patrimônio 893,39
+  robos: ghype1 214 velas de 1m, patrimônio 961,81
+  robos: ok (39 versões, 10 pedidos, 10.1 s)
+  apostas: ok (17 versões, 2 pedidos, 0.9 s)
+  looping: moonwell: DefiLlama: nenhum pool de USDC na Base do projeto moonwell
+  looping: ok (13 versões, 4 pedidos, 1.9 s)
+  opcoes: ok (18 versões, 16 pedidos, 4.0 s)
+  pools: gauge: RPC eth_call: execution reverted
+  pools: ok (68 versões, 34 pedidos, 6.2 s)
+  previsao: ok (8 versões, 242 pedidos, 54.6 s)
+fim: 489 pedidos, 235 s
+rodada 2026-11-28 09:26Z
+  apostas: ok (17 versões, 2 pedidos, 1.6 s)
+fim: 3 pedidos, 4 s
+rodada 2026-11-28 10:47Z
+  apostas: ok (17 versões, 2 pedidos, 1.3 s)
+fim: 3 pedidos, 3 s
