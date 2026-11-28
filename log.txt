@@ -1,0 +1,400 @@
+2026-11-26 12:38 a API-Football recusou /fixtures: {'access': 'Your account is suspended, check on https://dashboard.api-football.com.'}
+2026-11-26 12:38 a API-Football recusou /fixtures: {'access': 'Your account is suspended, check on https://dashboard.api-football.com.'}
+2026-11-26 12:38 a API-Football recusou /fixtures: {'access': 'Your account is suspended, check on https://dashboard.api-football.com.'}
+2026-11-26 12:38 a API-Football recusou /fixtures: {'access': 'Your account is suspended, check on https://dashboard.api-football.com.'}
+2026-11-26 12:38 a API-Football recusou /fixtures: {'access': 'Your account is suspended, check on https://dashboard.api-football.com.'}
+2026-11-26 12:38 a API-Football recusou /fixtures: {'access': 'Your account is suspended, check on https://dashboard.api-football.com.'}
+2026-11-26 12:38 a API-Football recusou /fixtures: {'access': 'Your account is suspended, check on https://dashboard.api-football.com.'}
+2026-11-26 12:38 rodada: 0 capturas, 51 pedidos hoje, restam 99 na API-Football
+2026-11-26 12:43 a API-Football recusou /fixtures: {'access': 'Your account is suspended, check on https://dashboard.api-football.com.'}
+2026-11-26 12:43 a API-Football recusou /fixtures: {'access': 'Your account is suspended, check on https://dashboard.api-football.com.'}
+2026-11-26 12:43 a API-Football recusou /fixtures: {'access': 'Your account is suspended, check on https://dashboard.api-football.com.'}
+2026-11-26 12:43 a API-Football recusou /fixtures: {'access': 'Your account is suspended, check on https://dashboard.api-football.com.'}
+2026-11-26 12:43 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 12:48 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 12:53 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 12:58 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 13:03 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 13:08 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 13:13 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 13:18 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 13:23 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 13:29 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 13:34 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 13:39 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 13:44 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 13:49 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 13:54 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 13:59 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 14:04 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 14:09 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 14:14 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 14:19 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 14:25 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 14:30 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 14:35 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 14:40 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 14:45 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 14:50 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 14:55 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 15:00 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 15:05 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 15:10 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 15:16 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 15:21 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 15:26 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 15:31 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 15:36 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 15:41 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 15:46 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 15:51 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 15:56 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 16:01 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 16:07 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 16:12 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 16:17 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 16:22 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 16:27 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 16:32 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 16:37 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 16:43 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 16:48 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 16:53 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 16:58 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 17:03 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 17:08 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 17:13 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 17:18 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 17:23 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 17:28 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 17:33 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 17:39 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 17:44 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 17:49 rodada: 0 capturas, 55 pedidos hoje, restam 99 na API-Football
+2026-11-26 21:31 The Odds API ao vivo, 1ª resposta: casas ['coolbet', 'pinnacle'], mercados ['Goals Over/Under · coolbet', 'Goals Over/Under · pinnacle']
+2026-11-26 21:31 75': Crystal Palace × Real Sociedad (1 × 1, 75')
+2026-11-26 21:31 75': Ferencvaros × NK Celje (0 × 0, 73')
+2026-11-26 21:31 75': Lyon × Lillestrom (0 × 0, 74')
+2026-11-26 21:31 75': CSKA Sofia × Trabzonspor (1 × 1, 70')
+2026-11-26 21:31 75': SC Freiburg × FC Twente (1 × 1, 73')
+2026-11-26 21:31 rodada: 5 capturas, 5 créditos hoje, restam 490 na The Odds API
+2026-11-26 21:36 sem o evento da The Odds API de NEC Nijmegen × Stade Rennais (10 eventos em soccer_uefa_europa_league)
+2026-11-26 21:36 75': Torreense × Celtic (1 × 1, 74')
+2026-11-26 21:36 75': TSG Hoffenheim × SK Sturm Graz (1 × 1, 76')
+2026-11-26 21:36 sem o evento da The Odds API de FC Nordsjælland × Panathinaikos (8 eventos em soccer_uefa_europa_conference_league)
+2026-11-26 21:36 rodada: 2 capturas, 7 créditos hoje, restam 488 na The Odds API
+2026-11-26 21:41 sem o evento da The Odds API de Sunderland × Jagiellonia Bialystok (10 eventos em soccer_uefa_europa_league)
+2026-11-26 21:41 rodada: 0 capturas, 7 créditos hoje, restam 488 na The Odds API
+2026-11-26 21:46 rodada: 0 capturas, 7 créditos hoje, restam 488 na The Odds API
+2026-11-26 21:51 rodada: 0 capturas, 7 créditos hoje, restam 488 na The Odds API
+2026-11-26 21:56 rodada: 0 capturas, 7 créditos hoje, restam 488 na The Odds API
+2026-11-26 22:02 rodada: 0 capturas, 7 créditos hoje, restam 488 na The Odds API
+2026-11-26 22:07 rodada: 0 capturas, 7 créditos hoje, restam 488 na The Odds API
+2026-11-26 22:12 rodada: 0 capturas, 7 créditos hoje, restam 488 na The Odds API
+2026-11-26 22:17 rodada: 0 capturas, 7 créditos hoje, restam 488 na The Odds API
+2026-11-26 22:22 rodada: 0 capturas, 7 créditos hoje, restam 488 na The Odds API
+2026-11-26 22:27 rodada: 0 capturas, 7 créditos hoje, restam 488 na The Odds API
+2026-11-26 22:32 rodada: 0 capturas, 7 créditos hoje, restam 488 na The Odds API
+2026-11-26 22:37 rodada: 0 capturas, 7 créditos hoje, restam 488 na The Odds API
+2026-11-26 22:42 rodada: 0 capturas, 7 créditos hoje, restam 488 na The Odds API
+2026-11-26 22:48 rodada: 0 capturas, 7 créditos hoje, restam 488 na The Odds API
+2026-11-26 22:53 rodada: 0 capturas, 7 créditos hoje, restam 488 na The Odds API
+2026-11-26 22:58 rodada: 0 capturas, 7 créditos hoje, restam 488 na The Odds API
+2026-11-26 23:03 rodada: 0 capturas, 7 créditos hoje, restam 488 na The Odds API
+2026-11-26 23:08 rodada: 0 capturas, 7 créditos hoje, restam 488 na The Odds API
+2026-11-26 23:13 rodada: 0 capturas, 7 créditos hoje, restam 488 na The Odds API
+2026-11-26 23:18 rodada: 0 capturas, 7 créditos hoje, restam 488 na The Odds API
+2026-11-26 23:23 rodada: 0 capturas, 7 créditos hoje, restam 488 na The Odds API
+2026-11-26 23:28 rodada: 0 capturas, 7 créditos hoje, restam 488 na The Odds API
+2026-11-26 23:33 rodada: 0 capturas, 7 créditos hoje, restam 488 na The Odds API
+2026-11-26 23:39 rodada: 0 capturas, 7 créditos hoje, restam 488 na The Odds API
+2026-11-26 23:44 rodada: 0 capturas, 7 créditos hoje, restam 488 na The Odds API
+2026-11-26 23:49 rodada: 0 capturas, 7 créditos hoje, restam 488 na The Odds API
+2026-11-26 23:54 intervalo: São Paulo × Remo (1 × 0), 1 mercados
+2026-11-26 23:54 rodada: 1 capturas, 8 créditos hoje, restam 487 na The Odds API
+2026-11-26 23:59 rodada: 0 capturas, 8 créditos hoje, restam 487 na The Odds API
+2026-11-27 00:35 75': São Paulo × Remo (1 × 1, 72')
+2026-11-27 00:35 rodada: 1 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 00:40 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 00:45 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 00:50 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 00:55 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 01:00 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 01:05 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 01:10 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 01:16 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 01:21 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 01:26 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 01:31 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 01:36 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 01:41 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 01:46 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 01:51 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 01:56 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 02:02 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 02:07 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 02:12 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 02:17 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 02:22 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 02:27 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 02:32 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 02:37 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 02:42 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 02:48 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 02:53 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 02:58 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 03:03 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 03:08 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 03:13 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 03:18 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 03:23 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 03:28 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 03:33 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 03:39 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 03:44 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 03:49 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 03:54 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 03:59 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 04:04 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 04:09 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 04:14 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 04:19 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 04:24 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 04:29 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 04:34 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 04:39 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 04:45 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 04:50 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 04:55 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 05:00 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 05:05 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 05:10 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 05:15 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 05:20 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 05:25 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 05:30 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 05:35 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 05:40 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 05:46 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 05:51 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 05:56 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 06:01 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 06:06 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 06:11 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 06:16 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 06:21 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 06:26 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 06:31 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 06:36 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 06:41 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 06:46 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 06:52 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 06:57 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 07:02 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 07:07 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 07:12 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 07:17 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 07:22 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 07:27 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 07:32 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 07:37 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 07:42 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 07:47 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 07:52 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 07:58 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 08:03 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 08:08 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 08:13 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 08:18 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 08:23 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 08:28 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 08:33 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 08:38 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 08:44 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 08:49 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 08:54 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 08:59 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 09:04 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 09:09 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 09:14 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 09:19 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 09:24 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 09:30 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 09:35 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 09:40 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 09:45 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 09:50 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 09:55 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 10:00 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 10:05 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 10:10 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 10:16 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 10:21 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 10:26 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 10:31 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 10:36 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 10:41 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 10:46 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 10:51 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 10:56 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 11:01 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 11:07 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 11:12 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 11:17 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 11:22 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 11:27 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 11:32 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 11:37 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 11:42 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 11:47 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 11:53 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 11:58 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 12:03 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 12:08 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 12:13 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 12:18 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 12:23 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 12:28 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 12:33 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 12:39 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 12:44 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 12:49 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 12:54 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 12:59 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 13:04 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 13:09 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 13:14 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 13:19 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 13:25 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 13:30 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 13:35 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 13:40 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 13:45 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 13:50 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 13:55 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 14:00 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 14:05 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 14:11 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 14:16 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 14:21 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 14:26 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 14:31 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 14:36 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 14:41 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 14:47 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 14:52 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 14:57 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 15:02 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 15:07 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 15:12 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 15:17 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 15:22 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 15:27 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 15:32 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 15:38 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 15:43 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 15:48 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 15:53 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 15:58 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 16:03 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 16:08 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 16:13 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 16:18 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 16:23 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 16:28 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 16:34 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 16:39 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 16:44 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 16:49 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 16:54 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 16:59 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 17:04 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 17:09 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 17:14 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 17:19 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 17:25 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 17:30 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 17:35 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 17:40 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 17:45 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 17:50 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 17:55 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 18:00 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 18:05 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 18:10 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 18:16 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 18:21 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 18:26 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 18:31 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 18:36 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 18:41 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 18:46 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 18:51 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 18:56 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 19:01 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 19:06 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 19:12 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 19:17 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 19:22 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 19:27 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 19:32 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 19:37 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 19:42 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 19:47 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 19:52 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 19:58 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 20:03 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 20:08 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 20:13 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 20:18 rodada: 0 capturas, 1 créditos hoje, restam 486 na The Odds API
+2026-11-27 20:23 intervalo: Werder Bremen × Borussia Mönchengladbach (1 × 1), 1 mercados
+2026-11-27 20:23 rodada: 1 capturas, 2 créditos hoje, restam 485 na The Odds API
+2026-11-27 20:28 rodada: 0 capturas, 2 créditos hoje, restam 485 na The Odds API
+2026-11-27 20:33 intervalo: Brest × Paris FC (1 × 0), 1 mercados
+2026-11-27 20:33 rodada: 1 capturas, 3 créditos hoje, restam 484 na The Odds API
+2026-11-27 20:38 intervalo: Venezia × Bologna (0 × 0), 3 mercados
+2026-11-27 20:38 rodada: 1 capturas, 5 créditos hoje, restam 482 na The Odds API
+2026-11-27 20:43 rodada: 0 capturas, 5 créditos hoje, restam 482 na The Odds API
+2026-11-27 20:48 intervalo: Nottingham Forest × Chelsea (1 × 0), 1 mercados
+2026-11-27 20:49 intervalo: Levante × Racing Santander (1 × 0), 1 mercados
+2026-11-27 20:49 rodada: 2 capturas, 7 créditos hoje, restam 480 na The Odds API
+2026-11-27 20:54 rodada: 0 capturas, 7 créditos hoje, restam 480 na The Odds API
+2026-11-27 20:59 rodada: 0 capturas, 7 créditos hoje, restam 480 na The Odds API
+2026-11-27 21:04 rodada: 0 capturas, 7 créditos hoje, restam 480 na The Odds API
+2026-11-27 21:09 rodada: 0 capturas, 7 créditos hoje, restam 480 na The Odds API
+2026-11-27 21:14 rodada: 0 capturas, 7 créditos hoje, restam 480 na The Odds API
+2026-11-27 21:19 75': Venezia × Bologna (0 × 0, 74')
+2026-11-27 21:19 rodada: 1 capturas, 8 créditos hoje, restam 479 na The Odds API
+2026-11-27 21:24 rodada: 0 capturas, 8 créditos hoje, restam 479 na The Odds API
+2026-11-27 21:29 75': Levante × Racing Santander (1 × 1, 71')
+2026-11-27 21:29 rodada: 1 capturas, 9 créditos hoje, restam 478 na The Odds API
+2026-11-27 21:34 rodada: 0 capturas, 9 créditos hoje, restam 478 na The Odds API
+2026-11-27 21:40 rodada: 0 capturas, 9 créditos hoje, restam 478 na The Odds API
+2026-11-27 21:45 rodada: 0 capturas, 9 créditos hoje, restam 478 na The Odds API
+2026-11-27 21:50 rodada: 0 capturas, 9 créditos hoje, restam 478 na The Odds API
+2026-11-27 21:55 rodada: 0 capturas, 9 créditos hoje, restam 478 na The Odds API
+2026-11-27 22:00 rodada: 0 capturas, 9 créditos hoje, restam 478 na The Odds API
+2026-11-27 22:05 rodada: 0 capturas, 9 créditos hoje, restam 478 na The Odds API
+2026-11-27 22:10 rodada: 0 capturas, 9 créditos hoje, restam 478 na The Odds API
+2026-11-27 22:15 rodada: 0 capturas, 9 créditos hoje, restam 478 na The Odds API
+2026-11-27 22:20 rodada: 0 capturas, 9 créditos hoje, restam 478 na The Odds API
+2026-11-27 22:25 rodada: 0 capturas, 9 créditos hoje, restam 478 na The Odds API
+2026-11-27 22:30 rodada: 0 capturas, 9 créditos hoje, restam 478 na The Odds API
+2026-11-27 22:36 rodada: 0 capturas, 9 créditos hoje, restam 478 na The Odds API
+2026-11-27 22:41 rodada: 0 capturas, 9 créditos hoje, restam 478 na The Odds API
+2026-11-27 22:46 rodada: 0 capturas, 9 créditos hoje, restam 478 na The Odds API
+2026-11-27 22:51 rodada: 0 capturas, 9 créditos hoje, restam 478 na The Odds API
+2026-11-27 22:56 rodada: 0 capturas, 9 créditos hoje, restam 478 na The Odds API
+2026-11-27 23:01 rodada: 0 capturas, 9 créditos hoje, restam 478 na The Odds API
+2026-11-27 23:06 rodada: 0 capturas, 9 créditos hoje, restam 478 na The Odds API
+2026-11-27 23:11 rodada: 0 capturas, 9 créditos hoje, restam 478 na The Odds API
+2026-11-27 23:16 rodada: 0 capturas, 9 créditos hoje, restam 478 na The Odds API
+2026-11-27 23:21 rodada: 0 capturas, 9 créditos hoje, restam 478 na The Odds API
+2026-11-27 23:27 rodada: 0 capturas, 9 créditos hoje, restam 478 na The Odds API
+2026-11-27 23:32 rodada: 0 capturas, 9 créditos hoje, restam 478 na The Odds API
+2026-11-27 23:37 rodada: 0 capturas, 9 créditos hoje, restam 478 na The Odds API
+2026-11-27 23:42 rodada: 0 capturas, 9 créditos hoje, restam 478 na The Odds API
+2026-11-27 23:47 rodada: 0 capturas, 9 créditos hoje, restam 478 na The Odds API
+2026-11-27 23:52 intervalo: Fluminense × Cruzeiro (0 × 1), 1 mercados
+2026-11-27 23:52 rodada: 1 capturas, 10 créditos hoje, restam 477 na The Odds API
+2026-11-27 23:57 rodada: 0 capturas, 10 créditos hoje, restam 477 na The Odds API
